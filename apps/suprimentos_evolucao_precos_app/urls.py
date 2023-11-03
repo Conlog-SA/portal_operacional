@@ -1,6 +1,6 @@
 from django.urls import path
 #from apps.app_suprimentos_evolucao_precos.dash_apps.finished_apps import simpleexample
-from apps.suprimentos_evolucao_precos_app.dash_apps.finished_apps import simpleexample
+#from apps.suprimentos_evolucao_precos_app.dash_apps.finished_apps import simpleexample
 from apps.suprimentos_evolucao_precos_app import views
 
 urlpatterns = [

@@ -25,11 +25,12 @@ urlpatterns = [
     path('plan_controle_provisoes_folha_app/', include('apps.plan_controle_provisoes_folha_app.urls')),
     path('frota_disponibilidade_empilhadeira_app/', include('apps.frota_disponibilidade_empilhadeira_app.urls')),
     path('seguranca_5s_app/', include('apps.seguranca_5s_app.urls')),
-    path('django_plotly_dash/', include('django_plotly_dash.urls')),    
+    path('django_plotly_dash/', include('django_plotly_dash.urls')),
     path('suprimentos_justifica_preco_diesel_app/', include('apps.suprimentos_justifica_preco_diesel_app.urls')),
     path('frota_vpo_app/', include('apps.frota_vpo_app.urls')),
     path('contabil_operacoes_farol_ndd_app/', include('apps.contabil_operacoes_farol_ndd_app.urls')),
     path('cco_sinistro_app/', include('apps.cco_sinistro_app.urls')),
+    path('ti_tma_app/', include('apps.ti_tma_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

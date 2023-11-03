@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$$ig0w1(uniki1=*p7&mhouf@msw@_9i^t0px#w49moh=lexyt'
+SECRET_KEY = str(os.getenv('SECRET_KEY'))
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -67,6 +70,7 @@ INSTALLED_APPS = [
     'apps.suprimentos_justifica_preco_diesel_app',
     'apps.frota_vpo_app',
     'apps.contabil_operacoes_farol_ndd_app',
+    'apps.ti_tma_app',
 ]
 
 MIDDLEWARE = [
@@ -155,10 +159,10 @@ DATABASES = {
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'portal_operacional',      
-        'HOST': '172.16.40.70',
-        'USER': 'servico.python',
-        'PASSWORD': 'qm@WHpAWwb',        
+        'NAME': str(os.getenv('NOME_BANCO')),
+        'HOST': str(os.getenv('IP_BANCO')),
+        'USER': str(os.getenv('USER')),
+        'PASSWORD': str(os.getenv('PASS')),
         'PORT': '3306',
     }
 }
