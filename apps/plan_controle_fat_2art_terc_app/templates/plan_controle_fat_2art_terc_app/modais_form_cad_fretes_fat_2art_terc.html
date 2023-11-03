@@ -1,0 +1,336 @@
+{% load static %}
+
+<!-- Modal Cad Frete Terc -->
+<div id="modalCadFreteSpot" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-route fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Cadastro fretes terceiros</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalCadFreteSpot"
+                                id="fechaModalCadFreteSpot"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formCadFreteSpot" name="formCadFreteSpot"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+                    <input type="hidden" name="hiddenCodCadFreteSpot" id="hiddenCodCadFreteSpot">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="listProjetosCadFreteSpot" class="label_comp_forms">
+                                Projeto
+                            </label>
+                            <select class="selectpicker form-control" id="listProjetosCadFreteSpot"
+                                    name="listProjetosCadFreteSpot"
+                                    data-live-search="true"
+                                    title="Selecione o projeto">
+                                {% for p in cad_projetos %}
+                                    <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div style="padding-left: 0.25rem;">
+                            <label for="listTipoPessoaCadFreteSpot" class="label_comp_forms">
+                                Tipo Pessoa
+                            </label>
+                            <select class="selectpicker form-control" id="listTipoPessoaCadFreteSpot"
+                                    name="listTipoPessoaCadFreteSpot"
+                                    data-live-search="true"
+                                    title="Tipo de pessoa">
+                                <option value="0" selected="selected">-- Tipo pessoa --</option>
+                                <option value="Pessoa Física">Pessoa Física</option>
+                                <option value="Pessoa Jurídica">Pessoa Jurídica</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldIniVigenciaCadFreteSpot" class="label_comp_forms">Início Vigência</label>
+                            <input type="date" class="form-control" name="textFieldIniVigenciaCadFreteSpot"
+                                   id="textFieldIniVigenciaCadFreteSpot" autocomplete="off" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldFimVigenciaCadFreteSpot" class="label_comp_forms">Fim Vigência</label>
+                            <input type="date" class="form-control" name="textFieldFimVigenciaCadFreteSpot"
+                                   id="textFieldFimVigenciaCadFreteSpot" autocomplete="off" />
+                        </div>
+                         <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                             <label for="listTipoEntrega" class="label_comp_forms">
+                                Tipo Entrega
+                            </label>
+                            <select class="selectpicker form-control" id="listTipoEntrega"
+                                    name="listTipoEntrega"
+                                    data-live-search="true">
+                                <option value="0" selected="selected">-- Tipo de entrega --</option>
+                                <option value="Rota">Rota</option>
+                                <option value="AS">AS</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="listPerfilVeiculoCadFreteSpot" class="label_comp_forms">
+                                Perfil Veículo
+                            </label>
+                            <select class="selectpicker form-control" id="listPerfilVeiculoCadFreteSpot"
+                                    name="listPerfilVeiculoCadFreteSpot"
+                                    data-live-search="true">
+                                <option value="0" selected="selected">--PERFIL VEÍCULO--</option>
+                                <option value="Carreta">Carreta</option>
+                                <option value="Toco">Toco</option>
+                                <option value="Truck">Truck</option>
+                                <option value="F4000">F4000</option>
+                                <option value="Spot 7">Spot 7</option>
+                                <option value="Spot 8">Spot 8</option>
+                                <option value="Picape">Picape</option>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldCodRegiao" class="label_comp_forms">Cód. Região</label>
+                            <input type="text" class="form-control" name="textFieldCodRegiao" id="textFieldCodRegiao"
+                                   placeholder="Cód Região" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldDescRegiao" class="label_comp_forms">Desc. Região</label>
+                            <input type="text" class="form-control" name="textFieldDescRegiao" id="textFieldDescRegiao"
+                                   placeholder="Desc. Região"/>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldQtdMin" class="label_comp_forms">Até</label>
+                            <input type="text" class="form-control" name="textFieldQtdMin" id="textFieldQtdMin"
+                                   value="0"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValFreteCarreteiroMin" class="label_comp_forms">Carreteiro(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValFreteCarreteiroMin"
+                                   id="textFieldValFreteCarreteiroMin" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValDescargaMin" class="label_comp_forms">Descarga(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValDescargaMin"
+                                   id="textFieldValDescargaMin" value="0,00" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValPedagioMin" class="label_comp_forms">Pedágio(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValPedagioMin"
+                                   id="textFieldValPedagioMin" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValCPRBMin" class="label_comp_forms">CPBR(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValCPRBMin"
+                                   id="textFieldValCPRBMin" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValLucroMin" class="label_comp_forms">Lucro(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValLucroMin"
+                                   id="textFieldValLucroMin" value="0,00"/>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldQtdMax" class="label_comp_forms">Acima</label>
+                            <input type="text" class="form-control" name="textFieldQtdMax" id="textFieldQtdMax"
+                                   value="0"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValFreteCarreteiroMax" class="label_comp_forms">Carreteiro(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValFreteCarreteiroMax"
+                                   id="textFieldValFreteCarreteiroMax" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValDescargaMax" class="label_comp_forms">Descarga(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValDescargaMax"
+                                   id="textFieldValDescargaMax" value="0,00" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValPedagioMax" class="label_comp_forms">Pedágio(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValPedagioMax"
+                                   id="textFieldValPedagioMax" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValCPRBMax" class="label_comp_forms">CPBR(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValCPRBMax"
+                                   id="textFieldValCPRBMax" value="0,00"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldValLucroMax" class="label_comp_forms">Lucro(R$)</label>
+                            <input type="text" class="form-control" name="textFieldValLucroMax"
+                                   id="textFieldValLucroMax" value="0,00"/>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-3" style="margin-top: 1rem;">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <button type="button" name="btnSalvaRegCadFreteSpot"
+                                    id="btnSalvaRegCadFreteSpot"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-solid fa-check"></i>
+                            Salvar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Exclui Frete Spot-->
+<div id="modalExcluiCadFreteSpot" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px;
+                        width: 1300px; height: 30px;margin-top: 35px;" >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-trash fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px'> Exclui cadastro</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btnFechaModalExcluiCadFreteSpot"
+                          name="btnFechaModalExcluiCadFreteSpot"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_excluir_cad_frete_terc" id="frm_excluir_cad_frete_terc"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <input type="hidden" name="hiddenIdCadFreteSpot" id="hiddenIdCadFreteSpot">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="pMsg" class="d-flex flex-column w-100" style="color:#000000;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="idDivButtonExlcuiRegCadFreteSpotSelecionado" class="d-flex flex-column w-100">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+<!-- Modal Replicia Frete Terceiro-->
+<div id="modalReplicaCadFrete" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:880px;width:880px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                        padding-top: 10px;font-size:10px;">
+                <div class="form-group row"
+                     style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 100%;
+                        height: 30px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-code-compare fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Replicar Cadastros de Frete</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btnFechaModalExecReplicCadFreteSpot"
+                                id="btnFechaModalExecReplicCadFreteSpot"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_replica_cad_frete_terc" name="frm_replica_cad_frete_terc"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="cb_vigencias_cad_frete_terc" class="label_comp_forms">
+                                Selecione os dados de origem a ser replicados
+                            </label>
+                            <select class="selectpicker form-control" id="cb_vigencias_cad_frete_terc"
+                                name="cb_vigencias_cad_frete_terc"
+                                data-live-search="true"
+                                title="Selecione a vigência">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 "
+                         style="color:#000000;margin-top: 0.5rem;">
+                        <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;"></i>
+                        Informe o período de início e fim de vigência para os cadastros a serem replicados
+                    </div>
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <hr class="hr_title">
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100">
+                            <label for="textFieldIniVigenciaCadFreteSpotReplic" class="label_comp_forms" >
+                                Data Inicial
+                                <input type="date" class="form-control" id="textFieldIniVigenciaCadFreteSpotReplic">
+                            </label>
+                        </div>
+                         <div class="d-flex flex-column w-100">
+                             <label for="textFieldFimVigenciaCadFreteSpotReplic" class="label_comp_forms">
+                                Data Final
+                                <input type="date" class="form-control" id="textFieldFimVigenciaCadFreteSpotReplic">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <button type="button" name="btnExecutaReplicacaoCadFreteSpot"
+                                    id="btnExecutaReplicacaoCadFreteSpot"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-solid fa-code-compare"></i>
+                            Replicar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'libs/jquery_3_6_0/js/jquery.mask.min.js' %}" type="text/javascript"></script>

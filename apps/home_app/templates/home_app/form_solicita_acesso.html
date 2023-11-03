@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Solicitação | Portal Operacional
+{% endblock %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/home_app/index.css' %}"/>
+  <!-- Bootstrap select picker -->
+    <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}">
+
+
+{% endblock %}
+
+
+{% block conteudo %}
+
+  <main class="w-75 h-75 text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
+
+      <div class="homeApp__sobre">
+        <img class="" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
+        <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+      </div>
+      <div class="homeApp__linhaVertical" id="div_form_index"></div>
+      <form action="{% url 'solicita_acesso' %}"
+          method="POST"
+          class="d-flex justify-content-center align-items-center flex-column homeApp__loginForm">
+        {% csrf_token %}
+        <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
+          <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
+
+        <h1 class="homeApp__tituloPortal">SOLICITAÇÃO DE ACESSO</h1>
+
+        <div class="form__group field">
+          <input class="form__field" type="input" id="txt_login_usu_sol" name="txt_login_usu_sol"
+                 value="{{ login_usu }}" readonly>
+          <label class="form__label" for="txt_login_usu_sol" >Login</label>
+        </div>
+
+        <div class="form__group field">
+          <input class="form__field" type="input" id="txt_nome_usu_sol" name="txt_nome_usu_sol"
+                 value="{{ nome_completo_usu }}" readonly>
+          <label class="form__label" for="txt_nome_usu_sol" >Nome</label>
+        </div>
+
+        <div class="form__group field">
+          <input class="form__field" type="input" id="txt_email_usu_sol" name="txt_email_usu_sol"
+                 value="{{ email_usu }}" readonly>
+          <label class="form__label" for="txt_email_usu_sol" >Email</label>
+        </div>
+
+        <div class="form__group field">
+          <select class="selectpicker form-control" id="cb_filiais_sol" name="cb_filiais_sol" data-live-search="true"
+                  title="-- Selecione sua filial --">
+            {% for f in lista_filiais %}
+              <option value="{{ f.cod_filial }}">({{ f.cod_empresa__desc_empresa }}){{ f.desc_filial }}</option>
+            {% endfor %}
+          </select>
+
+        </div>
+
+        <button type="submit" id="btn_solicita_acesso" name="btn_solicita_acesso"
+                class="mt-5 btn btn-primary btn-login">Solicitar acesso</button>
+    </form>
+
+  </main>
+
+
+{% endblock %}
+
+
+
+{% block link_js %}
+  <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
+
+  <!-- Bootstrap select picker
+  <script src="{% static 'libs/bootstrap_select_1_13_14/dist/js/i18n/defaults-*.js' %}"></script> -->
+
+{% endblock %}
+
+{% block base_controllers_apps_js %}
+  <script src="{% static 'controllers/home_app/form_solicita_acesso_controller.js' %}"></script>
+
+{% endblock %}

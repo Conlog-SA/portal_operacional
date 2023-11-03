@@ -1,0 +1,245 @@
+{% load static %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/seguranca_5s_app/seguranca_5s_app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}"/>
+
+
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100" style="margin-right: 0px; width:100%;">
+    <div class="containerApp">
+        <form id="form_cadastro_5s" name="form_cadastro_5s" class="background-principal" style="background-color: black; opacity:0.9; padding-right:16px">
+          <div class="form-group formulario-principal">
+            <div class="form-group w-100" style="text-align:justify-content;">
+                <h2>5S Conlog</h2>
+            </div>
+              <hr>
+            <div class="row" style="text-align:left;">
+              <div class="form-group col-sm-4">
+                  <label for="data_lancamento" class="perguntas-label">Insira a data do Registro</label>
+                    <input type="date" class="form-control" id="data_lancamento">
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="filial_id" class="perguntas-label">Selecione a Filial</label>
+                      <select class="form-control" name="filial_id" id="filial_id" >
+                                <option value="Balneário">Balneário</option>
+                                <option value="Campinas">Campinas</option>
+                                <option value="Campo Grande">Campo Grande</option>
+                                <option value="Floripa">Floripa</option>
+                                <option value="Guarulhos">Guarulhos</option>
+                                <option value="Pelotas">Pelotas</option>
+                                <option value="Sapucaia">Sapucaia</option>
+                      </select>
+              </div>
+              <div class="form-group col-sm-4">
+                  <label for="matricula_motorista" class="perguntas-label">Matricula Motorista :</label>
+                  <input type="text" class="form-control" id="matricula_motorista" placeholder="Digite a Matricula" name="mot">
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for ="placa" class="perguntas-label">Placa :</label>
+                  <input type="text" class="form-control" id="placa" placeholder="Digite a Placa" name="placa">
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for ="ajudante_1" class="perguntas-label">1 º Ajudante :</label>
+                  <input type="text" class="form-control" id="ajudante_1" placeholder="Digite a Matricula" name="placa">
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for ="ajudante_2" class="perguntas-label">2º Ajudante :</label>
+                  <input type="text" class="form-control" id="ajudante_2" placeholder="Digite a Matricula" name="placa">
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for="avaliador" class="perguntas-label">Avaliador :</label>
+                  <input type="text" class="form-control" id="avaliador" placeholder="Digite Nome Avaliador" name="ava">
+                </div>
+                <div class="form-group col-sm-4">
+                  <label for="mapa" class="perguntas-label">Mapa :</label>
+                  <input type="text" class="form-control" id="mapa" placeholder="Digite o Mapa" name="mapa">
+                </div>
+            </div>
+            <div class="form-group w-100" style="text-align:justify-content; margin-top:1rem">
+                <h2> 1S - Senso de Utilização</h2>
+            </div>
+               <hr>
+            <div class="row align-items-end">
+              <div class="form-group col-sm-4">
+                  <label for="cabine_livre" class="perguntas-label"><span class="numero-laranja"> 1.</span> A cabine está livre de produtos, vasilhames e itens desnecessários?</label>
+                    <select class="form-control" name="cabine_livre" id="cabine_livre" >
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="doc_veiculo_lug_adequado" class="perguntas-label"><span class="numero-laranja">2.</span> A documentação do veículo  está em local adequado, dentro de pasta única, de fácil acesso e de conhecimento de todos? </label>
+                    <select class="form-control" name="doc_veiculo_lug_adequado" id="doc_veiculo_lug_adequado" >
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4">
+                  <label for="estofados_cabine" class="perguntas-label"><span class="numero-laranja">3.</span> Os estofados da cabine estão em bom estado (sem rasgo e sem ferro exposto)? </label>
+                    <select class="form-control" name="estofados_cabine" id="estofados_cabine" >
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="aparelho_tracking" class="perguntas-label"><span class="numero-laranja">4.</span> O aparelho de tracking se encontra em bom estado? (limpo, sem rachaduras na tela e/ou lascas)</label>
+                  <select class="form-control" name="aparelho_tracking" id="aparelho_tracking" >
+                              <option> </option>
+                              <option value="1">OK</option>
+                              <option value="0">NOK</option>
+                  </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="baias_bom_estado" class="perguntas-label"><span class="numero-laranja">5.</span> As baias estão em bom estado de conservação (Sem rasgos, ferrugem e/ou pontas)? </label>
+                  <select class="form-control" name="baias_bom_estado" id="baias_bom_estado">
+                              <option> </option>
+                              <option value="1">OK</option>
+                              <option value="0">NOK</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group w-100" style="text-align:justify-content; margin-top:1rem">
+                      <h2> 2S - Senso de Ordenação</h2>
+            </div>
+               <hr>
+            <div class="row align-items-end" style="text-align:left;">
+              <div class="form-group col-sm-4">
+                <label for="notas_organizadas" class="perguntas-label"><span class="numero-laranja">1.</span> As notas/canhotos estão organizados conforme padrão da unidade a fim de simplificar a prestação financeira?</label>
+                  <select class="form-control" name="notas_organizadas" id="notas_organizadas">
+                              <option> </option>
+                              <option value="1">OK</option>
+                              <option value="0">NOK</option>
+                  </select>
+              </div>
+              <div class="form-group col-sm-4" style="margin-top:1.5rem">
+                <label for="chapatex_organizados" class="perguntas-label"><span class="numero-laranja">1.</span> Os chapatex estão separados em uma única baia e organizados?</label>
+                  <select class="form-control" name="chapatex_organizados" id="chapatex_organizados" >
+                              <option> </option>
+                              <option value="1">OK</option>
+                              <option value="0">NOK</option>
+                  </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="vasilhames_separados" class="perguntas-label"><span class="numero-laranja">3.</span> Os vasilhames estão separados por tipo e por cor no formato de torre para facilitar a conferência?</label>
+                    <select class="form-control" name="vasilhames_separados" id="vasilhames_separados">
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="plast_papel_segregados" class="perguntas-label"><span class="numero-laranja">1.</span> Os plásticos e papelões estão segregados numa única baia de forma a simplificar o descarte?</label>
+                    <select class="form-control" name="plast_papel_segregados" id="plast_papel_segregados" >
+                                  <option> </option>
+                                  <option value="1">OK</option>
+                                  <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="pallets_bom" class="perguntas-label"><span class="numero-laranja">5.</span> Os pallets estão em bom estado de conservação (sem pontas soltas e/ou quebrados)</label>
+                  <select class="form-control" name="pallets_bom" id="pallets_bom" >
+                              <option> </option>
+                              <option value="1">OK</option>
+                              <option value="0">NOK</option>
+                  </select>
+              </div>
+            </div>
+            <div class="form-group w-100" style="text-align:justify-content; margin-top:1rem">
+                  <h2>3S - Senso de Limpeza</h2>
+            </div>
+               <hr>
+            <div class="row align-items-end" style="text-align:left;">
+              <div class="form-group col-sm-4">
+                <label for="cabine_limpa" class="perguntas-label"><span class="numero-laranja">1.</span> A cabine está sendo mantida limpa (sem restos de alimento, papeis, garrafas, plásticos etc.)?</label>
+                    <select class="form-control" name="cabine_limpa" id="cabine_limpa" >
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4" style="padding-top:1.5rem">
+                <label for="baias_limpas" class="perguntas-label"><span class="numero-laranja">2.</span> As baias estão limpas? (sem cacos, papéis e/ou lacres)</label>
+                    <select class="form-control" name="baial" id="baias_limpas" >
+                                <option> </option>
+                                <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+            </div>
+            <div class="form-group w-100" style="text-align:justify-content; margin-top:1rem">
+                <h2> 4S - Senso de Saude </h2>
+            </div>
+               <hr>
+            <div class="row">
+              <div class="form-group col-sm-4">
+                  <label for="equipe_saber_fluxo_limp" class="perguntas-label"><span class="numero-laranja">1.</span> A equipe sabe como funciona o fluxo de limpeza das baias? (CDD deve possuir um padrão com fluxo e RACI e equipe deve ter conhecimento)</label>
+                    <select class="form-control" name="equipe_saber_fluxo_limp" id="equipe_saber_fluxo_limp" >
+                                      <option> </option>
+                                      <option value="1">OK</option>
+                                      <option value="0">NOK</option>
+                    </select>
+              </div>
+            </div>
+            <div class="form-group w-100" style="text-align:justify-content; margin-top:1rem">
+               <h2>5S - Senso de Autodisciplina</h2>
+            </div>
+               <hr>
+            <div class="row align-items-end" style="text-align:left;">
+              <div class="form-group col-sm-4">
+                  <label for="equipe_saber_5s" class="perguntas-label"><span class="numero-laranja">1.</span> A equipe sabe o significado dos 5S? </label>
+                      <select class="form-control" name="pequipe_saber_5satrimonio" placeholder="Escolha Turno" id="equipe_saber_5s" >
+                                  <option> </option>
+                                  <option value="1">OK</option>
+                                  <option value="0">NOK</option>
+                      </select>
+              </div>
+              <div class="form-group col-sm-4">
+                  <label for="equipe_saber_rot_audit" class="perguntas-label"><span class="numero-laranja">2.</span> A equipe sabe que existe uma rotina de auditoria mensal? Se recorda da pontuação da última auditoria?</label>
+                      <select class="form-control" name="equipe_saber_rot_audit" id="equipe_saber_rot_audit" >
+                                  <option> </option>
+                                  <option value="1">OK</option>
+                                  <option value="0">NOK</option>
+                      </select>
+              </div>
+              <div class="form-group col-sm-4" style="padding-top:1.5rem">
+                <label for="equipe_recorda_gaps" class="perguntas-label"><span class="numero-laranja">3.</span> A equipe se recorda dos principais GAPs levantados?</label>
+                  <select class="form-control" name="equipe_recorda_gaps" id="equipe_recorda_gaps" >
+                            <option> </option>
+                            <option value="1">OK</option>
+                            <option value="0">NOK</option>
+                  </select>
+              </div>
+              <div class="form-group col-sm-4">
+                  <label for="equipe_sabe_prog" class="perguntas-label"><span class="numero-laranja">4.</span> A equipe sabe que existe um programa de reconhecimento para a melhor Equipe de 5S?</label>
+                    <select class="form-control" name="equipe_sabe_prog"  id="equipe_sabe_prog">
+                                <option> </option>
+                              <option value="1">OK</option>
+                                <option value="0">NOK</option>
+                    </select>
+              </div>
+              <div class="form-group col-sm-4" style="margin-bot:20px">
+                  <label for="obs" style="margin-bot:1rem" class="perguntas-label">Observações:</label>
+                    <input type="text" class="form-control" id="obs" rows="5"  placeholder="OBS.:" name="obs">
+              </div>
+            </div>
+            <div class="form-group" style="margin-top:1rem">
+              <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                  <button type="button" class="btn btn-primary" id="button_novo_cadastro" name="button_novo_cadastro" style="font-weight:540; color: black; background-color:red; border:none; margin-right:10px">Novo Registro</button>
+                  <button type="button" class="btn btn-success" id="button_inserir" name="button_inserir" value="0" style="background-color:blue; font-weight:540; color:white; border:none;">Cadastrar</button>
+              </div>
+            </div>
+          </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'controllers/seguranca_5s_app/cadastro_5s_controller.js' %}"></script>
+<script src="{% static 'libs/bootstrap_4/js/bootstrap.min.js' %}"></script>

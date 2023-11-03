@@ -1,0 +1,31 @@
+.cl_div_btn_abre_model_cad_motivo_just_compra_diesel{
+    padding-left: 0.25rem;
+    padding-top: 1.6rem;
+}
+
+.cl_btn_abre_model_cad_motivo_just_compra_diesel{
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    width: 2.5rem;
+    height: 2rem;
+}
+
+.column_val_dif_class{
+        background-color: #FFA07A;
+        color: #FFFFFF;
+        text-align: right;
+    }
+    .column_tt_dif_class{
+        background-color: #FF7F50;
+        color: #FFFFFF;
+        text-align: right;
+    }
+    .perc_disp_tt_class{
+        background-color: #FF6347;
+        color: #FFFFFF;
+        text-align: right;
+    }

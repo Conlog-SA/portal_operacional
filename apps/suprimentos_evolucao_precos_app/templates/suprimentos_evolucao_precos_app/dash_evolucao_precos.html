@@ -1,0 +1,150 @@
+{% load static %}
+{% load plotly_dash %}
+
+{% block link_static_css %}
+ <link rel="stylesheet" href="{% static 'css/suprimentos_evolucao_precos_app/dash_evolucao_precos.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-arrow-up-right-dots fa-2xl"style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Dash evolução de preços</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <form id="form_dash_evolucao_precos" name="form_dash_evolucao_precos"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                    <label for="cb_empresas_dash_evolucao_precos">
+                        Empresa
+                    </label>
+                    <select class="selectpicker form-control" id="cb_empresas_dash_evolucao_precos"
+                        name="cb_empresas_dash_evolucao_precos"
+                        data-live-search="true"
+                        title="Selecione a empresa">
+                        <option value="12">Concórdia Logística S.A.</option>
+                        <option value="17">Deep</option>
+                    </select>
+
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <label for="cb_filial_dash_evolucao_precos">
+                        Unidade
+                    </label>
+                    <select class="selectpicker form-control" id="cb_filial_dash_evolucao_precos"
+                        name="cb_filial_dash_evolucao_precos" multiple data-selected-text-format="count > 1"
+                        data-live-search="true"
+                        title="Selecione a filial">
+                        {% for f in lista_filiais %}
+                            <option value="{{ f.HANDLE }}">{{ f.NOME }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <label for="txt_data_ini_dash_evolucao_precos">
+                        Data Inícial
+                    </label>
+                    <input type="date" class="form-control" id="txt_data_ini_dash_evolucao_precos"
+                           value="{{ data_ini }}">
+
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <label for="txt_data_fim_dash_evolucao_precos">
+                        Data Final
+                        <input type="date" class="form-control" id="txt_data_fim_dash_evolucao_precos"
+                               value="{{ data_fim }}">
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                     <div class="loader" id="loader_dash_evolucao_preco">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    &nbsp;
+                </div>
+
+                <div class="d-flex flex-column w-100"
+                     style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
+                    &nbsp;
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem; padding-top: 1.6rem;">
+                    <button type="button" name="btn_gera_dash_evolucao_precos"
+                            id="btn_gera_dash_evolucao_precos"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-filter"></i>
+                        Gerar Dados
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div id="div_grafico_status_resumo" class="d-flex flex-column w-100" style="padding-right: 0.3rem;">
+                </div>
+
+                <div id="div_grafico_status_atendente" class="d-flex flex-column w-100" style="padding-left: 0.3rem;">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div id="div_grafico_status_familia" class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div id="div_grafico_status_filial" class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div id="div_grafico_qtd_itens_filial" class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                </div>
+            </div>
+
+
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+
+

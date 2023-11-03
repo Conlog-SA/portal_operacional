@@ -1,0 +1,87 @@
+
+
+.errosPagamento__botao{
+    font-size: 0.925em;
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+    /* height: 40px; */
+}
+
+.errosPagamento__botao:hover{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_hover) !important;
+    background-color: var(--cor_empresa_hover) !important;
+}
+.errosPagamento__botao:active{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_active) !important;
+    background-color: var(--cor_empresa_active) !important;
+}
+
+.margin_right1rem{
+    margin-right: 1rem !important;
+}
+
+.containerTabela{
+    width: 95%;
+    height: 77vh;
+    margin-top: 1rem;
+    background-color: var(--cor_cinza_claro2);
+    border-radius: 0.5rem;
+    color: rgb(31, 30, 30);
+    font-size: 0.85rem;
+    padding: 1rem;
+}
+
+.labelBotoes{
+    text-align: left !important;
+}
+
+.dataTables_wrapper{
+    height: 100% !important;
+}
+
+.dataTable{
+    height: 85% !important;
+}
+
+#modal_cadastra_verba, #modal_novo_lancamento{
+    background-color: rgba(0,0,0,0.8);
+}
+
+.btn_fecha_modal{
+    border: none !important;
+    background-color: rgba(0,0,0,0);
+}
+
+.modal_erros_pagamento{
+    width: 750px !important;
+    max-width: 750px !important;
+}
+
+
+.cl_frm_cad_erro_pag{
+    /* height: 45px !important; */
+    background-color:var(--cor_bg_cinza_escuro) !important;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    opacity: 0.7;
+    position:relative;
+    z-index:1000;
+}
+
+.componentes_form_principal{
+    width: 11% !important;
+}
+
+.cl_div_tab_erros_pagamento{
+    font-size:10px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}

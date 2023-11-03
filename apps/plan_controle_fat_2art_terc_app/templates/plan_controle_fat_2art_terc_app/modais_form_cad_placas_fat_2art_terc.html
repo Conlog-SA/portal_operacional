@@ -1,0 +1,338 @@
+{% load static %}
+
+<!-- Modal Replicia Placa Terceiro-->
+<div id="modalReplicaCadPlacaTerc" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:880px;width:880px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                        padding-top: 10px;font-size:10px;">
+                <div class="form-group row"
+                     style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 100%;
+                        height: 30px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-code-compare fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Replicar Cadastros de Placa</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btnFechaModalExecReplicCadPlacaTerc"
+                                id="btnFechaModalExecReplicCadPlacaTerc"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_replica_cad_placas_terc" name="frm_replica_cad_placas_terc"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="cb_vigencias_cad_placa_terc" class="label_comp_forms">
+                                Selecione os dados de origem a ser replicados
+                            </label>
+                            <select class="selectpicker form-control" id="cb_vigencias_cad_placa_terc"
+                                name="cb_vigencias_cad_placa_terc"
+                                data-live-search="true"
+                                title="Selecione a vigência">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 "
+                         style="color:#000000;margin-top: 0.5rem;">
+                        <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;"></i>
+                        Informe o período de início e fim de vigência para os cadastros a serem replicados
+                    </div>
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <hr class="hr_title">
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100">
+                            <label for="textFieldIniVigenciaCadTercReplic" class="label_comp_forms" >
+                                Data Inicial
+                                <input type="date" class="form-control" id="textFieldIniVigenciaCadTercReplic">
+                            </label>
+                        </div>
+                         <div class="d-flex flex-column w-100">
+                             <label for="textFieldFimVigenciaCadTercReplic" class="label_comp_forms">
+                                Data Final
+                                <input type="date" class="form-control" id="textFieldFimVigenciaCadTercReplic">
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <button type="button" name="btnExecutaReplicacaoCadPlacaTerc"
+                                    id="btnExecutaReplicacaoCadPlacaTerc"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-solid fa-code-compare"></i>
+                            Replicar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Cad Placa Terc -->
+<div id="modalCadPlacaTerceiros" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-truck-medical fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Cadastro Placa Terceiros</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalCadPlacaTerc"
+                                id="fechaModalCadPlacaTerc"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formCadPlacaTerc" name="formCadPlacaTerc"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="listProjetosCadPlacaTerc" class="label_comp_forms">
+                                Projeto
+                            </label>
+                            <select class="selectpicker form-control" id="listProjetosCadPlacaTerc"
+                                    name="listProjetosCadPlacaTerc"
+                                    data-live-search="true"
+                                    title="Selecione o projeto">
+                                {% for p in lista_projetos %}
+                                    <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="cb_vigencias_cad_placa_terc" class="label_comp_forms">
+                                Beneficiário
+                            </label>
+                            <select class="selectpicker form-control" id="listNomeBeneficiarioCadPlacaTerc"
+                                    name="listNomeBeneficiarioCadPlacaTerc"
+                                    data-live-search="true"
+                                    title="Selecione o beneficiário">
+
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldPlacaCadTerc" class="label_comp_forms">Placa</label>
+                            <input type="text" class="form-control" name="textFieldPlacaCadTerc" required
+                                   id="textFieldPlacaCadTerc" maxlength="7"/>
+                        </div>
+                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                             <label for="listPerfilVeiculo" class="label_comp_forms">
+                                Perfil Veículo
+                            </label>
+                            <select class="selectpicker form-control" id="listPerfilVeiculo"
+                                    name="listPerfilVeiculo"
+                                    data-live-search="true"
+                                    title="Selecione o beneficiário">
+                                <option value="0" selected="selected">--PERFIL VEÍCULO--</option>
+                                <option value="Carreta" >Carreta</option>
+                                <option value="Toco">Toco</option>
+                                <option value="Truck">Truck</option>
+                                <option value="F4000">F4000</option>
+                                <option value="Spot7">Spot 7</option>
+                                <option value="Spot8">Spot 8</option>
+                                <option value="Picape">Picape</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldIniVigenciaCadTerc" class="label_comp_forms">Início Vigência</label>
+                            <input type="date" class="form-control" name="textFieldIniVigenciaCadTerc"
+                                   id="textFieldIniVigenciaCadTerc" autocomplete="off" />
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="textFieldFimVigenciaCadTerc" class="label_comp_forms">Fim Vigência</label>
+                            <input type="date" class="form-control" name="textFieldFimVigenciaCadTerc"
+                                   id="textFieldFimVigenciaCadTerc" autocomplete="off" />
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <button type="button" name="btnSalvaRegCadPlacaTerc"
+                                    id="btnSalvaRegCadPlacaTerc"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-solid fa-check"></i>
+                            Salvar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Cad Beneficiários Terc -->
+<div id="modalCadBeneficiarioTerceiros" role="dialog" class="modal">
+    <div class="modal-dialog" style="margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content" style="border-radius: 10px;max-width:680px;width:680px;">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-truck-medical fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Cadastro beneficiários terceiros</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalCadBeneficiarioTerceiros"
+                                id="fechaModalCadBeneficiarioTerceiros"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formCadBenefTerc" name="formCadBenefTerc"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="listProjetosCadBenefTerc" class="label_comp_forms">
+                                Projeto
+                            </label>
+                            <select class="selectpicker form-control" id="listProjetosCadBenefTerc"
+                                    name="listProjetosCadBenefTerc"
+                                    data-live-search="true">
+                                {% for p in lista_projetos %}
+                                    <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="cb_handle_benner_beneficiario" class="label_comp_forms">
+                                Beneficiário
+                            </label>
+                            <select class="selectpicker form-control" id="cb_handle_benner_beneficiario"
+                                    name="cb_handle_benner_beneficiario"
+                                    data-live-search="true"
+                                    title="Selecione o beneficiário">
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100" style="padding-top: 0.5rem;">
+                        <div class="d-flex flex-column w-100">
+                            <button type="button" name="btnSalvaRegCadBenefTerc"
+                                    id="btnSalvaRegCadBenefTerc"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                                <i class="fa-solid fa-check"></i>
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+                <div class="form-group w-100">
+                    <table id="tabBenefTerc"  class="display cl_tab_modais"  style="width:100%">
+                        <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col">Beneficiário</th>
+                                <th scope="col">Tipo Pessoa</th>
+                                <th scope="col">Handle</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Ativa/Desativa</th>
+                            </tr>
+                        </thead>
+                    </table>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Exclui Placa Terceiro-->
+<div id="modalExcluiCadPlacaTerc" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;"  >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-trash fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px'> Exclui cadastro</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btnFechaModalExcluiCadPlacaTerc"
+                          name="btnFechaModalExcluiCadPlacaTerc"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_excluir_cad_placa_terc" id="frm_excluir_cad_placa_terc"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <input type="hidden" name="hiddenIdCadPlacaTerc" id="hiddenIdCadPlacaTerc">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="pMsgModalExcluiPlaca" class="d-flex flex-column w-100" style="color:#000000;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="idDivButtonExlcuiRegCadPlacaSelecionado" class="d-flex flex-column w-100">
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>

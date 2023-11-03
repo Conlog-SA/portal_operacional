@@ -1,0 +1,71 @@
+.cl_tab_analitica_evolucao_precos{
+    background-color: var(--cor_bg_cinza_escuro);
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 0.77rem;
+    margin-right: 0rem !important;
+    height: 70%;
+    width: 95%;
+  }
+
+#div_cb_emp_fil_ev_preco .picker .pc-select .pc-trigger, #div_cb_familia_gera_evolucao_precos .picker .pc-select .pc-trigger{
+        width: 400px;
+        height: 30px;
+        font-size:11px;
+        padding-top: 5px;
+        z-index: -0;
+}
+#div_cb_emp_fil_ev_preco .picker .pc-select .pc-list, #div_cb_familia_gera_evolucao_precos .picker .pc-select .pc-list{
+    width: 400px;!important
+}
+td.details-control {
+    background: url('static/resources/details_open.png') no-repeat center center;
+    cursor: pointer;
+}
+tr.details td.details-control {
+    background: url('static/resources/details_close.png') no-repeat center center;
+}
+.details-column-ultima-compra{
+    background-color: #5F9EA0;
+    color: #363636;
+}
+.details-column-penultima-compra{
+    background-color: #66CDAA;
+    color: #363636;
+}
+.details-column-antepenultima-compra{
+    background-color: #7FFFD4;
+    color: #363636;
+}
+.details-column-sugestao-compra{
+    background-color: #5F9EA0;
+    color: #FFFFFF;
+}
+
+#div_cb_item_gera_evol_preco .picker .pc-select .pc-trigger, #div_cb_itens_aud_evolucao_precos .picker .pc-select .pc-trigger{
+    width: 750px;
+    height: 30px;
+    font-size:11px;
+    padding-top: 5px;
+    z-index: -0;
+}
+#div_cb_item_gera_evol_preco .picker .pc-select .pc-list, #div_cb_itens_aud_evolucao_precos .picker .pc-select .pc-list{
+    width: 750px;
+}
+
+.cl_tab_analitica_evolucao_precos{
+    background-color: var(--cor_bg_cinza_escuro);
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 0.77rem;
+    margin-right: 0rem !important;
+    height: 70%;
+    width: 95%;
+  }
+
+
+.cl_form_gera_historico_evolucao_precos{
+    background-color:var(--cor_bg_cinza_escuro) !important;
+    position:relative;
+    z-index:1000;
+}

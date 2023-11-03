@@ -1,0 +1,260 @@
+{% load static %}
+
+<!-- Modal Informa Params para a geração da disponibilidade de empilhadeiras  -->
+<div id="modal_param_gerar_disp_emp" role="dialog" class="modal" >
+    <div class="modal-dialog" style="border-radius: 10px;width: 627px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                        padding-top: 10px;font-size:10px;">
+                <div class="form-group row"
+                         style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 100%;
+                            height: 30px;margin-top: 35px;">
+                        <div class="col-md-6" align="left">
+                            <p>
+                                <i class="fa-solid fa-bolt fa-2xl" style="color: #FFFFFF;"></i>
+                                <span style="color:#ffffff; font-size:14px">Geração Disp. de Empilhadeiras</span>
+                            </p>
+                        </div>
+                        <div class="col-md-6" align="right">
+                            <button type="button" name="btn_fecha_modal_param_gerar_disp_emp"
+                                    id="btn_fecha_modal_param_gerar_disp_emp"
+                                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                            </button>
+                        </div>
+                    </div>
+            </div>
+            <div class="modal-body">
+                <form name="form_informa_param_gerar_disp_emp" id="form_informa_param_gerar_disp_emp"
+                    method="post" class="d-flex flex-column align-items-center justify-content-between">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <button type='button' id="btn_seleciona_todas_as_placas_ativas_model_gera_disp"
+                                name="btn_seleciona_todas_as_placas_ativas_model_gera_disp"
+                                class="btn btn-primary btn-rounded botaoPrincipal" >
+                            <i class="fa-regular fa-square-check"></i>
+                            Selecionar Todos as Placas Ativas
+                        </button>
+                    </div>
+
+
+                    <div class="d-flex flex-column w-100">
+                        <label for="cb_empilhadeiras_proj_selecionado" class="label_comp_forms">
+                            <span style="color: #000000;">* Selecione as Empilhadeiras para Geração da Disponibilidade</span>
+                            <select class="selectpicker form-control" id="cb_empilhadeiras_proj_selecionado"
+                                    name="cb_empilhadeiras_proj_selecionado"
+                                    multiple data-selected-text-format="count > 3"
+                                    data-live-search="true"
+                                    title="Selecione o projeto">
+                            </select>
+                        </label>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                      <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                          <label for="dt_ini_gerar_disp_emp" class="label_comp_forms">
+                              <span style="color: #000000;">Período Inicial</span>
+                              <input type="date" class="form-control" name="dt_ini_gerar_disp_emp"
+                                     id="dt_ini_gerar_disp_emp" autocomplete="off"
+                                     placeholder="Informe a data do início da suspensão"/>
+                          </label>
+                      </div>
+                      <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                          <label for="dt_ini_gerar_disp_emp" class="label_comp_forms">
+                              <span style="color: #000000;">Período Final</span>
+                              <input type="date" class="form-control" name="dt_fim_gerar_disp_emp"
+                                     id="dt_fim_gerar_disp_emp" autocomplete="off"
+                                     placeholder="Informe a data do fim da suspensão"/>
+                          </label>
+                      </div>
+                  </div>
+
+                  <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                      <div class="d-flex align-items-end w-100">
+                          &nbsp;&nbsp;
+                      </div>
+                      <div class="d-flex flex-column w-100">
+                          <button type="button" name="btn_confirma_geracao_disp_emp"
+                                  id="btn_confirma_geracao_disp_emp"
+                                  class="btn btn-primary btn-rounded botaoPrincipal" >
+                              <i class="fa-solid fa-check"></i>
+                            Gerar Disponibilidade
+                        </button>
+                      </div>
+                  </div>
+              </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal Lança apontamento disponibilidade de empilhadeira -->
+<div id="modal_atualiza_apont_disp_emp" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px; max-width: 1400px;width:1400px;">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+                <div class="row"
+                     style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 1400px; height: 30px;
+                        margin-top: 35px;">
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #ffffff;"></i>
+                            <span style='color:#ffffff; font-size:12px'>Edita registro de apontamento</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_atualiza_apont_disp_emp"
+                                id="btn_fecha_modal_atualiza_apont_disp_emp"
+                                data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+		        <form name="formAtualizaApontDispEmp" id="formAtualizaApontDispEmp" method="post"
+                      class="d-flex flex-column align-items-center justify-content-between">
+
+                    <div class="d-flex w-100">
+                        <div id="div_dados_header_apont_selecionado"
+                             class="d-flex flex-column w-50"
+                             style="padding-right: 1rem;">
+                        </div>
+                        <div class="d-flex flex-column w-50">
+                            <div class="form-group d-flex flex-column w-100">
+                                <label for="cb_status_atualiza_apont_disp_emp" class="label_comp_forms">
+                                    Status
+                                    <select id="cb_status_atualiza_apont_disp_emp"
+                                            name="cb_status_atualiza_apont_disp_emp"
+                                            data-live-search="true"
+                                            class="selectpicker form-control">
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="form-group d-flex flex-column w-100">
+                                <input type="hidden" id="hd_cod_apontamento" name="hd_cod_apontamento">
+                                <label for="txt_atualiza_obs_reg_apont_disp_emp" class="label_comp_forms">
+                                    Observação Apontamento
+                                    <textarea class="form-control" id="txt_atualiza_obs_reg_apont_disp_emp"
+                                              name="txt_atualiza_obs_reg_apont_disp_emp"
+                                              autocomplete="off"rows="3" cols="33"
+                                              style="padding-left: 5px;padding-right: 5px;height: 60px;">
+
+                                    </textarea>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group w-100">
+                        <div class="col-md-12 w-100 h-100">
+                            <table id="tab_os_apontamento_indisp_emp"
+                                   class="display wrap w-100 cl_tab_principal_pagina">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Núm. OS</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Data Ini.</th>
+                                        <th scope="col">Data Fim</th>
+                                        <th scope="col">Desc. OS</th>
+                                        <th scope="col">Grupo</th>
+                                        <th scope="col">Motivo</th>
+                                        <th scope="col">Data Ini. Auditada</th>
+                                        <th scope="col">Data Fim Auditada</th>
+                                        <th scope="col">Excluir</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column w-100">
+                        <button type='button' class='btn btn-primary btn-rounded botaoPrincipal'
+                                id="btn_atualiza_reg_apont_disp_emp"
+                              name="btn_atualiza_reg_apont_disp_emp" >
+                            <i class="fa-solid fa-check"></i>
+                            Atualiza Apontamento
+                        </button>
+
+                    </div>
+		        </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Modal OS Benner -->
+<div id="modal_os_benner_vincular_apontamento" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px; max-width: 1300px;width:1300px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+                <div class="row"
+                     style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px;
+                    width: 1300px; height: 30px;margin-top: 35px;">
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-comments-dollar fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style='color:#ffffff; font-size:12px'> OS emitidas do Benner</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" id="btn_fecha_modal_os_benner_vincular_apontamento"
+                                name="btn_fecha_modal_os_benner_vincular_apontamento"
+                                data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+		        <form name="form_os_benner_vincular_apontamento" id="form_os_benner_vincular_apontamento"
+                      class="d-flex flex-column align-items-center justify-content-between" method="post">
+                    <input type="hidden" id="hd_cod_apont_emp" name="hd_cod_apont_emp">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div id="div_dados_header_modal_os_benner_vincular_apontamento"
+                             class="d-flex align-items-end w-100">
+                        </div>
+                    </div>
+
+                    <div class="form-group w-100">
+                        <div class="col-md-12 w-100 h-100">
+                            <table id="tab_os_benner_para_vincular_ao_apontamento"
+                                   class="display wrap w-100 cl_tab_principal_pagina"  style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Núm. OS</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Data Ini.</th>
+                                        <th scope="col">Data Fim</th>
+                                        <th scope="col">Desc. OS</th>
+                                        <th scope="col">Grupo</th>
+                                        <th scope="col">Vincular</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+                        </div>
+                    </div>
+		        </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,51 @@
+{% load static %}
+
+<!-- Modal Confirmação para desfazer pagamento dos mapas do beneficiario terceiro-->
+<div id="modalRefazerPagamentoMapaBenefTerc" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;"  >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-clock-rotate-left fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px'>Estornar Pagamento</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btnFechaModalRefazerPagamentoMapaBenefTerc"
+                          name="btnFechaModalRefazerPagamentoMapaBenefTerc"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_estorna_pag_mapa_benef_terc" id="frm_estorna_pag_mapa_benef_terc"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <input type="hidden" name="hiddenCodPagamento2ArtTercFinanParaDesativar"
+                       id="hiddenCodPagamento2ArtTercFinanParaDesativar">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="pMsgRefazerPagamentoMapaBenefTerc" class="d-flex flex-column w-100"
+                         style="color:#000000;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column w-100">
+                        <button type="button" name="btnDesativaPagamento2ArtTercFinanc"
+                            id="btnDesativaPagamento2ArtTercFinanc"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-check"></i>
+                        Confirmar operação
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>

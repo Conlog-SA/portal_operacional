@@ -1,0 +1,152 @@
+{% load static %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-route fa-2xl" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Cadastro Fretes Terceiro</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+    <div class="containerApp">
+        <form id="frm_cad_frete_2art_terc" name="frm_cad_frete_2art_terc"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                    <label for="listProjetosPesqCadFreteTerc">
+                        Informe o projeto
+                    </label>
+                    <select class="selectpicker form-control" id="listProjetosPesqCadFreteTerc"
+                        name="listProjetosPesqCadFreteTerc"
+                        data-live-search="true"
+                        title="Selecione o projeto">
+                        {% for p in cad_projetos %}
+                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                        {% endfor %}
+                    </select>
+
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <label for="textFieldPesqCadFreteTercPeriodoVigencia">
+                        Vigência
+                    </label>
+                    <input type="month" class="form-control" name="textFieldPesqCadFreteTercPeriodoVigencia"
+                           id="textFieldPesqCadFreteTercPeriodoVigencia" autocomplete="off"/>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                    <button type="button" name="btnReplicaCadFreteTerceiros" id="btnReplicaCadFreteTerceiros"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-code-compare"></i>
+                        Replicar
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    <button type="button" name="btnCadFreteTerceiros" id="btnCadFreteTerceiros"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Frete
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <button type="button" name="btnPesqCadFreteTerceiros" id="btnPesqCadFreteTerceiros"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisar
+                    </button>
+                </div>
+            </div>
+
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2" >
+                <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
+                    <div class="loader" id="loader">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+        </form>
+        <!-- cl_div_tab_mapas_terceitos_2art -->
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+                <table id="tabCadFreteTerceitos"  class="display wrap w-100 cl_tab_principal_pagina">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Perfil Veic.</th>
+                            <th scope="col">Região</th>
+                            <th scope="col">Até(Qtd)</th>
+                            <th scope="col">Frete Carreteiro(R$)</th>
+                            <th scope="col">Descarga(R$)</th>
+                            <th scope="col">Pedágio(R$)</th>
+                            <th scope="col">CPRB(R$)</th>
+                            <th scope="col">Lucro(R$)</th>
+                            <th scope="col">Tt. Receber(R$)</th>
+                            <th scope="col">Val. Pagar(R$)</th>
+                            <th scope="col">Margem(%)</th>
+                            <th scope="col">Acima(Qtd)</th>
+                            <th scope="col">Frete Carreteiro(R$)</th>
+                            <th scope="col">Descarga(R$)</th>
+                            <th scope="col">Pedágio(R$)</th>
+                            <th scope="col">CPRB(R$)</th>
+                            <th scope="col">Lucro(R$)</th>
+                            <th scope="col">Tt. Receber(R$)</th>
+                            <th scope="col">Val. Pagar(R$)</th>
+                            <th scope="col">Margem(%)</th>
+                            <th scope="col">Tipo Pessoa</th>
+                            <th scope="col">Tipo Entrega</th>
+                            <th scope="col">Início Vigência</th>
+                            <th scope="col">Fim Vigência</th>
+                            <th scope="col">Editar</th>
+                            <th scope="col">Excluir</th>
+                            <th scope="col">Id</th>
+                          </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+
+        </div>
+    </div>
+</div>
+
+
+{% include 'plan_controle_fat_2art_terc_app/modais_form_cad_fretes_fat_2art_terc.html' %}
+<script
+    src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_frete_spot_controller.js' %}">
+</script>

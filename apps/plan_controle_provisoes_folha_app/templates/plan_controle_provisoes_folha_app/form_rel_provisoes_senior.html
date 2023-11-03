@@ -1,0 +1,207 @@
+{% load static %}
+{% load plotly_dash %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-filter-circle-dollar fa-2xl"style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Rel. Provisões Folha</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <form id="form_gera_prov_senior" name="form_gera_prov_senior"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;margin-top: 1rem;">
+                    <label for="cb_tipo_prov_senior">
+                        Tipo de Provisão
+                    </label>
+                    <select class="selectpicker form-control" id="cb_tipo_prov_senior"
+                        name="cb_tipo_prov_senior"
+                        data-live-search="true"
+                        title="Selecione o tipo de provisão">
+                        <option value="0" selected>--- TIPO PROVISÃO ---</option>
+                        <option value="1">Férias</option>
+                        <option value="2">13º Salário</option>
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;margin-top: 1rem;">
+                    <label for="cb_competencia_prov_senior">
+                        Competência
+                    </label>
+                    <select class="selectpicker form-control" id="cb_competencia_prov_senior"
+                        name="cb_competencia_prov_senior"
+                        data-live-search="true"
+                        title="Selecione a competência">
+                        <option value="0" selected>--- COMPETÊNCIA ---</option>
+                        {% for p in lista_periodos_liberados %}
+                        <option value="{{ p.cod_confirma_periodo_fechamento_folha }}">
+                            {% if p.mes_competencia_periodo == 1 %}
+                            Janeiro
+                            {% elif p.mes_competencia_periodo == 2 %}
+                            Fevereiro
+                            {% elif p.mes_competencia_periodo == 3 %}
+                            Março
+                            {% elif p.mes_competencia_periodo == 4 %}
+                            Abril
+                            {% elif p.mes_competencia_periodo == 5 %}
+                            Maio
+                            {% elif p.mes_competencia_periodo == 6 %}
+                            Junho
+                            {% elif p.mes_competencia_periodo == 7 %}
+                            Julho
+                            {% elif p.mes_competencia_periodo == 8 %}
+                            Agosto
+                            {% elif p.mes_competencia_periodo == 9 %}
+                            Setembro
+                            {% elif p.mes_competencia_periodo == 10 %}
+                            Outubro
+                            {% elif p.mes_competencia_periodo == 11 %}
+                            Novembro
+                            {% elif p.mes_competencia_periodo == 12 %}
+                            Dezembro
+                            {% endif %}
+                            /{{ p.ano_competencia_periodo }} </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem; margin-top: 0.1rem;">
+                    <div class="d-flex flex-column w-100">
+                        <label for="cb_proj_prov_senior">Projetos
+                            <button type='button' id="btn_seleciona_todos_proj_prov_senior"
+                                    name="btn_seleciona_todos_proj_prov_senior"
+                                    class="btn btn-rounded btn-space"
+                                    title="Selecionar todos os projetos"
+                                    style="width: 50px;">
+                                <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                            </button>
+                            &nbsp;&nbsp;
+                            <button type='button' id="btn_desmarcar_projetos_prov_senior"
+                                    name="btn_desmarcar_projetos_prov_senior"
+                                    class="btn btn-rounded btn-space"
+                                    title="Limpar seleção"
+                                    style="width: 50px;">
+                                <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                            </button>
+                        </label>
+                        <select class="selectpicker form-control" id="cb_proj_prov_senior"
+                            name="cb_proj_prov_senior"
+                            multiple data-selected-text-format="count > 1"
+                            data-live-search="true"
+                            title="Selecione o projeto" >
+                            {% for p in lista_projetos %}
+                            <option value="{{ p.handle_benner }}"
+                                    selected="selected">{{ p.handle_benner }} - {{ p.desc_proj_benner }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2.6rem;">
+                    <button type="button" name="btn_gera_dados_prov_senior"
+                              id="btn_gera_dados_prov_seniorf"
+                              class="btn btn-primary btn-rounded botaoPrincipal" >
+                          <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisar
+                    </button>
+                </div>
+
+
+            </div>
+
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2" >
+                <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
+                    <div class="loader" id="loader_prov_senior">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+        </form>
+
+
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <table id="tab_dados_prov_colabs"  class="display wrap w-100 cl_tab_principal_pagina">
+                <thead>
+                    <tr>
+                        <th class="col" style="width:5%"></th>
+                        <th class="col" style="width:5%">Matrícula</th>
+                        <th class="col" style="width:20%">Colaborador</th>
+                        <th class="col" style="width:5%">Admissão</th>
+                        <th class="col" style="width:15%">Cargo</th>
+                        <th class="col" style="width:5%">Item</th>
+                        <th class="col" style="width:5%">Base</th>
+                        <th class="col" style="width:5%">% Dias</th>
+                        <th class="col" style="width:5%">Anterior</th>
+                        <th class="col" style="width:5%">Transferido</th>
+                        <th class="col" style="width:5%">Ajuste</th>
+                        <th class="col" style="width:5%">Provisão</th>
+                        <th class="col" style="width:5%">Val. Realizado DRE</th>
+                        <th class="col" style="width:5%">Pagas</th>
+                        <th class="col" style="width:5%">Indenizado</th>
+                        <th class="col" style="width:5%">Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <table id="tab_dados_prov_itens"  class="display wrap w-100 cl_tab_principal_pagina">
+                <thead>
+                    <tr>
+                        <th class="col" style="width:10%">Item</th>
+                        <th class="col" style="width:10%">Base</th>
+                        <th class="col" style="width:10%">% Dias</th>
+                        <th class="col" style="width:10%">Anterior</th>
+                        <th class="col" style="width:10%">Transferido</th>
+                        <th class="col" style="width:10%">Ajuste</th>
+                        <th class="col" style="width:10%">Provisão</th>
+                        <th class="col" style="width:5%">Val. Realizado DRE</th>
+                        <th class="col" style="width:10%">Pagas</th>
+                        <th class="col" style="width:10%">Indenizado</th>
+                        <th class="col" style="width:10%">Saldo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+
+    </div>
+</div>
+
+
+

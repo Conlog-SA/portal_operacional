@@ -1,0 +1,20 @@
+.cl_tab_lanc_apontamento_indisp_emp{
+    background-color: var(--cor_bg_cinza_escuro);
+    color: white;
+    border-radius: 0.5rem;
+    font-size: 0.77rem;
+    margin-right: 0rem !important;
+    height: 70%;
+    width: 95%;
+  }
+
+.cl_frm_gera_disp_empilhadeira{
+    /* height: 45px !important; */
+    background-color:var(--cor_bg_cinza_escuro) !important;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    position:relative;
+    z-index:1000;
+}

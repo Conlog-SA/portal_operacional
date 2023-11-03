@@ -1,0 +1,153 @@
+{% load static %}
+<style type="text/css">
+    .details-column-cp{
+        background-color: #87CEEB;
+        color: #000000;
+    }
+    .details-column-lp{
+        background-color: #0d6efd;
+        color: #000000;
+    }
+    .details-column-tt{
+        background-color: #f46424;
+        color: #000000;
+    }
+
+</style>
+
+
+{% block link_static_css %}
+    <!-- <link type="text/css" href="{% static 'libs/bootstrap_4/css/bootstrap.min.css' %}" rel="stylesheet"/> -->
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-code-fork fa-2xl" alt="Conciliação Composição x Benner(Resumo)" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+
+    <div class="containerApp">
+
+        <form id="frm_conciliacao_com_benner" name="frm_conciliacao_com_benner"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_conciliacao_com_benner"
+              method="POST">
+            <input type="hidden" id="hd_tipo_rel" value="R">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+
+                <div class="d-flex flex-column w-100 ">
+                    <fieldset>
+                        <legend style="font-size: 1.05rem;">Modelo</legend>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                   id="rd_modelo_conta_conc_comp_benner_1">
+                                Modelo 1
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                   id="rd_modelo_conta_conc_comp_benner_2">
+                                Modelo 2
+                            </label>
+                        </div>
+
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                   id="rd_modelo_conta_conc_comp_benner_3">
+                                Modelo 3
+                            </label>
+                        </div>
+                    </fieldset>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    <label>
+                        <button type='button' id="btn_marcar_contas_comp_benner"
+                                name="btn_marcar_contas_comp_benner"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_contas_comp_benner"
+                                name="btn_desmarcar_contas_comp_benner"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
+                        Contas
+                    </label>
+                    <select class="selectpicker form-control" id="cb_contas_conciliacao_comp_benner"
+                            name="cb_contas_conciliacao_comp_benner"
+                            multiple data-selected-text-format="count > 0"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            data-live-search="true"
+                            title="Selecione o modelo das contas">
+
+                    </select>
+
+                </div>
+
+                <div class="d-flex flex-column w-100 cl_div_competencia_conciliacao_detalhada">
+                    <label>
+                        Competência
+                        <input type="month" class="form-control" id="dt_conciliacao_comp_benner" required>
+                    </label>
+
+                </div>
+
+                <div class="d-flex flex-column w-100 cl_div_btn_gera_conciliacao_detalhada">
+                    <button type='button' id="btn_gera_conciliacao_comp_benner"
+                            name="btn_gera_conciliacao_comp_benner"
+                            class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado" >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Gerar</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_comp_detalhada">
+                <div class="loader" id="loader">
+                    <div class="loader-inner">
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="form-group cl_div_tab_conciliacao_composicao_benner_detalhado w-100">
+            <div id="div_tab_conciliacao_composicao_benner" class="col-md-12 w-100 h-100">
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+<!-- <script src="{% static 'libs/bootstrap_4/js/bootstrap.min.js' %}"></script> -->

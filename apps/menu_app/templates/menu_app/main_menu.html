@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Menu | Portal Operacional
+{% endblock %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/menu_app/menu_app.css' %}"/>
+  <link rel="stylesheet" href="{% static 'css/perfil-dropdown.css' %}" />
+  <!-- Bootstrap select picker -->
+  <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}"/>
+
+  <!-- Bibliotecas Table-->
+  <link rel="stylesheet" href="{% static 'libs/jquery_3_6_0/css/dataTables.min.css' %}"/>
+{% endblock %}
+
+{% block conteudo %}
+
+  <div class="">
+    <div class="barraLateral">
+      <span>
+        <a class="linkMenuLateral" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+           aria-controls="offcanvasExample">
+          <img class="p-3 setaAbreMenuLateral" src="{% static 'icons/seta.png'%}" alt="Abrir menu"/>
+        </a> 
+      </span>
+    </div>
+
+    
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+
+      <div class="offcanvas-header justify-content-between">
+        <div class="d-flex align-items-center">
+          <div class="d-flex flex-column">
+            <img class="iconeEmpresaMenu" src="{% static 'icons/logo-laranja.png'%}" alt=""/>
+            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Portal Operacional</h5>
+          </div>
+          <div class="d-flex flex-column" style="width: 100%; heigth: 100%;" >
+            <div class="loader" id="loader_menu" style="width: 100%; heigth: 100%;">
+              <div class="loader-inner">
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+                  <div class="loader-block"></div>
+              </div>
+          </div>
+          </div>
+
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+
+
+
+      </div>
+
+
+
+
+      
+      <hr class="hrMenu">
+
+
+      <div class="offcanvas-body">
+        
+        <div class="accordion" id="accordionExample">
+
+          {% for menu in menu_usuario %}
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="heading{{ menu.cod_menu.cod_menu }}">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ menu.cod_menu.cod_menu }}" aria-expanded="false" aria-controls="collapse{{ menu.cod_menu.cod_menu }}">
+                  <i class="iconeMenu {{ menu.cod_menu.nome_icone }}" alt="{{ menu.cod_menu.desc_menu }}"
+                     style="color: #f46424;"></i>
+                  {{ menu.cod_menu.desc_menu }}
+                </button>
+              </h2>
+              <div id="collapse{{ menu.cod_menu.cod_menu }}" class="accordion-collapse collapse" aria-labelledby="heading{{ menu.cod_menu.cod_menu }}" data-bs-parent="#accordionExample">
+                <div class="accordion-body d-flex flex-column" style="padding-left: 3.75rem;">
+
+                  {% for sub_menu in sub_menu_usuario %}
+                    {% if sub_menu.cod_menu.pai_menu == menu.cod_menu.cod_menu %}
+                      <a class="d-flex align-items-center justify-content-start linkSubMenu" href="#" name="a_sub_menu"
+                         id="a_sub_menu_{{ sub_menu.cod_menu.cod_menu }}"
+                         style="padding-top: 0.5rem;padding-bottom: 0.5rem;">
+
+                        <i class="iconeSubMenu {{ sub_menu.cod_menu.nome_icone }}" alt="{{ sub_menu.cod_menu.desc_menu }}" style="color: #f46424;"></i>
+                        <p class="submenu_titulo">{{ sub_menu.cod_menu.desc_menu }}</p>
+                        <input type="hidden" id="hd_url_sub_menu_{{ sub_menu.cod_menu.cod_menu }}" value="{{ sub_menu.cod_menu.url_menu }}">
+                        {% comment %} <img class="iconeSubMenu" src="{% static 'icons/seta_cinza.png'%}" alt="submenu"/>Frota 1 {% endcomment %}
+                      </a>
+                    {% endif %}
+                  {% endfor %}
+                  
+                </div>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <main class="d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal" id="main_menu">
+    <h1>Por favor, selecione a aplicação desejada no menu ao lado.</h1>
+  </main>
+
+{% endblock %}
+
+{% block link_js %}
+  <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
+  <!-- Bibliotecas Table-->
+  <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.min.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.buttons.min.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/jszip.min.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/vfs_fonts.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/buttons.html5.min.js' %}"></script>
+
+
+
+  <!-- Bootstrap select picker --->
+  {% comment %}
+    <script src="{% static 'libs/bootstrap_select_1_13_14/dist/js/i18n/defaults-*.js' %}"></script>
+  {% endcomment %}
+
+{% endblock %}
+
+{% block base_controllers_apps_js %}
+  <script src="{% static 'controllers/perfil-dropdown.js' %}"></script>
+  <script src="{% static 'controllers/menu_app/main_menu_controller.js' %}"></script>
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_cad_contas_controller.js' %}"></script>
+  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_m1_controller.js' %}"></script>
+
+  <script src="{% static 'controllers/contabil_operacoes_farol_ndd_app/form_notas_tratadas_controller.js' %}"
+        type="text/javascript"></script>
+
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_relatorio_pagamento_terceiros_controller.js' %}"
+          type="text/javascript"></script>
+
+  <script src="{% static 'controllers/suprimentos_evolucao_precos_app/form_gera_evolucao_precos_controller.js' %}"
+        type="text/javascript"></script>
+
+  <script
+    src="{% static 'controllers/suprimentos_justifica_precos_diesel_app/form_justifica_preco_diesel_controller.js' %}">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_evolucao_precos_app/dash_evolucao_precos_controller.js' %}"
+        type="text/javascript"></script>
+
+  <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_periodo_fecha_folha_controller.js' %}"
+        type="text/javascript"></script>
+
+  <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_rel_folha_pagamento_controller.js' %}"
+        type="text/javascript"></script>
+
+  <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_projetos_usuario_folha_pag_controller.js' %}"
+        type="text/javascript"></script>
+
+  <script src="{% static 'controllers/plan_controle_provisoes_folha_app/form_rel_provisoes_senior_controller.js' %}"
+        type="text/javascript"></script>
+
+{% endblock %}

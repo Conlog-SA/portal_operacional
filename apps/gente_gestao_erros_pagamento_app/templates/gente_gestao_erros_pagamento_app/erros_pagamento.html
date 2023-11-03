@@ -1,0 +1,133 @@
+{% load static %}
+
+{% block link_static_css %} 
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/gente_gestao_erros_pagamento/erros_pagamento.css' %}" />
+
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-sack-xmark fa-2xl" style="color: #f46424;"></i>
+            <h1 class="titlePadraoMenu">Erros de Pagamento</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <form class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
+              id="form_pesquisa_lancamentos_tabela">
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex align-items-end w-75">
+                    <select class="selectpicker form-control" required id="geg_ep_pesquisa_filial"
+                            name="geg_ep_pesquisa_filial"  data-live-search="true" title="Selecione a filial">
+                        {% for filial in lista_obj_filiais %}
+                        <option value="{{ filial.cod_filial }}">
+                            {{ filial.desc_filial }} ({{filial.cod_empresa.desc_empresa}})
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="componentes_form_principal">
+                    <label for="competencia_pesquisa" class="labelBotoes">Competência</label>
+                    <input required type="month" class="form-control " id="competencia_pesquisa">
+
+                </div>
+                <div class="d-flex flex-column w-100 componentes_form_principal" style="margin-top: 1.6rem;">
+                    <button type='submit' id="" name="" class="btn btn-primary btn-rounded errosPagamento__botao" >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span></span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100 margin_right1rem">
+                    <div class="loader" id="loader_erro_pag">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100 margin_right1rem">
+                </div>
+                <div class="d-flex flex-column w-100" style="margin-right: 0.6rem;">
+                    <button type='button' id="btn_modal_novo_lancamento" name="btn_modal_novo_lancamento"
+                            class="btn btn-primary btn-rounded errosPagamento__botao" >
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Novo Lançamento</span>
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    {% if obj_usu.corporativo == 'S' %}
+                        <button type='button' id="btn_modal_cria_verbas" name="btn_modal_cria_verbas"
+                                class="btn btn-primary btn-rounded errosPagamento__botao" style="margin-left: 0.6rem;">
+                            <i class="fa-solid fa-gears"></i>
+                            <span>Cadastrar Verba</span>
+                        </button>
+                    {% endif %}
+                    {% if obj_usu.corporativo == 'N' %}
+                        <button type='button' id="btn_modal_cria_verbas" name="btn_modal_cria_verbas" disabled
+                                class="btn btn-primary btn-rounded errosPagamento__botao" style="margin-left: 0.6rem;">
+                            <i class="fa-solid fa-gears"></i>
+                            <span>Cadastrar Verba</span>
+                        </button>
+                    {% endif %}
+                </div>
+
+            </div>
+
+        </form>
+
+        <div class="form-group cl_div_tabela_principal_pagina w-100">
+        <table id="table_erros_pagamento"  class="display wrap w-100 cl_tab_principal_pagina">
+            <thead>
+                <tr>
+                    <th scope="col">Colaborador</th>
+                    <th scope="col">Função</th>
+                    <th scope="col">Admissão</th>
+                    <th scope="col">Verba</th>
+                    <th scope="col">Valor (R$)</th>
+                    <th scope="col">Dúvida</th>
+                    <th scope="col">Ação</th>
+                    <th scope="col">Responsável</th>
+                    <th scope="col">Prazo</th>
+                    <th scope="col">OBS</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Editar</th>
+                    <th scope="col">Excluir</th>
+                </tr>
+            </thead>
+            <tbody id="">
+
+            </tbody>
+        </table>
+    </div>
+    </div>
+
+
+
+
+
+</div>
+
+{% include 'gente_gestao_erros_pagamento_app/modal_cadastra_verbas.html' %}
+{% include 'gente_gestao_erros_pagamento_app/modal_lancamento_erros_pagamento.html' %}
+<script src="{% static 'controllers/gente_gestao_erros_pagamento/gente_gestao_erros_pagamento.js' %}"></script>
+
+

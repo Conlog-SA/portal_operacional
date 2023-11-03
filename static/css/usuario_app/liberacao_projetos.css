@@ -1,0 +1,39 @@
+.liberacao__tabelaUsuarios{
+    background-color: var(--cor_bg_cinza_escuro);
+    color: black;
+    padding: 0.5rem;
+    border-radius: 0rem 0rem 0.5rem 0rem;
+    font-size: 1rem;
+    margin-left: 0 !important
+}
+
+.liberacao_containerForm{
+    background-color: var(--cor_bg_cinza_escuro);
+    border-radius: 0rem 0rem 0rem 0.5rem;
+    color: black;
+    padding: 1rem;
+    font-size: 0.8rem !important; 
+}
+
+.form-control{
+    font-size: 0.8rem !important; 
+    
+}
+
+.dataTables_wrapper{
+    height: 100% !important;
+}
+
+.dataTable{
+    height: 85% !important;
+
+}
+
+td{
+    font-size: 0.8rem;
+}
+
+.dropdown-toggle{
+    font-size: 0.8rem;
+    color:#7f7777;
+}

@@ -1,0 +1,52 @@
+.accordion-button::after{
+    margin:0 !important;
+    display: none;
+}
+
+.form-control{
+    font-size: 0.8rem !important; 
+    
+}
+
+.liberaModulos__botao{
+    margin-left: 2rem;
+    font-size: 0.925em;
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+}
+
+.liberaModulos__botao:hover{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_hover) !important;
+    background-color: var(--cor_empresa_hover) !important;
+}
+.liberaModulos__botao:active{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_active) !important;
+    background-color: var(--cor_empresa_active) !important;
+}
+
+.modalCopiaAcessos__fecharModal{
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+    border-style: none;
+    border-radius: 0.5rem;
+}
+
+.modalCopiaAcessos__fecharModal:hover{
+    border-color: var(--cor_empresa_hover) !important;
+    background-color: var(--cor_empresa_hover) !important;
+    border-style: none;
+    border-radius: 0.5rem;
+}
+
+.modalCopiaAcessos__fecharModal:active{
+    border-color: var(--cor_empresa_active) !important;
+    background-color: var(--cor_empresa_active) !important;
+    border-style: none;
+    border-radius: 0.5rem;
+}
+
+.modal-content{
+    background-color: var(--cor_branco) !important;
+}

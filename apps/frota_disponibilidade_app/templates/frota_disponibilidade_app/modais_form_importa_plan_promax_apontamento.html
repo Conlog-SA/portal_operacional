@@ -1,0 +1,270 @@
+{% load static %}
+
+<!-- Modal Cadastros Sigla Form Disponibilidadede Frota -->
+<div id="modalCadastroSiglaDispFrota" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px; max-width: 800px; width: 800px;">
+    <div class="modal-content" >
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+              padding-top: 10px;font-size:10px">
+        <div class="row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 800px; height: 30px;margin-top: 35px;">
+          <div class="col-md-6" align="left">
+            <p>
+              <i class="fa-brands fa-wpforms fa-2xl" style="color: #FFFFFF;"></i>
+              <span style='color:#ffffff; font-size:12px'>Cadastro de Siglas</span>
+            </p>
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="fechaModalCadastroSiglaDispFrota"
+                    id="fechaModalCadastroSiglaDispFrota"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form name="formCadSiglaDispFrota" id="formCadSiglaDispFrota" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+            <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+              <label for="textFieldSiglaDispFrota" class="label_comp_forms">
+                Sigla
+                <input type="text" class="form-control" name="textFieldSiglaDispFrota" id="textFieldSiglaDispFrota"
+                       autocomplete="off" placeholder="Sigla"/>
+              </label>
+            </div>
+            <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;padding-left: 0.25rem;">
+              <label for="textFieldDescSiglaDispFrota" class="label_comp_forms">
+                Descrição Sigla
+                <input type="text" class="form-control" name="textFieldDescSiglaDispFrota" id="textFieldDescSiglaDispFrota" autocomplete="off" placeholder="Descrição Sigla"/>
+              </label>
+            </div>
+            <div class="d-flex flex-column w-100" style="padding-left: 0.25rem; padding-top: 1.6rem;">
+              <button type='button' class='btn btn-primary btn-rounded botaoPrincipal' id="btnConfirmaCadSiglaDispFrota"
+                      name="btnConfirmaCadSiglaDispFrota" >
+                  <i class="fa-solid fa-check"></i>
+                  Confirma
+              </button>
+            </div>
+          </div>
+          </form>
+
+          <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <table id="tabSiglasFormDispFrota"  class="display wrap w-100 cl_tab_principal_pagina"  style="width:100%">
+               <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Cód.</th>
+                        <th scope="col">Desc. Sigla</th>
+                        <th scope="col">Sigla</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+          </div>
+
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Cadastros Grupos Form Disponibilidadede Frota -->
+<div id="modalCadastroGrupoDispFrota" role="dialog" class="modal" >
+  <div class="modal-dialog" style="border-radius: 10px;max-width: 800px; width: 800px;">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px">
+        <div class="row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 800px; height: 30px;margin-top: 35px;">
+          <div id="divHeaderModalCadastroGrupoDispFrota" class="col-md-6" align="left">
+            <p>
+              <i class="fa-brands fa-wpforms fa-2xl" style="color: #FFFFFF;"></i>
+              <span style='color:#ffffff; font-size:12px'>Cadastro de Grupos Indisponibilidade</span>
+            </p>
+          </div>
+          <div class="col-md-6" align="right" >
+            <button type="button" id="fechaModalCadastroGrupoDispFrota"
+                    name="fechaModalCadastroGrupoDispFrota"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <form name="formCadSiglaDispFrota" id="formCadGrupoDispFrota" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+            <div class="d-flex flex-column w-100">
+              <label for="textFieldDescSiglaDispFrota" class="label_comp_forms">
+                Descrição Grupo Indisponibilidade
+                <input type="text" class="form-control" name="textFieldDescGrupoDispFrota" id="textFieldDescGrupoDispFrota" autocomplete="off" placeholder="Descrição Grupo"/>
+              </label>
+            </div>
+            <div class="d-flex flex-column w-100" style="padding-left: 0.25rem; padding-top: 1.6rem;">
+              <button type='button' class='btn btn-primary btn-rounded botaoPrincipal' id="btnConfirmaCadGrupoDispFrota"
+                      name="btnConfirmaCadGrupoDispFrota">
+                  <i class="fa-solid fa-check"></i>
+                  Confirma
+              </button>
+            </div>
+          </div>
+        </form>
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+          <table id="tabGruposFormDispFrota"  class="display wrap w-100 cl_tab_principal_pagina" >
+            <thead>
+              <tr>
+                  <th scope="col"></th>
+                  <th scope="col">Cód.</th>
+                  <th scope="col">Desc. Gruop</th>
+                  <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Pesquisa Disponibilidadede Frota -->
+<div id="modalPesquisaApontamentoPromaxDispFrota" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                padding-top: 10px;font-size:10px">
+        <div class="row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 1300px;
+                height: 30px;margin-top: 35px;">
+          <div class="col-md-6" align="left">
+              <p>
+                  <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #FFFFFF;"></i>
+                  <span style='color:#ffffff; font-size:12px'>Pesquisa Apontamentos Promax</span>
+              </p>
+          </div>
+          <div class="col-md-6" align="right">
+              <button type="button" id="fechaModalPesquisaApontamentoPromaxDispFrota"
+                      name="fechaModalPesquisaApontamentoPromaxDispFrota"
+                      data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                  <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+              </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+		<form name="formPesquisaApontamentoPromaxDispFrota" id="formPesquisaApontamentoPromaxDispFrota" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column w-100">
+                    <label class="label_comp_forms">
+                        Projeto
+                        <select class="selectpicker form-control" id="listProjetosPesqApontPromax"
+                                name="listProjetosPesqApontPromax"
+                                data-live-search="true"
+                                title="Selecione o projeto">
+
+                        </select>
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column w-100">
+                    <label class="label_comp_forms">
+                        Data
+                        <input type="month" class="form-control" name="textFieldPeriodoPesqApontPromax"
+                           id="textFieldPeriodoPesqApontPromax" autocomplete="off" placeholder="Informe Período"/>
+                    </label>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100" style="padding-top: 0.5rem">
+                <div class="d-flex flex-column w-100">
+                    <button type='button' class='btn btn-primary btn-rounded botaoPrincipal' id="btnPesqApontPromax"
+                            name="btnPesqApontPromax">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisar
+                    </button>
+                </div>
+            </div>
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+{% load static %}
+
+<!-- Modal Confirmação estornar lancamento do promax-->
+<div id="modalConfirmaEstornoLanApontPromax" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;"  >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px'>Estornar Apontamento Promax</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btnFechaModalConfirmaEstornoLanApontPromax"
+                          name="btnFechaModalConfirmaEstornoLanApontPromax"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_excluir_reg_promax_apontamento" id="frm_excluir_reg_promax_apontamento"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <input type="hidden" name="hiddenCodRegLancApontPromax"
+                       id="hiddenCodRegLancApontPromax">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="pMsgRefazerPagamentoMapaBenefTerc" class="d-flex flex-column w-100"
+                         style="color:#000000;">
+                        <p>Tem certeza que deseja estornar o registro ?</p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column w-100">
+                        <button type="button" name="btnEstornaLancApontPromax"
+                            id="btnEstornaLancApontPromax"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-check"></i>
+                        Excluir registro
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,23 @@
+from django.shortcuts import render
+from django.views import View
+
+
+from apps.usuario_app.models import Usuario, Usu_Menu
+
+
+class Menu_View(View):
+    def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        menu_usuario = Usu_Menu.objects.filter(cod_usu=obj_usuario_sessao, status_usu_menu='A',
+                                               cod_menu__pai_menu=0).order_by('cod_menu')
+        sub_menu_usuario = Usu_Menu.objects.filter(cod_usu=obj_usuario_sessao, status_usu_menu='A',
+                                                   cod_menu__pai_menu__gt=0).order_by('cod_menu__cod_menu')
+
+        context = {
+            'obj_usuario_sessao': obj_usuario_sessao,
+            'menu_usuario': menu_usuario,
+            'sub_menu_usuario': sub_menu_usuario,
+        }
+        return render(request, 'menu_app/main_menu.html', context)

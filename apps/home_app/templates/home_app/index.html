@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Login | Portal Operacional
+{% endblock %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/home_app/index.css' %}"/>
+
+{% endblock %}
+
+{% block conteudo %}
+
+  <main class="w-75 h-75 text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
+
+      <div class="homeApp__sobre">
+        <img class="" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
+        <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+      </div>
+      <div class="homeApp__linhaVertical" id="div_form_index"></div>
+      <form action="{% url 'login' %}" method="POST"
+            class="d-flex justify-content-center align-items-center flex-column homeApp__loginForm">
+        {% csrf_token %}
+          <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
+          <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
+
+        <h1 class="homeApp__tituloPortal">Portal Operacional</h1>
+
+        <div class="form__group field">
+          <input required="" placeholder="Usuário" class="form__field" type="input" id="txt_usu"
+                 name="txt_usu" autofocus>
+          <label class="form__label" for="txt_usu">Usuário</label>
+        </div>
+
+        <div class="form__group field">
+          <input required="" placeholder="Senha" class="form__field" type="password" id="txt_pwd" name="txt_pwd">
+          <label class="form__label" for="txt_pwd">Senha</label>
+        </div>
+
+        <button type="submit" id="btn_login" name="btn_login" onclick="" class="mt-5 btn btn-primary btn-login">
+            Entrar
+        </button>
+        <div class="form__group field">
+            <h6>{{ msg }}</h6>
+        </div>
+
+
+      </form>
+
+  </main>
+
+{% endblock %}
+
+{% block base_controllers_apps_js %}
+    <script src="{% static 'controllers/home_app/index_controller.js' %}"></script>
+{% endblock %}

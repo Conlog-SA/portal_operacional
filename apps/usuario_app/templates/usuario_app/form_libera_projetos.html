@@ -1,0 +1,117 @@
+{% load static %}
+
+{% block link_static_css %} 
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/usuario_app/liberacao_projetos.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-diagram-project fa-2xl" alt="Liberação de módulos" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Liberação de Projetos</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+    <div class="div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+	
+
+	<div class="d-flex containerApp h-100">
+		<div class="main-content containerApp flex-column  d-flex justify-content-center align-items-around mb-4 liberacao_containerForm" style="width: 30%; "
+            <form id="frm_libera_proj" name="frm_libera_proj"  method="POST" class="containerApp">
+                {% csrf_token %}
+
+                <div class="form__group field" style="margin-bottom:20px;">
+                    <select name="cb_usuarios_frm_libera_proj" id="cb_usuarios_frm_libera_proj" data-live-search="true" class="selectpicker form-control" style="color: #999999; font-size: 20px; height: 54.65px;">
+                        <option value="0" selected="selected">-- Selecione um usuário --</option>
+                        {% for usu in lista_usuarios_ativos %}
+                            <option value="{{ usu.cod_usu }}" >{{ usu.nome_usu }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form__group field" style="margin-bottom:20px;">
+                    <select name="cb_emp_frm_libera_proj" id="cb_emp_frm_libera_proj" data-live-search="true"
+                        class="selectpicker form-control" title="-- Selecione a empresa --" style="color: #999999; font-size: 20px; height: 54.65px">
+                    {% for emp in lista_emp %}
+                        <option value="{{ emp.cod_empresa }}" >{{ emp.desc_empresa }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form__group field" style="margin-bottom:20px;">
+                    <select name="cb_filial_frm_libera_proj" id="cb_filial_frm_libera_proj" data-live-search="true" class="selectpicker form-control" multiple title="-- Selecione a filial --" style="color: #999999; font-size: 20px; height: 54.65px">
+                    </select>
+                </div>
+
+                <div class="form__group field">
+                    <select name="cb_proj_frm_libera_proj" id="cb_proj_frm_libera_proj" data-live-search="true"
+                    class="selectpicker form-control" multiple title="-- Selecione a empresa e filial --">
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-center mt-4 mb-4 justify-content-around">
+                    <div class="d-flex flex-column ">
+                        <div class="container">
+                            <input type="checkbox" class="checkbox" name="chk_seleciona_filiais_frm_libera_proj"
+                            id="chk_seleciona_filiais_frm_libera_proj" data-select="cb_filial_frm_libera_proj">
+                            <label class="switch" for="chk_seleciona_filiais_frm_libera_proj">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <label class="col-form-label text-white text-left cursor-pointer" for="chk_ativa_corporativo">Todas as filiais</label>
+                    </div>
+
+                    <div class="d-flex flex-column ">
+                        <div class="container">
+                            <input type="checkbox" class="checkbox" name="chk_seleciona_proj_frm_libera_proj"
+                            id="chk_seleciona_proj_frm_libera_proj" data-select="cb_proj_frm_libera_proj">
+                            <label class="switch" for="chk_seleciona_proj_frm_libera_proj">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <label class="col-form-label text-white text-left cursor-pointer" for="chk_ativa_corporativo">Todos os projetos</label>
+                    </div>
+                </div>
+
+                <div class="form__group field">
+                    <button type='button' class='btn btn-lg btn-primary btn-rounded botaoPrincipal'
+                                id="btn_libera_projetos_usu_form_libera_projetos"
+                                name="btn_libera_projetos_usu_form_libera_projetos" >
+                        <i class="fa-solid fa-check" style="color: white;"></i>
+                        Liberar Projetos
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="form-group row containerApp mb-4 liberacao__tabelaUsuarios" style="width:70%" >
+            <div class="col-md-12 containerApp">
+                <table id="tab_liberacoes_proj_usu"  class="display wrap">
+                    <thead>
+                        <tr>
+                            <th scope="col" ></th>
+                            <th scope="col" align="left" style="color: grey; width:30%;">Colobarador</th>
+                            <th scope="col" align="left" style="color: grey; width:35%;">Projeto</th>
+                            <th scope="col" align="left" style="color: grey">Perfil</th>
+                            <th scope="col" align="left" style="color: grey">Corporativo?</th>
+                            <th scope="col" align="center" style="color: grey">Liberado Até</th>
+                            <th scope="col" align="center" style="color: grey">Bloqueia/Desbloqueia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                </table>
+                
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="{% static 'controllers/usuario_app/form_libera_projetos_controller.js' %}"></script>

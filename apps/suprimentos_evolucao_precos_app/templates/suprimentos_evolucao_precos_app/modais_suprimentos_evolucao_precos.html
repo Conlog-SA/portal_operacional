@@ -1,0 +1,96 @@
+{% load static %}
+
+
+<!-- Modal Confirma Armazenamento Compras Itens -->
+<div id="modalConfirmaArmazenamentoComprasEditadasBenner" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px">
+        <div class="row"
+             style="margin-left: 0px;margin-right: 0px;width: 530px;height: 30px;" >
+          <div class="col-md-6" align="left">
+              <i class="fa-solid fa-filter" style="color: #FFFFFF;"></i>
+              <span style="color:#ffffff; font-size:12px">Confirma Edição de Registros</span>
+            </p>
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="btnFechaModalConfirmaArmazenamentoComprasEditadasBenner"
+                    id="btnFechaModalConfirmaArmazenamentoComprasEditadasBenner"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <p style="color: #000000;">Tem certeza que deseja alterar os dados ?</p>
+          <br/>
+          <button type="button" name="btn_salva_compras_itens" id="btn_salva_compras_itens"
+                  class="btn btn-primary btn-rounded botaoPrincipal">
+            <i class="fa-solid fa-check"></i>
+            Confirmar Alteração
+        </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Modal  gera evolução de preços de itens de uma requisição -->
+<div id="modal_gera_evolucao_precos_requisicao" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;max-width: 350px; width: 350px;">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+           padding-top: 10px;font-size:10px;">
+        <div class="row"
+             style="margin-left: 0px;margin-right: 0px;margin-bottom: 0px;width: 350px;height: 30px;" >
+          <div class="col-md-6" align="left">
+            <p>
+              <i class="fa-solid fa-filter" style="color: #FFFFFF;"></i>
+              <span style="color:#ffffff; font-size:12px">Parâmetros</span>
+            </p>
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="btn_fecha_modal_gera_evolucao_precos_requisicao"
+                    id="btn_fecha_modal_gera_evolucao_precos_requisicao"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form name="frm_pesq_evolucao_preco_itens_req" id="frm_pesq_evolucao_preco_itens_req" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column w-100" style="padding-bottom: 0.25rem;">
+              <label class="label_comp_forms">
+                Informe o número da requisicao
+                <input type="text" id="txt_num_requisicao" name="txt_num_requisicao" class="form-control"/>
+              </label>
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column w-100" style="padding-bottom: 0.25rem;">
+              <button type="button" name="btn_gera_evolucao_pela_req" id="btn_gera_evolucao_pela_req"
+                      class="btn btn-primary btn-rounded botaoPrincipal">
+                <i class="fa-solid fa-check"></i>
+                Gerar Dados
+              </button>
+            </div>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,3916 @@
+//const loader = document.getElementById("loader");
+
+// using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
+});
+
+
+
+
+$(document).on('change', '#cb_contas', function(){
+    atualiza_dados_conta_acao_cb_contas();
+});
+
+function atualiza_dados_conta_acao_cb_contas(){
+    let let_cod_conta = $("#cb_contas").val();
+    let cod_modelo_selecionado = 0;
+        if ( $("#rd_modelo_conta_1").is(':checked') == true){
+            cod_modelo_selecionado = 1;
+        } else if ( $("#rd_modelo_conta_2").is(':checked') == true){
+            cod_modelo_selecionado = 2;
+        } else if ( $("#rd_modelo_conta_3").is(':checked') == true){
+            cod_modelo_selecionado = 3;
+        }
+    atualiza_form_dados_conta('J', let_cod_conta);
+    if(cod_modelo_selecionado == 1){
+        atualiza_doc_contas_modelo_1(let_cod_conta);
+    } else if(cod_modelo_selecionado == 3){
+        atualiza_tab_contratos_conta(let_cod_conta);
+    }
+    atualiza_tabela_resp_conta(let_cod_conta);
+    atualiza_tab_anexos_conta(let_cod_conta);
+    atualiza_tab_status_contrato_composicao(let_cod_conta);
+    /* Limpa form responsáveis */
+    $("#cb_resp_composicao").val("");
+    $("#cb_resp_composicao").selectpicker("refresh");
+    $("#cb_resp_validacao").val("");
+    $("#cb_resp_validacao").selectpicker("refresh");
+    $("#dt_ini_resp").val("");
+    $("#dt_fim_resp").val("");
+    let let_img_btn_atualizar_dados_resp = `
+        <i class="fa-solid fa-plus" ></i>
+    `;
+    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+    $("#btn_associar_responsaveis_conta").val(0);
+    /* Limpa form anexos */
+    $("#txt_desc_anexo_contrato").val("");
+    $("#file_anexo_contrato").val("");
+    $("#div_visualizacao_anexo_conta").html("");
+}
+
+
+$(document).on('change', '#cb_pacote_conta', function(){
+    let let_cod_conta = $("#btn_cadastra_nova_conta").val();
+    let let_cod_pacote_conta = $(this).val();
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/acessa_form_doc_contas_modelo_1',
+        data: {
+            'cod_pacote_conta'   :   let_cod_pacote_conta,
+            'cod_conta'          :   let_cod_conta
+        },
+        dataType: 'json',
+        success: function (dados) {
+
+            let let_table_layout_contas_mod_1 = $("<table/>");
+            let_table_layout_contas_mod_1.attr({
+            id: 'tab_doc_contas_modelo_1',
+                class: 'display wrap w-100 cl_tab_principal_pagina'
+            });
+
+            let let_thead = $("<thead/>");
+            let let_tr = $("<tr/>");
+
+            dados.lista_campos_layout_tab.forEach( camp => {
+                let let_th = $("<th/>");
+                let_th.attr({
+                    scope: 'col'
+                });
+                let_th.html(camp.cod_campo__desc_campo);
+                let_tr.append(let_th);
+            });
+            let_thead.append(let_tr)
+            let_table_layout_contas_mod_1.append(let_thead);
+
+            let let_body = $("<body/>");
+            let_table_layout_contas_mod_1.append(let_body)
+
+            $("#div_tab_doc_contas_modelo_1").append(let_table_layout_contas_mod_1);
+            $("#tab_doc_contas_modelo_1").DataTable( {
+                "bJQueryUI": true,
+                "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "50vh", //770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": false,
+                //"pageLength": 7,
+                "searching": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
+                "oLanguage": {
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "Mostrar _MENU_ registros",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+                } );
+
+            loader.style.display = "none";
+
+        },
+        error: function (request, status, error) {
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+});
+
+
+$(document).on('click','button', function(){
+	let let_nome_btn = $(this).attr('name');
+    let let_id_btn = $(this).attr('id');
+    let let_val_btn = $(this).attr('value');
+
+    if (let_nome_btn == "btn_cadastra_nova_conta") {
+        let let_cod_conta = let_val_btn;
+        let let_transacao = 'N';
+        if (let_cod_conta != '0'){
+            let_transacao = 'U';
+        }
+
+        let let_desc_contra = $("#txt_desc_conta").val();
+
+        let let_handle_conta_cp = $("#tx_handle_conta_cp").val();
+        let let_cod_red_conta_cp = $("#txt_cod_red_conta_cp").val();
+        let let_estrut_cp = $("#txt_cod_estrutura_cp").val();
+
+        let let_handle_conta_lp = 0;
+        let let_cod_red_conta_lp = 0;
+        let let_estrut_lp = 0;
+
+        let let_cod_pacote_conta = $("#cb_pacote_conta").val();
+        let let_radio1 = $("#rd_modelo_conta_1").prop('checked');
+        let let_radio2 = $("#rd_modelo_conta_2").prop('checked');
+        let let_radio3 = $("#rd_modelo_conta_3").prop('checked');
+        let let_cod_modelo_conta = '';
+        if ( let_radio1 == true ){
+            let_cod_modelo_conta = 1;
+        } else if ( let_radio2 == true ){
+            let_cod_modelo_conta = 2;
+        } else if ( let_radio3 == true ){
+            let_cod_modelo_conta = 3;
+            let_handle_conta_lp = $("#tx_handle_conta_lp").val();
+            let_cod_red_conta_lp = $("#txt_cod_red_conta_lp").val();
+            let_estrut_lp = $("#txt_cod_estrutura_lp").val();
+        }
+
+        let let_ini_atv_conta = $("#dt_ini_atv_benner").val();
+        let let_fim_atv_conta = $("#dt_fim_atv_benner").val();
+        let let_status_conta_comp = 'A';
+        if($("#chk_status_comp").prop('checked') == false){
+            let_status_conta_comp = 'I';
+        }
+
+        if(let_val_btn != ''){
+            loader.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/cria_atualiza_conta',
+                data: {
+                    'transacao'         :   let_transacao,
+                    'cod_conta'         :   let_cod_conta,
+                    'desc_conta'        :   let_desc_contra,
+                    'handle_cp'         :   let_handle_conta_cp,
+                    'cod_red_cp'        :   let_cod_red_conta_cp,
+                    'str_cp'            :   let_estrut_cp,
+                    'handle_lp'         :   let_handle_conta_lp,
+                    'cod_red_lp'        :   let_cod_red_conta_lp,
+                    'str_lp'            :   let_estrut_lp,
+                    'cod_pac_conta'     :   let_cod_pacote_conta,
+                    'cod_modelo'        :   let_cod_modelo_conta,
+                    'ini_atv'           :   let_ini_atv_conta,
+                    'fim_atv'           :   let_fim_atv_conta,
+                    'status_conta_comp' :   let_status_conta_comp
+                },
+                dataType: 'json',
+                success: function (dados) {
+                    $("#btn_cadastra_nova_conta").val(dados.cod_conta);
+                    let let_new_label_btn_cadastro_conta = `
+                        <i class="fa-solid fa-arrows-rotate"></i>Atualizar dados conta
+                    `;
+                    $("#cb_contas option").remove();
+                    dados.lista_contas.forEach(conta => {
+                        $("#cb_contas").append("<option value='" +conta.cod_conta+"'>"+conta.desc_conta+" - Modelo "+
+                            conta.tipo_modelo+"</option>");
+
+                    });
+                    $("#cb_contas").selectpicker("");
+                    $("#cb_contas").selectpicker('refresh');
+
+                    $("#btn_cadastra_nova_conta").html(let_new_label_btn_cadastro_conta);
+                    $("#btn_cadastra_novo_contrato").val(dados.cod_conta);
+                    $("#btn_importar_contrato_benner").val(dados.cod_conta);
+                    $("#btn_associar_responsaveis_conta").val(dados.cod_conta);
+                    $("#btn_anexa_doc_contrato").val(dados.cod_conta);
+                    $("#btn_importa_contrato_pelo_num").val(dados.cod_conta);
+
+
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    loader.style.display = "none";
+
+                },
+                error: function (request, status, error) {
+                    loader.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+        }
+
+
+    }
+    else if(let_nome_btn == 'btn_criar_nova_conta_manual'){
+        limpa_campos_form_cad_contas();
+    }
+    else if(let_nome_btn == "btn_cadastra_novo_contrato") {
+        let let_cod_conta = $(this).val();
+        if(let_cod_conta != "0"){
+            let let_num_contrato = $("#txt_num_contrato").val();
+            let let_nome_fornecedor = $("#txt_desc_produto").val();
+            let let_data_emissao = $("#dt_emissao_contrato").val();
+            let let_handle_contrato = $("#txt_handle_contrato").val();
+            let let_doc_contabil = $("#txt_doc_contabil").val();
+            let let_val_nominal = $("#txt_val_nominal").val();
+            let let_val_liquido = $("#txt_total_liquido").val();
+            let let_dia_util = $("#txt_dia_util").val();
+            let let_primeira_parcela = $("#dt_primeira_parcela").val();
+            let let_qtd_parcelas = $("#txt_qtd_parcelas").val();
+            let let_handle_operacao = $("#txt_handle_operacao").val();
+            let let_desc_operacao = $("#txt_desc_operacao").val();
+            let let_check_atualiza_benner = 'S';
+            if($("#chk_atualiza_com_benner").prop("checked") == false){
+                let_check_atualiza_benner = 'N';
+            }
+            loader.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/cadastro_contrato',
+                data: {
+                    'transacao'                 :   'cadastro',
+                    'cod_conta'                 :   let_cod_conta,
+                    'num_contrato'              :   let_num_contrato,
+                    'nome_fornecedor'           :   let_nome_fornecedor,
+                    'data_emissao'              :   let_data_emissao,
+                    'handle_contrato'           :   let_handle_contrato,
+                    'doc_contabil'              :   let_doc_contabil,
+                    'val_nominal'               :   let_val_nominal,
+                    'val_liquido'               :   let_val_liquido,
+                    'dia_util'                  :   let_dia_util,
+                    'data_primeira_parcela'     :   let_primeira_parcela,
+                    'qtd_parcelas'              :   let_qtd_parcelas,
+                    'handle_operacao'           :   let_handle_operacao,
+                    'desc_operacao'             :   let_desc_operacao,
+                    'check_atualiza_benner'     :   let_check_atualiza_benner
+                },
+                dataType: 'json',
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    loader.style.display = "none";
+                },
+                error: function (request, status, error) {
+                    loader.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Confirme anteriormente o cadastro da conta!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
+    }
+    else if(let_nome_btn == "btn_associar_responsaveis_conta"){
+        let let_tipo_transacao_resp = $("#hd_tipo_transacao_resp").val();
+        let let_resp_com = $("#cb_resp_composicao").val();
+        let let_resp_val = $("#cb_resp_validacao").val();
+        let let_dt_ini = $("#dt_ini_resp").val();
+        let let_dt_fim = $("#dt_fim_resp").val();
+        if(let_tipo_transacao_resp == "C") {
+            let let_cod_conta = $(this).val();
+            if(let_cod_conta != "0"){
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/contabil_composicao_app/associa_resp_conta',
+                    data: {
+                        'tipo_transacao'     :   'C',
+                        'cod_conta'          :   let_cod_conta,
+                        'resp_com'           :   let_resp_com,
+                        'resp_val'           :   let_resp_val,
+                        'data_ini'           :   let_dt_ini,
+                        'data_fim'           :   let_dt_fim
+                    },
+                    dataType: 'json',
+                    success: function (dados) {
+                        $.gritter.add({
+                            title: 'Atenção!',
+                            text: dados.msg,
+                            image: '/static/icons/triangle-exclamation-solid.svg',
+                            sticky: false,
+                            time: '',
+                        });
+                        atualiza_tabela_resp_conta(dados.cod_conta);
+                    },
+                    error: function (request, status, error) {
+                        $.gritter.add({
+                            title: 'Atenção!',
+                            text: error,
+                            image: '/static/icons/triangle-exclamation-solid.svg',
+                            sticky: false,
+                            time: '',
+                        });
+                  }
+                });
+            }
+            else {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: 'Confirme anteriormente o cadastro da conta!',
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        }
+        else if(let_tipo_transacao_resp == "U"){
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/associa_resp_conta',
+                data: {
+                    'tipo_transacao'     :   'U',
+                    'cod_resp_conta'     :   let_val_btn,
+                    'resp_com'           :   let_resp_com,
+                    'resp_val'           :   let_resp_val,
+                    'data_ini'           :   let_dt_ini,
+                    'data_fim'           :   let_dt_fim
+                },
+                dataType: 'json',
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let let_img_btn_atualizar_dados_resp = `
+                        <i class="fa-solid fa-plus" ></i>
+                    `;
+                    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+                    $("#btn_associar_responsaveis_conta").val(dados.cod_conta);
+                    atualiza_tabela_resp_conta(dados.cod_conta);
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+        }
+
+
+    }
+    else if(let_nome_btn == "btn_liquidar_parcela"){
+        let let_handle_parcela = let_val_btn;
+        let let_data_pag = $("#dt_data_pag_parc_"+let_val_btn).val();
+        let let_val_pag = $("#txt_val_pag_parc_"+let_val_btn).val();
+        loader.style.display = "flex";
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/atualiza_dados_parcela',
+            data: {
+                'transacao'         :  'pagamento',
+                'handle_parcela'    :   let_handle_parcela,
+                'data_pag'          :   let_data_pag,
+                'val_pag'           :   let_val_pag
+            },
+            dataType: 'json',
+            success: function (dados) {
+                atualiza_tab_contratos_conta(dados.cod_conta);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+    }
+    else if(let_nome_btn == "btn_gera_conciliacao_comp_benner") {
+        let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
+        let let_competencia = $("#dt_conciliacao_comp_benner").val();
+        let cod_modelo_selecionado = 0;
+        if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
+            cod_modelo_selecionado = 1;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is(':checked') == true){
+            cod_modelo_selecionado = 2;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is(':checked') == true){
+            cod_modelo_selecionado = 3;
+        }
+
+        loader.style.display = "flex";
+
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
+            data: {
+                'cod_modelo_selecionado' : cod_modelo_selecionado,
+                'cod_conta'     :   let_cod_conta,
+                'competencia'   :   let_competencia,
+                'tipo_visualizacao' :   'R'
+            },
+            dataType: 'json',
+            success: function (data) {
+                //$("#tab_conciliacao_composicao_benner").DataTable().clear().draw();
+                //Limpa tabela
+                $("#tab_conciliacao_composicao_benner").dataTable().fnClearTable();
+                $("#tab_conciliacao_composicao_benner").dataTable().fnDestroy();
+                const tabela = new DataTable("#tab_conciliacao_composicao_benner");
+                let let_lista_dados = [];
+                for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
+
+                    let let_img = `
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                    `;
+
+
+                    let let_reg = [];
+                    if (cod_modelo_selecionado == 1){
+
+                        let let_btn_detalhes_conta = `
+                            <button type='button' name='btn_detalhes_conta'
+                                id='btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]}'
+                                class='btn btn-rounded btn-space'
+                                value='${data.lista_contas_conciliacao[i][0]}' title='${data.lista_contas_conciliacao[i][1]}'>
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if( data.lista_contas_conciliacao[i][5] != '0') {
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][0]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][5]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+
+                        }
+
+                        let_reg = [
+                            /* 0 */let_img,
+                            /* 1 cod_reduzido */ data.lista_contas_conciliacao[i][6],
+                            /* 2 desc conta */data.lista_contas_conciliacao[i][1],
+                            /* 3 val comp */data.lista_contas_conciliacao[i][2],
+                            /* 4 val bal */data.lista_contas_conciliacao[i][3],
+                            /* 5 dif */data.lista_contas_conciliacao[i][4],
+                            /* 6 */let_btn_detalhes_conta,
+                            /* 7 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+                    }
+                    else if ( cod_modelo_selecionado == 3 ) {
+
+                        let let_btn_detalhes_conta = `
+                            <button type='button' name='btn_detalhes_conta'
+                                id='btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]}'
+                                class='btn btn-rounded btn-space'
+                                value='${data.lista_contas_conciliacao[i][0]}' title='${data.lista_contas_conciliacao[i][1]}'>
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if( data.lista_contas_conciliacao[i][13] != '0') {
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][0]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][13]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+
+                        }
+
+                        let_reg = [
+                            /* 0 */let_img,
+                            /* 1 - desc_conta */ data.lista_contas_conciliacao[i][1],
+                            /* 2 - num_contrato */ data.lista_contas_conciliacao[i][2],
+                            /* 3 - doc_contabil */ data.lista_contas_conciliacao[i][3],
+                            /* 4 - val_comp_cp */ data.lista_contas_conciliacao[i][4],
+                            /* 5 - val_balancete_cp */ data.lista_contas_conciliacao[i][5],
+                            /* 6 - val_dif_comp_balanc_cp */ data.lista_contas_conciliacao[i][6],
+                            /* 7 - val_comp_lp */ data.lista_contas_conciliacao[i][7],
+                            /* 8 - val_balancete_lp */ data.lista_contas_conciliacao[i][8],
+                            /* 9 - val_dif_comp_bal_lp */ data.lista_contas_conciliacao[i][9],
+                            /* 10 - val_tt_comp */ data.lista_contas_conciliacao[i][10],
+                            /* 11 - val_tt_balan */ data.lista_contas_conciliacao[i][11],
+                            /* 12 - val_dif_tt_comp_bal */ data.lista_contas_conciliacao[i][12],
+                            /* 13 */let_btn_detalhes_conta,
+                            /* 14 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+
+                    }
+                    /*tabela.row
+                        .add(let_reg)
+                        .draw(false);*/
+                }
+
+                $("#tab_conciliacao_composicao_benner").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data": let_lista_dados,
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                } );
+
+                loader.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if(let_nome_btn == "btn_gera_conciliacao_comp_benner_detalhado") {
+        gera_conciliacao_comp_benner_detalhado();
+    }
+    else if(let_nome_btn == "btn_detalhes_conta") {
+        let let_cod_conta = let_val_btn;
+        let let_radio1 = $("#rd_modelo_conta_conc_comp_benner_1").prop('checked');
+        let let_radio2 = $("#rd_modelo_conta_conc_comp_benner_2").prop('checked');
+        let let_radio3 = $("#rd_modelo_conta_conc_comp_benner_3").prop('checked');
+        let let_cod_modelo_conta_selecionado = 0;
+        if ( let_radio1 == true ){
+            let_cod_modelo_conta_selecionado = 1;
+        } else if ( let_radio2 == true ){
+            let_cod_modelo_conta_selecionado = 2;
+        } else if ( let_radio3 == true ){
+            let_cod_modelo_conta_selecionado = 3;
+        }
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_conta_cadastrada',
+            data: {
+                'tipo_return' :    'R',
+                'cod_conta'   :    let_cod_conta,
+                'cod_modelo_conta_selecionado': let_cod_modelo_conta_selecionado
+            },
+            success: function(dados){
+                $("#main_menu").html(dados);
+                $('.selectpicker').selectpicker();
+                if(let_cod_modelo_conta_selecionado == 1){
+                    $("#rd_modelo_conta_1").prop('checked', true);
+                } else if(let_cod_modelo_conta_selecionado == 2){
+                    $("#rd_modelo_conta_2").prop('checked', true);
+                } else if(let_cod_modelo_conta_selecionado == 3){
+                    $("#rd_modelo_conta_3").prop('checked', true);
+                }
+                desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta_selecionado);
+
+
+
+                atualiza_form_dados_conta('J', let_cod_conta)
+                if(let_cod_modelo_conta_selecionado == 1) {
+                    atualiza_doc_contas_modelo_1(let_cod_conta);
+                } else if(let_cod_modelo_conta_selecionado == 3) {
+                    atualiza_tab_contratos_conta(let_cod_conta);
+                }
+
+                atualiza_tabela_resp_conta(let_cod_conta);
+                atualiza_tab_anexos_conta(let_cod_conta);
+                atualiza_tab_status_contrato_composicao(let_cod_conta);
+
+                $("#cb_contas").val(let_cod_conta);
+                //$("#cb_contas").selectpicker('refresh');
+
+
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+        //atualiza_form_dados_conta('R', let_cod_conta)
+    }
+    else if(let_nome_btn == 'btn_anexa_doc_contrato') {
+        let let_cod_conta = $(this).val();
+        if(let_cod_conta != "0"){
+            var formDataImg = new FormData();
+            formDataImg.append("file", $('input[type=file]')[0].files[0]);
+            formDataImg.append("cod_conta", let_cod_conta);
+            formDataImg.append("cod_contrato", $("#list_contratos_conta_anexo").val());
+            formDataImg.append("descricao_doc", $("#txt_desc_anexo_contrato").val());
+            formDataImg.append("competencia_doc", $("#dt_competencia_anexo_doc_contrato").val());
+            $.ajax({
+                type:'POST',
+                enctype: "multipart/form-data; charset=utf-8",
+                url: '/contabil_composicao_app/salva_caminho_anexo_conta',
+                data: formDataImg,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function(dados){
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    $("#txt_desc_anexo_contrato").val('');
+                    $("#file_anexo_contrato").val('');
+                    atualiza_tab_anexos_conta(dados.cod_conta);
+                },
+                error: function(request, status, error){
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Confirme anteriormente o cadastro da conta!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+        }
+
+    }
+    else if(let_nome_btn == 'btn_exclui_anexo_conta') {
+        let let_cod_anexo_conta = let_val_btn;
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_anexo_conta/'+let_cod_anexo_conta,
+            dataType: 'json',
+            data: {
+                'cod_anexo_conta'     :   let_cod_anexo_conta
+            },
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_anexos_conta(data.cod_conta);
+                $("#div_visualizacao_anexo_conta").html("");
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
+    else if(let_nome_btn == 'btn_visulizar_anexo_conta') {
+        let let_img_anexo_selecionado = $('<img/>');
+        let_img_anexo_selecionado.attr({
+            id: 'img_anexo_pre_visualizado',
+            name: 'img_anexo_pre_visualizado',
+            src: '/media/'+let_val_btn,
+            width: '430px',
+            height: '440px',
+            title: 'Clique na imagem para imprimir o documento'
+        });
+        $("#div_visualizacao_anexo_conta")
+            .html('<embed  src="/media/'+let_val_btn+'" style="width:100%; height:100%;"/>');
+
+
+    }
+    else if(let_nome_btn == 'btn_importar_contrato_benner'){
+        let let_cod_conta = let_val_btn;
+        if(let_cod_conta != "0"){
+            importa_contratos_parcela_conta('T', let_cod_conta, 0);
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Confirme anteriormente o cadastro da conta!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    }
+    else if(let_nome_btn == 'btn_importa_contrato_pelo_num') {
+        let let_cod_conta = $(this).val();
+        let let_num_contrato = $("#txt_num_contrato_importa").val();
+        if(let_cod_conta != "0"){
+            importa_contratos_parcela_conta('C', let_cod_conta, let_num_contrato);
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Confirme anteriormente o cadastro da conta!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    }
+    else if(let_nome_btn == 'btn_excluir_contrato'){
+        let let_cod_contrato = $(this).val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_contrato/'+let_cod_contrato,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_contratos_conta(data.cod_conta);
+                atualiza_tab_anexos_conta(data.cod_conta);
+                atualiza_tab_status_contrato_composicao(data.cod_conta);
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
+    else if(let_nome_btn == 'btn_confirma_status_composicao'){
+        let let_tipo_prazo = let_val_btn.split('_')[0];
+        let let_cod_contrato = let_val_btn.split('_')[1];
+        let let_cod_status = $("#cb_status_conciliacao_"+let_tipo_prazo+'_'+let_cod_contrato).val();
+        let let_obs_status = $("#ta_obs_status_conciliacao_"+let_tipo_prazo+'_'+let_cod_contrato).val();
+        let let_competencia = $("#dt_conciliacao_comp_benner").val();
+        let let_val_composicao = $("#txt_val_composicao_"+let_tipo_prazo+'_'+let_cod_contrato).val().replaceAll('.','').replaceAll(',','.');
+        let let_val_balancete = $("#txt_val_balancete_"+let_tipo_prazo+'_'+let_cod_contrato).val().replaceAll('.','').replaceAll(',','.');
+        let let_val_diferenca = $("#txt_val_diferenca_"+let_tipo_prazo+'_'+let_cod_contrato).val().replaceAll('.','').replaceAll(',','.');
+
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/registra_status_composicao_conta',
+            data: {
+                'cod_contrato': let_cod_contrato,
+                'tipo_prazo': let_tipo_prazo,
+                'cod_status': let_cod_status,
+                'obs_status': let_obs_status,
+                'competencia': let_competencia,
+                'val_composicao' : let_val_composicao,
+                'val_balancete' : let_val_balancete,
+                'val_diferenca' : let_val_diferenca
+            },
+            dataType: 'json',
+            success: function (dados) {
+                gera_conciliacao_comp_benner_detalhado();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if(let_nome_btn == 'btn_editar_resp_conta'){
+        $("#cb_resp_composicao").selectpicker('val', $("#hd_resp_comp_"+let_val_btn).val());
+        $("#cb_resp_composicao").selectpicker('refresh');
+
+        $("#cb_resp_validacao").selectpicker('val', $("#hd_resp_val_"+let_val_btn).val());
+        $("#cb_resp_validacao").selectpicker('refresh');
+
+        $("#dt_ini_resp").val( $("#hd_data_ini_atv_"+let_val_btn).val() );
+        $("#dt_fim_resp").val( $("#hd_data_fim_atv_"+let_val_btn).val() );
+        $("#hd_tipo_transacao_resp").val("U");
+        let let_img_btn_atualizar_dados_resp = `
+            <i class="fa-solid fa-rotate" ></i>
+        `;
+        $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Atualiza dados");
+        $("#btn_associar_responsaveis_conta").val(let_val_btn);
+
+    }
+    else if (let_nome_btn == 'btn_desmarcar_contas_comp_benner'){
+        $("#cb_contas_conciliacao_comp_benner").selectpicker('deselectAll');
+    }
+    else if (let_nome_btn == 'btn_marcar_contas_comp_benner'){
+        $("#cb_contas_conciliacao_comp_benner").selectpicker('selectAll');
+    }
+    else if (let_nome_btn == 'btn_visualiza_doc_contrato'){
+        let let_cod_anexo_contrato = let_val_btn;
+
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/visualiza_doc_contrato_competencia',
+            data: {
+                'cod_anexo_contrato': let_cod_anexo_contrato
+            },
+            dataType: 'json',
+            success: function (dados) {
+                /* http://127.0.0.1:8000/  */
+                window.open('https://operacional.conlogsa.com.br/media/'+dados, '_blank');
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+    }
+    else if (let_nome_btn == 'btn_exclui_arq_conta_mod_1') {
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_arquivo_conta_m_1/'+let_val_btn,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_doc_contas_modelo_1(data.cod_conta);
+                $("#div_visualizacao_anexo_conta").html("");
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else if (let_nome_btn == 'btn_gera_conciliacao_comp_benner_detalhado_aud') {
+        gera_conciliacao_comp_benner_auditoria();
+    }
+});
+
+$(document).on('change','input', function(){
+	let let_nome_inp = $(this).attr('name');
+    let let_id_inp = $(this).attr('id');
+    let let_chk_inp = $(this).prop('checked')
+
+    if(let_nome_inp == "chk_atualiza_com_benner_contrato"){
+        let let_handle_contrato = let_id_inp.split('_')[5];
+        let let_status_componente = $(this).prop("checked");
+        let let_status_sincroniza_benner = 'S';
+        if(let_status_componente == false){
+            let_status_sincroniza_benner = 'N';
+        }
+        $.ajax({
+        type: 'POST',
+        url: '/contabil_composicao_app/atualiza_status_contrato_sincroniza_benner',
+        data: {
+            'transacao'                             :   'status_sincronia_benner',
+            'handle_contrato'                       :   let_handle_contrato,
+            'status_sincronia_contrato_benner'      :   let_status_sincroniza_benner
+        },
+        dataType: 'json',
+        success: function (dados) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+    }
+    else if ( let_nome_inp == "rd_modelo_conta_conc_comp_benner" ) {
+        let let_cod_modelo_conta = 0;
+        let let_tipo_rel = $("#hd_tipo_rel").val();
+        $("#div_tab_conciliacao_composicao_benner").html("");
+        $("#div_tab_conciliacao_composicao_benner_detalhado").html("");
+        $("#div_tab_conciliacao_composicao_benner_aud").html("");
+
+        if(let_tipo_rel == 'R'){
+            //tab_conciliacao_composicao_benner
+            let let_tab_concilicacao_comp_benner = $("<table/>");
+            let_tab_concilicacao_comp_benner.attr({
+                id: 'tab_conciliacao_composicao_benner',
+                class: 'display wrap w-100 cl_tab_principal_pagina'
+            });
+
+            let let_thead = $("<thead/>");
+            let let_tr = $("<tr/>");
+
+            let let_colunas_tabela = [];
+            if (let_id_inp == "rd_modelo_conta_conc_comp_benner_1") {
+                let_cod_modelo_conta = 1;
+                let_colunas_tabela = [
+                    '',
+                    'Cód. reduzido',
+                    'Conta',
+                    'Comp',
+                    'Balan',
+                    'Dif',
+                    'Detalhes',
+                    'Documento'
+                ];
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_2") {
+                let_cod_modelo_conta = 2;
+                let_colunas_tabela = [
+                    '',
+                    'Conta',
+                    'Doc Cont',
+                    'Comp',
+                    'Balan',
+                    'Dif',
+                    'Detalhes',
+                    'Documento'
+                ];
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_3") {
+                let_cod_modelo_conta = 3;
+                let_colunas_tabela = [
+                    '',
+                    'Conta',
+                    'Contrato',
+                    'Doc Cont',
+                    'Comp CP',
+                    'Balan CP',
+                    'Dif CP',
+                    'Comp LP',
+                    'Balan LP',
+                    'Dif LP',
+                    'Comp Tt',
+                    'Balan Tt',
+                    'Dif Tt',
+                    'Detalhes',
+                    'Documento'
+                ];
+            }
+
+            //tab_conciliacao_composicao_benner
+            let_colunas_tabela.forEach( col => {
+                let let_th = $("<th/>");
+                let_th.attr({
+                    scope: 'col',
+                    align: 'left',
+                    style: 'color: grey'
+                });
+                let_th.html(col);
+                let_tr.append(let_th);
+            });
+            let_thead.append(let_tr)
+            let_tab_concilicacao_comp_benner.append(let_thead);
+
+            let let_body = $("<body/>");
+            let_tab_concilicacao_comp_benner.append(let_body)
+
+            $("#div_tab_conciliacao_composicao_benner").html(let_tab_concilicacao_comp_benner);
+            $("#tab_conciliacao_composicao_benner").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                    } );
+
+        }
+        else if(let_tipo_rel == 'D'){
+            //tab_conciliacao_composicao_benner_detalhado
+            let let_tab_concilicacao_comp_benner_detalhado = $("<table/>");
+            let_tab_concilicacao_comp_benner_detalhado.attr({
+                id: 'tab_conciliacao_composicao_benner_detalhado',
+                class: 'display wrap w-100 cl_tab_principal_pagina'
+            });
+
+            let let_thead_detalhado = $("<thead/>");
+            let let_tr_detalhado = $("<tr/>");
+
+            let let_colunas_tabela_detalhado = [];
+            if (let_id_inp == "rd_modelo_conta_conc_comp_benner_1") {
+                let_cod_modelo_conta = 1;
+
+                let_colunas_tabela_detalhado = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Status',
+                    'Detalhes',
+                    'Documento'
+                ];
+
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_2") {
+                let_cod_modelo_conta = 2;
+
+                let_colunas_tabela_detalhado = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Status',
+                    'Detalhes'
+                ];
+
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_3") {
+                let_cod_modelo_conta = 3;
+
+                let_colunas_tabela_detalhado = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Contrato',
+                    'Doc Cont',
+                    'Tipo prazo',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Status',
+                    'Detalhes',
+                    'Documento'
+                ];
+
+            }
+
+            //tab_conciliacao_composicao_benner_detalhado
+            let_colunas_tabela_detalhado.forEach( col => {
+                let let_th_detalhado = $("<th/>");
+                let_th_detalhado.attr({
+                    scope: 'col',
+                    align: 'left',
+                    style: 'color: grey'
+                });
+                let_th_detalhado.html(col);
+                let_tr_detalhado.append(let_th_detalhado);
+            });
+            let_thead_detalhado.append(let_tr_detalhado)
+            let_tab_concilicacao_comp_benner_detalhado.append(let_thead_detalhado);
+
+            let let_body_detalhado = $("<body/>");
+            let_tab_concilicacao_comp_benner_detalhado.append(let_body_detalhado)
+
+            $("#div_tab_conciliacao_composicao_benner_detalhado").html(let_tab_concilicacao_comp_benner_detalhado);
+            $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                    } );
+
+        }
+        else if(let_tipo_rel == 'A'){
+            //tab_conciliacao_composicao_benner_auditoria
+            let let_tab_concilicacao_comp_benner_aud = $("<table/>");
+            let_tab_concilicacao_comp_benner_aud.attr({
+                id: 'tab_conciliacao_composicao_benner_aud',
+                class: 'display wrap w-100 cl_tab_principal_pagina'
+            });
+
+            let let_thead_aud = $("<thead/>");
+            let let_tr_aud = $("<tr/>");
+
+            let let_colunas_tabela = [];
+            let let_colunas_tabela_detalhado = [];
+            let let_colunas_tabela_aud = [];
+            if (let_id_inp == "rd_modelo_conta_conc_comp_benner_1") {
+                let_cod_modelo_conta = 1;
+
+                let_colunas_tabela_auditoria = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Detalhes',
+                    'Documento'
+                ];
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_2") {
+                let_cod_modelo_conta = 2;
+
+                let_colunas_tabela_auditoria = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Status',
+                    'Detalhes'
+                ];
+            }
+            else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_3") {
+                let_cod_modelo_conta = 3;
+
+                let_colunas_tabela_auditoria = [
+                    'Estrutura',
+                    'Cód red',
+                    'Conta',
+                    'Contrato',
+                    'Doc Cont',
+                    'Tipo prazo',
+                    'Composição',
+                    'Balancete',
+                    'Diferenca',
+                    'Detalhes',
+                    'Documento'
+                ];
+            }
+
+            //tab_conciliacao_composicao_benner_auditoria
+            let_colunas_tabela_auditoria.forEach( col => {
+                let let_th_aud = $("<th/>");
+                let_th_aud.attr({
+                    scope: 'col',
+                    align: 'left',
+                    style: 'color: grey'
+                });
+                let_th_aud.html(col);
+                let_tr_aud.append(let_th_aud);
+            });
+            let_thead_aud.append(let_tr_aud)
+            let_tab_concilicacao_comp_benner_aud.append(let_thead_aud);
+
+            let let_body_aud = $("<body/>");
+            let_tab_concilicacao_comp_benner_aud.append(let_body_aud)
+
+            $("#div_tab_conciliacao_composicao_benner_aud").html(let_tab_concilicacao_comp_benner_aud);
+            $("#tab_conciliacao_composicao_benner_aud").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                    } );
+
+        }
+
+
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
+            cache: false,
+            data: {
+                'tipo_rel': let_tipo_rel,
+                'cod_modelo_conta'   :   let_cod_modelo_conta
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#cb_contas_conciliacao_comp_benner option").remove();
+                if( let_tipo_rel == 'R' || let_tipo_rel == 'D' || let_tipo_rel == 'C'){
+                    data.lista_contas.forEach(conta => {
+                        $("#cb_contas_conciliacao_comp_benner").append("<option value='"+
+                        conta.cod_conta+"'>"+conta.desc_conta+" - Cód. red. CP - "+conta.cod_red_conta_contabil_cp+
+                        " Cód. red. LP - "+conta.cod_red_conta_contabil_lp+"</option>");
+
+                    });
+                } else {
+                    data.lista_contas.forEach(conta => {
+                        $("#cb_contas_conciliacao_comp_benner").append("<option value='"+
+                        conta.cod_conta__cod_conta+"'>"+conta.cod_conta__desc_conta+" - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                        " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+
+                    });
+
+                }
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('selectAll');
+
+
+                $("#cb_pacote_conta option").remove();
+                data.lista_pacotes_conta.forEach(pac => {
+                    $("#cb_pacote_conta").append("<option value='"+
+                    pac.cod_pacote_conta+"'>"+pac.desc_pacote_conta+"</option>");
+                });
+                //$("#cb_pacote_conta").val(data.dic_conta.cod_pacote_conta);
+                $("#cb_pacote_conta").selectpicker('refresh');
+
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+    }
+    else if ( let_nome_inp == "rd_modelo_conta" ) {
+        limpa_campos_form_cad_contas();
+        let let_cod_modelo_conta = 0
+        if (let_id_inp == "rd_modelo_conta_1") {
+            let_cod_modelo_conta = 1;
+        } else if (let_id_inp == "rd_modelo_conta_2") {
+            let_cod_modelo_conta = 2;
+        } else if (let_id_inp == "rd_modelo_conta_3") {
+            let_cod_modelo_conta = 3;
+        }
+        desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta);
+
+    }
+    else if ( let_nome_inp == "txt_val_principal" || let_nome_inp == "txt_val_taxas" || let_nome_inp == "txt_val_fundo" ) {
+        let let_handle_parcela = let_id_inp.split("_")[3];
+        let let_val_principal = parseFloat($("#txt_val_principal_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
+        let let_val_taxas = parseFloat($("#txt_val_taxas_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
+        let let_val_fundo = parseFloat($("#txt_val_fundo_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
+
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/atualiza_dados_parcela',
+            data: {
+                'transacao'         :  'atualiza_dados',
+                'handle_parcela'    :   let_handle_parcela,
+                'val_principal'     :   let_val_principal,
+                'val_taxas'         :   let_val_taxas,
+                'val_fundo'         :   let_val_fundo
+
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#td_val_total_" + let_handle_parcela).html(let_val_principal + let_val_taxas + let_val_fundo);
+                //atualiza_tab_contratos_conta(dados.cod_conta);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                loader.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+          }
+        });
+    }
+
+
+});
+
+function atualiza_form_dados_conta(tipo_return, cod_conta) {
+    loader.style.display = "flex";
+    let let_radio1 = $("#rd_modelo_conta_1").prop('checked');
+    let let_radio2 = $("#rd_modelo_conta_2").prop('checked');
+    let let_radio3 = $("#rd_modelo_conta_3").prop('checked');
+    let let_cod_modelo_conta_selecionado = 0;
+    if ( let_radio1 == true ){
+        let_cod_modelo_conta_selecionado = 1;
+    } else if ( let_radio2 == true ){
+        let_cod_modelo_conta_selecionado = 2;
+    } else if ( let_radio3 == true ){
+        let_cod_modelo_conta_selecionado = 3;
+    }
+
+
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/retorna_dados_conta_cadastrada',
+        data: {
+            'tipo_return' :    tipo_return,
+            'cod_conta'   :    cod_conta,
+            'cod_modelo_conta_selecionado': let_cod_modelo_conta_selecionado
+        },
+        //dataType: 'json',
+        success: function (dados) {
+            $("#txt_desc_conta").val(dados.dic_conta.desc_conta);
+
+            $("#tx_handle_conta_cp").val(dados.dic_conta.handle_benner_cp);
+            $("#txt_cod_red_conta_cp").val(dados.dic_conta.cod_red_benner_cp);
+            $("#txt_cod_estrutura_cp").val(dados.dic_conta.cod_estrut_cp);
+
+            $("#tx_handle_conta_lp").val(dados.dic_conta.handle_benner_lp);
+            $("#txt_cod_red_conta_lp").val(dados.dic_conta.cod_red_benner_lp);
+            $("#txt_cod_estrutura_lp").val(dados.dic_conta.cod_estrut_lp);
+
+            $("#cb_empresa_cad_conta").val(dados.dic_conta.cod_empresa);
+            $("#cb_empresa_cad_conta").selectpicker('refresh');
+
+            $("#cb_pacote_conta").val(dados.dic_conta.cod_pacote_conta);
+            $("#cb_pacote_conta").selectpicker('refresh');
+
+            let let_cod_modelo = dados.dic_conta.tipo_modelo;
+            if (let_cod_modelo == 1) {
+                $("#rd_modelo_conta_1").prop('checked', true);
+            } else if (let_cod_modelo == 2) {
+                $("#rd_modelo_conta_2").prop('checked', true);
+            } else if (let_cod_modelo == 3) {
+                $("#rd_modelo_conta_3").prop('checked', true);
+            }
+
+
+            $("#dt_ini_atv_benner").val(dados.dic_conta.data_ini_atividade);
+            $("#dt_fim_atv_benner").val(dados.dic_conta.data_fim_atividade);
+            $("#btn_cadastra_nova_conta").val(dados.dic_conta.cod_conta);
+            let let_new_label_btn_cadastro_conta = `
+                <i class="fa-solid fa-arrows-rotate"></i>Atualizar dados conta
+            `;
+            $("#btn_cadastra_nova_conta").html(let_new_label_btn_cadastro_conta);
+            let let_btn_criar_nova_conta_manual = `
+                <button type='button' name='btn_criar_nova_conta_manual'
+                id='btn_criar_nova_conta_manual' class='mr-2 btn btn-primary btn-rounded cl_btn_cad_contas'>
+                <i class="fa-solid fa-plus"></i>Criar conta
+                </button>
+            `;
+            $("#div_btn_criar_nova_conta_manual").html(let_btn_criar_nova_conta_manual);
+            if (dados.dic_conta.status_comp == "A") {
+                $("#chk_status_comp").prop('checked', true);
+            } else {
+                $("#chk_status_comp").prop('checked', false);
+            }
+            $("#btn_importar_contrato_benner").val(dados.dic_conta.cod_conta);
+            $("#btn_cadastra_novo_contrato").val(dados.dic_conta.cod_conta);
+            $("#btn_associar_responsaveis_conta").val(dados.dic_conta.cod_conta);
+            $("#btn_anexa_doc_contrato").val(dados.dic_conta.cod_conta);
+            $("#btn_importa_contrato_pelo_num").val(dados.dic_conta.cod_conta);
+            $("#div_visualizacao_anexo_conta").html("");
+            loader.style.display = "none";
+        },
+        error: function (request, status, error) {
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+      }
+    });
+}
+
+function atualiza_tab_contratos_conta(cod_conta){
+    loader.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/retorna_dados_contrato_conta_cadastrada',
+        data: {
+            'cod_conta'   :    cod_conta
+        },
+        dataType: 'json',
+        success: function (dados) {
+            loader.style.display = "flex";
+            let let_html_pagina = `
+                <div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_contratos">
+            `;
+
+            dados.lista_contratos.forEach( ctr => {
+                let_html_pagina += `
+                    <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
+                        <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header"
+                            id="heading_${ctr.handle_fn_doc}">
+                            <button class="accordion-button collapsed d-flex justify-content-between" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse_${ctr.handle_fn_doc}"
+                                aria-expanded="false" aria-controls="collapse_${ctr.handle_fn_doc}">
+                                <div style="font-size:12px; width:80%">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <i class="fa-solid fa-receipt" style="color: #f46424;"></i>
+                                            <strong>Contrato:</strong> ${ctr.num_contrato}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Empresa:</strong> ${ctr.nome_empresa}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label>
+                                                <input type="checkbox" checked="checked" class="checkbox"
+                                                    id="chk_atualiza_com_benner_contrato_${ctr.handle_fn_doc}"
+                                                    name="chk_atualiza_com_benner_contrato">
+                                                Atualiza com o Benner ?
+                                            </label>
+                                        </div>
+                                        <div class="col-md-3" align="right">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Produto:</strong> ${ctr.fornecedor}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Data emissão:</strong> ${ctr.data_emissao_contrato}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Doc. Contábil:</strong> ${ctr.doc_contabil}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Operação:</strong> ${ctr.nome_operacao}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#87CEEB; color:#000000;">
+                                            <strong>CONTA EM CURTO PRAZO</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#87CEEB; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Val. total líq.:</strong>${ctr.val_tt_liq_cp}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Val. total:</strong>${ctr.val_tt_contrato_reajustado_cp}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#0d6efd; color:#000000;">
+                                            <strong>CONTA EM LONGO PRAZO</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#0d6efd; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Val. total líq.:</strong>${ctr.val_tt_liq_lp}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Val. total:</strong>${ctr.val_tt_contrato_reajustado_lp}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#f46424; color:#000000;">
+                                            <strong>INFO TOTAIS CONTA</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#f46424; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Valor Total Líquido:</strong> ${ctr.val_liquido}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Valor Total Reajustado:</strong> ${ctr.val_tt_contrato_reajustado}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Total Liquidado:</strong> ${ctr.total_pago}
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="background-color:#f46424; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Próxima parcela:</strong>${ctr.proxima_parc_pendente}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Venc. próxima parcela:</strong>
+                                            ${ctr.data_venc_proxima_parc_pendente}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Valor próxima parcela:</strong>${ctr.val_proxima_parc_pendente}
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+
+                        </h2>
+
+                        <div id="collapse_${ctr.handle_fn_doc}" class="accordion-collapse collapse"
+                            aria-labelledby="heading_${ctr.handle_fn_doc}" data-bs-parent="#acc_contratos">
+                        <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-body">
+                            <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100">
+                                <button type='button' id="btn_excluir_contrato_${ctr.cod_contrato}"
+                                        name="btn_excluir_contrato"
+                                        class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                                        value="${ctr.cod_contrato}">
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span>Excluir contrato</span>
+                                </button>
+                            </div>
+                            <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
+                                <div class="d-flex justify-content-between align-items-center ">
+                                    <table id"tab_parcelas_contrato_${ctr.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                        style="font-size:12px; color: #000000;">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col" align="left" style="color: grey"></th>
+                                                <th scope="col" align="left" style="color: grey">Vencimento</th>
+                                                <th scope="col" align="left" style="color: grey">Pagamento</th>
+                                                <th scope="col" align="left" style="color: grey">Núm. Parcela</th>
+                                                <th scope="col" align="left" style="color: grey">Tipo Prazo</th>
+                                                <th scope="col" align="left" style="color: grey">AP</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Parcela</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Principal</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Taxas</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Fundo</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Total</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Pago</th>
+                                                <th scope="col" align="left" style="color: grey">Val. Balancete</th>
+                                                <th scope="col" align="left" style="color: grey">Liquidar</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>`;
+
+                                        ctr.lista_parcelas_contrato.forEach( parc => {
+                                            let let_img = `<i class="fa-solid fa-check" style="color: #f46424;" title="Pago"></i>`;
+                                            let let_data_pagamento = `
+                                                <input type="date" id="dt_data_pag_parc_${parc.handle_parc}" readonly value="${parc.data_liquidacao}">
+                                            `;
+                                            let let_valor_pago = `
+                                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" readonly value="${parc.val_total_pago}" style="width: 87.2px;text-align:right;">
+                                            `;
+                                            let let_btn_liquidar = `
+                                                <i class="fa-solid fa-receipt" style="color: #3CB371;"
+                                                            title="Pagamento Efetuado"></i>
+                                            `;
+                                            let let_readonly = 'readonly';
+                                            if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                                                let_readonly = ''
+                                                let_img = `
+                                                    <i class="fa-solid fa-triangle-exclamation" style="color: #f46424;" title="Pendente"></i>
+                                                `;
+                                                let_data_pagamento = `
+                                                    <input type="date" id="dt_data_pag_parc_${parc.handle_parc}">
+                                                `;
+                                                let_valor_pago = `
+                                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" style="width: 87.2px;text-align:right;">
+                                                `;
+                                                let_btn_liquidar = `
+                                                    <button type='button' name='btn_liquidar_parcela'
+                                                        id='btn_liquidar_parcela_${parc.handle_parc}' class='btn btn-rounded btn-space'
+                                                        value='${parc.handle_parc}'>
+                                                        <i class="fa-solid fa-receipt" style="color: #f46424;" title="Liquidar"></i>
+                                                    </button>
+                                                `;
+                                            }
+                                            let_html_pagina += `
+                                                <tr>
+                                                    <td>
+                                                   ` + let_img + `
+                                                   </td>
+                                                    <td>
+                                                        ${parc.data_vencimento}
+                                                    </td>
+                                                    <td>
+                                                    ` + let_data_pagamento + `
+                                                    </td>
+                                                    <td>
+                                                        ${parc.ordem_parcela}
+                                                    </td>
+                                                    <td>
+                                                        ${parc.tipo_prazo}
+                                                    </td>
+                                                    <td>
+                                                        ${parc.ap_parcela}
+                                                    </td>
+                                                    <td>
+                                                        ${parc.valor_conta}
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}" name="txt_val_principal" value="${parc.valor_principal}" style="width: 87.2px;text-align:right;">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" `+ let_readonly +` id="txt_val_taxas_${parc.handle_parc}" name="txt_val_taxas" value="${parc.valor_taxas}" style="width: 87.2px;text-align:right;">
+                                                    </td>
+                                                    <td>
+                                                        <input type="text" `+ let_readonly +` id="txt_val_fundo_${parc.handle_parc}" name="txt_val_fundo" value="${parc.valor_fundo}" style="width: 87.2px;text-align:right;">
+                                                    </td>
+                                                    <td id="td_val_total_${parc.handle_parc}" >
+                                                        ${parc.valor_total}
+                                                    </td>
+                                                    <td>
+                                                        ` + let_valor_pago + `
+                                                    </td>
+                                                    <td>
+                                                        ${parc.val_balancete}
+                                                    </td>
+                                                    <td>
+                                                        ` + let_btn_liquidar + `
+                                                    </td>
+                                                </tr>
+                                            `;
+
+
+                                        });
+
+                    let_html_pagina +=           `
+
+                                        </tbody>
+                            </table>
+                          </div>
+                            </div>
+                                </div>
+
+
+                </div>
+                </div>
+
+                `;
+
+                $("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 10,
+                        "destroy": true,
+                        "dom": 'Bfrtip',
+                        "buttons": ['excelHtml5',
+                                    'pdfHtml5'
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            }
+                        }
+                    });
+
+            });
+            let_html_pagina += `
+                </div>
+            `;
+            $("#div_contratos").html(let_html_pagina);
+            loader.style.display = "none";
+        },
+        error: function (request, status, error) {
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+}
+
+function atualiza_tabela_resp_conta(cod_conta){
+    loader.style.display = "flex";
+    $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_resp_associados_conta',
+            data: {
+                'cod_conta'   :   cod_conta
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $("#tab_responsaveis_conta").DataTable().clear().draw();
+                let let_lista_rep_conta = [];
+                dados.lista_dic_resp_conta.forEach( resp => {
+                    let let_btn_edita_resp = `
+                        <button type='button' id='btn_editar_resp_conta_${resp.cod_resp_conta}'
+                        name='btn_editar_resp_conta' value='${resp.cod_resp_conta}' class='btn btn-rounded btn-space'>
+                            <i class="fa-solid fa-user-pen" style="color: #f46424;" ></i>
+                        </button>
+                    `;
+                    let data_ini_atv = resp.data_ini_atividade.split('-')[2] + '-' +
+                        resp.data_ini_atividade.split('-')[1] + '-' +
+                        resp.data_ini_atividade.split('-')[0];
+
+                    let data_fim_atv = resp.data_fim_atividade.split('-')[2] + '-' +
+                        resp.data_fim_atividade.split('-')[1] + '-' +
+                        resp.data_fim_atividade.split('-')[0];
+
+                    let let_reg = [
+                        ` <i class="fa-solid fa-user" style="color: #f46424;"></i>`,
+                        resp.nome_empresa,
+                        resp.resp_composicao + `<input type="hidden" id="hd_resp_comp_${resp.cod_resp_conta}" value="${resp.resp_composicao}">`,
+                        resp.resp_validacao + `<input type="hidden" id="hd_resp_val_${resp.cod_resp_conta}" value="${resp.resp_validacao}">`,
+                        resp.data_ini_atividade + `<input type="hidden" id="hd_data_ini_atv_${resp.cod_resp_conta}" value="` + data_ini_atv + `">`,
+                        resp.data_fim_atividade + `<input type="hidden" id="hd_data_fim_atv_${resp.cod_resp_conta}" value="` + data_fim_atv + `">`,
+                        let_btn_edita_resp
+                    ];
+                    let_lista_rep_conta.push(let_reg);
+                });
+                $('#tab_responsaveis_conta').DataTable( {
+                    "bJQueryUI": true,
+                    "pageLength": 10,
+                    "destroy": true,
+                    "searching": false,
+                    "paging": false,
+                    "data":let_lista_rep_conta,
+                    "columns": [
+                        { title: "" },
+                        { title: "Empresa" },
+                        { title: "Resp. composição" },
+                        { title: "Resp. Validação" },
+                        { title: "Inicio" },
+                        { title: "Fim" },
+                        { title: "Alterar" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [4, 5, 6]},
+                        {"className": "dt-left", "targets": [1, 2, 3]}
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        }
+                    }
+                });
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+}
+
+function atualiza_tab_anexos_conta(cod_conta){
+    loader.style.display = "flex";
+    $.ajax({
+        type : 'GET',
+        data : {
+            'cod_conta' : cod_conta
+        },
+        url: '/contabil_composicao_app/retorna_lista_anexos_conta',
+        success: function(dados) {
+            var_lista_docs = [];
+            dados.lista_anexos.forEach( doc => {
+                var var_btn_visualizar_anexo = `
+                    <button type="button" name="btn_visulizar_anexo_conta"
+                        id="btn_visulizar_anexo_conta_${doc.cod_anexo_contrato}"
+                        class="btn btn-rounded btn-space"
+                        value="${doc.caminho_anexo}">
+                        <i class="fa-solid fa-magnifying-glass-plus" style="color: #f46424;"></i>
+                    </button>
+                `;
+                var var_btn_exclui_anexo = `
+                    <button type="button" name="btn_exclui_anexo_conta"
+                        id="btn_exclui_anexo_conta_${doc.cod_anexo_contrato}"
+                        class="btn btn-rounded btn-space"
+                        value="${doc.cod_anexo_contrato}">
+                        <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                    </button>
+                `;
+
+                let let_num_contrato = ''
+                if ( doc.cod_contrato__num_contrato != null ) {
+                    let_num_contrato = doc.cod_contrato__num_contrato;
+                }
+
+
+                reg = [
+                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    let_num_contrato,
+                    doc.data_competencia,
+                    doc.desc_anexo,
+                    var_btn_visualizar_anexo,
+                    var_btn_exclui_anexo
+                ];
+                var_lista_docs.push(reg);
+            });
+            $("#tab_anexos_conta").DataTable( {
+                "bJQueryUI": true,
+                "pageLength": 5,
+                "destroy": true,
+                "searching": false,
+                "paging": true,
+                "data":var_lista_docs,
+                "columns": [
+                    { title: "" },
+                    { title: "Contrato" },
+                    { title: "Competencia" },
+                    { title: "Descrição" },
+                    { title: "Visualizar" },
+                    { title: "Excluir" }
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": [0,2,3]},
+                    {"className": "dt-left", "targets": [1]}
+                ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+            });
+
+            $("#list_contratos_conta_anexo option").remove();
+            dados.lista_contratos.forEach(contrato => {
+                $("#list_contratos_conta_anexo").append("<option value='"+
+                contrato.cod_contrato+"'>"+contrato.num_contrato+"</option>");
+
+            });
+            $("#list_contratos_conta_anexo").selectpicker('refresh');
+
+            loader.style.display = "none";
+        },
+        error: function(request, status, error){
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+}
+
+function atualiza_tab_status_contrato_composicao(cod_conta){
+    loader.style.display = "flex";
+    $.ajax({
+        type : 'GET',
+        data : {
+            'cod_conta' : cod_conta
+        },
+        url: '/contabil_composicao_app/retorna_lista_status_contrato_composicao',
+        success: function(dados) {
+            let let_lista_status = [];
+            if(dados.lista_status_contratos_comp != null || dados.lista_status_contratos_comp == ''){
+                dados.lista_status_contratos_comp.forEach( status => {
+                let let_periodo_comp = status.data_competencia.split('-')[1] + '/' +
+                     status.data_competencia.split('-')[0];
+                let desc_status = ''
+                if(status.status == '1'){
+                    desc_status = 'OK';
+                } else if(status.status == '2'){
+                    desc_status = 'Com diferença';
+                } else if(status.status == '3'){
+                    desc_status = 'Falta analisar';
+                } else if(status.status == '4'){
+                    desc_status = 'Falta compor';
+                }
+                let let_reg = [
+                    `<i class="fa-solid fa-caret-right" style="color: #f46424"></i>`,
+                    status.cod_contrato__num_contrato,
+                    status.tipo_prazo,
+                    let_periodo_comp,
+                    status.val_composicao,
+                    status.val_balancete,
+                    status.val_diferenca,
+                    status.cod_usu__nome_usu,
+                    desc_status,
+                    status.obs_status
+                ];
+                let_lista_status.push(let_reg);
+            });
+                $("#tab_status_contrato_comp").DataTable( {
+                "bJQueryUI": true,
+                "pageLength": 5,
+                "destroy": true,
+                "searching": false,
+                "paging": false,
+                "data":let_lista_status,
+                "columns": [
+                    { title: "" },
+                    { title: "Contrato" },
+                    { title: "Tipo Prazo" },
+                    { title: "Competência" },
+                    { title: "Composição" },
+                    { title: "Balancete" },
+                    { title: "Diferença" },
+                    { title: "Usuário" },
+                    { title: "Status" },
+                    { title: "Observação" }
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": [2, ]},
+                    {"className": "dt-left", "targets": [0, 1, ]},
+                    {"className": "dt-right", "targets": [ 3, 4, 5, 6,7,8, 9]}
+                ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+            });
+            }
+
+            loader.style.display = "none";
+        },
+        error: function(request, status, error){
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+}
+
+function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
+    loader.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/retorna_dados_contrato_benner_conta',
+        data: {
+            'tipo_pesq'   :    tipo_pesq,
+            'cod_conta'   :    cod_conta,
+            'num_contrato':    num_contrato
+        },
+        dataType: 'json',
+        success: function (dados) {
+            let let_html_pagina = `
+                <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion" id="acc_contratos">
+            `;
+
+            $("#list_contratos_conta_anexo option").remove();
+            dados.lista_contratos.forEach( ctr => {
+                $("#list_contratos_conta_anexo").append("<option value='"+
+                ctr.contrato.cod_contrato+"'>"+ctr.contrato.num_contrato+"</option>");
+
+                let_html_pagina += `
+                    <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
+                        <h2 class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-header"
+                            id="heading_${ctr.contrato.handle_fn_doc}">
+                            <button class="accordion-button collapsed d-flex justify-content-between" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapse_${ctr.contrato.handle_fn_doc}"
+                                aria-expanded="false" aria-controls="collapse_${ctr.contrato.handle_fn_doc}">
+                                <div style="font-size:12px; width:80%">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <i class="fa-solid fa-receipt" style="color: #f46424;"></i>
+                                            <strong>Contrato:</strong> ${ctr.contrato.num_contrato}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Empresa:</strong> ${ctr.contrato.nome_empresa}
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>
+                                                <input type="checkbox" checked="checked" class="checkbox"
+                                                    id="chk_atualiza_com_benner_contrato_${ctr.contrato.handle_fn_doc}"
+                                                    name="chk_atualiza_com_benner_contrato">
+                                                Atualiza com o Benner ?
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <strong>Produto:</strong> ${ctr.contrato.fornecedor}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <strong>Data emissão:</strong> ${ctr.contrato.data_emissao_contrato}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Doc. Contábil:</strong> ${ctr.contrato.doc_contabil}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Operação:</strong> ${ctr.contrato.nome_operacao}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#87CEEB; color:#000000;">
+                                            <strong>CONTA EM CURTO PRAZO</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#87CEEB; color:#000000;">
+                                        <div class="col-md-4">
+                                            <strong>Val. total líq.:</strong>${ctr.contrato.val_tt_liq_cp}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Val. total:</strong>${ctr.contrato.val_tt_contrato_reajustado_cp}
+                                        </div>
+                                        <div class="col-md-4">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#0d6efd; color:#000000;">
+                                            <strong>CONTA EM LONGO PRAZO</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#0d6efd; color:#000000;">
+                                        <div class="col-md-4">
+                                            <strong>Val. total líq.:</strong>${ctr.contrato.val_tt_liq_lp}
+                                        </div>
+                                        <div class="col-md-4">
+                                            <strong>Val. total:</strong>${ctr.contrato.val_tt_contrato_reajustado_lp}
+                                        </div>
+                                        <div class="col-md-4">
+
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-3" style="background-color:#f46424; color:#000000;">
+                                            <strong>INFO TOTAIS CONTA</strong>
+                                        </div>
+                                    </div>
+                                    <div class="row" style="background-color:#f46424; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Valor Total Líquido:</strong> ${ctr.contrato.val_liquido}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Valor Total Reajustado:</strong> ${ctr.contrato.val_tt_contrato_reajustado}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Total Liquidado:</strong> ${ctr.contrato.total_pago}
+                                        </div>
+
+                                    </div>
+                                    <div class="row" style="background-color:#f46424; color:#000000;">
+                                        <div class="col-md-3">
+                                            <strong>Próxima parcela:</strong>${ctr.contrato.proxima_parc_pendente}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Venc. próxima parcela:</strong>
+                                            ${ctr.contrato.data_venc_proxima_parc_pendente}
+                                        </div>
+                                        <div class="col-md-3">
+                                            <strong>Valor próxima parcela:</strong>${ctr.contrato.val_proxima_parc_pendente}
+                                        </div>
+                                    </div>
+                                </div>
+                            </button>
+
+                        </h2>
+
+                        <div id="collapse_${ctr.contrato.handle_fn_doc}" class="accordion-collapse collapse"
+                            aria-labelledby="heading_${ctr.contrato.handle_fn_doc}" data-bs-parent="#acc_contratos">
+                        <div class="accordion-body flex-wrap d-flex justify-content-between align-items-center">
+                            <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100">
+                                <button type='button' id="btn_excluir_contrato_${ctr.cod_contrato}"
+                                        name="btn_excluir_contrato"
+                                        class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                                        value="${ctr.cod_contrato}">
+                                    <i class="fa-solid fa-trash"></i>
+                                    <span>Excluir contrato</span>
+                                </button>
+                            </div>
+                            <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
+                                <div class="d-flex justify-content-between align-items-center ">
+                                        <table id="tab_parcelas_contrato_${ctr.contrato.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                            style="font-size:12px; color: #000000;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col" align="left" style="color: grey"></th>
+                                                    <th scope="col" align="left" style="color: grey">Vencimento</th>
+                                                    <th scope="col" align="left" style="color: grey">Pagamento</th>
+                                                    <th scope="col" align="left" style="color: grey">Núm. Parcela</th>
+                                                    <th scope="col" align="left" style="color: grey">Tipo Prazo</th>
+                                                    <th scope="col" align="left" style="color: grey">AP</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Parcela</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Principal</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Taxas</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Fundos</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Total</th>
+                                                    <th scope="col" align="left" style="color: grey">Val. Pago</th>
+                                                    <th scope="col" align="left" style="color: grey">Liquidar</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>`;
+
+                        ctr.lista_parcelas_contrato.forEach( parc => {
+                            let let_img = `<i class="fa-solid fa-check" style="color: #f46424;" title="Pago"></i>`;
+                            let let_data_pagamento = `
+                                <input type="date" id="dt_data_pag_parc_${parc.handle_parc}" readonly value="${parc.data_liquidacao}">
+                            `;
+                            let let_valor_pago = `
+                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" readonly value="${parc.val_total_pago}" style="width: 87.2px;text-align:right;">
+                            `;
+                            let let_btn_liquidar = `
+                                <i class="fa-solid fa-receipt" style="color: #3CB371;"
+                                            title="Pagamento Efetuado"></i>
+                            `;
+                            let let_readonly = 'readonly';
+                            if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                                let_readonly = '';
+                                let_img = `
+                                    <i class="fa-solid fa-triangle-exclamation" style="color: #f46424;" title="Pendente"></i>
+                                `;
+                                let_data_pagamento = `
+                                    <input type="date" id="dt_data_pag_parc_${parc.handle_parc}">
+                                `;
+                                let_valor_pago = `
+                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" style="width: 87.2px;text-align:right;">
+                                `;
+                                let_btn_liquidar = `
+                                    <button type='button' name='btn_liquidar_parcela'
+                                        id='btn_liquidar_parcela_${parc.handle_parc}' class='btn btn-rounded btn-space'
+                                        value='${parc.handle_parc}'>
+                                        <i class="fa-solid fa-receipt" style="color: #f46424;" title="Liquidar"></i>
+                                    </button>
+                                `;
+                            }
+                            let_html_pagina += `
+                                <tr>
+                                    <td>
+                                   ` + let_img + `
+                                   </td>
+                                    <td>
+                                        ${parc.data_vencimento}
+                                    </td>
+                                    <td>
+                                    ` + let_data_pagamento + `
+                                    </td>
+                                    <td>
+                                        ${parc.ordem_parcela}
+                                    </td>
+                                    <td>
+                                        ${parc.tipo_prazo}
+                                    </td>
+                                    <td>
+                                        ${parc.ap_parcela}
+                                    </td>
+                                    <td>
+                                        ${parc.valor_conta}
+                                    </td>
+                                    <td>
+                                        <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}" name="txt_val_principal" value="${parc.valor_principal}" style="width: 87.2px;text-align:right;">
+                                    </td>
+                                    <td>
+                                        <input type="text" `+ let_readonly +` id="txt_val_taxas_${parc.handle_parc}" name="txt_val_taxas" value="${parc.valor_taxas}" style="width: 87.2px;text-align:right;">
+                                    </td>
+                                    <td>
+                                        <input type="text" `+ let_readonly +` id="txt_val_fundo_${parc.handle_parc}" name="txt_val_fundo" value="${parc.valor_fundo}" style="width: 87.2px;text-align:right;">
+                                    </td>
+                                    <td id="td_val_total_${parc.handle_parc}">
+                                        ${parc.valor_total}
+                                    </td>
+                                    <td>
+                                        ` + let_valor_pago + `
+                                    </td>
+                                    <td>
+                                        ` + let_btn_liquidar + `
+                                    </td>
+                                </tr>
+                            `;
+
+
+                        });
+
+
+                        let_html_pagina +=           `
+
+                                            </tbody>
+                                        </table>
+                                </div>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                `;
+
+
+                $("#list_contratos_conta_anexo").selectpicker('refresh');
+
+                $("#tab_parcelas_contrato_" + ctr.contrato.handle_fn_doc).DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 10,
+                        "destroy": true,
+                        "dom": 'Bfrtip',
+                        "buttons": ['excelHtml5',
+                                    'pdfHtml5'
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            }
+                        }
+                    });
+
+            });
+            let_html_pagina += `
+                </div>
+            `;
+            $("#div_contratos").html(let_html_pagina);
+            loader.style.display = "none";
+        },
+        error: function (request, status, error) {
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+}
+
+function limpa_campos_form_cad_contas(){
+    loader.style.display = "flex";
+    $("#txt_desc_conta").val("");
+
+    $("#tx_handle_conta_cp").val("");
+    $("#txt_cod_red_conta_cp").val("");
+    $("#txt_cod_estrutura_cp").val("");
+
+    $("#tx_handle_conta_lp").val("");
+    $("#txt_cod_red_conta_lp").val("");
+    $("#txt_cod_estrutura_lp").val("");
+
+    $("#cb_pacote_conta").val("");
+    $("#cb_pacote_conta").selectpicker("refresh");
+
+    $("#dt_ini_atv_benner").val("");
+    $("#dt_fim_atv_benner").val("");
+    $("#chk_status_comp").prop("checked", "true");
+    $("#div_contratos").html("");
+    $("#cb_contas").val("");
+    $("#cb_contas").selectpicker("refresh");
+    //$("#div_btn_criar_nova_conta_manual").html("");
+
+    let let_new_label_btn_cadastro_conta = `
+        <i class="fa-solid fa-check" style="color: #f46424;"></i>Confirmar
+    `;
+    $("#btn_cadastra_nova_conta").html(let_new_label_btn_cadastro_conta);
+    $("#btn_cadastra_nova_conta").val(0);
+    $("#div_visualizacao_anexo_conta").html("");
+    loader.style.display = "none";
+
+    $("#cb_resp_composicao").val("");
+    $("#cb_resp_composicao").selectpicker("refresh");
+    $("#cb_resp_validacao").val("");
+    $("#cb_resp_validacao").selectpicker("refresh");
+    $("#dt_ini_resp").val("");
+    $("#dt_fim_resp").val("");
+    let let_img_btn_atualizar_dados_resp = `
+        <i class="fa-solid fa-plus" ></i>
+    `;
+    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+    $("#btn_associar_responsaveis_conta").val(0);
+
+
+
+
+}
+
+function gera_conciliacao_comp_benner_detalhado(){
+    let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
+    let let_competencia = $("#dt_conciliacao_comp_benner").val();
+
+    let cod_modelo_selecionado = 0;
+    if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
+        cod_modelo_selecionado = 1;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is(':checked') == true){
+        cod_modelo_selecionado = 2;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is(':checked') == true){
+        cod_modelo_selecionado = 3;
+    }
+
+
+    loader.style.display = "flex";
+    $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
+            data: {
+                'cod_modelo_selecionado' : cod_modelo_selecionado,
+                'cod_conta'     :   let_cod_conta,
+                'competencia'   :   let_competencia,
+                'tipo_visualizacao' :   'D'
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnClearTable();
+                $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnDestroy();
+                const tabela = new DataTable("#tab_conciliacao_composicao_benner_detalhado");
+
+                let let_lista_dados_conciliacao = [];
+                let let_lista_dados = [];
+                for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
+                    let let_img = `
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                    `;
+                    let let_desc_status_comp = '';
+                    let option_0 = '';
+                    let option_1 = '';
+                    let option_2 = '';
+                    let option_3 = '';
+                    let option_4 = '';
+                    let let_img_btn_status = '';
+
+
+
+                    let_btn_status = '';
+                    if( cod_modelo_selecionado == 1 ) {
+
+                        if(data.lista_contas_conciliacao[i][7] == 0) { //cod_status_auditoria_comp
+                            option_0 = `selected="selected"`;
+                            let_desc_status_comp = `title='Sem status informado'`
+                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='Sem status informado'></i>`
+                        } else if(data.lista_contas_conciliacao[i][7] == 1) {
+                            let_desc_status_comp = `title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
+                            option_1 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][7] == 2) {
+                            let_desc_status_comp = `title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
+                            option_2 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-not-equal fa-xl" style="color:#FF0000;" title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][7] == 3) {
+                            let_desc_status_comp = `title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
+                            option_3 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-arrows-rotate fa-xl" title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][7] == 4) {
+                            let_desc_status_comp = `title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
+                            option_4 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
+                        }
+                        let let_btn_detalhes_conta = `
+                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                    name="btn_detalhes_conta"
+                                    class="btn btn-rounded btn-space"
+                                    value="${data.lista_contas_conciliacao[i][0]}"
+                                    title="${data.lista_contas_conciliacao[i][3]}">
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if(data.lista_contas_conciliacao[i][9] != '0'){
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][9]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][9]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+                        }
+
+                        let_btn_status = `
+                            <div class="btn-group dropleft" >
+                              <button type="button" class="btn btn-rounded btn-space"
+                                id="btn_status_comp_m1_${data.lista_contas_conciliacao[i][0]}"
+                                name="btn_status_comp"
+                                aria-haspopup="true" aria-expanded="false"
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                                ` + let_desc_status_comp + `>
+                                <i class="fa-solid fa-caret-down" style="color: #f46424;"></i>
+                              </button>
+                              <div class="dropdown-menu" style="box-shadow: 2px 2px 2px 1px rgba(0, 0, 0.7, 0.7); background:#f46424;">
+                              <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 0.75rem; color: #ffffff;">
+                                    <i class="fa-solid fa-thumbtack fa-sm" style="color: #ffffff;margin-top: 0.5rem;"></i>
+                                    Status composição
+                                </div>
+                                <form id="frm_status_conciliacao" name="frm_status_conciliacao"  method="POST"
+                                class="d-flex flex-column align-items-center justify-content-between">
+                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                        <select class="form-select form-select-sm" id="cb_status_conciliacao_m1_${data.lista_contas_conciliacao[i][0]}"
+                                            name="cb_status_conciliacao"
+                                            style="color: #000000; font-size: 11px">
+                                                <option value="0" `+ option_0 +`>Selecione o status</option>
+                                                <option value="1" `+ option_1 +`>OK</option>
+                                                <option value="2" `+ option_2 +`>Com diferença</option>
+                                                <option value="3" `+ option_3 +`>Falta analisar</option>
+                                                <option value="4" `+ option_4 +`>Falta compor</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                        <input type="text" class="form-control" id="ta_obs_status_conciliacao_m1_${data.lista_contas_conciliacao[i][0]}"
+                                            style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
+                                            name="ta_obs_status_conciliacao"
+                                            autocomplete="off" placeholder="Observação" rows="3"
+                                            value="${data.lista_contas_conciliacao[i][8]}">
+
+                                    </div>
+                                    <div class="d-flex justify-content-end w-100 mr-3 cl_div_conf_status_comp" >
+                                        <button type='button' name='btn_confirma_status_composicao'
+                                            id='btn_confirma_status_composicao_m1_${data.lista_contas_conciliacao[i][0]}'
+                                            class='btn btn-rounded btn-space cl_btn_conf_status_comp'
+                                            value='m1_${data.lista_contas_conciliacao[i][0]}' title='${data.lista_contas_conciliacao[i][3]}'>
+                                            <i class="fa-solid fa-check" style="color: #ffffff;"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                              </div>
+                            </div>
+                        `;
+
+                        let_reg = [
+                            /* 0 - cod_estrutura */let_img_btn_status + ' ' + data.lista_contas_conciliacao[i][2],
+                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
+                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
+                            /* 8 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
+                            /* 9 */let_btn_status,
+                            /* 10 */let_btn_detalhes_conta,
+                            /* 11 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+                    }
+                    else if( cod_modelo_selecionado == 3 ) {
+
+                        if(data.lista_contas_conciliacao[i][11] == 0) { //cod_status_auditoria_comp
+                            option_0 = `selected="selected"`;
+                            let_desc_status_comp = `title='Sem status informado'`
+                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='Sem status informado'></i>`
+                        } else if(data.lista_contas_conciliacao[i][11] == 1) {
+                            let_desc_status_comp = `title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
+                            option_1 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][11] == 2) {
+                            let_desc_status_comp = `title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
+                            option_2 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-not-equal fa-xl" style="color:#FF0000;" title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][11] == 3) {
+                            let_desc_status_comp = `title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
+                            option_3 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-arrows-rotate fa-xl" title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
+                        } else if(data.lista_contas_conciliacao[i][11] == 4) {
+                            let_desc_status_comp = `title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
+                            option_4 = 'selected="selected"';
+                            let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
+                        }
+                        let let_btn_detalhes_conta = `
+                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                    name="btn_detalhes_conta"
+                                    class="btn btn-rounded btn-space"
+                                    value="${data.lista_contas_conciliacao[i][0]}"
+                                    title="${data.lista_contas_conciliacao[i][3]}">
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if(data.lista_contas_conciliacao[i][13] != '0'){
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][13]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][13]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+                        }
+
+                        let_btn_status = `
+                            <div class="btn-group dropleft" >
+                              <button type="button" class="btn btn-rounded btn-space"
+                                id="btn_status_comp_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                name="btn_status_comp"
+                                aria-haspopup="true" aria-expanded="false"
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                                ` + let_desc_status_comp + `>
+                                <i class="fa-solid fa-caret-down" style="color: #f46424;"></i>
+                              </button>
+                              <div class="dropdown-menu" style="box-shadow: 2px 2px 2px 1px rgba(0, 0, 0.7, 0.7); background:#f46424;">
+                              <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 0.75rem; color: #ffffff;">
+                                    <i class="fa-solid fa-thumbtack fa-sm" style="color: #ffffff;margin-top: 0.5rem;"></i>
+                                    Status composição
+                                </div>
+                                <form id="frm_status_conciliacao" name="frm_status_conciliacao"  method="POST"
+                                class="d-flex flex-column align-items-center justify-content-between">
+                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                        <select class="form-select form-select-sm" id="cb_status_conciliacao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                            name="cb_status_conciliacao"
+                                            style="color: #000000; font-size: 11px">
+                                                <option value="0" `+ option_0 +`>Selecione o status</option>
+                                                <option value="1" `+ option_1 +`>OK</option>
+                                                <option value="2" `+ option_2 +`>Com diferença</option>
+                                                <option value="3" `+ option_3 +`>Falta analisar</option>
+                                                <option value="4" `+ option_4 +`>Falta compor</option>
+                                        </select>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                        <input type="text" class="form-control" id="ta_obs_status_conciliacao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                            style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
+                                            name="ta_obs_status_conciliacao"
+                                            autocomplete="off" placeholder="Observação" rows="3"
+                                            value="${data.lista_contas_conciliacao[i][12]}">
+
+                                    </div>
+                                    <div class="d-flex justify-content-end w-100 mr-3 cl_div_conf_status_comp" >
+                                        <button type='button' name='btn_confirma_status_composicao'
+                                            id='btn_confirma_status_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}'
+                                            class='btn btn-rounded btn-space cl_btn_conf_status_comp'
+                                            value='${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}' title='${data.lista_contas_conciliacao[i][3]}-${data.lista_contas_conciliacao[i][10]}'>
+                                            <i class="fa-solid fa-check" style="color: #ffffff;"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                              </div>
+                            </div>
+                        `;
+
+                        let_reg = [
+                            /* 0 - cod_estrutura */let_img_btn_status + ' ' + data.lista_contas_conciliacao[i][2],
+                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5],
+                            /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
+                            /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
+                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] + `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
+                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+ `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
+                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden" id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
+                            /* 9 */let_btn_status,
+                            /* 10 */let_btn_detalhes_conta,
+                            /* 11 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+                    }
+                    /*
+                    tabela.row
+                        .add(let_reg)
+                        .draw(false);
+                        */
+                }
+                $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_dados,
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                } );
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });}
+
+function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
+
+    if (let_cod_modelo_conta == 1) {
+        $("#div_titulo_dados_curto_prazo").html(`
+            <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;"></i>
+            DADOS CONTA CONTÁBIL
+        `);
+        $("#div_hr_curto_prazo").html(`
+            <hr class="hr_title">
+        `);
+        $("#div_dados_curto_prazo").html(`
+            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_cp">
+                <label>
+                    Handle
+                    <input type="text" id="tx_handle_conta_cp"
+                           name="tx_handle_conta_cp" class="form-control">
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_cp">
+                <label>
+                    Código Reduzido
+                    <input type="text" id="txt_cod_red_conta_cp"
+                           name="txt_cod_red_conta_cp" class="form-control" >
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_cp">
+                <label>
+                    Estrutura
+                    <input type="text" class="form-control"
+                           id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp">
+                </label>
+            </div>
+        `);
+
+        $("#div_titulo_dados_longo_prazo").html("");
+        $("#div_hr_longo_prazo").html("");
+        $("#div_dados_longo_prazo").html("");
+
+
+        $("#li_cad_conta_2").html(`
+            <a class="nav-link" id="a_tab_documentos" data-toggle="tab"
+               href="#div_tab_contratos" role="tab"
+               aria-controls="div_tab_contratos"
+               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
+                <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                Documentos
+            </a>
+        `);
+        $("#div_tab_contratos").html("");
+        $("#div_tab_contratos").html(`
+            <div id="div_tab_doc_contas_modelo_1" class="form-group  cl_div_tabela_principal_pagina w-100">
+
+
+            </div>
+        `);
+
+    }
+    else if (let_cod_modelo_conta == 2) {
+        $("#div_titulo_dados_curto_prazo").html("");
+        $("#div_hr_curto_prazo").html("");
+        $("#div_dados_curto_prazo").html("");
+
+        $("#div_titulo_dados_longo_prazo").html("");
+        $("#div_hr_longo_prazo").html("");
+        $("#div_dados_longo_prazo").html("");
+
+        $("#li_cad_conta_2").html("");
+        $("#div_tab_contratos").html("");
+
+    }
+    else if (let_cod_modelo_conta == 3 ) {
+        $("#div_titulo_dados_curto_prazo").html(`
+            <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;"></i>
+            DADOS CONTA CONTÁBIL CURTO PRAZO
+        `);
+        $("#div_hr_curto_prazo").html(`
+            <hr class="hr_title">
+        `);
+        $("#div_dados_curto_prazo").html(`
+            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_cp">
+                <label>
+                    Handle C.P.
+                    <input type="text" id="tx_handle_conta_cp"
+                           name="tx_handle_conta_cp" class="form-control">
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_cp">
+                <label>
+                    Código Reduzido C.P.
+                    <input type="text" id="txt_cod_red_conta_cp"
+                           name="txt_cod_red_conta_cp" class="form-control" >
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_cp">
+                <label>
+                    Estrutura C.P.
+                    <input type="text" class="form-control"
+                           id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp">
+                </label>
+            </div>
+        `);
+
+        $("#div_titulo_dados_longo_prazo").html(`
+            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #f46424;"></i>
+            DADOS CONTA CONTÁBIL LONGO PRAZO
+        `);
+        $("#div_hr_longo_prazo").html(`
+            <hr class="hr_title">
+        `);
+        $("#div_dados_longo_prazo").html(`
+            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_lp">
+                <label>
+                    Handle L.P.
+                    <input type="text" id="tx_handle_conta_lp"
+                           name="tx_handle_conta_lp" class="form-control">
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_lp">
+                <label>
+                    Código Reduzido L.P.
+                    <input type="text" id="txt_cod_red_conta_lp"
+                           name="txt_cod_red_conta_lp" class="form-control" >
+                </label>
+            </div>
+
+            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_lp">
+                <label>
+                    Estrutura L.P.
+                    <input type="text" class="form-control"
+                           id="txt_cod_estrutura_lp" name="txt_cod_estrutura_lp">
+                </label>
+            </div>
+        `);
+        $("#li_cad_conta_2").html("");
+        $("#li_cad_conta_2").html(`
+            <a class="nav-link" id="a_tab_contratos" data-toggle="tab"
+               href="#div_tab_contratos" role="tab"
+               aria-controls="div_tab_contratos"
+               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
+                <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                Contratos
+            </a>
+        `);
+        $("#div_tab_contratos").html("");
+        $("#div_tab_contratos").html(`
+            <form id="frm_contrato" name="frm_cad_conta"
+                  class="d-flex flex-column align-items-center justify-content-between">
+
+                <div class="d-flex flex-column w-100">
+                    <label>
+                        Produto
+                        <input type="text" class="form-control" id="txt_desc_produto">
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                    <div class="d-flex flex-column w-100 cl_div_txt_num_contrato">
+                        <label>
+                            Núm. Contrato
+                            <input type="text" class="form-control" id="txt_num_contrato">
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100 cl_div_dt_emissao_contrato">
+                        <label>
+                            Data emissão
+                            <input type="date" class="form-control" id="dt_emissao_contrato">
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100 cl_div_txt_handle_contrato">
+                        <label>
+                            Handle Contrato
+                            <input type="text" class="form-control" id="txt_handle_contrato">
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100 cl_div_txt_doc_contabil">
+                        <label>
+                            Doc. contábil
+                            <input type="text" class="form-control" id="txt_doc_contabil">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100 cl_div_txt_val_nominal">
+                        <label>
+                            Valor total nominal
+                            <input type="text" class="form-control" id="txt_val_nominal">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_txt_total_liquido">
+                        <label>
+                            Valor total líquido
+                            <input type="text" class="form-control" id="txt_total_liquido">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100 cl_div_txt_dia_util">
+                        <label>
+                            Dia útil
+                            <input type="text" class="form-control" id="txt_dia_util">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_txt_qtd_parcelas">
+                        <label>
+                            Qtd. parcelas
+                            <input type="text" class="form-control" id="txt_qtd_parcelas">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_dt_primeira_parcela">
+                        <label>
+                            Data primeira parcela
+                            <input type="date" class="form-control" id="dt_primeira_parcela">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100 cl_div_txt_handle_operacao">
+                        <label>
+                            Handle Operação
+                            <input type="text" class="form-control" id="txt_handle_operacao">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_txt_desc_operacao">
+                        <label>
+                            Operação
+                            <input type="text" class="form-control" id="txt_desc_operacao">
+                        </label>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_chk_atualiza_com_benner">
+                        <label class="col-form-label text-white text-left cursor-pointer"
+                               for="chk_atualiza_com_benner">
+                            Atualiza com o Benner ?</label>
+                        <div class="container">
+                            <input type="checkbox" checked="checked" class="checkbox"
+                                   name="chk_atualiza_com_benner"
+                                   id="chk_atualiza_com_benner">
+                            <label class="switch" for="chk_atualiza_com_benner">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_btn_cadastra_novo_contrato">
+                        <button type='button' id="btn_cadastra_novo_contrato"
+                                name="btn_cadastra_novo_contrato"
+                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                value="0">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>Associar contrato</span>
+                        </button>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_btn_importar_contrato_benner">
+                        <button type='button' id="btn_importar_contrato_benner"
+                                name="btn_importar_contrato_benner"
+                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                value="0">
+                            <i class="fa-solid fa-file-import"></i>
+                            <span>Importar todos contratos</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100 cl_div_txt_num_contrato_importa">
+                        <label>
+                            Importar este contrato
+                            <input type="text" checked="checked" class="form-control"
+                                   name="txt_num_contrato_importa"
+                                    id="txt_num_contrato_importa">
+                        </label>
+
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_btn_importa_contrato_pelo_num">
+                        <button type='button' id="btn_importa_contrato_pelo_num"
+                                name="btn_importa_contrato_pelo_num"
+                                class="mr-1 btn btn-primary btn-rounded cl_btn_importa_contrato_pelo_num"
+                                value="0">
+                            <i class="fa-solid fa-file-import"></i>
+                        </button>
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                </div>
+            </form>
+            <div  id="div_contratos" class="d-flex justify-content-between align-items-between w-100">
+            </div>
+
+        `);
+
+    }
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
+        data: {
+            'tipo_rel'           :   'C',
+            'cod_modelo_conta'   :   let_cod_modelo_conta
+        },
+        dataType: 'json',
+        success: function (data) {
+            $("#cb_contas option").remove();
+            data.lista_contas.forEach(conta => {
+                $("#cb_contas").append("<option value='"+
+                conta.cod_conta+"'>"+conta.desc_conta+" - Cód. red. CP - "+conta.cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_red_conta_contabil_lp+"</option>");
+
+            });
+            $("#cb_contas").selectpicker('refresh');
+
+            $("#cb_pacote_conta option").remove();
+            data.lista_pacotes_conta.forEach(pac => {
+                $("#cb_pacote_conta").append("<option value='"+
+                pac.cod_pacote_conta+"'>"+pac.desc_pacote_conta+"</option>");
+
+            });
+            $("#cb_pacote_conta").selectpicker('refresh');
+
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+
+}
+
+function atualiza_doc_contas_modelo_1(cod_conta){
+    loader.style.display = "flex";
+    $.ajax({
+        type : 'GET',
+        data : {
+            'cod_conta' : cod_conta
+        },
+        url: '/contabil_composicao_app/retorna_lista_docs_contas_modelo_1',
+        success: function(dados) {
+            let let_tabela = `
+                <table id="tab_arq_conta_mod_1"  class="display wrap w-100 cl_tab_principal_pagina">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Importado em:</th>
+                            <th scope="col">Nome arquivo</th>
+                            <th scope="col">Caminho</th>
+                            <th scope="col">Qtd. registros</th>
+                            <th scope="col">Competência</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Val. relatório(R$)</th>
+                            <th scope="col">Val. razão(R$)</th>
+                            <th scope="col">Excluir</th>
+                          </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+
+                </table>
+            `;
+            $("#div_tab_doc_contas_modelo_1").html(let_tabela);
+            $("#tab_arq_conta_mod_1").DataTable( {
+                "bJQueryUI": true,
+                "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "50vh", //770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": false,
+                //"pageLength": 7,
+                "searching": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
+                "columns": [
+                    { title: "" },
+                    { title: "Importado em:" },
+                    { title: "Nome arquivo" },
+                    { title: "Caminho" },
+                    { title: "Qtd. registros" },
+                    { title: "Competencia" },
+                    { title: "Usuário" },
+                    { title: "Val. relatório(R$)" },
+                    { title: "Val. razão(R$)" },
+                    { title: "Excluir" }
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": [0,2,3]},
+                    {"className": "dt-left", "targets": [1]}
+                ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+            });
+            let let_lista_docs = [];
+            dados.registros_tabela.forEach( reg => {
+                let let_btn_exclui_arquivo = `
+                    <button type="button" name="btn_exclui_arq_conta_mod_1"
+                        id="btn_exclui_arq_conta_mod_1_${reg.cod_arquivo}"
+                        class="btn btn-rounded btn-space"
+                        value="${reg.cod_arquivo}">
+                        <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                    </button>
+                `;
+                let let_dt_imp = reg.data_imp.split('-')[2] + '-' + reg.data_imp.split('-')[1] +
+                    '-' + reg.data_imp.split('-')[0]
+
+                let let_dt_comp = reg.data_competencia.split('-')[2] + '-' + reg.data_competencia.split('-')[1] +
+                    '-' + reg.data_competencia.split('-')[0]
+
+                reg = [
+                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    let_dt_imp,
+                    reg.nome_arqv_original,
+                    reg.nome_arquivo_importado,
+                    reg.qtd_reg_imp,
+                    let_dt_comp,
+                    reg.usuario,
+                    reg.val_relatorio,
+                    reg.val_total_razao,
+                    let_btn_exclui_arquivo
+                ];
+                let_lista_docs.push(reg);
+            });
+
+
+            $("#tab_arq_conta_mod_1").DataTable( {
+                "bJQueryUI": true,
+                "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "50vh", //770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": false,
+                //"pageLength": 7,
+                "searching": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
+                "data":let_lista_docs,
+                "columns": [
+                    { title: "" },
+                    { title: "Importado em:" },
+                    { title: "Nome arquivo" },
+                    { title: "Caminho" },
+                    { title: "Qtd. registros" },
+                    { title: "Competencia" },
+                    { title: "Usuário" },
+                    { title: "Val. relatório(R$)" },
+                    { title: "Val. razão(R$)" },
+                    { title: "Excluir" }
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": [0,2,3]},
+                    {"className": "dt-left", "targets": [1]}
+                ],
+                "language": {
+                    "decimal": ",",
+                    "thousands": ".",
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+            });
+            loader.style.display = "none";
+        },
+        error: function(request, status, error){
+            loader.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+}
+
+
+function gera_conciliacao_comp_benner_auditoria(){
+    let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
+    let let_competencia = $("#dt_conciliacao_comp_benner").val();
+
+    let cod_modelo_selecionado = 0;
+    if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
+        cod_modelo_selecionado = 1;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is(':checked') == true){
+        cod_modelo_selecionado = 2;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is(':checked') == true){
+        cod_modelo_selecionado = 3;
+    }
+
+
+    loader.style.display = "flex";
+    $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
+            data: {
+                'cod_modelo_selecionado' : cod_modelo_selecionado,
+                'cod_conta'     :   let_cod_conta,
+                'competencia'   :   let_competencia,
+                'tipo_visualizacao' :   'A'
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#tab_conciliacao_composicao_benner_aud").dataTable().fnClearTable();
+                $("#tab_conciliacao_composicao_benner_aud").dataTable().fnDestroy();
+                //const tabela = new DataTable("#tab_conciliacao_composicao_benner_aud");
+
+                let let_lista_dados_conciliacao = [];
+                let let_lista_dados = [];
+                for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
+                    let let_img = `
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                    `;
+
+                    if( cod_modelo_selecionado == 1 ) {
+
+                        let let_btn_detalhes_conta = `
+                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                    name="btn_detalhes_conta"
+                                    class="btn btn-rounded btn-space"
+                                    value="${data.lista_contas_conciliacao[i][0]}"
+                                    title="${data.lista_contas_conciliacao[i][3]}">
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if(data.lista_contas_conciliacao[i][7] != '0'){
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][7]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][7]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+                        }
+
+                        let_reg = [
+                            /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
+                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
+                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
+                            /* 8 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
+                            /* 10 */let_btn_detalhes_conta,
+                            /* 11 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+                    }
+                    else if( cod_modelo_selecionado == 3 ) {
+
+                        let let_btn_detalhes_conta = `
+                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                    name="btn_detalhes_conta"
+                                    class="btn btn-rounded btn-space"
+                                    value="${data.lista_contas_conciliacao[i][0]}"
+                                    title="${data.lista_contas_conciliacao[i][3]}">
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                            </button>
+
+                        `;
+                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                            title='Não há Documento Anexado'></i>`;
+                        if(data.lista_contas_conciliacao[i][11] != '0'){
+                            let_btn_visualiza_doc = `
+                                <button type='button' name='btn_visualiza_doc_contrato'
+                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11]}'
+                                    class='btn btn-rounded btn-space'
+                                    value='${data.lista_contas_conciliacao[i][11]}' title='Visualizar Documento Anexado'>
+                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                </button>
+                            `;
+                        }
+
+                        let_reg = [
+                            /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
+                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5],
+                            /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
+                            /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
+                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] + `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
+                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+ `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
+                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden" id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
+                            /* 9 */let_btn_detalhes_conta,
+                            /* 10 */let_btn_visualiza_doc
+                        ];
+                        let_lista_dados.push(let_reg);
+                    }
+                        /*
+                    tabela.row
+                        .add(let_reg)
+                        .draw(false);
+                       */
+                }
+                $("#tab_conciliacao_composicao_benner_aud").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_dados,
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                } );
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });}
+
+
+
+
+
+
+/*
+Funciton oficial
+function gera_conciliacao_comp_benner_detalhado(){
+    let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
+    let let_competencia = $("#dt_conciliacao_comp_benner").val();
+
+    let cod_modelo_selecionado = 0;
+    if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
+        cod_modelo_selecionado = 1;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is(':checked') == true){
+        cod_modelo_selecionado = 2;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is(':checked') == true){
+        cod_modelo_selecionado = 3;
+    }
+
+
+    loader.style.display = "flex";
+    $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
+            data: {
+                'cod_modelo_selecionado' : cod_modelo_selecionado,
+                'cod_conta'     :   let_cod_conta,
+                'competencia'   :   let_competencia,
+                'tipo_visualizacao' :   'D'
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#tab_conciliacao_composicao_benner_detalhado").DataTable().clear().draw();
+                let let_lista_dados_conciliacao = [];
+
+                data.lista_contas_conciliacao.forEach( conta => {
+                    let let_img = `
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                    `;
+                    let let_desc_status_comp = '';
+                    let option_0 = '';
+                    let option_1 = '';
+                    let option_2 = '';
+                    let option_3 = '';
+                    let option_4 = '';
+                    let let_img_btn_status = '';
+
+                    if(conta.cod_status_auditoria_comp == 0) {
+                        option_0 = `selected="selected"`;
+                        let_desc_status_comp = `title='Sem status informado'`
+                        let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='Sem status informado'></i>`
+                    } else if(conta.cod_status_auditoria_comp == 1) {
+                        let_desc_status_comp = `title='Status: OK / Obs.: ${conta.obs_status_auditoria_comp}'`;
+                        option_1 = 'selected="selected"';
+                        let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='Status: OK / Obs.: ${conta.obs_status_auditoria_comp}'></i>`;
+                    } else if(conta.cod_status_auditoria_comp == 2) {
+                        let_desc_status_comp = `title='Status: Com diferença / Obs.: ${conta.obs_status_auditoria_comp}'`;
+                        option_2 = 'selected="selected"';
+                        let_img_btn_status = `<i class="fa-solid fa-not-equal fa-xl" style="color:#FF0000;" title='Status: Com diferença / Obs.: ${conta.obs_status_auditoria_comp}'></i>`;
+                    } else if(conta.cod_status_auditoria_comp == 3) {
+                        let_desc_status_comp = `title='Status: Falta analisar / Obs.: ${conta.obs_status_auditoria_comp}'`;
+                        option_3 = 'selected="selected"';
+                        let_img_btn_status = `<i class="fa-solid fa-arrows-rotate fa-xl" title='Status: Falta analisar / Obs.: ${conta.obs_status_auditoria_comp}'></i>`;
+                    } else if(conta.cod_status_auditoria_comp == 4) {
+                        let_desc_status_comp = `title='Status: Falta compor / Obs.: ${conta.obs_status_auditoria_comp}'`;
+                        option_4 = 'selected="selected"';
+                        let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${conta.obs_status_auditoria_comp}'></i>`;
+                    }
+                    let let_btn_detalhes_conta = `
+                        <button type='button' id="btn_detalhes_conta_${conta.cod_conta} "
+                                name="btn_detalhes_conta"
+                                class="btn btn-rounded btn-space"
+                                value="${conta.cod_conta}"
+                                title="${conta.desc_conta}">
+                            <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                        </button>
+
+                    `;
+                    let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                        title='Não há Documento Anexado'></i>`;
+                    if(conta.cod_anexo_contrato_competencia != '0'){
+                        let_btn_visualiza_doc = `
+                            <button type='button' name='btn_visualiza_doc_contrato'
+                                id='btn_visualiza_doc_contrato_${conta.cod_anexo_contrato_competencia}'
+                                class='btn btn-rounded btn-space'
+                                value='${conta.cod_anexo_contrato_competencia}' title='Visualizar Documento Anexado'>
+                                <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                            </button>
+                        `;
+                    }
+
+
+                    let let_btn_status = `
+                        <div class="btn-group dropleft" >
+                          <button type="button" class="btn btn-rounded btn-space"
+                            id="btn_status_comp_${conta.tipo_prazo}_${conta.cod_contrato}"
+                            name="btn_status_comp"
+                            aria-haspopup="true" aria-expanded="false"
+                            data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
+                            ` + let_desc_status_comp + `>
+                            <i class="fa-solid fa-caret-down" style="color: #f46424;"></i>
+                          </button>
+                          <div class="dropdown-menu" style="box-shadow: 2px 2px 2px 1px rgba(0, 0, 0.7, 0.7); background:#f46424;">
+                          <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 0.75rem; color: #ffffff;">
+                                <i class="fa-solid fa-thumbtack fa-sm" style="color: #ffffff;margin-top: 0.5rem;"></i>
+                                Status composição
+                            </div>
+                            <form id="frm_status_conciliacao" name="frm_status_conciliacao"  method="POST"
+                            class="d-flex flex-column align-items-center justify-content-between">
+                                <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                    <select class="form-select form-select-sm" id="cb_status_conciliacao_${conta.tipo_prazo}_${conta.cod_contrato}"
+                                        name="cb_status_conciliacao"
+                                        style="color: #000000; font-size: 11px">
+                                            <option value="0" `+ option_0 +`>Selecione o status</option>
+                                            <option value="1" `+ option_1 +`>OK</option>
+                                            <option value="2" `+ option_2 +`>Com diferença</option>
+                                            <option value="3" `+ option_3 +`>Falta analisar</option>
+                                            <option value="4" `+ option_4 +`>Falta compor</option>
+                                    </select>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
+                                    <input type="text" class="form-control" id="ta_obs_status_conciliacao_${conta.tipo_prazo}_${conta.cod_contrato}"
+                                        style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
+                                        name="ta_obs_status_conciliacao"
+                                        autocomplete="off" placeholder="Observação" rows="3"
+                                        value="${conta.obs_status_auditoria_comp}">
+
+                                </div>
+                                <div class="d-flex justify-content-end w-100 mr-3 cl_div_conf_status_comp" >
+                                    <button type='button' name='btn_confirma_status_composicao'
+                                        id='btn_confirma_status_composicao_${conta.tipo_prazo}_${conta.cod_contrato}'
+                                        class='btn btn-rounded btn-space cl_btn_conf_status_comp'
+                                        value='${conta.tipo_prazo}_${conta.cod_contrato}' title='${conta.desc_conta}-${conta.tipo_prazo}'>
+                                        <i class="fa-solid fa-check" style="color: #ffffff;"></i>
+                                    </button>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+
+                    `;
+
+                    let let_reg = [
+                        let_img_btn_status + ' ' + conta.cod_estrutura,
+                        conta.cod_red,
+                        conta.desc_conta,
+                        conta.num_contrato,
+                        conta.doc_contabil,
+                        conta.tipo_prazo,
+                        conta.val_comp+ `<input type="hidden" id="txt_val_composicao_${conta.tipo_prazo}_${conta.cod_contrato}" readonly value="${conta.val_comp}" style="text-align: right;"/>`,
+                        conta.val_balancete+ `<input type="hidden" id="txt_val_balancete_${conta.tipo_prazo}_${conta.cod_contrato}" readonly value="${conta.val_balancete}" style="text-align: right;"/>`,
+                        conta.val_dif_comp_balanc+`<input type="hidden" id="txt_val_diferenca_${conta.tipo_prazo}_${conta.cod_contrato}" readonly value="${conta.val_dif_comp_balanc}" style="text-align: right;"/>`,
+                        let_btn_status,
+                        let_btn_detalhes_conta,
+                        let_btn_visualiza_doc
+                    ];
+                    let_lista_dados_conciliacao.push(let_reg);
+                });
+                $('#tab_conciliacao_composicao_benner_detalhado').DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": "400px",
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_dados_conciliacao,
+                    "columns": [
+                        { title: "Estrutura",
+                          class: "details-column-estrutura-tab-conc-det"},
+                        { title: "Cód red",
+                          class: "details-column-cod-red-tab-conc-det"},
+                        { title: "Conta",
+                          class: "details-column-conta-tab-conc-det"},
+                        { title: "Contrato",
+                          class: "details-column-contrato-tab-conc-det"},
+                        { title: "Doc Cont",
+                          class: "details-column-desc-conta-tab-conc-det"},
+                        { title: "Tipo prazo",
+                          class: "details-column-tipo-prazo-tab-conc-det"},
+                        { title: "Composição",
+                          class: "details-column-val-comp-tab-conc-det"},
+                        { title: "Balancete",
+                          class: "details-column-val-bal-tab-conc-det"},
+                        { title: "Diferença",
+                          class: "details-column-val-dif-tab-conc-det"},
+                        { title: "Status",
+                          class: "details-column-auditoria-conta-tab-conc-det"},
+                        { title: "Detalhes",
+                          class: "details-column-details-conta-tab-conc-det"},
+                        { title: "Documento",
+                          class: "details-column-details-conta-tab-conc-det"}
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0, 1, 2]},
+                        {"className": "dt-center", "targets": [3, 4, 5, 9, 10, 11]},
+                        {"className": "dt-right", "targets": [6, 7, 8]}
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        }
+                    }
+                });
+                loader.style.display = "none";
+            },
+            error: function (request, status, error) {
+                loader.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });}
+
+
+
+*/

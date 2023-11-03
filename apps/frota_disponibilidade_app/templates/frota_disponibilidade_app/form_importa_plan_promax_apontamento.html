@@ -1,0 +1,203 @@
+{% load static %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-file-arrow-down fa-2xl" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Importa Arquivos Disponibilidade Frota</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <form id="formUploadArquivosDisponibilidadeFrota" name="formUploadArquivosDisponibilidadeFrota"
+              method="POST" enctype="multipart/form-data"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div class="d-flex flex-column w-75">
+                    <input type="file" name="campoArquivoImpArqDispFrota" id="campoArquivoImpArqDispFrota"
+                           class="containerApp"
+                           placeholder='Selecione um arquivo 2art válido...'
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                </div>
+
+                <div class="d-flex flex-column">
+                    <button type="button" name="btnNovoImportaArquivoDispFrota" id="btnNovoImportaArquivoDispFrota"
+                            class="btn btn-primary btn-rounded botaoPrincipal" disabled="disabled">
+                        <i class="fa-regular fa-file"></i>
+                        Novo Arquivo
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                    <button type="button" name="btnImportaArquivoDispFrotaRota" id="btnImportaArquivoDispFrotaRota"
+                            class="btn btn-primary btn-rounded botaoPrincipal" disabled="disabled">
+                        <i class="fa-solid fa-file-import"></i>
+                        Importar Arq. Apontamento Promax(Rota)
+                    </button>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <button type="button" name="btnImportaArquivoDispFrotaEmp" id="btnImportaArquivoDispFrotaEmp"
+                            class="btn btn-primary btn-rounded botaoPrincipal" disabled="disabled">
+                        <i class="fa-solid fa-file-import"></i>
+                        Importar Arq. Apontamento Promax(Empilhadeira)
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-8">
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                    <button type='button' class='btn btn-primary btn-rounded botaoPrincipal'
+                            id="btnModalCadastroSiglaFormDispFrota" name="btnModalCadastroSiglaFormDispFrota">
+                        <i class="fa-brands fa-wpforms"></i>
+                        Siglas
+                        </span>
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;padding-left: 0.25rem;">
+                    <button type='button' class='btn btn-primary btn-rounded botaoPrincipal'
+                            id="btnModalCadastroGrupoFormDispFrota" name="btnModalCadastroGrupoFormDispFrota">
+                        <i class="fa-solid fa-sitemap"></i>
+                        Grupos
+                        </span>
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <button type='button' class='btn btn-primary btn-rounded botaoPrincipal'
+                            id="btnModalPesquisaDadosDispFrota" name="btnModalPesquisaDadosDispFrota">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisa
+                        </span>
+                    </button>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3" >
+                <div class="d-flex flex-column w-100 cl_div_loader">
+                    <div class="loader" id="loader_imp_plan_promax">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+
+            </div>
+
+        </form>
+        <input type="hidden" name="hd_indica_conteudo_na_tabela" id="hd_indica_conteudo_na_tabela" value="0">
+        <input type="hidden" name="hd_cod_projeto_pesq_apont_promax" id="hd_cod_projeto_pesq_apont_promax" value="0">
+        <input type="hidden" name="hd_periodo_pesq_apont_promax" id="hd_periodo_pesq_apont_promax" value="0">
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 1rem;">
+                <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;font-size"></i>
+                Importação Rota
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex flex-column w-100">
+                <table id="tabConteudoArquivoImportadoApontPromax"  class="display wrap w-100 cl_tab_principal_pagina">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Placa</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Nº OS</th>
+                        <th scope="col">Justificativa</th>
+                        <th scope="col">Sigla</th>
+                        <th scope="col">Grupo Insdispobilidade</th>
+                        <th scope="col">Projeto</th>
+                        <th scope="col">Importado ?</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 1rem;">
+                <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;font-size"></i>
+                Importação Empilhadeiras
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex flex-column w-100">
+                <table id="tabConteudoArquivoImportadoApontPromaxEmp"  class="display wrap w-100 cl_tab_principal_pagina">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Turno</th>
+                        <th scope="col">Placa</th>
+                        <th scope="col">Nº OS</th>
+                        <th scope="col">Justificativa</th>
+                        <th scope="col">Sigla</th>
+                        <th scope="col">Projeto</th>
+                        <th scope="col">Importado ?</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'frota_disponibilidade_app/modais_form_importa_plan_promax_apontamento.html' %}
+
+<script src="{% static 'controllers/frota_disponibilidade_app/form_importa_plan_promax_apontamento_controller.js' %}"></script>
+

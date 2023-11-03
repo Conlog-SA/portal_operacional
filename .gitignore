@@ -1,0 +1,6 @@
+.idea
+*.sqlite3
+venv
+*.pyc
+proj_portal_operacional/__pycache__/
+media/docs/

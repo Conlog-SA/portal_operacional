@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %} {% endblock %}</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Icones -->
+	<script src="https://kit.fontawesome.com/5fe49f09c0.js" crossorigin="anonymous"></script>
+	<!--
+    <link rel="stylesheet" href="{% static 'libs/fontawesome_6_4/fontawesome.css' %}" />
+    -->
+
+    <!-- Importação dos arquivos CSS customizados utilizados -->
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/normalize.css' %}"/>
+    <!-- Icone utilizado -->
+    <link rel="icon" href="{% static 'icons/logo-laranja.png' %}" />
+    <!--
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    -->
+    <link type="text/css" href="{% static 'libs/bootstrap_5_2_0_beta_1/css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+    <!-- Importação CSS notificações -->
+    <link rel="stylesheet" href="{% static 'libs/jquery_gritter_notifications_1_7_4/css/jquery_gritter.css' %}">
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+
+    {% block link_static_css %} {% endblock %}
+    {% block link_js %} {% endblock %}
+</head>
+<body>
+{% block cabecalho %} {% endblock %}
+
+{% block conteudo %}
+{% endblock %}
+
+
+
+
+{% block rodape %}{% endblock %}   
+
+
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>  -->
+
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script> -->
+
+<!-- Importação JQuery -->
+<script src="{% static 'libs/jquery_3_6_0/js/jquery_3_6_0.js' %}"></script>
+<script src="{% static 'libs/popper/popper.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap_5_2_0_beta_1/js/bootstrap.min.js' %}"></script>
+<script src="{% static 'libs/jquery_gritter_notifications_1_7_4/js/jquery_gritter.js' %}"></script>
+
+
+<!-- Bibliotecas Table-->
+<script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.min.js' %}"></script>
+<script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.buttons.min.js' %}"></script>
+<script defer src="{% static 'libs/jquery_3_6_0/js/jszip.min.js' %}"></script>
+<script defer src="{% static 'libs/jquery_3_6_0/js/vfs_fonts.js' %}"></script>
+<script defer src="{% static 'libs/jquery_3_6_0/js/buttons.html5.min.js' %}"></script>
+
+
+<!-- Importação Fontawesome
+<script src="{% static 'libs/fontawesome_6_4/js/fontawesome.js' %}"></script>
+-->
+
+
+
+{% block link_static_js %}
+
+{% endblock %}
+
+
+{% block base_controllers_apps_js %} {% endblock %}
+
+{% block models %}{% endblock %}
+
+
+
+</body>
+</html>

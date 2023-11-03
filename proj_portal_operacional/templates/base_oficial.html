@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title> {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="{% static '/img/simbol_conlog.png' %}" type="image/x-icon" />
+
+
+    {% block link_static_css %} {% endblock %}
+    {% block estilizacao_css %} {% endblock %}
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+</head>
+<body>
+    {% block cabecalho %} {% endblock %}
+    {% block conteudo %} {% endblock %}
+    {% block arquivos_js %} {% endblock %}
+    {% block base_controllers_apps_js %} {% endblock %}
+    {% block base_controllers_pagina_js %} {% endblock %}
+    {% block models %}{% endblock %}
+
+
+{% include 'app_gente_gestao_fluxo_punitivo/models_fluxo_punitivo.html' %}
+{% include 'app_frota_disponibilidade_empilhadeira/models_disponibilidade_empilhadeira.html' %}
+{% include 'app_cco_sinistros/forms_modais_sinistros.html' %}
+{% include 'app_transferencia_avarias/forms_modais_transf_avarias.html' %}
+{% include 'app_gente_gestao_ocorrencias_jornada/modais_gente_gestao_ocorrencias_jornada.html' %}
+{% include 'app_suprimentos_evolucao_precos/modais_suprimentos_evolucao_precos.html' %}
+{% include 'app_suprimentos_justifica_preco_diesel/modais_suprimentos_justifica_preco_diesel.html' %}
+{% include 'app_frota_vpo/modais_form_vincula_roteiros_pecas.html' %}
+{% include 'app_contabil_operacoes_farol_ndd/modais_form_operacoes_farol_ndd.html' %}
+
+
+</body>
+</html>

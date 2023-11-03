@@ -1,0 +1,132 @@
+{% load static %}
+
+{% block link_static_css %} 
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/usuario_app/cadastro_usuarios.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-users fa-2xl" alt="Usuários" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Cadastro de Usuários</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+    
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+
+    <div class="d-flex justify-content-around containerApp h-100">
+        <div class="main-content containerApp  d-flex justify-content-center align-items-center mb-4 cadastro_containerForm" style="width: 30%; ">
+            <form id="frm_cad_usu" name="frm_cad_usu"  method="POST" class="d-flex flex-column justify-content-center containerApp align-items-center">
+                {% csrf_token %}
+
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                    <div class="form__group field" style="width: 50%;">
+                        <input type="hidden" name="hd_id_usu_editar" id="hd_id_usu_editar">
+                        <input type="text" class="form-control"  name="txt_nome_usu" id="txt_nome_usu"
+                            placeholder="Nome do Usuário" >
+                    </div>
+
+                    <div class="form__group field" style="width: 45%;">
+                        <input type="text" class="form-control"  name="txt_login_usu" id="txt_login_usu"
+                                placeholder="Login do Colaborador" >
+                    </div>
+                    
+                </div>
+                
+                <div class="w-100 d-flex justify-content-around align-items-center">
+                    <div class="form__group field mt-3" style="width: 100%;">
+                        <input type="text" class="form-control"  name="txt_email_usu" id="txt_email_usu"
+                            placeholder="Email do Colaborador">
+                    </div>
+                </div>
+
+                <div class="form__group field w-100 mt-3">
+                    <select class="selectpicker form-control" id="cb_filial_usu" name="cb_filial_usu" style="color: #999999; font-size: 20px; height: 54.65px" data-live-search="true">
+                        <option value="0" selected="selected">-- Selecione a filial --</option>
+                        {% for f in lista_filiais %}
+                            <option class="text-capitalize " value="{{ f.cod_filial }}">{{ f.desc_filial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form__group field w-100 mt-3">
+                    <select name="cb_perfil_usu" id="cb_perfil_usu"
+                        class="form-control selectpicker " style="color: #999999; font-size: 20px; height: 54.65px">
+                    <option value="0" selected="selected">-- Selecione o perfil --</option>
+                        <option class="text-capitalize " value="A">Administrador</option>
+                        <option class="text-capitalize " value="C">Colaborador</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-around align-items-center">
+                    <div class="d-flex flex-column" style="margin-right:2rem;">
+                        <label class="text-white col-form-label text-left cursor-pointer" for="chk_ativa_usu">Ativo?</label>
+                        <div class="container">
+                            <input type="checkbox" checked="checked" class="checkbox" name="chk_ativa_usu"
+                            id="chk_ativa_usu">
+                            <label class="switch" for="chk_ativa_usu">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-column ">
+                        <label class="col-form-label text-white text-left cursor-pointer" for="chk_ativa_corporativo">Corporativo?</label>
+                        <div class="container">
+                            <input type="checkbox" checked="checked" class="checkbox" name="chk_ativa_corporativo"
+                            id="chk_ativa_corporativo">
+                            <label class="switch" for="chk_ativa_corporativo">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>        
+
+                <div class="form__group field d-flex pt-4 justify-content-around align-items-center">
+
+                    <button type='button' class='btn btn-lg btn-primary btn-rounded botaoPrincipal' style="margin-right:2rem;" id="btn_novo_usu" name="btn_novo_usu">
+                        <i class="fa-solid fa-eraser" style="color: #FFF; margin-right:0.8rem;"></i>
+                        Limpar
+                    </button>
+
+                    <button type='button' class='btn btn-lg btn-primary btn-rounded botaoPrincipal'id="btn_add_usu" name="btn_add_usu">
+                        <i class="fa-solid fa-floppy-disk" style="color: #FFF; margin-right:0.8rem;"></i>
+                        Salvar
+                    </button>
+
+                </div>
+                
+                
+            </form>
+        </div>    
+        <div class="form-group  cl_div_tabela_principal_pagina" style="width: 70%;">
+            <table id="tab_usuarios"  class="display wrap w-100 cl_tab_principal_pagina" style="overflow-x: scroll; display: block;"><!-- -->
+                <thead>
+                    <tr>   
+                        <th scope="col" align="left" style="color: grey">Ativo?</th>
+                        <th scope="col" align="left" style="color: grey">Nome Usuário</th>
+                        <th scope="col" align="left" style="color: grey">Filial</th>
+                        <th scope="col" align="left" style="color: grey">Perfil</th>
+                        <th scope="col" align="left" style="color: grey">Tipo Acesso</th>
+                        <th scope="col" align="left" style="color: grey">Login</th>
+                        <th scope="col" align="left" style="color: grey">Email</th>
+                        <th scope="col" align="center" style="color: grey">Editar</th>
+                        </tr>
+                </thead>
+                    <tbody>
+
+                    </tbody> 
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'controllers/usuario_app/form_cad_usuario_controller.js' %}"></script>
+
+
+  

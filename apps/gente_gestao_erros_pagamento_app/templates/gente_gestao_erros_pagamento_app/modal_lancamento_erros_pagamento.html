@@ -1,0 +1,185 @@
+{% load static %}
+
+<div id="modal_novo_lancamento" role="dialog" class="modal">
+    <div class="modal-dialog modal_erros_pagamento">
+        <div class="modal-content" style="border-radius: 10px;">
+            <div class="modal-header" style="background-color:#f26522;">
+                <div class="col-md-9" align="left" id=>
+                    <i class="fa-solid fa-sack-xmark fa-2xl" alt="Erros de pagamento"></i>
+                    <span>Novo Lançamento</span>
+                </div>
+
+                <div class="col-md-3" align="right">
+                    <button type="button" name="btn_fecha_modal_novo_lancamento" id="btn_fecha_modal_novo_lancamento" class="btn_fecha_modal">
+                        <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-body d-flex flex-column justify-content-center align-items-between">
+                <form class="d-flex flex-column justify-content-center align-items-between" id="form_novo_lancamento">  
+                    <div class="d-flex justify-content-between align-items-end w-100">
+                        <div class="d-flex flex-column justify-content-between align-items-start w-100">
+                            <label class="labelBotoes" style="color:#000;">Colaborador <font style="color:#f46424">*</font></label>
+                            <select required class="selectpicker form-control" id="geg_ep_colaborador_erro" name="geg_ep_colaborador_erro"  data-live-search="true" title="Selecione o colaborador"></select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-end w-100 mt-2">
+                        <div class="d-flex flex-column justify-content-between align-items-start mt-2">
+                            <label class="labelBotoes" style="color:#000;">Verba <font style="color:#f46424">*</font></label>
+                            <select required class="selectpicker form-control " id="geg_ep_verba_lancamento" name="geg_ep_filial_lanca_erro"  data-live-search="true" title="Selecione a verba">
+                                {% for verba in lista_obj_verbas %}
+                                <option value="{{ verba.cod_verba }}">{{ verba.desc_verba }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="d-flex flex-column ">
+                            <label for="input_valor_lancamento"  class="labelBotoes" style="color:#000;">Valor (R$) <font style="color:#f46424">*</font></label>
+                            <input type="number" id="input_valor_lancamento" required step='0.01' value='0,00' placeholder='0.00'autocomplete="off" class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+
+                
+                        <div class="d-flex flex-column ">
+                            <label class="col-form-label text-left cursor-pointer" style="color:#000;" for="chk_resolvido">Resolvido?</label>
+                            <div class="container">
+                                <input type="checkbox" checked="checked" class="checkbox" name="chk_resolvido"
+                                id="chk_resolvido">
+                                <label class="switch" for="chk_resolvido">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                    </div>
+            
+                    <div class="d-flex justify-content-between align-items-end w-100 mt-3">
+                        <div class="d-flex flex-column margin_right1rem">
+                            <label for="competencia_lancamento" class="labelBotoes" style="color:#000;">Competência <font style="color:#f46424">*</font></label>
+                            <input required type="month" class="form-control " id="competencia_lancamento">
+                        </div>
+
+                        <div class="d-flex flex-column margin_right1rem">
+                            <label for="prazo_lancamento" class="labelBotoes" style="color:#000;">Prazo <font style="color:#f46424">*</font></label>
+                            <input required type="date" class="form-control " id="prazo_lancamento">
+                        </div>
+
+                        <div class="d-flex flex-column ">
+                            <label for="txt_responsavel" class="labelBotoes" style="color:#000;">Responsável <font style="color:#f46424">*</font></label>
+                            <input  type="text" id="txt_responsavel" disabled  class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-1" style="color: #000; text-align:left;">
+                        <label for="text_area_duvida">Dúvida <font style="color:#f46424">*</font></label>
+                        <textarea required class="form-control" id="text_area_duvida" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group mt-1" style="color: #000; text-align:left;">
+                        <label for="text_area_acao">Ação <font style="color:#f46424">*</font></label>
+                        <textarea required class="form-control" id="text_area_acao" rows="3"></textarea>
+                    </div>
+                    <div class="form-group mt-1" style="color: #000; text-align:left;">
+                        <label for="text_area_obs">Observação</label>
+                        <textarea class="form-control" id="text_area_obs" rows="3"></textarea>
+                    </div>
+            
+            
+                    <div class="d-flex justify-content-between align-items-center w-100 mt-2">
+                        <label class="labelBotoes" style="color:#000;"><i> <font style="color:#f46424">* Campos Obrigatórios.</font></i></label>
+
+                        <div class="loader" id="loader_modal_lancamento">
+                            <div class="loader-inner">
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button type='button' id="btn_cancela_modal_novo_lancamento" name="" class="btn btn-primary btn-rounded errosPagamento__botao margin_right1rem" >
+                            <i class="fa-solid fa-xmark"></i>
+                            <span>Cancelar</span>
+                            </button>
+                            <button type='submit' id="btn_modal_registra_erro_pagamento"
+                                    name="btn_modal_registra_erro_pagamento"
+                                    class="btn btn-primary btn-rounded errosPagamento__botao"
+                                    value="0" >
+                            <i class="fa-solid fa-check"></i>
+                            <span>Cadastrar</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal Confirma Exclusão Excecao -->
+<div id="modal_confirma_exclusao_erro_pagamento" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;width: 530px;">
+    <div class="modal-content" >
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                        padding-top: 10px;font-size:10px;">
+        <div class="form-group row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 100%;
+                            height: 30px; margin-top: 2rem;" >
+          <div class="col-md-6" align="left">
+            <p>
+              <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+            <span style="color:#ffffff; font-size:12px">Estornar Lançamento</span>
+            </p>
+
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="btnFechaModalEstornaLanErroPag"
+                    id="btnFechaModalEstornaLanErroPag"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form name="form_estorna_lanc_erro_pag" id="form_estorna_lanc_erro_pag"
+                    method="post" class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column w-100">
+              <p style="color:#000000;">Tem certeza que deseja que deseja estornar a exceção ?</p>
+                <span style="color:#fa6163; font-size:12px">* Motivo do estorno obrigatório</span>
+              <textarea class="form-control" name="textFieldMotivoEstornoLancErrosPagamento"
+                        id="textFieldMotivoEstornoLancErrosPagamento"
+                     autocomplete="off" placeholder="Motivo Estorno" rows="5" cols="33" >
+
+              </textarea>
+                <input type="hidden" name="hiddenCodRegErroPag" id="hiddenCodRegErroPag">
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column mt-3 w-100">
+              <button type="button" name="btnEstornaErroPag"
+                        id="btnEstornaErroPag"
+                        class="btn btn-primary btn-rounded botaoPrincipal" >
+                    <i class="fa-solid fa-check"></i>
+                  Estornar Registro
+              </button>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

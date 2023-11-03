@@ -1,0 +1,211 @@
+{% load static %}
+
+{% block link_static_css %} 
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/faturamento_terceiros_app/faturamento_terceiros.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-comment-dollar fa-2xl" alt="Importar 2artd" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Gerar Pagamento 2Art Terceiros</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+
+    <div class="containerApp">
+        <form id="frm_pesq_mapas_terc" name="frm_pesq_mapas_terc"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_gera_pag_terc">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex align-items-end w-75">
+                    <select class="selectpicker form-control" id="cb_projetos_pesq_mapas_terc"
+                            name="cb_projetos_pesq_mapas_terc"
+                            data-live-search="true"
+                            title="Selecione o projeto">
+                        {% for p in lista_projetos %}
+                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="input_dataTerceiros">
+                    <label for="dt_pesq_mapas_terc_periodo_ini">Data inicial *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_ini">
+                </div>
+
+                <div class="input_dataTerceiros">
+                    <label for="dt_pesq_mapas_terc_periodo_fim">Data final *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_fim">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div class="d-flex align-items-end w-75">
+                    <select class="selectpicker form-control" id="cb_benef_pesq_mapas_terc" name="cb_benef_pesq_mapas_terc"
+                            data-live-search="true" title="Selecione o beneficiário">
+                        <option value="0" selected="selected">-- Todos os Beneficiários --</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-center align-items-center">
+                    <label class="col-form-label text-white text-left cursor-pointer" for="chk_mapa_desativado">
+                        Mapas Desativados?</label>
+                    <div class="d-flex flex-column ">
+                        <div class="container">
+                            <input type="checkbox" class="checkbox" name="chk_mapa_desativado"
+                            id="chk_mapa_desativado">
+                            <label class="switch" for="chk_mapa_desativado">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
+                <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
+                    <div class="loader" id="loader_gera_pag_terc_2art">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100 cl_div_btn_pesq_mapas_terceiros">
+                    <button type='button' id="btn_pesq_mapas_terceiros" name="btn_pesq_mapas_terceiros"
+                        class="btn btn-primary btn-rounded botaoPrincipal" >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisar
+                    </button>
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </form>
+        <!-- cl_div_tab_mapas_terceitos_2art -->
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-5">
+                <div id="div_btn_gera_pag_2art_terc_1" class="d-flex flex-column w-100 cl_div_btn_gera_pag_2art_terc_1">
+                    &nbsp;&nbsp;
+                </div>
+                <div id="div_btn_gera_pag_2art_terc_2" class="d-flex flex-column w-100 cl_div_btn_gera_pag_2art_terc_2">
+                    &nbsp;&nbsp;
+                </div>
+                <div id="div_btn_gera_pag_2art_terc_3" class="d-flex flex-column w-100 cl_div_btn_gera_pag_2art_terc_3">
+                    &nbsp;&nbsp;
+                </div>
+                <div id="div_btn_gera_pag_2art_terc_4" class="d-flex flex-column w-100 cl_div_btn_gera_pag_2art_terc_4">
+                    &nbsp;&nbsp;
+                </div>
+                <div id="div_btn_gera_pag_2art_terc_5" class="d-flex flex-column w-100 cl_div_btn_gera_pag_2art_terc_5">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+            <!--  fatTerceiros__tabelaMapas -->
+            <table id="tab_mapas_terceitos_2art"  class="display wrap w-100 cl_tab_principal_pagina" >
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Data</th>
+                        <th scope="col">Mapa</th>
+                        <th scope="col">Placa</th>
+                        <th scope="col">Tipo Entrega</th>
+                        <th scope="col">Beneficiário</th>
+                        <th scope="col">Tipo Pessoa</th>
+                        <th scope="col">Perfil Veículo</th>
+                        <th scope="col">Região</th>
+                        <th scope="col">Qtd. Entregas</th>
+                        <th scope="col">Tipo Imposto</th>
+                        <th scope="col">Perc. Imposto</th>
+                        <th scope="col">Val. Frete</th>
+                        <th scope="col">Val. Calculado</th>
+                        <th scope="col">Diferença</th>
+                        <th scope="col">Val. Faturado</th>
+                        <th scope="col">Descontos</th>
+                        <th scope="col">Acréscimos</th>
+                        <th scope="col">Val. á Pagar</th>
+                        <th scope="col">Val. CONLOG</th>
+                        <th scope="col">Lançamentos</th>
+                        <th scope="col">Status Pagamento</th>
+                        <th scope="col">Serial Pagamento</th>
+                        <th scope="col">Validação</th>
+                        <th scope="col">Ativa/Desativa</th>
+                    </tr>
+                </thead>
+                <tbody id="tBody2Art" class="cl_tbody_tab_mapas_terceitos_2art">
+
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                        <th scope="col"></th>
+                    </tr>
+                </tfoot>
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
+{% include 'plan_controle_fat_2art_terc_app/modais_form_gerar_pag_2art_terc.html' %}
+
+  <!-- Jquery Mask -->
+    <script src="{% static 'libs/jquery_3_6_0/js/jquery.maskedinput.js' %}" type="text/javascript"></script>
+    <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_gerar_pag_2art_terc_controller.js' %}"></script>
+
+
+

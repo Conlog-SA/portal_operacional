@@ -1,0 +1,55 @@
+{% load static %}
+
+<!-- Modal Confirma Exclusão Registros -->
+<div id="modal_confirma_exclusao_vinculo_roteiro_peca" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+        <div class="row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 800px; height: 30px;margin-top: 35px;" >
+          <div class="col-md-6" align="left">
+            <p>
+              <i class="fa-solid fa-trash" style="color: #FFFFFF;"></i>
+              <span style="color:#ffffff; font-size:12px">Desvincula Roteiro Peça</span>
+            </p>
+
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="bnt_fecha_modal_confirma_exclusao_vinculo_roteiro_peca"
+                    id="bnt_fecha_modal_confirma_exclusao_vinculo_roteiro_peca"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form name="frm_desvincula_pecas_roteiro" id="frm_desvincula_pecas_roteiro" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column w-100" style="color: #000000;">
+              Tem certeza que deseja desvincular a peça ao roteiro ?
+            </div>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column w-100"
+                 style="padding-bottom: 0.25rem;margin-top: 1.6rem;">
+              <button type="button" name="btn_excluir_vinculo_roteiro_peca" id="btn_excluir_vinculo_roteiro_peca"
+                      class="btn btn-primary btn-rounded botaoPrincipal">
+                <i class="fa-solid fa-check"></i>
+                Desvincular Roteiro/Peça
+              </button>
+
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

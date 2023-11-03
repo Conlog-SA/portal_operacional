@@ -1,0 +1,53 @@
+.margin-divs{
+margin-right:0.5rem
+}
+
+.subtitle-sinistro{
+font-size:20px !important;
+text-align:center !important;
+margin-top:20px !important;
+}
+
+.hr-subtitle-sinistro{
+border: solid 1px;margin-top: 2px;margin-bottom: 2px; color:white !important;
+}
+
+.button-primary{
+border-color: var(--cor_empresa) !important;
+background-color: var(--cor_empresa) !important;
+}
+
+.tabs-nav{
+font-size:1rem !important;
+}
+
+.conteudo-principal-sinistros{
+    margin-left: 15px !important;
+    font-weight: 100 !important;
+}
+
+
+.labelBotoes{
+font-size:0.8rem !important;
+}
+
+
+.label-padrao{
+font-size:1rem !important;
+}
+
+.divid-titles{
+text-align:left !important;
+color: #f46424 !important;
+}
+
+
+.btn-editar{
+    background-color: var(--cor_empresa) !important;
+    border-color: var(--cor_empresa) !important;
+}
+
+.btn-excluir{
+    background-color: var(--cor_empresa) !important;
+    border-color: var(--cor_empresa) !important;
+}

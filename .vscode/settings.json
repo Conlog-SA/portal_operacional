@@ -1,0 +1,7 @@
+{
+    "terminal.integrated.automationProfile.linux": {},
+    "terminal.explorerKind": "integrated",
+    "githubPullRequests.ignoredPullRequestBranches": [
+        "main"
+    ]
+}

@@ -1,0 +1,64 @@
+.cadastro_containerForm{
+    height:100%;
+    background-color: var(--cor_bg_cinza_escuro);
+    padding: 1rem;
+    font-size: 0.8rem !important;
+    border-radius: 0rem 0rem 0rem 0.5rem;
+}
+
+.cadastro__tabelaUsuarios{
+    background-color: var(--cor_bg_cinza_escuro);
+    color: black;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 0rem 0rem 0.5rem 0.5rem;
+}
+
+.cadastro_usuarioForm{
+    padding: 1rem;
+    border-radius: 0.5rem;
+    
+}
+
+.form-control{
+    font-size: 0.8rem !important; 
+    
+}
+
+
+
+.dataTables_wrapper{
+    height: 100% !important;
+}
+
+.dataTable{
+    height: 90% !important;
+
+}
+
+td{
+    font-size: 0.8rem;
+}
+
+.dropdown-toggle{
+    font-size: 0.8rem;
+    color:#7f7777;
+}
+
+
+.cadastro__botaoTabela{
+    font-size: 0.925em;
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+}
+
+.cadastro__botaoTabela:hover{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_hover) !important;
+    background-color: var(--cor_empresa_hover) !important;
+}
+.cadastro__botaoTabela:active{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_active) !important;
+    background-color: var(--cor_empresa_active) !important;
+}

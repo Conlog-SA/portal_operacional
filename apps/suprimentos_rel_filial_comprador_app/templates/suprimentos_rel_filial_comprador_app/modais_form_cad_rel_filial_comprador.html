@@ -1,0 +1,61 @@
+{% load static %}
+
+<!-- Modal Desativar Registro Filial Comprador -->
+<div id="modalDesativarRegFilialComprador" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;">
+    <div class="modal-content">
+      <div class="modal-header"
+           style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+        <div class="row"
+             style="margin-left: 0px; margin-right: 0px; margin-bottom: 0px; width: 800px; height: 30px;margin-top: 35px;">
+          <div class="col-md-6" align="left">
+            <p>
+              <i class="fa-solid fa-circle-xmark" style="color: #FFFFFF;"></i>
+              <span style="color:#ffffff; font-size:12px">Estornar Apontamento Promax</span>
+            </p>
+
+          </div>
+          <div class="col-md-6" align="right">
+            <button type="button" name="btnFechaModalDesativarRegFilialComprador"
+                    id="btnFechaModalDesativarRegFilialComprador"
+                    data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <form name="formCadSiglaDispFrota" id="formCadSiglaDispFrota" method="post"
+              class="d-flex flex-column align-items-center justify-content-between">
+
+          <div class="d-flex justify-content-between align-items-between w-100">
+
+            <div class="d-flex flex-column w-100" style="padding-bottom: 0.25rem;">
+              <label class="label_comp_forms">
+                Informe a data de desativação!
+                <input type="date" class="form-control" name="textFieldDataDesativacaoCadRelFilialComprador"
+                       id="textFieldDataDesativacaoCadRelFilialComprador" autocomplete="off"/>
+
+              </label>
+            </div>
+
+            <div class="d-flex flex-column w-100"
+                 style="padding-bottom: 0.25rem;margin-top: 1.6rem;">
+              <input type="hidden" name="hiddenCodRegRelFilialComprador" id="hiddenCodRegRelFilialComprador">
+              <button type="button" name="btnDestivarRelFilialComprador" id="btnDestivarRelFilialComprador"
+                      class="btn btn-primary btn-rounded botaoPrincipal">
+                <i class="fa-solid fa-check"></i>
+                Desativar
+              </button>
+
+            </div>
+
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

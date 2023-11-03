@@ -1,0 +1,36 @@
+.title{
+    padding-left: 0%;
+}
+
+
+.formulario-principal {
+    padding-left: 1rem;
+    padding-right: 0;
+    color:#ef7814 !important;
+}
+
+@media (max-width: 550px) {
+    .formulario-principal {
+        padding-left: 30px;
+        color:#ef7814 !important;
+    }
+}
+
+@media (max-width:530px){
+    .background-principal{
+        margin-left:30px;
+        ccolor:#ef7814 !important;
+    }
+}
+
+.perguntas-label{
+    padding-bottom:0.5rem;
+    padding-top:0.5rem;
+    color: white;
+    text-align: left;
+    font-weight: 350;
+}
+
+.numero-laranja {
+    color: #ef7814;
+}

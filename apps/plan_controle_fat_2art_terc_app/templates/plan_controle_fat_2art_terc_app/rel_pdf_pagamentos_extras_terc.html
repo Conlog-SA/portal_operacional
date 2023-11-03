@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+<style type="text/css">
+    @page {
+        size: a4 landscape;
+        margin: 2cm;
+        background:#F7F7F7;
+            @frame header_frame {           /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 50pt;
+                width: 712pt;
+                top: 50pt;
+                height: 200pt;
+
+            }
+            @frame content_frame {          /* Content Frame */
+                left: 50pt;
+                width: 712pt;
+                top: 250pt;
+                height: 300pt;
+            }
+            @frame footer_frame {           /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt;
+                width: 712pt;
+                top: 752pt;
+                height: 120pt;
+            }
+            p.separator { -pdf-keep-with-next: false; font-size: 6pt; }
+            table { -pdf-keep-with-next: true; }
+    }
+    @page back_page {
+        size: a4 landscape;
+        margin: 2cm;
+        background:#F7F7F7;
+            @frame header_frame{           /* Static Frame */
+                -pdf-frame-content: header_content;
+                left: 50pt;
+                width: 712pt;
+                top: 50pt;
+                height: 200pt;
+
+            }
+            @frame content_frame {          /* Content Frame */
+                left: 50pt;
+                width: 712pt;
+                top: 250pt;
+                height: 300pt;
+            }
+            @frame footer_frame {           /* Another static Frame */
+                -pdf-frame-content: footer_content;
+                left: 50pt;
+                width: 712pt;
+                top: 752pt;
+                height: 120pt;
+            }
+            p.separator { -pdf-keep-with-next: false; font-size: 6pt; }
+            table { -pdf-keep-with-next: true; }
+    }
+    th{
+        background-color:#F7F7F7;
+        padding-top:5px;
+    }
+    td{
+        padding-top:5px;
+    }
+</style>
+</head>
+<body>
+    <!-- Content for Static Frame 'header_frame' -->
+    <div id="header_content">
+        <div class="form-group row" align="left">
+            <table width="100%">
+                <tr>
+                    <td width="20%" align="left"><img src='C:\Danilo - C\Projetos Python\portal_gerencial_v1\static\img\logo_preta.png' width="127" height="26"/></td>
+                    <td width="80%" align="left"><b style="color:#000000;font-size:20px;">Relação de Fretes à Pagar - Terceiros - Distribuição</b></td>
+                </tr>
+            </table>
+        </div>
+        <br/><br/>
+        <div class="form-group row">
+            <div class="col-md-6" align="left">
+                <table>
+                    <tr>
+                        <td width="50%" align="left"><b style="font-size:10px">Período Referência</b></td>
+                        <td width="50%" align="left"><b style="font-size:10px">Nº Controle</b></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6" align="left" style="font-size:14px;background-color:#F7F7F7;border-radius: 10px;padding-top:5px;">
+                <table>
+                    <tr>
+                        <td width="50%" align="left" style="background-color:#F7F7F7;border-bottom: 0px solid #000000;">
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ periodo_ref }}
+                        </td>
+                        <td width="50%" align="left" style="background-color:#F7F7F7;border-bottom: 0px solid #000000;">
+                            {{ num_doc_pagamento }} - {{ serial_projeto }}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3" align="left">
+                <b style="font-size:10px">Beneficiário</b>
+            </div>
+            <div class="col-md-6" align="left" style="font-size:14px;background-color:#F7F7F7;border-radius: 10px;padding-top:5px;border-bottom: 0px solid #000000;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ nome_beneficiario }}
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col-md-3" align="left">
+                <b style="font-size:10px">Filial</b>
+            </div>
+            <div class="col-md-6" align="left" style="font-size:14px;background-color:#F7F7F7;border-radius: 10px;padding-top:5px;border-bottom: 0px solid #000000;">
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ nome_filial }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Content for Static Frame 'footer_frame' -->
+    <div id="footer_content">
+        <table width="100%">
+                <tr>
+                    <td width="50%" align="left">--(c) - page <pdf:pagenumber> of <pdf:pagecount> </td>
+                    <td width="50%" align="right"><img src='C:\Danilo - C\Projetos Python\portal_gerencial_v1\static\img\Posicionamento.png' width="218" height="26"/></td>
+                </tr>
+            </table>
+    </div>
+
+    <!-- HTML Content -->
+    {% for pag in qtd_pagina %}
+        <table id="tabPagMapasTerc" border="0px">
+            <thead>
+                <tr>
+                    <th align="left" width="10%">DATA</th>
+                    <th align="right" width="20%">OCORRENCIA</th>
+                    <th align="right" width="50%">COMPLEMENTO</th>
+                    <th align="right" width="20%">VAL. TOTAL(R$)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <div class="page-break">
+                    {% for reg in registros_tab_pagamentos_terc %}
+                        {%  if pag == reg.seq_item %}
+                            <tr>
+                                <td align="left" style="border-bottom: 1px solid #000000;">{{ reg.data }}</td>
+                                <td align="right" style="border-bottom: 1px solid #000000;">{{ reg.tipo_ocorrencia }}</td>
+                                <td align="right" style="border-bottom: 1px solid #000000;">{{ reg.complemento }}</td>
+                                <td align="right" style="border-bottom: 1px solid #000000;">{{ reg.val_pagar }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                </tbody>
+        </table>
+        {% if pag == ultima_pagina %}
+            Ultima página
+
+        {% endif %}
+        <!-- Use the front_page template again for the next card -->
+        <pdf:nexttemplate name="back_page" />
+        <pdf:nextpage />
+    {% endfor %}
+
+    <div class="form-group row">
+        <div class="col-md-6">
+            <table>
+                <tr>
+                    <td style="color:#fa6163;font-size:10px" align="justify" width="50%">
+                        &nbsp;
+                    </td>
+                    <td width="50%">
+                        <table>
+                            <tr>
+                                <td style="font-size:10px"></td>
+                                <td><b style="font-size:12px">Valor à Pagar</b></td>
+                                <td style="font-size:10px">&nbsp;</td>
+                                <td align="right"><b style="font-size:12px;">{{ total_a_pagar  }}</b></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+    </div>
+
+
+
+</body>
+</html>
