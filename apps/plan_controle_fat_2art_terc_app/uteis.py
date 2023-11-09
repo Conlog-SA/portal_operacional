@@ -72,6 +72,7 @@ class Uteis():
 
             val_pagar_terc = (decimal.Decimal(val_pagar_terc) + decimal.Decimal(val_total_acres_mapa)) - \
                              decimal.Decimal(val_total_desc_mapa)
+
             val_pagar_conlog = decimal.Decimal(reg_ter.valorfrete_2art_terc_financ) - val_pagar_terc
 
             calc_dif_frete_val_calc = decimal.Decimal(reg_ter.valorfrete_2art_terc_financ) - \
@@ -85,6 +86,7 @@ class Uteis():
                 #cod_serial_pagamento = str(reg_ter.cod_pag_2art_terc_financ.cod_pag_2art_terc_financ ) +'- ' +reg_ter.cod_projeto.cod_serial_pag_terc
                 cod_serial_pagamento = str(
                     reg_ter.cod_pag_2art_terc_financ.num_doc_pagamento) + '- ' + reg_ter.cod_projeto.cod_serial_pag_terc
+
 
             reg_tec_tab = Tab_Dados_Terc_Ultimo_2Art(
                 cod_idreg2arttercfinanc = reg_ter.cod_reg_2art_terc_financ,
