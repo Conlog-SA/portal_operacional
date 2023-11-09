@@ -1140,27 +1140,8 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         lista_contas_conciliacao.append(dados_conciliacao)'''
 
         elif tipo_visualizacao_form == 'D':
-            lista_contas = []
-            competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
-            cod_status_analise_form = request.GET['cod_status_analise']
-            if cod_status_analise_form == '0':
-                lista_contas = lista_cod_conta_form.split(',')
-            elif cod_status_analise_form == '5':
-                for reg in lista_cod_conta_form.split(','):
-                    conta_auditada = Auditoria_Status_Composicao_Competencia.objects.filter(
-                        data_competencia=competencia_date, cod_conta__cod_conta=reg
-                    ).first()
-                    if conta_auditada == None:
-                        lista_contas.append(reg)
-            else:
-                lista_contas_auditadas = Auditoria_Status_Composicao_Competencia.objects.filter(
-                        data_competencia=competencia_date, status=int(cod_status_analise_form),
-                    cod_conta__tipo_modelo=cod_modelo_selecionado_form)
-                for reg in lista_contas_auditadas:
-                    lista_contas.append(reg.cod_conta.cod_conta)
-
             if cod_modelo_selecionado_form == '1':
-                for cod_conta_form in lista_contas:
+                for cod_conta_form in lista_cod_conta_form.split(','):
                     obj_conta = Conta.objects.get(pk=int(cod_conta_form))
                     lista_registros = ((Registros_Arqv_Docs_Contas_Modelo_1.objects
                                         .filter(cod_arquivo__cod_conta=obj_conta,
@@ -1198,13 +1179,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     '''Verifica se há status da conta na competencia'''
                     cod_status_auditoria_comp = 0
                     obs_status_auditoria_comp = ''
+                    competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
                     obj_status_contrato_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
                         cod_conta=obj_conta, data_competencia=competencia_date
                     ).first()
                     if obj_status_contrato_competencia != None:
                         cod_status_auditoria_comp = obj_status_contrato_competencia.status
                         obs_status_auditoria_comp = obj_status_contrato_competencia.obs_status
-
 
                     linha = []
                     linha.append(obj_conta.cod_conta) #0
@@ -1220,7 +1201,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     lista_contas_conciliacao.append(linha) #10
 
             elif cod_modelo_selecionado_form == '3':
-                for cod_conta_form in lista_contas:
+                for cod_conta_form in lista_cod_conta_form.split(','):
                     conta = Conta.objects.get(pk=int(cod_conta_form))
                     lista_contratos = Contrato.objects.filter(cod_conta=conta.cod_conta)
                     for contrato in lista_contratos:

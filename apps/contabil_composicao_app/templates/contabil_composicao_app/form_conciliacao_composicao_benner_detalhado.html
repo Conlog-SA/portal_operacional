@@ -93,25 +93,18 @@
 
                 </div>
 
-                <div class="d-flex flex-column w-100 cl_div_competencia_conciliacao_detalhada">
-                    <label>
-                        Status análise
-                    </label>
-                    <select class="selectpicker form-control" id="cb_status_analise_conciliacao_detalhada"
-                        name="cb_status_analise_conciliacao_detalhada">
-                            <option value="0">Todos os status</option>
-                            <option value="1">OK</option>
-                            <option value="2">Com diferença</option>
-                            <option value="3">Falta analisar</option>
-                            <option value="4">Falta compor</option>
-                            <option value="5">Não sinalizado</option>
-                    </select>
+                <div class="d-flex flex-column w-100 cl_div_btn_gera_conciliacao_detalhada">
+                    <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
+                            name="btn_gera_conciliacao_comp_benner_detalhado"
+                            class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado" >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>Gerar</span>
+                    </button>
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100">
-                    <div class="loader" id="loader_gera_comp_det">
+            <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_comp_detalhada">
+                <div class="loader" id="loader">
                     <div class="loader-inner">
                         <div class="loader-block"></div>
                         <div class="loader-block"></div>
@@ -123,24 +116,11 @@
                         <div class="loader-block"></div>
                     </div>
                 </div>
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                    <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
-                            name="btn_gera_conciliacao_comp_benner_detalhado"
-                            class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado" >
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Gerar</span>
-                    </button>
-                </div>
             </div>
 
         </form>
 
-        <div class="form-group cl_div_tabela_principal_pagina w-100">
+        <div class="form-group cl_div_tab_conciliacao_composicao_benner_detalhado w-100">
             <div id="div_tab_conciliacao_composicao_benner_detalhado" class="col-md-12 w-100 h-100">
 
             </div>

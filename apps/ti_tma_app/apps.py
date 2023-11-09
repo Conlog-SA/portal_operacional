@@ -1,5 +1,5 @@
-'''from django.apps import AppConfig
+from django.apps import AppConfig
 
 
 class TiTmaAppConfig(AppConfig):
-    name = 'ti_tma_app'''
+    name = 'ti_tma_app'
