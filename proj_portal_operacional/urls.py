@@ -31,6 +31,7 @@ urlpatterns = [
     path('contabil_operacoes_farol_ndd_app/', include('apps.contabil_operacoes_farol_ndd_app.urls')),
     path('cco_sinistro_app/', include('apps.cco_sinistro_app.urls')),
     path('ti_tma_app/', include('apps.ti_tma_app.urls')),
+    path('safety_layout_checklist_app/', include('apps.safety_layout_checklist_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

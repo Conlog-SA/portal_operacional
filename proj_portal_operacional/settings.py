@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'apps.frota_vpo_app',
     'apps.contabil_operacoes_farol_ndd_app',
     'apps.ti_tma_app',
+    'apps.safety_layout_checklist_app',
 ]
 
 MIDDLEWARE = [
