@@ -1,5 +1,4 @@
 from django.http import JsonResponse, Http404, FileResponse
-from django.conf import settings
 from django.shortcuts import render
 from django.views import View
 from apps.cco_multas_app.models import CCO_Multas, CCO_Tipo_Multa
@@ -158,11 +157,11 @@ def anexar_itens(request):
         notificacao_file = request.FILES.get('notificacao')
         multa_file = request.FILES.get('multa')
 
-        with open(os.path.join(settings.MEDIA_ROOT, 'notificacoes', notificacao_file.name), 'wb+') as destination:
+        with open(os.path.join('MEDIA_ROOT', 'notificacoes', notificacao_file.name), 'wb+') as destination:
             for chunk in notificacao_file.chunks():
                 destination.write(chunk)
 
-        with open(os.path.join(settings.MEDIA_ROOT, 'multas', multa_file.name), 'wb+') as destination:
+        with open(os.path.join('MEDIA_ROOT', 'multas', multa_file.name), 'wb+') as destination:
             for chunk in multa_file.chunks():
                 destination.write(chunk)
 
@@ -174,6 +173,6 @@ def anexar_itens(request):
 
 def download_arquivo(request,tipo):
         if tipo == 'notificacao':
-            file_path = os.path.join(settings.MEDIA_ROOT, 'notificacoes', 'nome_do_arquivo_notificacao.extensao')
+            file_path = os.path.join('MEDIA_ROOT', 'notificacoes', 'nome_do_arquivo_notificacao.extensao')
         elif tipo == 'multa':
-            file_path = os.path.join(settings.MEDIA_ROOT, 'multas', 'nome_do_arquivo_multa.extensao')
+            file_path = os.path.join('MEDIA_ROOT', 'multas', 'nome_do_arquivo_multa.extensao')

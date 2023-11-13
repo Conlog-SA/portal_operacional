@@ -198,6 +198,7 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
                 /* 19 */let_indice_registro += 1,
                 /* 20 */linha.cod_projeto,
                 /* 21 */linha.cod_tipo_multa,
+
             ])
 
             $('#tab_multas').DataTable( {

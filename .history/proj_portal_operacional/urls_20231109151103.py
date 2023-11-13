@@ -32,7 +32,7 @@ urlpatterns = [
     path('cco_sinistro_app/', include('apps.cco_sinistro_app.urls')),
     path('ti_tma_app/', include('apps.ti_tma_app.urls')),
     path('bi_app/', include('apps.bi_app.urls')),
-    path('cco_multas_app/', include('apps.cco_multas_app.urls'))
+    path('cco_multas_app', include('apps.cco_multas_app.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
