@@ -31,12 +31,8 @@ urlpatterns = [
     path('contabil_operacoes_farol_ndd_app/', include('apps.contabil_operacoes_farol_ndd_app.urls')),
     path('cco_sinistro_app/', include('apps.cco_sinistro_app.urls')),
     path('ti_tma_app/', include('apps.ti_tma_app.urls')),
-<<<<<<< HEAD
-    path('safety_layout_checklist_app/', include('apps.safety_layout_checklist_app.urls')),
-=======
+    path('cco_multas_app/', include('apps.cco_multas_app.urls')),
     path('bi_app/', include('apps.bi_app.urls')),
-    path('cco_multas_app/', include('apps.cco_multas_app.urls'))
->>>>>>> 7abe91b881aa47b254967f0ef9a9c1fad1d09cf8
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
