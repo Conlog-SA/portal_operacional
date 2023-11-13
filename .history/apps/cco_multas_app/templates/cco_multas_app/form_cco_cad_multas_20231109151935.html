@@ -169,7 +169,6 @@
                         </select>
                      </div>
                      <form method="post" enctype="multipart/form-data" action="{% url 'anexar_itens' %}">
-                        {% csrf_token %}
                         <div class="form-group col-sm-4 d-flex align-items-end" style="margin-bottom:8px">
                            <label for ="myfile" style="margin-right:10px ; font-weight:ligther">Anexo Notificação</label>
                            <input type="file" id="notificacao" name="notificacao" style="padding-right:340px">

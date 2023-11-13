@@ -62,6 +62,8 @@ urlpatterns = [
          name='exclui_arquivo_conta_m_1'),
     path('acessa_form_auditoria_comp', views.Form_Composicao_Auditoria_View.as_view(),
          name='acessa_form_auditoria_comp'),
+    path('acessa_frm_vinc_resp', views.Form_Vincula_Resp_Contas_View.as_view(),
+         name='acessa_frm_vinc_resp')
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

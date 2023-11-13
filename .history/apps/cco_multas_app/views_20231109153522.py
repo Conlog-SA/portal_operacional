@@ -1,4 +1,4 @@
-from django.http import JsonResponse, Http404, FileResponse
+from django.http import JsonResponse, Http404, FileResponse, 
 from django.conf import settings
 from django.shortcuts import render
 from django.views import View
