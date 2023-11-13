@@ -2023,3 +2023,8 @@ class Form_Composicao_Auditoria_View(View):
         }
         return render(request, 'contabil_composicao_app/form_composicao_auditoria.html',
                       contexto)
+
+
+class Form_Vincula_Resp_Contas_View(View):
+    def get(self, request):
+        return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html')

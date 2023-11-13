@@ -71,14 +71,9 @@ INSTALLED_APPS = [
     'apps.frota_vpo_app',
     'apps.contabil_operacoes_farol_ndd_app',
     'apps.ti_tma_app',
-<<<<<<< HEAD
-    'apps.safety_layout_checklist_app',
-]
-=======
     'apps.bi_app',
     'apps.cco_multas_app'
 ]   
->>>>>>> 7abe91b881aa47b254967f0ef9a9c1fad1d09cf8
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
