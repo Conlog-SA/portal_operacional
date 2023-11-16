@@ -65,7 +65,7 @@
                         data-live-search="true" title="Selecione a conta">
                     {% for conta in lista_contas %}
                         <option value="{{conta.cod_conta}}">
-                            {{conta.desc_conta}} - Modelo {{conta.tipo_modelo}} -
+                            {{conta.cod_conta}} - {{conta.desc_conta}} - Modelo {{conta.tipo_modelo}} -
                             Cód. red. CP - {{ conta.cod_red_conta_contabil_cp}} -
                             Cód. red. LP - {{ conta.cod_red_conta_contabil_lp}}
                         </option>
@@ -85,14 +85,15 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                     <button type='button' id="btn_atualiza_contratos_benner" name="btn_atualiza_contratos_benner"
                             class="btn btn-primary btn-rounded botaoPrincipal" >
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        Atualiza dados Benner
+                        <i class="fa-solid fa-repeat"></i>
+                        Atualiza contratos Benner
                     </button>
                 </div>
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                     <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                            class="btn btn-primary btn-rounded botaoPrincipal" >
-                        <i class="fa-solid fa-magnifying-glass"></i>
+                            class="btn btn-primary btn-rounded botaoPrincipal" value="{{ qtd_arquivos_postados }}"
+                            title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
+                        <i class="fa-solid fa-file-import"></i>
                         Importar anexos
                     </button>
                 </div>
@@ -216,7 +217,7 @@
                             </div>
 
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
                                 <div class="d-flex flex-column w-100 cl_div_cb_pacote_conta">
                                     <label>Pacote Conta
                                          <select class="selectpicker form-control" id="cb_pacote_conta"
@@ -230,10 +231,6 @@
                                             {% endfor %}
                                          </select>
                                     </label>
-                                </div>
-
-                                <div class="d-flex flex-column w-100 cl_div_rd_modelo_conta">
-                                    &nbsp;&nbsp;&nbsp;
                                 </div>
 
                                 <div class="d-flex flex-column w-100 cl_div_dt_ini_atv_benner">
@@ -400,7 +397,7 @@
                               class="d-flex flex-column align-items-center justify-content-between"
                               enctype="multipart/form-data">
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-5">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
                                 <div class="d-flex flex-column w-100 cl_div_dt_competencia_anexo_doc_contrato">
                                     <label>
                                         Contrato
@@ -418,13 +415,7 @@
                                     </label>
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_txt_desc_anexo_contrato">
-                                    <label>Descrição anexo<br/>
-                                         <input type="text" id="txt_desc_anexo_contrato"
-                                                placeholder="Descrição do documento"
-                                                class="form-control"  />
-                                    </label>
-                                </div>
+
 
                                 <div class="d-flex flex-column w-100 cl_div_file_anexo_contrato">
                                     <input type="file" name="file_anexo_contrato"

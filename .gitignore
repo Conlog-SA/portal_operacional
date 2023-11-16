@@ -3,7 +3,7 @@
 venv
 *.pyc
 proj_portal_operacional/__pycache__/
-media/docs/
+media/
 .env
 requirements.txt
 requirements_libs_oficial_29.txt

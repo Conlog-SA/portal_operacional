@@ -287,8 +287,6 @@ function monta_tabela_imp_contas_m1(cod_conta){
                 }
                 } );
             $("#hd_tipo_pesquisa").val(dados.tipo_pesquisa);
-            $("#div_btn_pesq_comp").html("");
-            $("#div_campo_pesq_dados_pac_1").html("");
             $("#div_campo_pesq_dados_pac_2").html("");
             $("#div_campo_pesq_dados_pac_3").html("");
             $("#div_campo_pesq_dados_pac_4").html("");

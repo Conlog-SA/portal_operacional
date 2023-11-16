@@ -1,6 +1,8 @@
 import os
 
 import decimal
+import shutil
+
 from django.db.models import Q
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -30,11 +32,16 @@ class Form_Imp_Cad_Conta_View(View):
         lista_pacotes_conta = Pacote_Conta.objects.filter(cod_modelo=1)
         lista_usuarios_contabil = Usuario.objects.filter(sala='CON')
 
+        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        lista_arquivos = os.listdir(diretorio_arquivos_postados)
+        qtd_arquivos_postados = len(lista_arquivos)
+
         contexto = {
             'lista_contas': lista_contas,
             'lista_pacotes_conta': lista_pacotes_conta,
             'lista_usuarios_contabil': lista_usuarios_contabil,
-            'desc_menu': 'Cadastro de contas composição'
+            'desc_menu': 'Cadastro de contas composição',
+            'qtd_arquivos_postados': qtd_arquivos_postados
         }
         return render(request, 'contabil_composicao_app/form_cad_contas.html', contexto)
 
@@ -1558,13 +1565,25 @@ class Form_Anexos_Conta_View(View):
 
     def post(self, request):
         file_form = request.FILES['file']
-        desc_doc_form = request.POST['descricao_doc']
         competencia_doc_form = request.POST['competencia_doc']
         cod_conta_form = request.POST['cod_conta']
         cod_contrato_form = request.POST['cod_contrato']
 
-
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)
+        msg = self.anexa_arq_conta(obj_conta_pesq, cod_contrato_form, competencia_doc_form, file_form, file_form.name)
+
+
+
+        data = dict()
+        data = {
+            'cod_conta': obj_conta_pesq.cod_conta,
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def anexa_arq_conta(self, obj_conta_pesq, cod_contrato_form, competencia_doc_form, file_form, desc_doc_form):
+        msg = ''
         obj_contrato_pesq = None
         ordem_max = 0
         ultimo_anexo_conta = 0
@@ -1592,16 +1611,25 @@ class Form_Anexos_Conta_View(View):
             ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
 
         fs = FileSystemStorage()
-        caminho_arq_importado = 'docs/contabil_composicao_app/anexos_conta/' + str(obj_conta_pesq.cod_conta) + '_' + \
-                                str(ultimo_anexo_conta) + '' + file_form.name.replace(' ', '_').split('.')[1]
-        filename = fs.save(caminho_arq_importado, file_form)
-        uploaded_file_url = fs.url(filename)
+        nome_arquivo = ''
+        caminho_arq_importado = ''
+        if type(file_form) == str:
+            caminho_arq_importado = 'docs/contabil_composicao_app/anexos_conta/' + str(obj_conta_pesq.cod_conta) + '_' + \
+                                    str(ultimo_anexo_conta) + '_' + desc_doc_form
+            nome_arquivo = desc_doc_form
+            shutil.move(file_form, 'media/'+caminho_arq_importado)
+        else:
+            nome_arquivo = file_form.name
+            caminho_arq_importado = 'docs/contabil_composicao_app/anexos_conta/' + str(obj_conta_pesq.cod_conta) + '_' + \
+                                    str(ultimo_anexo_conta) + '' + file_form.name.replace(' ', '_')
+            filename = fs.save(caminho_arq_importado, file_form)
+            uploaded_file_url = fs.url(filename)
         msg = ''
 
         if obj_anexo_conta_pesq == None:
             obj_anexo_conta = Anexos_Contrato(
-                desc_anexo=desc_doc_form,
-                data_competencia= competencia_doc_form+'-01',
+                desc_anexo=nome_arquivo,
+                data_competencia=competencia_doc_form + '-01',
                 caminho_anexo=caminho_arq_importado,
                 cod_contrato=obj_contrato_pesq,
                 cod_conta=obj_conta_pesq,
@@ -1609,17 +1637,15 @@ class Form_Anexos_Conta_View(View):
             ).save()
             msg = 'Doc anexado com sucesso !'
         else:
-            obj_anexo_conta_pesq.desc_anexo = desc_doc_form
+            arquivo_anterior_a_deletar = os.path.join(BASE_DIR, 'media\\' + str(obj_anexo_conta_pesq.caminho_anexo).replace('/', '\\'))
+            os.remove(arquivo_anterior_a_deletar)
+
+            obj_anexo_conta_pesq.desc_anexo = nome_arquivo
             obj_anexo_conta_pesq.caminho_anexo = caminho_arq_importado
+            obj_anexo_conta_pesq.ordem_anexo = ultimo_anexo_conta
             obj_anexo_conta_pesq.save()
             msg = 'Registro atualizado com sucesso!'
-
-        data = dict()
-        data = {
-            'cod_conta': obj_conta_pesq.cod_conta,
-            'msg': msg
-        }
-        return JsonResponse(data, safe=False)
+        return msg
 
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
@@ -2028,3 +2054,40 @@ class Form_Composicao_Auditoria_View(View):
 class Form_Vincula_Resp_Contas_View(View):
     def get(self, request):
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html')
+
+
+
+class Importa_Anexos_Contas_View(View):
+    def post(self, request):
+        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        lista_arquivos = os.listdir(diretorio_arquivos_postados)
+        msg = ''
+        for arq in lista_arquivos:
+            caminho_arq = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao/' + arq
+            cod_conta = arq.split('_')[0]
+            cod_contrato = arq.split('_')[1]
+            competencia_str = arq.split('_')[3].split('.')[0] + '-' + arq.split('_')[2]
+            obj_conta = Conta.objects.get(pk=cod_conta)
+            obj_contrato = None
+            cod_contrato_param = ''
+            if obj_conta.tipo_modelo == 1:
+                cod_contrato_param = cod_contrato
+            else:
+                obj_contrato = Contrato.objects.filter(cod_conta=obj_conta, num_contrato=cod_contrato).first()
+                cod_contrato_param = obj_contrato.cod_contrato
+            obj_form_anexos_conta_view = Form_Anexos_Conta_View()
+            msg = obj_form_anexos_conta_view.anexa_arq_conta(obj_conta, cod_contrato_param, competencia_str, caminho_arq, arq)
+            #os.remove(os.path.join(diretorio_arquivos_postados, arq))
+
+        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        lista_arquivos = os.listdir(diretorio_arquivos_postados)
+        qtd_arquivos_postados = len(lista_arquivos)
+
+        data = dict()
+        data = {
+            'msg': msg,
+            'qtd_arquivos_postados': qtd_arquivos_postados
+        }
+        return JsonResponse(data, safe=False)
+
+

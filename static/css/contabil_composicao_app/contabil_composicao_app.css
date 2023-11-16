@@ -430,3 +430,11 @@ input[type=file]::file-selector-button:hover {
     margin-left: 1rem;
 }
 
+.comp_frm_imp_arq_m1 {
+    width: 11% !important;
+}
+
+.cl_dt_comp_imp_arq_contas_m1 {
+    height: 45px !important;
+    padding: 4px !important;
+}

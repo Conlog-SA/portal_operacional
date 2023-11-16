@@ -27,7 +27,7 @@ $.ajaxSetup({
     }
 });
 
-const loader_imp_2art = document.getElementById("loader_imp_2art")
+
 
 $(document).on('change','input', function(){
 	let let_nome_input = $(this).attr('name');
@@ -35,6 +35,7 @@ $(document).on('change','input', function(){
     let let_val_input = $(this).attr('value');
 
     if ( let_nome_input == 'fl_campo_arquivo_2art') {
+        let loader_imp_2art = document.getElementById("loader_imp_2art")
         let let_frm_data = new FormData();
 		let_frm_data.append("file", $('input[type=file]')[0].files[0]);
 		loader_imp_2art.style.display = "flex";

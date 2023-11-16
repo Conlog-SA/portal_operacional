@@ -10,12 +10,14 @@ from apps.ti_tma_app.models import Chamado_Atendido_TMA
 class ConexaoHelpDesk():
     def __init__(self):
         self.__conn = pyodbc.connect(
-            'DRIVER={MySQL ODBC 8.0 ANSI Driver};'
+            'DRIVER={MySQL };'
             'SERVER=itjm-srv-250;'
             'DATABASE=bd_portal_chamados;'
             'UID=danilo.costa;'
             'PWD=dap@1104!;'
         )
+
+        '''DRIVER={MySQL ODBC 8.0 ANSI Driver};'''
 
     def retorna_chamados_atendidos(self):
         lista_chamados_atendidos = []

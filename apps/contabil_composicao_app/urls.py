@@ -63,7 +63,10 @@ urlpatterns = [
     path('acessa_form_auditoria_comp', views.Form_Composicao_Auditoria_View.as_view(),
          name='acessa_form_auditoria_comp'),
     path('acessa_frm_vinc_resp', views.Form_Vincula_Resp_Contas_View.as_view(),
-         name='acessa_frm_vinc_resp')
+         name='acessa_frm_vinc_resp'),
+    path('importa_anexo_geral_contas', views.Importa_Anexos_Contas_View.as_view(),
+         name='importa_anexo_geral_contas'),
+
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

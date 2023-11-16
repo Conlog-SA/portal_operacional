@@ -68,7 +68,6 @@ function atualiza_dados_conta_acao_cb_contas(){
     $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
     $("#btn_associar_responsaveis_conta").val(0);
     /* Limpa form anexos */
-    $("#txt_desc_anexo_contrato").val("");
     $("#file_anexo_contrato").val("");
     $("#div_visualizacao_anexo_conta").html("");
 }
@@ -242,7 +241,7 @@ $(document).on('click','button', function(){
                     `;
                     $("#cb_contas option").remove();
                     dados.lista_contas.forEach(conta => {
-                        $("#cb_contas").append("<option value='" +conta.cod_conta+"'>"+conta.desc_conta+" - Modelo "+
+                        $("#cb_contas").append("<option value='" +conta.cod_conta+"'>"+conta.cod_conta+" - " + conta.desc_conta+" - Modelo "+
                             conta.tipo_modelo+"</option>");
 
                     });
@@ -749,7 +748,6 @@ $(document).on('click','button', function(){
             formDataImg.append("file", $('input[type=file]')[0].files[0]);
             formDataImg.append("cod_conta", let_cod_conta);
             formDataImg.append("cod_contrato", $("#list_contratos_conta_anexo").val());
-            formDataImg.append("descricao_doc", $("#txt_desc_anexo_contrato").val());
             formDataImg.append("competencia_doc", $("#dt_competencia_anexo_doc_contrato").val());
             $.ajax({
                 type:'POST',
@@ -768,7 +766,6 @@ $(document).on('click','button', function(){
                         sticky: false,
                         time: '',
                     });
-                    $("#txt_desc_anexo_contrato").val('');
                     $("#file_anexo_contrato").val('');
                     atualiza_tab_anexos_conta(dados.cod_conta);
                 },
@@ -1026,6 +1023,48 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == 'btn_gera_conciliacao_comp_benner_detalhado_aud') {
         gera_conciliacao_comp_benner_auditoria();
+    } else if (let_nome_btn == 'btn_importa_anexos') {
+        if(let_val_btn > 0) {
+            let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+            let_loader_frm_cad_contas.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/importa_anexo_geral_contas',
+                dataType: 'json',
+                success: function(data){
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: data.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let_loader_frm_cad_contas.style.display = "none";
+                    $("#btn_importa_anexos").attr('title', "Quantidade de arquivos para importar: " + data.qtd_arquivos_postados);
+                    $("#btn_importa_anexos").val(data.qtd_arquivos_postados);
+                },
+                error: function(request, status, error){
+                    let_loader_frm_cad_contas.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Não há arquivos para serem importados!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
+
     }
 });
 
@@ -3034,15 +3073,6 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
         $("#div_dados_longo_prazo").html("");
 
 
-        /*$("#li_cad_conta_2").html(`
-            <a class="nav-link" id="a_tab_documentos" data-toggle="tab"
-               href="#div_tab_contratos" role="tab"
-               aria-controls="div_tab_contratos"
-               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
-                <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
-                Documentos
-            </a>
-        `);*/
         let let_html_btn = `
             <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>Documentos
         `;
@@ -3326,6 +3356,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
         `);
 
     }
+
     $.ajax({
         type: 'GET',
         url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
@@ -3338,7 +3369,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             $("#cb_contas option").remove();
             data.lista_contas.forEach(conta => {
                 $("#cb_contas").append("<option value='"+
-                conta.cod_conta+"'>"+conta.desc_conta+" - Cód. red. CP - "+conta.cod_red_conta_contabil_cp+
+                conta.cod_conta+"'>"+conta.cod_conta+" - "+conta.desc_conta+" - Cód. red. CP - "+conta.cod_red_conta_contabil_cp+
                 " Cód. red. LP - "+conta.cod_red_conta_contabil_lp+"</option>");
 
             });
@@ -3369,7 +3400,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
 
 function atualiza_doc_contas_modelo_1(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
-    let_loader_frm_cad_contasloader.style.display = "flex";
+    let_loader_frm_cad_contas.style.display = "flex";
     $.ajax({
         type : 'GET',
         data : {
