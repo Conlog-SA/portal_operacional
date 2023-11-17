@@ -1,0 +1,23 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label[for="liberado_filiais"] {
+    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
+}
+
+.divider {
+    border-bottom: 1px solid #ffffff; /* Adicione a cor e largura desejadas para a linha */
+    margin-top: 10px;
+  }
+
+.btn-cadastro{
+    background-color: #ef7814 !important;
+    border-color: #ef7814 !important;
+
+}
+
+.form-group label {
+    text-align: left;
+}

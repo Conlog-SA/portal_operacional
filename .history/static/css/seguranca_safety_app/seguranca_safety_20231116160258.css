@@ -1,0 +1,18 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label[for="liberado_filiais"] {
+    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
+}
+
+.arrow-divider::after {
+    content: '';
+    display: block;
+    border: solid #000;
+    border-width: 0 3px 3px 0;
+    padding: 3px;
+    transform: rotate(45deg);
+    margin-top: 10px;
+  }

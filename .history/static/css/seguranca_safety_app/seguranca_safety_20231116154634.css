@@ -1,0 +1,17 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label[for="liberado_filiais"] {
+    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
+}
+
+
+.container-check-box{
+    padding-right: 72px;
+    padding-left: 72px;
+
+}
+
+

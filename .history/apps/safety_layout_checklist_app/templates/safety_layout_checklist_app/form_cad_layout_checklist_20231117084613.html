@@ -1,0 +1,143 @@
+{% load static %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/seguranca_safety_app/seguranca_safety.css' %}" />
+    <link rel="stylesheet" href="{% static 'libs/bootstrap_4/css/bootstrap.min.css' %}" />
+
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-95" style="margin-right: 0px; width:100%;">
+   <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;">
+       <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-truck-fast" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
+           <h1 class="titlePadraoMenu" style="margin-left:0px;">Safety</h1>
+       </div>
+       <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+   </div>
+    <div class="containerApp w-95">
+        <div class="form-group form_div_check w-100" >
+            <div class="col-md-12 w-100 h-100">
+                <nav>
+                    <div class="nav nav-tabs" id="myTab" role="tablist">
+                      <button class="nav-link active tabs-nav" id="a_tab_new_check" data-bs-toggle="tab"
+                         data-bs-target="#div_tab_new_check"  type="button" role="tab"
+                         aria-controls="div_tab_new_check"
+                         aria-selected="true" style="border-radius:0px 0px 0 0; font-size:15px">
+                         Novo Check List
+                         <i class="fa-solid fa-filter" style="color: #f46424;"></i>
+                      </button>
+                      <button class="nav-link tabs-nav" id="a_tab_check_criados" data-bs-toggle="tab"
+                         data-bs-target="#div_check_criados" type="button" role="tab"
+                         aria-controls="div_check_criados"
+                         aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px" >
+                         Check Aplicados
+                        <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
+                      </button>
+                    </div>
+                </nav>
+                <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
+                    <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check" style="padding-left:5px;">
+                        <form id="form_new_check_list" name="form_nem_check_list">
+                          <div class="row">
+                             <div class="form-group col-sm-12">
+                               <label for="descricao_new_check"> Descrição </label>
+                               <input type="text" class="form-control" id="descricao_new_check">
+                             </div>
+                             <div class="form-group col-sm-3">
+                               <label for="versao_new_check">Versão</label>
+                               <input type="text" class="form-control" id="versao_new_check">
+                             </div>
+                             <div class="form-group col-sm-3">
+                               <label for="desativar_new_check_date">Desativar em:</label>
+                               <input type="date" class="form-control" id="desativar_new_check_date">
+                             </div>
+                             <div class="form-group col-sm-3">
+                               <label for="medida_periodicidade_new_check">Medida Periodicidade</label>
+                               <input type="text" class="form-control" id="medida_periodicidade_new_check">
+                             </div>
+                             <div class="form-group col-sm-3">
+                              <label for="periodicidade_new_check">Periodicidade</label>
+                              <input type="text" class="form-control" id="periodicidade_new_check">
+                            </div>
+                             <div class="form-group col-sm-12 w-15 d-flex justify-content-end" style="margin-top:10px; margin-botton:10px">
+                                <button type="button" class="btn btn-primary btn-form btn-cadastro" id="btn_new_check" name="btn_new_check" style="margin-top:10px; margin-botton:10px"> Criar Check </button>
+                             </div>
+                             <div class="form-group col-sm-12 d-flex justify-content-end divider">
+                                <label>Vincular filiais</label>
+                             </div>
+                             <div class="form-group col-sm-12 d-flex align-items-start" style="margin-bottom:0px;">
+                                 <label>Liberado para as filiais:</label>
+                              </div>
+                             <div class="form-group col-sm-12">
+                                <select class="selectpicker form-control"
+                                        id="liberado_filiais" name="liberado_filiais" placeholder="Liberado Filiais" required>
+                                </select>
+                             </div>
+                             <div class="form-group col-sm-12 d-flex justify-content-end divider" style="margin-top:10px">
+                                <label>Itens Check</label>
+                             </div>
+                              <div class="form-group col-sm-12">
+                                   <label for="descricao_item_check"> Descrição do Item</label>
+                                   <input type="text" class="form-control" id="descricao_item_check">
+                             </div>
+                             <div class="form-group col-sm-4">
+                                   <label for="select_tipo_item">Tipo de Item</label>
+                                   <select class="selectpicker form-control"
+                                           id="select_tipo_item" name="select_tipo_item" placeholder="Tipo de Item" required>
+                                   </select>
+                             </div>
+                             <div class="form-group col-sm-4">
+                                <label for="select_tipo_resposta">Tipo De Resposta</label>
+                                <select class="selectpicker form-control"
+                                        id="select_tipo_resposta" name="select_tipo_resposta"
+                                        placeholder="Tipo de Resposta" required>
+                                </select>
+                              </div>
+                              <div class="form-group col-sm-4">
+                                <label for="input_ordem_check">Ordem</label>
+                                <input type="text" class="form-control" id="input_ordem_check">
+                              </div>
+                              <div class="form-group col-sm-4">
+                                <label for="desativar_item_date">Desativar em:</label>
+                                <input type="date" class="form-control" id="desativar_item_date">
+                              </div>
+                              <div class="form-group col-sm-2 check-box">
+                                  <div class="label">
+                                    <label for="obs_imagem_check_box"> Campo Imagem e OBS</label>
+                                  </div>
+                                  <div class="container" style="padding-right: 72px; padding-left: 72px;">
+                                      <input type="checkbox" checked="checked" class="checkbox" name="obs_imagem_check_box" id="obs_imagem_check_box" style="width:10px; height:10px;">
+                                      <label class="switch" for="obs_imagem_check_box">
+                                      <span class="slider"></span>
+                                        </label>
+                                  </div>
+                              </div>
+                              <div class="form-group  col-md-6 w-15 d-flex justify-content-end" style="margin-top:10px; margin-botton:10px;">
+                                <button type="button" class="btn btn-primary btn-form btn-cadastro" id="btn_new_item" name="btn_new_item" style="margin-bottom: 10px;margin-top: 10px;"> Adicionar item</button>
+                             </div>
+                          </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane" id="div_check_criados" role="tabpanel" aria-labelledby="a_tab_check_criados">
+                       <form id="form_check_aplicados" name="form_check_aplicados" method="POST" style="margin-left:10px; margin-right:10px;">
+                          <div class="row">
+                              <div class="col md-5">
+                                  <label for="filial_check_aplicado">Filial</label>
+                                  <select class="selectpicker form-control" id="filial_check_aplicado" name="filial_check_aplicado">
+                                  </select>
+                              </div>
+                          </div>
+                       </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="{% static 'libs/bootstrap_4/js/bootstrap.min.js' %}"></script>

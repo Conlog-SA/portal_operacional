@@ -1,5 +1,5 @@
-from django.apps import AppConfig
+"""from django.apps import AppConfig
 
 
 class SafetyLayoutChecklistAppConfig(AppConfig):
-    name = 'safety_layout_checklist_app'
+    name = 'safety_layout_checklist_app'"""

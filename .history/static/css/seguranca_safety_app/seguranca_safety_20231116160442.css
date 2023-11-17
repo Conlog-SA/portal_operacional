@@ -1,0 +1,37 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label[for="liberado_filiais"] {
+    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
+}
+
+.arrow-divider {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  .arrow-divider::before,
+  .arrow-divider::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-style: solid;
+    position: absolute;
+  }
+
+  .arrow-divider::before {
+    border-width: 15px 15px 0 0;
+    border-color: transparent #000 transparent transparent;
+    right: 0;
+  }
+
+  .arrow-divider::after {
+    border-width: 15px 15px 0 0;
+    border-color: transparent white transparent transparent;
+    right: 1px; /* Ajuste de 1px para cobrir a borda da linha */
+  }
