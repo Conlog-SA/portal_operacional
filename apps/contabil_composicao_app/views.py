@@ -156,7 +156,6 @@ class Form_Imp_Contratos_Conta_View(View):
                             if parcela['val_total_pago'] != None:
                                 val_pago = decimal.Decimal(parcela['val_total_pago'])
 
-
                             obj_parcela = Parcela_Contrato(
                                 handle_parcela = parcela['handle_parc'],
                                 ap_parcela = parcela['ap_parcela'],

@@ -15,10 +15,11 @@ class Layout_Check(models.Model):
     periodicidade = models.CharField(max_length=1, blank=True, null=True)
     medida_periodicidade = models.IntegerField(blank=False, null=False)
 
-
     class Meta:
         managed = True
         db_table = 'op_safety_layout_check'
+
+
 
 class Item_Check(models.Model):
     cod_item_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
