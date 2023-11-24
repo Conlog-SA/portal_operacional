@@ -41,13 +41,14 @@ $(document).on('click','button', function(){
         povoa_tab_fretes_terc();
     }
     else if (nomeDoButton == "btnReplicaCadFreteTerceiros") {
+        let let_loader_cad_frete = document.getElementById("loader_cad_frete");
         $('#textFieldIniVigenciaCadTercReplic').val("");
         $('#textFieldFimVigenciaCadTercReplic').val("");
 
         var var_competencia_pesq = $("#textFieldPesqCadFreteTercPeriodoVigencia").val();
         var var_cod_proj = $("#listProjetosPesqCadFreteTerc").val();
         if ( var_competencia_pesq != '' ){
-            loader.style.display = "flex";
+            let_loader_cad_frete.style.display = "flex";
             $.ajax({
                 type: 'GET',
                 data: {
@@ -71,11 +72,11 @@ $(document).on('click','button', function(){
                              var_data_fim_reg_origem                +"</option>");
                     });
                     $("#cb_vigencias_cad_frete_terc").selectpicker('refresh');
-                    loader.style.display = "none";
+                    let_loader_cad_frete.style.display = "none";
 
                 },
                 error: function(request, status, error){
-                    loader.style.display = "none";
+                    let_loader_cad_frete.style.display = "none";
                     $.gritter.add({
                         title: 'Atenção!',
                         text: error,
@@ -304,7 +305,8 @@ $(document).on('click','button', function(){
         $("#modalCadFreteSpot").show();         
 
     } else if (nomeDoButton == "btnExcluirCadFreteSpot") {
-        loader.style.display = "flex";
+        let let_loader_cad_frete = document.getElementById("loader_cad_frete");
+        let_loader_cad_frete.style.display = "flex";
         $.ajax({
             type: 'POST',
             url:"/plan_controle_fat_2art_terc_app/retorna_qtd_mapas_pagos_vinculados_cad_frete_spot",
@@ -327,12 +329,12 @@ $(document).on('click','button', function(){
                     $("#pMsg").html('Não é possivel excluir o frete pois o mesmo possui ' + dados.qtd_mapas_pagos + ' mapas pagos vinculados!');
                     $("#idDivButtonExlcuiRegCadFreteSpotSelecionado").html('');
                 }
-                   loader.style.display = "none";
+                let_loader_cad_frete.style.display = "none";
                 $("#modalExcluiCadFreteSpot").show();
 
             },
             error: function (request, status, error) {
-                loader.style.display = "none";
+                let_loader_cad_frete.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -402,9 +404,10 @@ $(document).on('change', 'input', function(){
 
 
 function povoa_tab_fretes_terc(){
+    let let_loader_cad_frete = document.getElementById("loader_cad_frete");
+    let_loader_cad_frete.style.display = "flex";
     var varCodProjeto = $("#listProjetosPesqCadFreteTerc").val();
     var varDataVigencia = $("#textFieldPesqCadFreteTercPeriodoVigencia").val();
-    loader.style.display = "flex";
     $.ajax({
         url:"/plan_controle_fat_2art_terc_app/pesquisa_registros_cad_frete_spot",
         data: {
@@ -562,10 +565,10 @@ function povoa_tab_fretes_terc(){
                     }
                 }
           });
-          loader.style.display = "none";
+            let_loader_cad_frete.style.display = "none";
         },
         error: function (request, status, error) {
-            loader.style.display = "none";
+            let_loader_cad_frete.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

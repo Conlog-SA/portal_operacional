@@ -1,6 +1,6 @@
 from django.db import models
 
-from apps.estrut_org_app.models import Empresa
+from apps.estrut_org_app.models import Empresa, Filial
 from apps.usuario_app.models import Usuario
 
 
@@ -184,9 +184,209 @@ class Registros_Arqv_Docs_Contas_Modelo_1(models.Model):
                                          null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
                                     null=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     class Meta:
         managed = True
         db_table = 'op_contabil_reg_arqv_contas_m1'
+
+
+class Arquivo_Docs_Pac_Contas_Modelo_1(models.Model):
+    cod_arquivo = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    qtd_reg_imp = models.IntegerField(blank=True, null=True)
+    data_imp = models.DateTimeField(auto_now_add=True)
+    nome_arqv_original = models.CharField(max_length=200, blank=False, null=False)
+    nome_arquivo_importado = models.CharField(max_length=200, blank=False, null=False)
+    erro = models.CharField(max_length=1, blank=False, null=False)
+    data_competencia = models.DateField(blank=True, null=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
+    cod_pacote_conta = models.ForeignKey(Pacote_Conta, models.DO_NOTHING, db_column='cod_pacote_conta', null=True)
+    class Meta:
+        managed = True
+        db_table = 'op_contabil_arqv_doc_pac_contas_m1'
+
+class Docs_Pac_Contas_Pagar_Receber_M1_View(models.Model):
+    cod_pac_doc_contas_pagar_receber = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_lancto = models.DateTimeField(null=True, blank=True)
+    cnpj = models.CharField(max_length=18)
+    nome_fornecedor = models.CharField(max_length=70)
+    num_doc = models.CharField(max_length=30)
+    num_ap = models.CharField(max_length=15)
+    num_parc = models.CharField(max_length=15)
+    data_venc = models.DateField(null=True, blank=True)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo', null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_contas_pagar_receber_m1'
+
+class Docs_Pac_Estoque_M1_View(models.Model):
+    cod_pac_doc_estoque = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    nome_almoxarifado = models.CharField(max_length=70)
+    cod_produto = models.IntegerField()
+    desc_produto = models.CharField(max_length=70)
+    qtd_prod = models.IntegerField()
+    custo_medio = models.DecimalField(max_digits=8, decimal_places=2)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_estoque_m1'
+
+
+class Docs_Pac_Folha_Pag_M1_View(models.Model):
+    cod_pac_doc_folha_pag = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_lancto = models.DateTimeField(null=True, blank=True)
+    matricula = models.CharField(max_length=15)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    num_doc = models.CharField(max_length=15)
+    num_doc_contabil = models.CharField(max_length=15)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_folha_pag_m1'
+
+class Docs_Pac_Contas_Compensacao_M1_View(models.Model):
+    cod_pac_doc_contas_compensacao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_emissao = models.DateTimeField(null=True, blank=True)
+    data_entrada = models.DateTimeField(null=True, blank=True)
+    cnpj = models.CharField(max_length=18)
+    nome_fornecedor = models.CharField(max_length=70)
+    num_doc = models.CharField(max_length=15)
+    num_doc_contabil = models.CharField(max_length=15)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_contas_compensacao_m1'
+
+
+class Docs_Pac_Tributos_M1_View(models.Model):
+    cod_pac_doc_tributos = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_emissao = models.DateTimeField(null=True, blank=True)
+    data_entrada = models.DateTimeField(null=True, blank=True)
+    nome_fornecedor = models.CharField(max_length=70)
+    num_doc = models.CharField(max_length=15)
+    num_doc_contabil = models.CharField(max_length=15)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_tributos_m1'
+
+
+class Docs_Pac_Finac_Disponib_M1_View(models.Model):
+    cod_pac_doc_financ_disp = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    num_doc = models.CharField(max_length=15)
+    data_lancto = models.DateTimeField(null=True, blank=True)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_financ_disp_m1'
+
+
+class Docs_Pac_Imobilizado_M1_View(models.Model):
+    cod_pac_doc_imobilizado = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_entrada = models.DateTimeField(null=True, blank=True)
+    plaqueta = models.CharField(max_length=15)
+    desc_imobilizado = models.CharField(max_length=80)
+    val_aquisicao = models.DecimalField(max_digits=8, decimal_places=2)
+    num_doc = models.CharField(max_length=15)
+    nome_fornecedor = models.CharField(max_length=80)
+    depreciacao_acum = models.DecimalField(max_digits=8, decimal_places=2)
+    val_liq = models.DecimalField(max_digits=8, decimal_places=2)
+    taxa_depreciacao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_imobilizado_disp_m1'
+
+
+class Docs_Pac_Consorcio_Ativo_M1_View(models.Model):
+    cod_pac_doc_consorcio_ativo = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    num_doc = models.CharField(max_length=15)
+    data_lancto = models.DateTimeField(null=True, blank=True)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_consorcio_ativo_disp_m1'
+
+
+class Docs_Pac_Intercompany_M1_View(models.Model):
+    cod_pac_doc_intercompany = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    num_doc = models.CharField(max_length=15)
+    data_lancto = models.DateTimeField(null=True, blank=True)
+    val_rel = models.DecimalField(max_digits=8, decimal_places=2)
+    val_razao = models.DecimalField(max_digits=8, decimal_places=2)
+    val_dif = models.DecimalField(max_digits=8, decimal_places=2)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_intercompany_disp_m1'
+
+
+
+
+
 
 
 

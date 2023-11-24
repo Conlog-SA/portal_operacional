@@ -245,6 +245,8 @@ $(document).on('click','input', function(){
 });
 
 function atualiza_tab_liberacoes_usuario(cod_usuario) {
+    let let_loader_libera_periodo_fech_folha = document.getElementById("loader_libera_periodo_fech_folha");
+    let_loader_libera_periodo_fech_folha.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -342,8 +344,11 @@ function atualiza_tab_liberacoes_usuario(cod_usuario) {
                 }
             });
 
+            let_loader_libera_periodo_fech_folha.style.display = "none";
+
         },
         error: function (request, status, error) {
+            let_loader_libera_periodo_fech_folha.style.display = "none";
               $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -357,6 +362,8 @@ function atualiza_tab_liberacoes_usuario(cod_usuario) {
 }
 
 function atualiza_tab_liberacoes_projeto(handle_projeto) {
+    let let_loader_libera_periodo_fech_folha = document.getElementById("loader_libera_periodo_fech_folha");
+    let_loader_libera_periodo_fech_folha.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -453,9 +460,11 @@ function atualiza_tab_liberacoes_projeto(handle_projeto) {
                     }
                 }
             });
+            let_loader_libera_periodo_fech_folha.style.display = "none";
 
         },
         error: function (request, status, error) {
+            let_loader_libera_periodo_fech_folha.style.display = "none";
               $.gritter.add({
                     title: 'Atenção!',
                     text: error,

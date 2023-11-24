@@ -35,7 +35,7 @@ $.ajaxSetup({
     }
 });
 
-let loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+
 
 $(document).on('click', 'button', function(){
     let let_nome_btn = $(this).attr('name');
@@ -54,7 +54,8 @@ $(document).on('click', 'button', function(){
             });
 
         } else {
-            loader_gera_disp_emp.style.display = "flex";
+            let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+            let_loader_gera_disp_emp.style.display = "flex";
             $.ajax({
             type:'POST',
             data: {
@@ -80,11 +81,11 @@ $(document).on('click', 'button', function(){
                 $("#cb_empilhadeiras_proj_selecionado").selectpicker('refresh');
 
 
-                loader_gera_disp_emp.style.display = "none";
+                let_loader_gera_disp_emp.style.display = "none";
                 $("#modal_param_gerar_disp_emp").show();
             },
             error: function(request, status, error) {
-                loader_gera_disp_emp.style.display = "none";
+                let_loader_gera_disp_emp.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -145,7 +146,6 @@ $(document).on('click', 'button', function(){
                     });
                 },
                 error: function(request, status, error) {
-                    loader_gera_disp_emp.style.display = "none";
                     $.gritter.add({
                         title: 'Atenção!',
                         text: error,
@@ -321,6 +321,7 @@ $(document).on('click', 'button', function(){
     }
     else if (let_nome_btn == 'btn_atualiza_reg_apont_disp_emp') {
         let let_status_apontamento = $("#cb_status_atualiza_apont_disp_emp").val();
+        let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
         if (let_status_apontamento == 0){
             $.gritter.add({
                 title: 'Atenção!',
@@ -378,7 +379,8 @@ $(document).on('click', 'button', function(){
         $("#btn_importa_arquivo_disp_frota_emp").prop("disabled", true);
         let let_form_data = new FormData();
         let_form_data.append("file", $('input[type=file]')[0].files[0]);
-        loader_gera_disp_emp.style.display = "flex";
+        let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+        let_loader_gera_disp_emp.style.display = "flex";
         $.ajax({
               type: 'POST',
               enctype: "multipart/form-data; charset=utf-8",
@@ -494,9 +496,8 @@ $(document).on('click', 'button', function(){
                                 }
                         });
                         $("#hd_indica_conteudo_tabela_apontamento_indisp_emp").val(1);
-
-
                     }
+                    let_loader_gera_disp_emp.style.display = "none";
 
                 } else {
 
@@ -508,9 +509,11 @@ $(document).on('click', 'button', function(){
                         time: '',
                     });
                     $("#hd_indica_conteudo_tabela_apontamento_indisp_emp").val(0);
+                    let_loader_gera_disp_emp.style.display = "none";
                 }
               },
               error: function (request, status, error) {
+                let_loader_gera_disp_emp.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -526,7 +529,8 @@ $(document).on('click', 'button', function(){
 
 //PS.: O cod do projeto tem q ser o handle do Benner, passar periodo já no formato MM/YYYY
 function povoa_tabela_apontamento_disp_emp(handle_proj, periodo){
-    loader_gera_disp_emp.style.display = "flex";
+    let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+    let_loader_gera_disp_emp.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_disponibilidade_empilhadeira_app/pesq_dados_indisp_emp',
@@ -668,9 +672,9 @@ function povoa_tabela_apontamento_disp_emp(handle_proj, periodo){
                     }
                 }
             });
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
         }, error: function(request, status, error) {
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -687,7 +691,8 @@ function povoa_tabela_apontamento_disp_emp(handle_proj, periodo){
 
 
 function povoa_tabela_os_benner(cod_apontamento){
-    loader_gera_disp_emp.style.display = "flex";
+    let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+    let_loader_gera_disp_emp.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_disponibilidade_empilhadeira_app/retorna_os_da_placa_do_turno_do_apondamento_selecionado/'+cod_apontamento,
@@ -817,12 +822,12 @@ function povoa_tabela_os_benner(cod_apontamento){
                 }
             });
 
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
             $("#modal_os_benner_vincular_apontamento").show();
 
         },
         error: function(request, status, error) {
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -837,7 +842,8 @@ function povoa_tabela_os_benner(cod_apontamento){
 
 
 function povoa_tabela_os_apontamento(cod_apontamento){
-    loader_gera_disp_emp.style.display = "flex";
+    let let_loader_gera_disp_emp = document.getElementById("loader_gera_disp_emp");
+    let_loader_gera_disp_emp.style.display = "flex";
     $.ajax({
         type: 'GET',
         data: {
@@ -995,10 +1001,10 @@ function povoa_tabela_os_apontamento(cod_apontamento){
 
             $("#btn_atualiza_reg_apont_disp_emp").val(dados.dic_obj_apont_disp_emp.cod_apontamento);
             $("#modal_atualiza_apont_disp_emp").show();
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
         },
         error: function(request, status, error) {
-            loader_gera_disp_emp.style.display = "none";
+            let_loader_gera_disp_emp.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

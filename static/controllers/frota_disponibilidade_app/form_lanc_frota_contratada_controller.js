@@ -27,9 +27,6 @@ $.ajaxSetup({
     }
 });
 
-$(document).ready(function(){
-    let loader_frota_contratada = document.getElementById("loader_frota_contratada");
-});
 
 
 
@@ -58,9 +55,10 @@ $(document).on('click', 'button', function(){
 	var valButton = $(this).val();
 
 	if (nomeDoButton == "btnPesqLancFrotaContratada") {
+	    let let_loader_frota_contratada = document.getElementById("loader_frota_contratada");
+	    let_loader_frota_contratada.style.display = "flex";
 	    var varProjetoSelecionado = $("#listProjetosFrotaContratada").val();
 	    var varPeriodoInformado = $("#textFieldPeriodoPesqFormFrotaContratada").val();
-        loader_frota_contratada.style.display = "flex";
         $.ajax({
             type: 'GET',
             url: '/frota_disponibilidade_app/retorna_lanc_data_frota_contratada',
@@ -247,10 +245,10 @@ $(document).on('click', 'button', function(){
                 }
 
                 $("#hiddenIndicaConteudoNaTabelaFrotaContratada").val(1);
-                loader_frota_contratada.style.display = "none";
+                let_loader_frota_contratada.style.display = "none";
             },
             error: function(request, status, error){
-                loader_frota_contratada.style.display = "none";
+                let_loader_frota_contratada.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -261,7 +259,8 @@ $(document).on('click', 'button', function(){
             }
         });
 
-	} else if (nomeDoButton == "btnNovoImportaArqFrotaContratada") {
+	}
+	else if (nomeDoButton == "btnNovoImportaArqFrotaContratada") {
 	    //$("#hiddenIndicaConteudoNaTabelaFrotaContratada").val(0);
         $("#btnImportaArqFrotaContratada").prop("disabled", true);
         $(this).prop("disabled", true);
@@ -277,12 +276,15 @@ $(document).on('click', 'button', function(){
             $("#hiddenIndicaConteudoNaTabelaFrotaContratada").val(0);
         }
 
-	} if (nomeDoButton == "btnImportaArqFrotaContratada") {
+	}
+	if (nomeDoButton == "btnImportaArqFrotaContratada") {
+	    let let_loader_frota_contratada = document.getElementById("loader_frota_contratada");
+	    let_loader_frota_contratada.style.display = "flex";
         $(this).prop("disabled", true);
 	    $("#campoArquivoFrotaContratada").prop("disabled", true);
 	    var formData = new FormData();
         formData.append("file", $('input[type=file]')[0].files[0]);
-        loader_frota_contratada.style.display = "flex";
+
         $.ajax({
 			  type: 'POST',
 			  enctype: "multipart/form-data; charset=utf-8",
@@ -304,7 +306,8 @@ $(document).on('click', 'button', function(){
                         });
 			            $("#divTabelaFormLancFrotaContrat").html("");
 			            $("#divTabelaFormLancFrotaContrat").html(dados.lista_frota_contratada[0].status_leitura_importacao);
-			        } else {
+			        }
+			        else {
 			            var lista_lanc_frota_contratada = [];
 			            for(var i = 0; i < dados.lista_frota_contratada.length; i++) {
 			                var varImgStatusImpRegistro = '';
@@ -404,6 +407,7 @@ $(document).on('click', 'button', function(){
 
                             $("#hiddenIndicaConteudoNaTabelaFrotaContratada").val(1);
 			        }
+
 			    } else {
 			        $.gritter.add({
                         title: 'Atenção!',
@@ -414,10 +418,10 @@ $(document).on('click', 'button', function(){
                     });
 			        $("#hiddenIndicaConteudoNaTabelaFrotaContratada").val(0);
 			    }
-			    loader_frota_contratada.style.display = "none";
+			    let_loader_frota_contratada.style.display = "none";
 			  },
 			  error: function(request, status, error) {
-			    loader_frota_contratada.style.display = "none";
+			    let_loader_frota_contratada.style.display = "none";
 			    $.gritter.add({
                     title: 'Atenção!',
                     text: error,
