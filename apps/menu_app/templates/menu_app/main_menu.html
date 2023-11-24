@@ -13,6 +13,9 @@
 
   <!-- Bibliotecas Table-->
   <link defer   rel="stylesheet" href="{% static 'libs/jquery_3_6_0/css/dataTables.min.css' %}"/>
+
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
 {% endblock %}
 
 {% block conteudo %}
@@ -130,41 +133,60 @@
 {% endblock %}
 
 {% block base_controllers_apps_js %}
-  <script src="{% static 'controllers/perfil-dropdown.js' %}"></script>
-  <script src="{% static 'controllers/menu_app/main_menu_controller.js' %}"></script>
+  <script src="{% static 'controllers/perfil-dropdown.js' %}"
+          type="text/javascript">
+  </script>
 
-  <script src="{% static 'controllers/contabil_composicao_app/form_cad_contas_controller.js' %}"></script>
-  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_m1_controller.js' %}"></script>
+  <script src="{% static 'controllers/menu_app/main_menu_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_cad_contas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_m1_controller.js' %}"
+          type="text/javascript">
+  </script>
 
   <script src="{% static 'controllers/contabil_operacoes_farol_ndd_app/form_notas_tratadas_controller.js' %}"
-        type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
 
   <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_relatorio_pagamento_terceiros_controller.js' %}"
-          type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
   <script src="{% static 'controllers/suprimentos_evolucao_precos_app/form_gera_evolucao_precos_controller.js' %}"
-        type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
-  <script
-    src="{% static 'controllers/suprimentos_justifica_precos_diesel_app/form_justifica_preco_diesel_controller.js' %}">
+  <script src="{% static 'controllers/suprimentos_justifica_precos_diesel_app/form_justifica_preco_diesel_controller.js' %}"
+          type="text/javascript">
   </script>
 
   <script src="{% static 'controllers/suprimentos_evolucao_precos_app/dash_evolucao_precos_controller.js' %}"
-        type="text/javascript"></script>
+        type="text/javascript">
+  </script>
 
-  <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_periodo_fecha_folha_controller.js' %}"
-        type="text/javascript"></script>
+  <script defer src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_periodo_fecha_folha_controller.js' %}"
+          type="text/javascript">
+  </script>
 
   <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_rel_folha_pagamento_controller.js' %}"
-        type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
   <script src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_projetos_usuario_folha_pag_controller.js' %}"
-        type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
   <script src="{% static 'controllers/plan_controle_provisoes_folha_app/form_rel_provisoes_senior_controller.js' %}"
-        type="text/javascript"></script>
+          type="text/javascript">
+  </script>
 
+<<<<<<< HEAD
   <script src="{% static 'controllers/ti_tma_app/form_gera_tma_ti_controller.js' %}" type="text/javascript"></script>
 
   <script src="{% static 'controllers/safety_layout_checklist_app/frm_cad_check_controller.js' %}"        type="text/javascript"></script>
@@ -175,40 +197,81 @@
 
   <script
     src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_frete_spot_controller.js' %}">
+=======
+  <script src="{% static 'controllers/ti_tma_app/form_gera_tma_ti_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script
-    src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_placa_terceiros_controller.js' %}">
+  <script src="{% static 'controllers/safety_layout_checklist_app/frm_cad_check_controller.js' %}"
+          type="text/javascript">
+>>>>>>> master
   </script>
 
-  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_importa_arquivo_fat_terc_controller.js' %}"></script>
-
-  <script src="{% static 'controllers/frota_disponibilidade_app/form_importa_plan_promax_apontamento_controller.js' %}"></script>
-
-  <script
-    src="{% static 'controllers/frota_disponibilidade_app/form_lanc_frota_contratada_controller.js' %}">
+  <script src="{% static 'controllers/ti_tma_app/form_gera_tma_ti_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script
-    src="{% static 'controllers/frota_disponibilidade_empilhadeira_app/form_gera_disp_empilhadeira_controller.js' %}">
+  <script src="{% static 'controllers/safety_layout_checklist_app/frm_cad_check_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script
-    src="{% static 'controllers/frota_vpo_app/form_vincula_roteiros_pecas_controller.js' %}">
+
+
+  <script src="{% static 'controllers/frota_importa_2art_app/form_importa_2art_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script
-      src="{% static 'controllers/suprimentos_rel_filial_comprador_app/form_cad_rel_filial_comprador_controller.js' %}">
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_frete_spot_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script
-    src="{% static 'controllers/suprimentos_tma_app/form_requisicoes_gera_tma_controller.js' %}">
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_placa_terceiros_controller.js' %}"
+          type="text/javascript">
   </script>
 
-  <script src="{% static 'controllers/usuario_app/form_cad_usuario_controller.js' %}"></script>
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_importa_arquivo_fat_terc_controller.js' %}"
+          type="text/javascript">
+  </script>
 
-  <script src="{% static 'controllers/usuario_app/form_libera_modulos_controller.js' %}"></script>
+  <script src="{% static 'controllers/frota_disponibilidade_app/form_importa_plan_promax_apontamento_controller.js' %}"
+          type="text/javascript">
+  </script>
 
+  <script src="{% static 'controllers/frota_disponibilidade_app/form_lanc_frota_contratada_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_disponibilidade_empilhadeira_app/form_gera_disp_empilhadeira_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_vpo_app/form_vincula_roteiros_pecas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_rel_filial_comprador_app/form_cad_rel_filial_comprador_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_tma_app/form_requisicoes_gera_tma_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/usuario_app/form_libera_modulos_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/usuario_app/form_libera_projetos_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+<script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_pac_m1_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+<<<<<<< HEAD
   <script src="{% static 'controllers/usuario_app/form_libera_projetos_controller.js' %}"></script>
 
+=======
+>>>>>>> master
 {% endblock %}

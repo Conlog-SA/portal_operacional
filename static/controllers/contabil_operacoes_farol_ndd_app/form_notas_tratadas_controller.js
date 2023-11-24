@@ -31,7 +31,7 @@ $.ajaxSetup({
 
 
 $(document).ready(function(){
-    let loader_frm_op_ndd = document.getElementById("loader_frm_op_ndd");
+    let let_loader_frm_op_ndd = document.getElementById("loader_frm_op_ndd");
 
     $("#tab_excecoes_operacao").DataTable( {
         "bJQueryUI": true,
@@ -307,7 +307,8 @@ function atualiza_cd_operacoes(lista_operacoes){
 }
 
 function povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim, var_chave_nota){
-    loader_frm_op_ndd.style.display = "flex";
+    let let_loader_frm_op_ndd = document.getElementById("loader_frm_op_ndd");
+    let_loader_frm_op_ndd.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/contabil_operacoes_farol_ndd_app/pesc_nota_proc_nfe',
@@ -452,12 +453,12 @@ function povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim,
                 }
             });
 
-            loader_frm_op_ndd.style.display = "none";
+            let_loader_frm_op_ndd.style.display = "none";
 
 
         },
         error: function (request, status, error) {
-            loader_frm_op_ndd.style.display = "none";
+            let_loader_frm_op_ndd.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -471,7 +472,8 @@ function povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim,
 }
 
 function povoa_tab_excecoes_operacoes(){
-    loader_frm_op_ndd.style.display = "flex";
+    let let_loader_frm_op_ndd = document.getElementById("loader_frm_op_ndd");
+    let_loader_frm_op_ndd.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/contabil_operacoes_farol_ndd_app/retorna_excecoes_lancadas',
@@ -545,12 +547,12 @@ function povoa_tab_excecoes_operacoes(){
                 }
             });
 
-            loader_frm_op_ndd.style.display = "none";
+            let_loader_frm_op_ndd.style.display = "none";
 
 
         },
         error: function (request, status, error) {
-            loader_frm_op_ndd.style.display = "none";
+            let_loader_frm_op_ndd.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

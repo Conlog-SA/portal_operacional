@@ -27,7 +27,7 @@ $.ajaxSetup({
     }
 });
 
-let loader_vinc_roteiro_pecas = document.getElementById("loader_vinc_roteiro_pecas");
+
 $(document).on('change', '#txt_cod_ref_item', function(){
     var var_cod_ref = $(this).val();
     $.ajax({
@@ -181,7 +181,8 @@ $(document).on('click','button', function(){
 
 
 function povoa_tab_vinculo_pecas_roteiro(){
-    loader_vinc_roteiro_pecas.style.display = "flex";
+    let let_loader_vinc_roteiro_pecas = document.getElementById("loader_vinc_roteiro_pecas");
+    let_loader_vinc_roteiro_pecas.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_vpo_app/lista_roteiro_peca',
@@ -276,11 +277,11 @@ function povoa_tab_vinculo_pecas_roteiro(){
                             }
                         }
             });
-            loader_vinc_roteiro_pecas.style.display = "none";
+            let_loader_vinc_roteiro_pecas.style.display = "none";
 
         },
         error: function (request, status, error) {
-            loader_vinc_roteiro_pecas.style.display = "none";
+            let_loader_vinc_roteiro_pecas.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

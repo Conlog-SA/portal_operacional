@@ -118,7 +118,8 @@ $(document).on('click','button', function(){
     } else if (nomeDoButton == "btnPesqCadPlacaTerceiros") {       
         povoa_tab_cad_placas_terc();
     } else if (nomeDoButton == "btnExcluirCadPlacaTerc") {
-        loader.style.display = "flex";
+        let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+        let_loader_cad_placa.style.display = "flex";
         $.ajax({
             type: 'POST',
             url:"/plan_controle_fat_2art_terc_app/retorna_qtd_mapas_pagos_vinculados_cad_placa",
@@ -141,12 +142,12 @@ $(document).on('click','button', function(){
                     $("#pMsgModalExcluiPlaca").html('Não é possivel excluir o frete pois o mesmo possui ' + dados.qtd_mapas_pagos + ' mapas pagos vinculados!');
                     $("#idDivButtonExlcuiRegCadPlacaSelecionado").html('');
                 }
-                loader.style.display = "none";
+                let_loader_cad_placa.style.display = "none";
                 $("#modalExcluiCadPlacaTerc").show();
 
             },
             error: function (request, status, error) {
-                loader.style.display = "none";
+                let_loader_cad_placa.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -191,13 +192,15 @@ $(document).on('click','button', function(){
 
 
     } else if ( nomeDoButton == "btnReplicaCadPlacaTerceiros") {
+        let let_loader_cad_placa = document.getElementById("loader_cad_placa");
         $('#textFieldIniVigenciaCadTercReplic').val("");
         $('#textFieldFimVigenciaCadTercReplic').val("");
 
         var var_competencia_pesq = $("#textFieldPesqCadPlacaTercPeriodoVigencia").val();
         var var_cod_proj = $("#listProjetosPesqCadPlacaTerc").val();
         if ( var_competencia_pesq != '' ){
-            loader.style.display = "flex";
+
+            let_loader_cad_placa.style.display = "flex";
             $.ajax({
                 type: 'GET',
                 data: {
@@ -220,11 +223,11 @@ $(document).on('click','button', function(){
                              var_data_fim_reg_origem                +"</option>");
                     });
                     $("#cb_vigencias_cad_placa_terc").selectpicker('refresh');
-                    loader.style.display = "none";
+                    let_loader_cad_placa.style.display = "none";
 
                 },
                 error: function(request, status, error){
-                    loader.style.display = "none";
+                    let_loader_cad_placa.style.display = "none";
                     $.gritter.add({
                         title: 'Atenção!',
                         text: error,
@@ -434,7 +437,8 @@ $(document).on('change','input', function(){
 
 function povoa_tab_beneficiarios_terc(){
     var varCodProjeto = $("#listProjetosPesqCadPlacaTerc").val();
-    loader.style.display = "flex";
+    let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+    let_loader_cad_placa.style.display = "flex";
     $.ajax({
             url:"/plan_controle_fat_2art_terc_app/retorna_cad_beneficiario_terceiros_projeto_selecionado",
             data: {
@@ -539,10 +543,10 @@ function povoa_tab_beneficiarios_terc(){
                             }
                         }
               });
-                loader.style.display = "none";
+                let_loader_cad_placa.style.display = "none";
             },
             error: function (request, status, error) {
-                loader.style.display = "none";
+                let_loader_cad_placa.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -556,7 +560,8 @@ function povoa_tab_beneficiarios_terc(){
 }
 
 function atualiza_comp_beneficiarios_benner_cad_benef(cod_projeto){
-    loader.style.display = "flex";
+    let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+    let_loader_cad_placa.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -577,11 +582,11 @@ function atualiza_comp_beneficiarios_benner_cad_benef(cod_projeto){
             });
             $("#cb_handle_benner_beneficiario").html(var_options);
             $("#cb_handle_benner_beneficiario").selectpicker('refresh');
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
 
         },
         error: function(request, status, error){
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -596,7 +601,8 @@ function atualiza_comp_beneficiarios_benner_cad_benef(cod_projeto){
 
 
 function atualiza_comp_beneficiarios_benner_cad_placa(cod_projeto){
-    loader.style.display = "flex";
+    let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+    let_loader_cad_placa.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -616,11 +622,11 @@ function atualiza_comp_beneficiarios_benner_cad_placa(cod_projeto){
             });
             $("#listNomeBeneficiarioCadPlacaTerc").html(var_options);
             $("#listNomeBeneficiarioCadPlacaTerc").selectpicker('refresh');
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
 
         },
         error: function(request, status, error){
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -648,8 +654,8 @@ $(document).on('change', '#listProjetosCadPlacaTerc', function(){
 function povoa_tab_cad_placas_terc(){
     var varCodProjeto = $("#listProjetosPesqCadPlacaTerc").val();
     var varDataVigencia = $("#textFieldPesqCadPlacaTercPeriodoVigencia").val();
-
-    loader.style.display = "flex";
+    let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+    let_loader_cad_placa.style.display = "flex";
     $.ajax({
         url:"/plan_controle_fat_2art_terc_app/pesquisa_registros_cad_placa_terceiros",
         data: {
@@ -753,10 +759,10 @@ function povoa_tab_cad_placas_terc(){
                     }
                 }
             });
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
         },
         error: function (request, status, error) {
-            loader.style.display = "none";
+            let_loader_cad_placa.style.display = "none";
              $.gritter.add({
                 title: 'Atenção!',
                 text: error,

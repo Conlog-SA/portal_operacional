@@ -29,11 +29,13 @@ $.ajaxSetup({
     }
 });
 
+
 $(document).ready(function(){
     /* Variáveis globais */
     let let_lista_dados_usuarios;
 
     atualiza_tab_usuarios();
+
 });
 
 document.title = "Cadastro de Usuários | Portal Operacional";

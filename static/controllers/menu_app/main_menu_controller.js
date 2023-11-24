@@ -32,7 +32,7 @@ $.ajaxSetup({
 
 
 $(document).ready(function(){
-    let loader_menu = document.getElementById("loader_menu");
+
     $("#main_menu").html("");
 });
 
@@ -41,8 +41,11 @@ $(document).on('click', 'a', function(){
 	let let_idA = $(this).attr('id');
 
 	if ( let_nomeA == "a_sub_menu") {
-	    let let_url_menu = $("#hd_url_sub_menu_"+let_idA.split('_')[3]).val();
+	    $("#main_menu").empty();
+	    let loader_menu = document.getElementById("loader_menu");
 	    loader_menu.style.display = "flex";
+
+	    let let_url_menu = $("#hd_url_sub_menu_"+let_idA.split('_')[3]).val();
 	    $.ajax({
             url:let_url_menu,
             success: function(dados){

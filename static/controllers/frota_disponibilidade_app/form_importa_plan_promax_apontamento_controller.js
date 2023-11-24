@@ -36,7 +36,7 @@ $.ajaxSetup({
     }
 });
 
-let loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
+
 
 
 $(document).on('change', 'input', function(){
@@ -65,12 +65,13 @@ $(document).on('click', 'button', function(){
 	var valButton = $(this).val();
 
 	if (nomeDoButton == "btnImportaArquivoDispFrotaRota") {
+	    let let_loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
 	    $(this).prop("disabled", true);
 	    //$("#btnImportaArquivoDispFrotaEmp").prop("disabled", true);
 	    $("#campoArquivoImpArqDispFrota").prop("disabled", true);
         var formData = new FormData();
         formData.append("file", $('input[type=file]')[0].files[0]);
-        loader_imp_plan_promax.style.display = "flex";
+        let_loader_imp_plan_promax.style.display = "flex";
         $.ajax({
 			  type: 'POST',
 			  enctype: "multipart/form-data; charset=utf-8",
@@ -92,6 +93,7 @@ $(document).on('click', 'button', function(){
                         });
                         $("#divConteudoImportadoDispFrota").html("");
                         $("#divConteudoImportadoDispFrota").html(dados.lista_apontamentos_promax[0].status_leitura_importacao);
+                        let_loader_imp_plan_promax.style.display = "none";
                     } else {
                         var lista_lanc_apont_promax = [];
                         for (var i = 0; i < dados.lista_apontamentos_promax.length; i++) {
@@ -182,7 +184,7 @@ $(document).on('click', 'button', function(){
                                 }
                         });
                         $("#hd_indica_conteudo_na_tabela").val(1);
-                        loader_imp_plan_promax.style.display = "none";
+                        let_loader_imp_plan_promax.style.display = "none";
                         $.gritter.add({
                         title: 'Atenção!',
                         text: dados.msg,
@@ -194,7 +196,7 @@ $(document).on('click', 'button', function(){
                     }
 
 			    } else {
-                    loader_imp_plan_promax.style.display = "none";
+                    let_loader_imp_plan_promax.style.display = "none";
 			        $.gritter.add({
                         title: 'Atenção!',
                         text: dados.msg,
@@ -455,11 +457,12 @@ $(document).on('click', 'button', function(){
 	        }
 	    });
 	} else if (nomeDoButton == 'btnImportaArquivoDispFrotaEmp') {
+	    let let_loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
         $(this).prop("disabled", true);
         $("#btnImportaArquivoDispFrotaEmp").prop("disabled", true);
         let let_form_data = new FormData();
         let_form_data.append("file", $('input[type=file]')[0].files[0]);
-        loader_imp_plan_promax.style.display = "flex";
+        let_loader_imp_plan_promax.style.display = "flex";
         $.ajax({
               type: 'POST',
               enctype: "multipart/form-data; charset=utf-8",
@@ -479,6 +482,7 @@ $(document).on('click', 'button', function(){
                             sticky: false,
                             time: '',
                         });
+                        let_loader_imp_plan_promax.style.display = "none";
                         //$("#divConteudoImportadoDispFrota").html("");
                         //$("#divConteudoImportadoDispFrota").html(dados.lista_apontamentos_promax[0].status_leitura_importacao);
                     } else {
@@ -575,7 +579,7 @@ $(document).on('click', 'button', function(){
                                 }
                         });
                         $("#hd_indica_conteudo_na_tabela").val(1);
-                        loader_imp_plan_promax.style.display = "none";
+                        let_loader_imp_plan_promax.style.display = "none";
                         $.gritter.add({
                             title: 'Atenção!',
                             text: dados.msg,
@@ -586,7 +590,7 @@ $(document).on('click', 'button', function(){
                     }
 
                 } else {
-                    loader_imp_plan_promax.style.display = "none";
+                    let_loader_imp_plan_promax.style.display = "none";
                     $.gritter.add({
                         title: 'Atenção!',
                         text: 'Arquivo vazio. Verifique!',
@@ -612,7 +616,8 @@ $(document).on('click', 'button', function(){
 
 
 function povoa_tabela_siglas_disp_frota(){
-    loader_imp_plan_promax.style.display = "flex";
+    let let_loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
+    let_loader_imp_plan_promax.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_disponibilidade_app/retorna_lista_siglas_disp_frota',
@@ -680,10 +685,10 @@ function povoa_tabela_siglas_disp_frota(){
                     }
                 }
                 } );
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
         },
         error: function(request, status, error){
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -697,7 +702,8 @@ function povoa_tabela_siglas_disp_frota(){
 }
 
 function povoa_tabela_grupos_indisp_disp_frota() {
-    loader_imp_plan_promax.style.display = "flex";
+    let let_loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
+    let_loader_imp_plan_promax.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_disponibilidade_app/retorna_lista_grupos_disp_frota',
@@ -763,10 +769,10 @@ function povoa_tabela_grupos_indisp_disp_frota() {
                     }
                 }
                 } );
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
         },
         error: function(request, status, error){
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -781,7 +787,8 @@ function povoa_tabela_grupos_indisp_disp_frota() {
 
 
 function povoa_tabela_lanc_apontamentos_promax_importados(varCodProjSelecionado, varPeriodoSelecionado){
-    loader_imp_plan_promax.style.display = "flex";
+    let let_loader_imp_plan_promax = document.getElementById("loader_imp_plan_promax");
+    let_loader_imp_plan_promax.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/frota_disponibilidade_app/retorna_lanc_apontamentos_promax_importados',
@@ -882,10 +889,10 @@ function povoa_tabela_lanc_apontamentos_promax_importados(varCodProjSelecionado,
                     }
             });
             $("#hiddenIndicaConteudoNaTabhd_indica_conteudo_na_tabelaela").val(1);
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
         },
         error: function(request, status, error) {
-            loader_imp_plan_promax.style.display = "none";
+            let_loader_imp_plan_promax.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

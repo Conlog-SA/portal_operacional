@@ -48,7 +48,7 @@ urlpatterns = [
          name='retorna_lista_status_contrato_composicao'),
     path('visualiza_doc_contrato_competencia', views.Form_Visualiza_Doc_Contrato_View.as_view(),
          name='visualiza_doc_contrato_competencia'),
-    path('acessa_form_doc_contas_modelo_1', views.Form_Doc_Contas_Modelo_1_View.as_view(),
+    path('acessa_form_doc_contas_modelo_1', views.Tabela_Pac_Contas_Modelo_1_View.as_view(),
          name='acessa_form_doc_contas_modelo_1'),
     path('acessa_form_importa_arq_contas_modelo_1', views.Form_Imp_Arq_Contas_M1_View.as_view(),
          name='acessa_form_importa_arq_contas_modelo_1'),
@@ -66,6 +66,10 @@ urlpatterns = [
          name='acessa_frm_vinc_resp'),
     path('importa_anexo_geral_contas', views.Importa_Anexos_Contas_View.as_view(),
          name='importa_anexo_geral_contas'),
+    path('acessa_form_importa_arq_pac_modelo_1', views.Form_Doc_Pac_Modelo_1_View.as_view(),
+         name='acessa_form_importa_arq_pac_modelo_1'),
+    path('atualiza_contas_cb_contas_pac_doc_m1', views.Comp_Cb_Contas_Imp_Docs_Pac_M1_View.as_view(),
+         name='atualiza_contas_cb_contas_pac_doc_m1')
 
 ]
 
