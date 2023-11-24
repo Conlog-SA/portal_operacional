@@ -36,7 +36,8 @@ class Form_Imp_Cad_Conta_View(View):
         lista_pacotes_conta = Pacote_Conta.objects.filter(cod_modelo=1)
         lista_usuarios_contabil = Usuario.objects.filter(sala='CON')
 
-        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        #diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        diretorio_arquivos_postados = os.path.join(BASE_DIR, 'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao')
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = len(lista_arquivos)
 
