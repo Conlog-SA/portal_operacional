@@ -2,8 +2,9 @@ import os
 
 import decimal
 import shutil
+import traceback
 
-from django.db.models import Q
+from django.db.models import Q, Count
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import calendar
@@ -290,6 +291,7 @@ class Form_Imp_Contratos_Conta_View(View):
                     'cod_contrato': obj_contrato.cod_contrato,
                     'handle_fn_doc': contrato['handle_fn_doc'],
                     'num_contrato': contrato['num_contrato'],
+                    'atualiza_benner' : 'SIM',
                     'data_emissao_contrato': data_emissao_formatada,
                     'val_nominal': val_nominal_var,
                     'val_liquido': val_liquido_var,
@@ -554,7 +556,7 @@ class Form_Cad_Contrato_View(View):
             handle_contrato_form = request.POST['handle_contrato']
             status_sincronia_contrato_benner_form = request.POST['status_sincronia_contrato_benner']
 
-            obj_contrato = Contrato.objects.filter(handle_fn_doc=handle_contrato_form).first()
+            obj_contrato = Contrato.objects.get(pk=handle_contrato_form)
             obj_contrato.sincronizar_benner = status_sincronia_contrato_benner_form
             obj_contrato.save()
             msg = 'Status alterado com sucesso !'
@@ -666,10 +668,15 @@ class Form_Cad_Contrato_View(View):
                 data_venc_proxima_parc_pendente = datetime.strftime(proxima_parcela_pagar.data_vencimento, '%d-%m-%Y')
                 val_proxima_parc_pendente = locale.currency(proxima_parcela_pagar.val_principal, grouping=True, symbol=None)
 
+            atualiza_benner = 'SIM'
+            if contrato.sincronizar_benner == 'N':
+                atualiza_benner = 'NÃO'
+
             dic_contrato = {
                 'cod_contrato': contrato.cod_contrato,
                 'handle_fn_doc': contrato.handle_fn_doc,
                 'num_contrato': contrato.num_contrato,
+                'atualiza_benner' : atualiza_benner,
                 'data_emissao_contrato': datetime.strftime(contrato.data_emissao_contrato, '%d-%m-%Y'),
                 'val_nominal': locale.currency(contrato.val_nominal, grouping=True, symbol=None),
                 'val_liquido': locale.currency(contrato.val_liquido, grouping=True, symbol=None),
@@ -950,20 +957,34 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
         cod_tipo_modelo_form = request.GET['cod_modelo_conta']
 
         lista_contas = None
+        lista_contas_para_atualizar_benner = None
         if tipo_rel in ('R', 'D', 'C'):
             lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
-                                .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp', 'cod_red_conta_contabil_lp'))
+                                .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
+                                        'cod_red_conta_contabil_lp'))
+
+            lista_contas_para_atualizar_benner = list(Contrato.objects
+                                                  .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form,
+                                                          cod_conta__status_comp='A',
+                                                          sincronizar_benner='S')
+                                                  .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                                          'cod_conta__cod_red_conta_contabil_cp',
+                                                          'cod_conta__cod_red_conta_contabil_lp')
+                                                  .distinct())
         elif tipo_rel == 'A':
-            lista_contas = list(Auditoria_Status_Composicao_Competencia.objects.filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
-                                 .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
-                                         'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp').distinct())
+            lista_contas = list(Auditoria_Status_Composicao_Competencia.objects
+                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                         'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp')
+                                .distinct())
 
         lista_pacotes_conta = list(Pacote_Conta.objects.filter(cod_modelo=cod_tipo_modelo_form)
                                    .values('cod_pacote_conta', 'desc_pacote_conta'))
         data = dict()
         data = {
             'lista_contas': lista_contas,
-            'lista_pacotes_conta': lista_pacotes_conta
+            'lista_pacotes_conta': lista_pacotes_conta,
+            'lista_contas_para_atualizar_benner': lista_contas_para_atualizar_benner
         }
         return JsonResponse(data, safe=False)
 
@@ -1790,8 +1811,9 @@ class Form_Imp_Arq_Contas_M1_View(View):
         data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
         hora_atual = data_hora_atual.strftime('%H:%M:%S')
 
-        caminho_arq_imp = ('docs/contabil_composicao_app/arq_docs_m1/' + str(obj_pac_conta.desc_pacote_conta) + '/' +
-                           obj_pac_conta.desc_pacote_conta + '_' + str(data_hora_atual_h_m_y).replace('/', '_')  +
+        caminho_arq_imp = ('docs/contabil_composicao_app/arq_pac_docs_m1/' + str(obj_pac_conta.desc_pacote_conta) +
+                           '/' + competencia_form + '/' +obj_pac_conta.desc_pacote_conta + '_' +
+                           str(data_hora_atual_h_m_y).replace('/', '_')  +
                            '_' + str(hora_atual).replace(':', '_') + '.xlsx')
 
         fs = FileSystemStorage()
@@ -1799,6 +1821,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
         uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_imp)
         df_conteudo_arqv = pd.read_excel(uploaded_file_url)
         df_conteudo_arqv.fillna('', inplace=True)
+        #print(df_conteudo_arqv)
         obj_arqv_pesq = (Arquivo_Docs_Pac_Contas_Modelo_1.objects
                          .filter(
             nome_arqv_original = str(arquivo_form.name),
@@ -1828,174 +1851,194 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 reg.delete()
 
             obj_arqv_pesq.delete()
+        msg = ''
+        obj_arqv = None
+        try:
+            obj_arqv = Arquivo_Docs_Pac_Contas_Modelo_1(
+                qtd_reg_imp= df_conteudo_arqv.shape[0],
+                nome_arqv_original = str(arquivo_form.name),
+                nome_arquivo_importado = caminho_arq_imp,
+                erro = 'N',
+                data_competencia = competencia_form + '-01',
+                cod_usu = obj_usu,
+                cod_pacote_conta = obj_pac_conta
+            )
+            obj_arqv.save()
 
-        obj_arqv = Arquivo_Docs_Pac_Contas_Modelo_1(
-            qtd_reg_imp= df_conteudo_arqv.shape[0],
-            nome_arqv_original = str(arquivo_form.name),
-            nome_arquivo_importado = caminho_arq_imp,
-            erro = 'N',
-            data_competencia = competencia_form + '-01',
-            cod_usu = obj_usu,
-            cod_pacote_conta = obj_pac_conta
-        )
-        obj_arqv.save()
+            doc = None
+            if obj_pac_conta.cod_pacote_conta == 3:
+                for index, row in df_conteudo_arqv.iterrows():
+                    data_venc = None
+                    if row['Data Vencim.'] != '':
+                        data_venc = row['Data Vencim.']
 
-        doc = None
-        if obj_pac_conta.cod_pacote_conta == 3:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Contas_Pagar_Receber_M1_View (
-                    data_lancto=row['Data Lançto'],
-                    cnpj = row['CNPJ'],
-                    nome_fornecedor = row['Nome Fornecedor'],
-                    num_doc = row['Nº Documento'],
-                    num_ap = row['Nº AP'],
-                    num_parc = row['Nº Parc'],
-                    data_venc = row['Data Vencim.'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 4:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Estoque_M1_View(
-                    nome_almoxarifado=row['Nome Almoxarifado'],
-                    cod_produto = row['Código Produto'],
-                    desc_produto = row['Descrição Produto'],
-                    qtd_prod = row['Qtd'],
-                    custo_medio = row['Custo Médio'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = ['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 5:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Folha_Pag_M1_View(
-                    data_lancto=row['Data Lançto'],
-                    matricula = row['Matrícula'],
-                    historico = row['Histórico'],
-                    num_doc = row['Nº Documento'],
-                    num_doc_contabil = row['Documento Contábil'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 6:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Contas_Compensacao_M1_View(
-                    data_emissao = row['Data Emissão'],
-                    data_entrada = row['Data Entrada'],
-                    cnpj = row['CNPJ'],
-                    nome_fornecedor = row['Nome Fornecedor'],
-                    num_doc = row['Nº Documento'],
-                    num_doc_contabil = row['Documento Contábil'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    historico = row['Histórico'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 7:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Tributos_M1_View(
-                    data_emissao= row['Data Emissão'],
-                    data_entrada = row['Data Entrada'],
-                    nome_fornecedor = row['Nome Fornecedor'],
-                    num_doc = row['Nº Documento'],
-                    num_doc_contabil = row['Documento Contábil'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    historico = row['Histórico'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 9:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Finac_Disponib_M1_View(
-                    num_doc = row['Nº Documento'],
-                    data_lancto = row['Data Lançto'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    historico = row['Histórico'],
-                    obs = row['Observação'],
-                    od_conta=Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo=obj_arqv
-                ).save()
-        elif obj_pac_conta.cod_pacote_conta == 10:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Intercompany_M1_View(
-                    num_doc=row['Nº Documento'],
-                    data_lancto=row['Data Lançto'],
-                    val_rel=row['Valor Relatório'],
-                    val_razao=row['Valor Razão'],
-                    val_dif=row['Diferença'],
-                    historico=row['Histórico'],
-                    obs=row['Observação'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo=obj_arqv
-                ).save()
+                    doc = Docs_Pac_Contas_Pagar_Receber_M1_View (
+                        data_lancto=row['Data Lançto'],
+                        cnpj = row['CNPJ'],
+                        nome_fornecedor = row['Nome Fornecedor'],
+                        num_doc = row['Nº Documento'],
+                        num_ap = row['Nº AP'],
+                        num_parc = row['Nº Parc'],
+                        data_venc = data_venc,
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 4:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Estoque_M1_View(
+                        nome_almoxarifado=row['Nome Almoxarifado'],
+                        cod_produto = row['Código Produto'],
+                        desc_produto = row['Descrição Produto'],
+                        qtd_prod = row['Qtd'],
+                        custo_medio = row['Custo Médio'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 5:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Folha_Pag_M1_View(
+                        data_lancto=row['Data Lançto'],
+                        matricula = row['Matrícula'],
+                        historico = row['Histórico'],
+                        num_doc = row['Nº Documento'],
+                        num_doc_contabil = row['Documento Contábil'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 6:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Contas_Compensacao_M1_View(
+                        data_emissao = row['Data Emissão'],
+                        data_entrada = row['Data Entrada'],
+                        cnpj = row['CNPJ'],
+                        nome_fornecedor = row['Nome Fornecedor'],
+                        num_doc = row['Nº Documento'],
+                        num_doc_contabil = row['Documento Contábil'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        historico = row['Histórico'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 7:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Tributos_M1_View(
+                        data_emissao= row['Data Emissão'],
+                        data_entrada = row['Data Entrada'],
+                        nome_fornecedor = row['Nome Fornecedor'],
+                        num_doc = row['Nº Documento'],
+                        num_doc_contabil = row['Documento Contábil'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        historico = row['Histórico'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 9:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Finac_Disponib_M1_View(
+                        num_doc = row['Nº Documento'],
+                        data_lancto = row['Data Lançto'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        historico = row['Histórico'],
+                        obs = row['Observação'],
+                        cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                         cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo=obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 10:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Intercompany_M1_View(
+                        num_doc=row['Nº Documento'],
+                        data_lancto=row['Data Lançto'],
+                        val_rel=row['Valor Relatório'],
+                        val_razao=row['Valor Razão'],
+                        val_dif=row['Diferença'],
+                        historico=row['Histórico'],
+                        obs=row['Observação'],
+                        cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                         cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo=obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 11:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Imobilizado_M1_View(
+                        data_entrada=row['Data Entrada'],
+                        plaqueta = row['Plaqueta'],
+                        desc_imobilizado = row['Descrição Imobilizado'],
+                        val_aquisicao = row['Valor aquisição'],
+                        num_doc = row['Nº Documento'],
+                        nome_fornecedor = row['Nome Fornecedor'],
+                        depreciacao_acum = row['Depreciação Acumulada'],
+                        val_liq = row['Valor Liquido'],
+                        taxa_depreciacao = row['Taxa Depreciação'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                         cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo=obj_arqv
+                    ).save()
+            elif obj_pac_conta.cod_pacote_conta == 13:
+                for index, row in df_conteudo_arqv.iterrows():
+                    doc = Docs_Pac_Consorcio_Ativo_M1_View(
+                        historico = row['Histórico'],
+                        num_doc = row['Nº Documento'],
+                        data_lancto = row['Data Lançto'],
+                        val_rel = row['Valor Relatório'],
+                        val_razao = row['Valor Razão'],
+                        val_dif = row['Diferença'],
+                        obs = row['Observação'],
+                        cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                        cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                           cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                        cod_arquivo = obj_arqv
+                    ).save()
+            msg = 'Arquivo importado com sucesso'
+        except Exception as erro:
+            obj_arqv.delete()
+            traceback_str = traceback.format_exc()
+            msg = f'Erro ao importar arquivo. Contate o desenvolvedor. Erro: {erro}!'
+            print(traceback_str)
 
-        elif obj_pac_conta.cod_pacote_conta == 11:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Imobilizado_M1_View(
-                    data_entrada=row['Data Entrada'],
-                    plaqueta = row['Plaqueta'],
-                    desc_imobilizado = row['Descrição Imobilizado'],
-                    val_aquisicao = row['Valor aquisição'],
-                    num_doc = row['Nº Documento'],
-                    nome_fornecedor = row['Nome Fornecedor'],
-                    depreciacao_acum = row['Depreciação Acumulada'],
-                    val_liq = row['Valor Liquido'],
-                    taxa_depreciacao = row['Taxa Depreciação'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo=obj_arqv
-                ).save()
-
-        elif obj_pac_conta.cod_pacote_conta == 13:
-            for index, row in df_conteudo_arqv.iterrows():
-                doc = Docs_Pac_Consorcio_Ativo_M1_View(
-                    historico = row['Histórico'],
-                    num_doc = row['Nº Documento'],
-                    data_lancto = row['Data Lançto'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
-                    obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
-                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)']).first(),
-                    cod_arquivo = obj_arqv
-                ).save()
 
 
 
         dados = dict()
         dados = {
-            'msg': 'Arquivo importado com sucesso'
+            'msg': msg
         }
         return JsonResponse(dados, safe=False)
 
@@ -2091,40 +2134,63 @@ class Form_Pesq_Arq_Contas_M1_View(View):
 class Form_Pesq_Arq_Pac_Contas_M1_View(View):
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
-        let_competencia_form = request.GET['let_competencia']
+        competencia_form = request.GET['competencia'] + '-01'
 
         obj_conta = Conta.objects.get(pk=cod_conta_form)
 
         lista_docs = None
         if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
             lista_docs = list(Docs_Pac_Contas_Pagar_Receber_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form)
-                              .values('cod_filial__desc_filial','data_lancto', 'cnpj', 'nome_fornecedor', 'num_doc',
-                                      'num_ap', 'num_parc', 'val_rel', 'val_razao', 'val_dif', 'obs'))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_contas_pagar_receber', 'cod_filial__desc_filial','data_lancto',
+                                      'cnpj', 'nome_fornecedor', 'num_doc', 'num_ap', 'data_venc', 'num_parc',
+                                      'val_rel', 'val_razao', 'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
             lista_docs = list(Docs_Pac_Estoque_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_estoque', 'cod_filial__desc_filial', 'nome_almoxarifado',
+                                      'cod_produto', 'desc_produto', 'qtd_prod', 'custo_medio', 'val_rel','val_razao',
+                                      'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
             lista_docs = list(Docs_Pac_Folha_Pag_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_folha_pag', 'cod_filial__desc_filial', 'matricula', 'historico',
+                                      'num_doc', 'num_doc_contabil', 'data_lancto',  'val_rel', 'val_razao', 'val_dif',
+                                      'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
             lista_docs = list(Docs_Pac_Contas_Compensacao_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_contas_compensacao', 'cod_filial__desc_filial', 'historico', 'cnpj',
+                                      'nome_fornecedor', 'num_doc', 'num_doc_contabil', 'data_emissao', 'data_entrada',
+                                      'val_rel', 'val_razao', 'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
             lista_docs = list(Docs_Pac_Tributos_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_tributos', 'cod_filial__desc_filial', 'historico',
+                                      'num_doc', 'num_doc_contabil', 'data_emissao', 'data_entrada',
+                                      'val_rel', 'val_razao', 'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
             lista_docs = list(Docs_Pac_Finac_Disponib_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_financ_disp', 'cod_filial__desc_filial', 'historico',
+                                      'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
             lista_docs = list(Docs_Pac_Intercompany_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_intercompany', 'cod_filial__desc_filial', 'historico',
+                                      'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
             lista_docs = list(Docs_Pac_Imobilizado_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_imobilizado', 'data_entrada', 'cod_filial__desc_filial', 'plaqueta',
+                                      'desc_imobilizado', 'val_aquisicao', 'num_doc', 'nome_fornecedor',
+                                      'depreciacao_acum', 'val_liq', 'taxa_depreciacao', 'val_rel', 'val_razao',
+                                      'val_dif', 'obs'))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
             lista_docs = list(Docs_Pac_Consorcio_Ativo_M1_View.objects
-                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=let_competencia_form))
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_consorcio_ativo', 'cod_filial__desc_filial', 'historico',
+                                      'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
 
         dados = dict()
         dados = {
@@ -2148,42 +2214,85 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
         obj_conta = Conta.objects.get(pk=cod_conta_form)
 
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
-
         registros_tabela = []
-        lista_docs = Arquivo_Docs_Contas_Modelo_1.objects.filter(cod_conta=obj_conta)
-        for doc in lista_docs:
-            val_relatorio_dic = (Registros_Arqv_Docs_Contas_Modelo_1.objects
-                             .filter(cod_arquivo=doc, cod_lay_pac_camp__cod_campo__cod_campo=11)#Valor Relatorio
-                             .aggregate(val_total_realizado=Sum('val_linha')))
+        if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
+            registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_contas_pagar_receber'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
+            registros_tabela = list(Docs_Pac_Estoque_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_estoque'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
+            registros_tabela = list(Docs_Pac_Folha_Pag_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_folha_pag'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
+            registros_tabela = list(Docs_Pac_Contas_Compensacao_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_contas_compensacao'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
+            registros_tabela = list(Docs_Pac_Tributos_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_tributos'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
+            registros_tabela = list(Docs_Pac_Finac_Disponib_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_financ_disp'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
+            registros_tabela = list(Docs_Pac_Intercompany_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_intercompany'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
+            registros_tabela = list(Docs_Pac_Imobilizado_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_imobilizado'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
+            registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_conta=obj_conta)
+                              .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
+                                      'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
+                                      'cod_arquivo__cod_usu__login_usu')
+                              .annotate(qtd_registros=Count('cod_pac_doc_consorcio_ativo'),
+                                        tt_val_rel=Sum('val_rel'),
+                                        tt_val_razao=Sum('val_razao')))
 
-            val_relatorio = 0
-            if val_relatorio_dic['val_total_realizado'] != None:
-                if val_relatorio_dic['val_total_realizado'] > 0:
-                    val_relatorio = locale.currency(val_relatorio_dic['val_total_realizado'], grouping=True, symbol=None)
-
-            val_razao_dic = (Registros_Arqv_Docs_Contas_Modelo_1.objects
-                             .filter(cod_arquivo=doc, cod_lay_pac_camp__cod_campo__cod_campo=12)  # Valor Razão
-                             .aggregate(val_total_razao=Sum('val_linha')))
-            val_razao = 0
-            if val_razao_dic['val_total_razao'] != None:
-                if val_razao_dic['val_total_razao'] > 0:
-                    val_razao = locale.currency(val_razao_dic['val_total_razao'], grouping=True, symbol=None)
-
-
-
-            reg = {
-                'cod_arquivo' : doc.cod_arquivo,
-                'qtd_reg_imp' : doc.qtd_reg_imp,
-                'data_imp' : datetime.strftime(doc.data_imp, '%Y-%m-%d'),
-                'nome_arqv_original' : doc.nome_arqv_original,
-                'nome_arquivo_importado' : doc.nome_arquivo_importado,
-                'data_competencia' : datetime.strftime(doc.data_competencia, '%Y-%m-%d'),
-                'usuario' : doc.cod_usu.nome_usu,
-                'cod_conta' : doc.cod_conta.cod_conta,
-                'val_relatorio': val_relatorio,
-                'val_total_razao': val_razao
-            }
-            registros_tabela.append(reg)
+        if len(registros_tabela) > 0:
+            for reg in registros_tabela:
+                reg['cod_arquivo__data_imp'] = datetime.strftime(reg['cod_arquivo__data_imp'], '%Y-%m-%d')
+                reg['tt_val_rel'] = locale.currency(round(reg['tt_val_rel'],2), grouping=True, symbol=None)
+                reg['tt_val_razao'] = locale.currency(round(reg['tt_val_razao'], 2), grouping=True, symbol=None)
 
         dados = dict()
         dados = {
@@ -2286,3 +2395,38 @@ class Comp_Cb_Contas_Imp_Docs_Pac_M1_View(View):
             'lista_contas': lista_contas
         }
         return JsonResponse(data, safe=False)
+
+
+
+
+class Form_Atualiza_Contratos_Benner_View(View):
+    def post(self, request):
+        lista_cod_contas = request.GET['lista_cod_contas']
+        lista_parcelas_atualizados = []
+        for cod_conta in lista_cod_contas.split(','):
+            obj_conta = Conta.objects.get(pk=cod_conta)
+            lista_parcelas_para_atualizar = (Parcela_Contrato.objects
+                                                 .filter(data_liquidacao__is_null=True,
+                                                         cod_contrato__cod_conta=obj_conta,
+                                                         cod_contrato__sincronizar_benner='S'))
+            for parc in lista_parcelas_para_atualizar:
+                reg_contrato = {
+                    'desc_conta': parc.cod_contrato.cod_conta.desc_conta,
+                    'num_contrato': parc.cod_contrato.num_contrato,
+                    'num_parcela': parc.ordem_parcela,
+                    'val_corrigido': parc.val_corrigido,
+                    'val_principal': parc.val_principal,
+                    'val_taxas': parc.val_taxas,
+                    'val_fundo': parc.val_fundo,
+                    'data_vencimento': parc.data_vencimento,
+                    'data_liquidacao': parc.data_liquidacao,
+                    'handle_parcela': parc.handle_parcela
+                }
+                lista_parcelas_atualizados.append(reg_contrato)
+        data = dict()
+        data = {
+            'lista_parcelas_atualizados': lista_parcelas_atualizados
+        }
+        return JsonResponse(data, safe=False)
+
+

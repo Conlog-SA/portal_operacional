@@ -27,7 +27,7 @@ $.ajaxSetup({
     }
 });
 
-let loader_sup_tma = document.getElementById("loader_sup_tma");
+
 
 
 $(document).on('click', 'button', function(){
@@ -62,9 +62,10 @@ $(document).on('click', 'button', function(){
 
 
 function povoa_table_req_atendidas(){
+    let let_loader_sup_tma = document.getElementById("loader_sup_tma");
     var var_data_ini = $("#textFieldFormReqGeraTMAIni").val();
     var var_data_fim = $("#textFieldFormReqGeraTMAFim").val();
-    loader_sup_tma.style.display = "flex";
+    let_loader_sup_tma.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/suprimentos_tma_app/retorna_requisicoes_atendidas_benner',
@@ -167,10 +168,11 @@ function povoa_table_req_atendidas(){
                     }
                 }
                 });
-                loader_sup_tma.style.display = "none";
+                let_loader_sup_tma.style.display = "none";
         },
         error:function(request, status, error) {
-            loader_sup_tma.style.display = "none";
+            let_loader_sup_tma.style.display = "none";
+
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,

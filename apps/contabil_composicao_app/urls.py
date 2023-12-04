@@ -69,7 +69,11 @@ urlpatterns = [
     path('acessa_form_importa_arq_pac_modelo_1', views.Form_Doc_Pac_Modelo_1_View.as_view(),
          name='acessa_form_importa_arq_pac_modelo_1'),
     path('atualiza_contas_cb_contas_pac_doc_m1', views.Comp_Cb_Contas_Imp_Docs_Pac_M1_View.as_view(),
-         name='atualiza_contas_cb_contas_pac_doc_m1')
+         name='atualiza_contas_cb_contas_pac_doc_m1'),
+    path('pesq_dados_importado_pac_contas_m1', views.Form_Pesq_Arq_Pac_Contas_M1_View.as_view(),
+         name='pesq_dados_importado_pac_contas_m1'),
+    path('atualiza_contratos_com_dados_do_benner', views.Form_Atualiza_Contratos_Benner_View.as_view(),
+         name='atualiza_contratos_com_dados_do_benner'),
 
 ]
 

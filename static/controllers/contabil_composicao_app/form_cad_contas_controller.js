@@ -1065,6 +1065,53 @@ $(document).on('click','button', function(){
         }
 
 
+    } else if (let_nome_btn == 'btn_abrir_modal_atualiza_contratos_benner') {
+        $("#modal_atualiza_contratos_benner").show();
+
+    } else if (let_nome_btn == 'btn_fecha_modal_atualiza_contratos_benner') {
+        $("#modal_atualiza_contratos_benner").hide();
+
+    } else if (let_nome_btn == 'btn_desmarcar_contas_atualiza_contratos_benner'){
+        $("#sl_contas_atualiza_contratos_benner").selectpicker('deselectAll');
+    }
+    else if (let_nome_btn == 'btn_marcar_contas_atualiza_contratos_benner'){
+        $("#sl_contas_atualiza_contratos_benner").selectpicker('selectAll');
+    }
+    else if (let_nome_btn == 'btn_atualiza_dados_contrato_benner'){
+         let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        let let_lista_cod_contas = $("#sl_contas_atualiza_contratos_benner").val().toString();
+
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/atualiza_contratos_com_dados_do_benner',
+            data: {
+                'lista_cod_contas': let_lista_cod_contas
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let_loader_frm_cad_contas.style.display = "none";
+            },
+            error: function (request, status, error) {
+                let_loader_frm_cad_contas.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+
     }
 });
 
@@ -1073,12 +1120,16 @@ $(document).on('change','input', function(){
     let let_id_inp = $(this).attr('id');
     let let_chk_inp = $(this).prop('checked')
 
-    if(let_nome_inp == "chk_atualiza_com_benner_contrato"){
+    if(let_nome_inp == "chk_atualiza_dados_benner_contrato"){
+
         let let_handle_contrato = let_id_inp.split('_')[5];
         let let_status_componente = $(this).prop("checked");
+        let let_div_status_atualiza_benner = `Atualiza com o Benner ? <strong>SIM</strong>`;
         let let_status_sincroniza_benner = 'S';
         if(let_status_componente == false){
             let_status_sincroniza_benner = 'N';
+            let_div_status_atualiza_benner = `Atualiza com o Benner ? <strong>NÃO</strong>`;
+
         }
         $.ajax({
         type: 'POST',
@@ -1090,6 +1141,7 @@ $(document).on('change','input', function(){
         },
         dataType: 'json',
         success: function (dados) {
+            $("#div_status_atualiza_benner").empty();
             $.gritter.add({
                 title: 'Atenção!',
                 text: dados.msg,
@@ -1097,6 +1149,7 @@ $(document).on('change','input', function(){
                 sticky: false,
                 time: '',
             });
+            $("#div_status_atualiza_benner").html(let_div_status_atualiza_benner);
 
         },
         error: function (request, status, error) {
@@ -1703,6 +1756,11 @@ function atualiza_tab_contratos_conta(cod_conta){
             `;
 
             dados.lista_contratos.forEach( ctr => {
+                let let_verifica_check_atualiza_benner = ``;
+                if(ctr.atualiza_benner == 'SIM'){
+                    let_verifica_check_atualiza_benner = `checked="checked"`;
+                }
+
                 let_html_pagina += `
                     <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
                         <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header"
@@ -1719,13 +1777,8 @@ function atualiza_tab_contratos_conta(cod_conta){
                                         <div class="col-md-3">
                                             <strong>Empresa:</strong> ${ctr.nome_empresa}
                                         </div>
-                                        <div class="col-md-3">
-                                            <label>
-                                                <input type="checkbox" checked="checked" class="checkbox"
-                                                    id="chk_atualiza_com_benner_contrato_${ctr.handle_fn_doc}"
-                                                    name="chk_atualiza_com_benner_contrato">
-                                                Atualiza com o Benner ?
-                                            </label>
+                                        <div class="col-md-3" id="div_status_atualiza_benner">
+                                            Atualiza com o Benner ? <strong>${ctr.atualiza_benner}</strong>
                                         </div>
                                         <div class="col-md-3" align="right">
 
@@ -1822,13 +1875,14 @@ function atualiza_tab_contratos_conta(cod_conta){
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                     <label class="col-form-label text-left cursor-pointer"
-                                           for="chk_atualiza_com_benner">
+                                           for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                         Atualiza com o Benner ?</label>
                                     <div class="container">
-                                        <input type="checkbox" checked="checked" class="checkbox"
+                                        <input type="checkbox" `+let_verifica_check_atualiza_benner+` class="checkbox"
                                                name="chk_atualiza_dados_benner_contrato"
                                                id="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
-                                        <label class="switch" for="chk_atualiza_com_benner">
+                                        <label class="switch"
+                                               for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                             <span class="slider"></span>
                                         </label>
                                     </div>
@@ -1844,7 +1898,8 @@ function atualiza_tab_contratos_conta(cod_conta){
                             </div>
                             <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
                                 <div class="d-flex justify-content-between align-items-center ">
-                                    <table id"tab_parcelas_contrato_${ctr.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                    <table id"tab_parcelas_contrato_${ctr.handle_fn_doc}"
+                                    class="display wrap w-100 cl_tab_principal_pagina"
                                         style="font-size:12px; color: #000000;">
                                         <thead>
                                             <tr>
@@ -2349,6 +2404,8 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                 $("#list_contratos_conta_anexo").append("<option value='"+
                 ctr.contrato.cod_contrato+"'>"+ctr.contrato.num_contrato+"</option>");
 
+
+
                 let_html_pagina += `
                     <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
                         <h2 class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-header"
@@ -2365,13 +2422,8 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                         <div class="col-md-3">
                                             <strong>Empresa:</strong> ${ctr.contrato.nome_empresa}
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>
-                                                <input type="checkbox" checked="checked" class="checkbox"
-                                                    id="chk_atualiza_com_benner_contrato_${ctr.contrato.handle_fn_doc}"
-                                                    name="chk_atualiza_com_benner_contrato">
-                                                Atualiza com o Benner ?
-                                            </label>
+                                        <div class="col-md-6" id="div_status_atualiza_benner">
+                                            Atualiza com o Benner ? <strong>${ctr.contrato.atualiza_benner}</strong>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -2471,13 +2523,14 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                     <label class="col-form-label text-left cursor-pointer"
-                                           for="chk_atualiza_com_benner">
+                                           for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                         Atualiza com o Benner ?</label>
                                     <div class="container">
                                         <input type="checkbox" checked="checked" class="checkbox"
                                                name="chk_atualiza_dados_benner_contrato"
                                                id="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
-                                        <label class="switch" for="chk_atualiza_com_benner">
+                                        <label class="switch"
+                                               for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                             <span class="slider"></span>
                                         </label>
                                     </div>
@@ -3383,6 +3436,16 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             });
             $("#cb_pacote_conta").selectpicker('refresh');
 
+            $("#sl_contas_atualiza_contratos_benner option").remove();
+            data.lista_contas_para_atualizar_benner.forEach( conta => {
+                $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
+                conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
+                " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+            });
+            $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
+
+
         },
         error: function (request, status, error) {
             $.gritter.add({
@@ -3408,28 +3471,11 @@ function atualiza_doc_contas_modelo_1(cod_conta){
         },
         url: '/contabil_composicao_app/retorna_lista_docs_contas_modelo_1',
         success: function(dados) {
-            let let_tabela = `
-                <table id="tab_arq_conta_mod_1"  class="display wrap w-100 cl_tab_principal_pagina">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Importado em:</th>
-                            <th scope="col">Nome arquivo</th>
-                            <th scope="col">Qtd. registros</th>
-                            <th scope="col">Competência</th>
-                            <th scope="col">Usuario</th>
-                            <th scope="col">Val. relatório(R$)</th>
-                            <th scope="col">Val. razão(R$)</th>
-                            <th scope="col">Excluir</th>
-                          </tr>
-                    </thead>
-                    <tbody>
+            /*let let_tabela = `
 
-                    </tbody>
-
-                </table>
             `;
             $("#div_tab_doc_contas_modelo_1").html(let_tabela);
+
             $("#tab_arq_conta_mod_1").DataTable( {
                 "bJQueryUI": true,
                 "destroy": true,
@@ -3482,31 +3528,32 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                     }
                 }
             });
+            */
             let let_lista_docs = [];
             dados.registros_tabela.forEach( reg => {
                 let let_btn_exclui_arquivo = `
                     <button type="button" name="btn_exclui_arq_conta_mod_1"
-                        id="btn_exclui_arq_conta_mod_1_${reg.cod_arquivo}"
+                        id="btn_exclui_arq_conta_mod_1_${reg.cod_arquivo__cod_arquivo}"
                         class="btn btn-rounded btn-space"
-                        value="${reg.cod_arquivo}">
+                        value="${reg.cod_arquivo__cod_arquivo}">
                         <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
                     </button>
                 `;
-                let let_dt_imp = reg.data_imp.split('-')[2] + '-' + reg.data_imp.split('-')[1] +
-                    '-' + reg.data_imp.split('-')[0]
+                let let_dt_imp = reg.cod_arquivo__data_imp.split('-')[2] + '-' + reg.cod_arquivo__data_imp.split('-')[1] +
+                    '-' + reg.cod_arquivo__data_imp.split('-')[0]
 
-                let let_dt_comp = reg.data_competencia.split('-')[2] + '-' + reg.data_competencia.split('-')[1] +
-                    '-' + reg.data_competencia.split('-')[0]
+                let let_dt_comp = reg.cod_arquivo__data_competencia.split('-')[2] + '-' + reg.cod_arquivo__data_competencia.split('-')[1] +
+                    '-' + reg.cod_arquivo__data_competencia.split('-')[0]
 
                 reg = [
-                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    ` <i class="fa-solid fa-bookmark" style="color: #f46424"></i>`,
                     let_dt_imp,
-                    reg.nome_arqv_original,
-                    reg.qtd_reg_imp,
+                    reg.cod_arquivo__nome_arqv_original,
+                    reg.qtd_registros,
                     let_dt_comp,
-                    reg.usuario,
-                    reg.val_relatorio,
-                    reg.val_total_razao,
+                    reg.cod_arquivo__cod_usu__login_usu,
+                    reg.tt_val_rel,
+                    reg.tt_val_razao,
                     let_btn_exclui_arquivo
                 ];
                 let_lista_docs.push(reg);
