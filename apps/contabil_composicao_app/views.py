@@ -56,6 +56,7 @@ class Form_Imp_Contratos_Conta_View(View):
         cod_conta_form = request.GET['cod_conta']
         tipo_pesq_form = request.GET['tipo_pesq']
         num_contrato_form = request.GET['num_contrato']
+        num_contrato_form = request.GET['num_contrato']
         obj_conta = Conta.objects.get(pk=cod_conta_form)
         handle_conta_cp = obj_conta.handle_conta_contabil_cp
         handle_conta_lp = obj_conta.handle_conta_contabil_lp
