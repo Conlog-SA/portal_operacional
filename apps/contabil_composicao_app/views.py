@@ -61,6 +61,7 @@ class Form_Imp_Contratos_Conta_View(View):
         handle_conta_lp = obj_conta.handle_conta_contabil_lp
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+        msg = ''
 
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
 
@@ -96,6 +97,7 @@ class Form_Imp_Contratos_Conta_View(View):
                         cod_empresa= obj_empresa
                     )
                     obj_contrato.save()
+                    msg = 'Contrato adicionado com sucesso!'
                 else:
                     obj_contrato.num_contrato = contrato['num_contrato']
                     obj_contrato.data_emissao_contrato = contrato['data_emissao_contrato']
@@ -111,6 +113,7 @@ class Form_Imp_Contratos_Conta_View(View):
                     obj_contrato.qtd_parcelas = prox_parc_pendente
                     obj_contrato.cod_empresa = obj_empresa
                     obj_contrato.save()
+                    msg = 'Contrato atualizado com sucesso!'
 
                 data_emissao = datetime.strptime(contrato['data_emissao_contrato'], "%Y-%m-%d")
                 data_emissao_formatada = data_emissao.strftime("%d-%m-%Y")
@@ -152,17 +155,20 @@ class Form_Imp_Contratos_Conta_View(View):
                         if parcela['val_taxas'] != None:
                             val_taxas = parcela['val_taxas']
 
+                        val_fundo = 0.00
+                        if parcela['val_fundo'] != None:
+                            val_fundo = parcela['val_fundo']
+
+                        val_corrigido = decimal.Decimal(0.00)
+                        if parcela['valor_corrigido'] != None:
+                            val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
+
+                        val_pago = decimal.Decimal(0.00)
+                        if parcela['val_total_pago'] != None:
+                            val_pago = decimal.Decimal(parcela['val_total_pago'])
+
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela = parcela['handle_parc']).first()
                         if obj_parcela == None:
-                            val_corrigido = decimal.Decimal(0.00)
-                            if parcela['valor_corrigido'] != None:
-                                val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
-
-                            val_pago = decimal.Decimal(0.00)
-                            if parcela['val_total_pago'] != None:
-                                val_pago = decimal.Decimal(parcela['val_total_pago'])
-
-
                             obj_parcela = Parcela_Contrato(
                                 handle_parcela = parcela['handle_parc'],
                                 ap_parcela = parcela['ap_parcela'],
@@ -170,7 +176,7 @@ class Form_Imp_Contratos_Conta_View(View):
                                 val_conta = decimal.Decimal(parcela['valor_conta']),
                                 val_corrigido = val_corrigido,
                                 val_principal = decimal.Decimal(parcela['val_principal']),
-                                val_fundo = decimal.Decimal(0.00),
+                                val_fundo = decimal.Decimal(val_fundo),
                                 val_taxas  = decimal.Decimal(val_taxas),
                                 natureza = parcela['natureza'],
                                 data_vencimento = parcela['data_vencimento'],
@@ -180,46 +186,45 @@ class Form_Imp_Contratos_Conta_View(View):
                                 cod_contrato = obj_contrato
                             )
                             obj_parcela.save()
-                        else:
-                            obj_parcela.ap_parcela = parcela['ap_parcela']
-                            obj_parcela.ordem_parcela = parcela['ordem_parcela']
+                        elif obj_parcela.data_liquidacao == None:
+                            #obj_parcela.ap_parcela = parcela['ap_parcela']
+                            #obj_parcela.ordem_parcela = parcela['ordem_parcela']
                             obj_parcela.val_conta = decimal.Decimal(parcela['valor_conta'])
-                            obj_parcela.val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
+                            obj_parcela.val_corrigido = val_corrigido
                             obj_parcela.val_principal = decimal.Decimal(parcela['val_principal'])
                             obj_parcela.val_taxas = decimal.Decimal(val_taxas)
+                            obj_parcela.val_fundo = decimal.Decimal(val_fundo)
                             obj_parcela.natureza = parcela['natureza']
                             obj_parcela.data_vencimento = parcela['data_vencimento']
                             obj_parcela.tipo_prazo = tipo_prazo_parc
                             obj_parcela.data_liquidacao = parcela['data_liquidacao']
-                            obj_parcela.val_pago = decimal.Decimal(parcela['val_total_pago'])
-                            obj_parcela.cod_contrato = obj_contrato
+                            obj_parcela.val_pago = val_pago
+                            #obj_parcela.cod_contrato = obj_contrato
                             obj_parcela.save()
 
                         val_principal_parc = 0
                         if parcela['val_principal'] != None:
                             val_principal_parc = parcela['val_principal']
-                        val_taxas_parc = 0
-                        if parcela['val_taxas'] != None:
-                            val_taxas_parc = parcela['val_taxas']
+
                         val_pago_parc = 0
                         if parcela['val_total_pago'] != None:
                             val_pago_parc = parcela['val_total_pago']
 
-                        val_tt_contrato_reajustado += (val_principal_parc + val_taxas_parc)
+                        val_tt_contrato_reajustado += (val_principal_parc + val_taxas)
 
                         if obj_parcela.tipo_prazo == 'CP':
                             val_tt_liq_cp += parcela['valor_conta']
-                            val_tt_contrato_reajustado_cp += (val_principal_parc + val_taxas_parc)
+                            val_tt_contrato_reajustado_cp += (val_principal_parc + val_taxas)
                             val_tt_pago_contrato_cp += val_pago_parc
                             if val_pago_parc == 0:
-                                val_tt_a_pagar_cp += (val_principal_parc + val_taxas_parc)
+                                val_tt_a_pagar_cp += (val_principal_parc + val_taxas)
 
                         if obj_parcela.tipo_prazo == 'LP':
                             val_tt_liq_lp += parcela['valor_conta']
-                            val_tt_contrato_reajustado_lp += (val_principal_parc + val_taxas_parc)
+                            val_tt_contrato_reajustado_lp += (val_principal_parc + val_taxas)
                             val_tt_pago_contrato_lp += val_pago_parc
                             if val_pago_parc == 0:
-                                val_tt_a_pagar_lp += (val_principal_parc + val_taxas_parc)
+                                val_tt_a_pagar_lp += (val_principal_parc + val_taxas)
 
 
                         data_vencimento_formatada = ''
@@ -238,11 +243,6 @@ class Form_Imp_Contratos_Conta_View(View):
                             valor_corrigido = locale.currency(parcela['valor_corrigido'], grouping=True, symbol=None)
                             val_total_pago = locale.currency(parcela['val_total_pago'], grouping=True, symbol=None)
 
-
-                        val_fundo = decimal.Decimal(0.00)
-                        if obj_parcela.val_fundo != None:
-                            val_fundo = decimal.Decimal(obj_parcela.val_fundo)
-
                         parcela_form = {
                             'handle_fn_doc': obj_contrato.handle_fn_doc,
                             'handle_parc': obj_parcela.handle_parcela,
@@ -253,7 +253,7 @@ class Form_Imp_Contratos_Conta_View(View):
                             'valor_principal': locale.currency(obj_parcela.val_principal, grouping=True, symbol=None),
                             'valor_fundo': locale.currency(val_fundo, grouping=True, symbol=None),
                             'valor_taxas': locale.currency(obj_parcela.val_taxas, grouping=True, symbol=None),
-                            'valor_total': locale.currency(obj_parcela.val_principal + obj_parcela.val_taxas + val_fundo, grouping=True,
+                            'valor_total': locale.currency(obj_parcela.val_principal + obj_parcela.val_taxas + obj_parcela.val_fundo, grouping=True,
                                                            symbol=None),
                             'natureza': obj_parcela.natureza,
                             'data_vencimento': data_vencimento_formatada,
@@ -334,7 +334,8 @@ class Form_Imp_Contratos_Conta_View(View):
 
         data = dict()
         data = {
-            'lista_contratos': lista_contratos
+            'lista_contratos': lista_contratos,
+            'msg': msg
         }
         return JsonResponse(data, safe=False)
 
@@ -973,7 +974,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                                                   .distinct())
         elif tipo_rel == 'A':
             lista_contas = list(Auditoria_Status_Composicao_Competencia.objects
-                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A', status=1)
                                 .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp')
                                 .distinct())
@@ -1273,6 +1274,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             if cod_modelo_selecionado_form == '1':
                 for cod_conta_form in lista_cod_conta_form.split(','):
                     obj_conta = Conta.objects.get(pk=int(cod_conta_form))
+                    '''Mostra somente as contas que estão com status da composição ok'''
                     lista_composicao = (Auditoria_Status_Composicao_Competencia.objects
                                         .filter(cod_conta=obj_conta))
 
@@ -1737,8 +1739,13 @@ class Form_Status_Contrato_Composicao_View(View):
         lista_status_contratos_comp = list(Auditoria_Status_Composicao_Competencia.objects\
             .filter(cod_conta=obj_conta).order_by('cod_contrato__cod_contrato', 'tipo_prazo', 'data_competencia')
                                          .values('cod_auditoria_composicao', 'status', 'data_lan_auditoria',
-                                                 'data_competencia', 'obs_status', 'cod_usu__nome_usu', 'cod_contrato__cod_contrato',
-                                                 'cod_contrato__num_contrato', 'tipo_prazo', 'val_composicao', 'val_balancete', 'val_diferenca'))
+                                                 'data_competencia', 'obs_status', 'cod_usu__nome_usu',
+                                                 'cod_contrato__cod_contrato', 'cod_contrato__num_contrato',
+                                                 'tipo_prazo', 'val_composicao', 'val_balancete', 'val_diferenca'))
+        for reg in lista_status_contratos_comp:
+            reg['val_composicao'] = locale.currency(round(float(reg['val_composicao']), 2), grouping=True, symbol=None)
+            reg['val_balancete'] = locale.currency(round(float(reg['val_balancete']), 2), grouping=True, symbol=None)
+            reg['val_diferenca'] = locale.currency(round(float(reg['val_diferenca']), 2), grouping=True, symbol=None)
         data = dict()
         data = {
             'lista_status_contratos_comp': lista_status_contratos_comp
@@ -2135,7 +2142,7 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
         competencia_form = request.GET['competencia'] + '-01'
-
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
         obj_conta = Conta.objects.get(pk=cod_conta_form)
 
         lista_docs = None
@@ -2145,40 +2152,117 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                               .values('cod_pac_doc_contas_pagar_receber', 'cod_filial__desc_filial','data_lancto',
                                       'cnpj', 'nome_fornecedor', 'num_doc', 'num_ap', 'data_venc', 'num_parc',
                                       'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+                if doc['data_venc'] != None:
+                    doc['data_venc'] = datetime.strftime(doc['data_venc'], '%d-%m-%Y')
+
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
             lista_docs = list(Docs_Pac_Estoque_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_estoque', 'cod_filial__desc_filial', 'nome_almoxarifado',
                                       'cod_produto', 'desc_produto', 'qtd_prod', 'custo_medio', 'val_rel','val_razao',
                                       'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['custo_medio'] != None:
+                    doc['custo_medio'] = locale.currency(round(float(doc['custo_medio']), 2), grouping=True, symbol=None)
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
             lista_docs = list(Docs_Pac_Folha_Pag_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_folha_pag', 'cod_filial__desc_filial', 'matricula', 'historico',
                                       'num_doc', 'num_doc_contabil', 'data_lancto',  'val_rel', 'val_razao', 'val_dif',
                                       'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
             lista_docs = list(Docs_Pac_Contas_Compensacao_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_contas_compensacao', 'cod_filial__desc_filial', 'historico', 'cnpj',
                                       'nome_fornecedor', 'num_doc', 'num_doc_contabil', 'data_emissao', 'data_entrada',
                                       'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_emissao'] != None:
+                    doc['data_emissao'] = datetime.strftime(doc['data_emissao'], '%d-%m-%Y')
+                if doc['data_entrada'] != None:
+                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
             lista_docs = list(Docs_Pac_Tributos_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_tributos', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'num_doc_contabil', 'data_emissao', 'data_entrada',
                                       'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_emissao'] != None:
+                    doc['data_emissao'] = datetime.strftime(doc['data_emissao'], '%d-%m-%Y')
+                if doc['data_entrada'] != None:
+                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
             lista_docs = list(Docs_Pac_Finac_Disponib_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_financ_disp', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
             lista_docs = list(Docs_Pac_Intercompany_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_intercompany', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
             lista_docs = list(Docs_Pac_Imobilizado_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
@@ -2186,11 +2270,44 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                                       'desc_imobilizado', 'val_aquisicao', 'num_doc', 'nome_fornecedor',
                                       'depreciacao_acum', 'val_liq', 'taxa_depreciacao', 'val_rel', 'val_razao',
                                       'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['data_entrada'] != None:
+                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
+                if doc['val_aquisicao'] != None:
+                    doc['val_aquisicao'] = locale.currency(round(float(doc['val_aquisicao']), 2), grouping=True,
+                                                           symbol=None)
+                if doc['depreciacao_acum'] != None:
+                    doc['depreciacao_acum'] = locale.currency(round(float(doc['depreciacao_acum']), 2), grouping=True,
+                                                           symbol=None)
+                if doc['val_liq'] != None:
+                    doc['val_liq'] = locale.currency(round(float(doc['val_liq']), 2), grouping=True,symbol=None)
+                if doc['taxa_depreciacao'] != None:
+                    doc['taxa_depreciacao'] = locale.currency(round(float(doc['taxa_depreciacao']), 2), grouping=True,
+                                                              symbol=None)
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_entrada'] != None:
+                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
+
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
             lista_docs = list(Docs_Pac_Consorcio_Ativo_M1_View.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_consorcio_ativo', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+
 
         dados = dict()
         dados = {
@@ -2204,8 +2321,8 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
 class Tabela_Doc_Contas_Modelo_1_View(View):
     def get_object(self, pk):
         try:
-            return Arquivo_Docs_Contas_Modelo_1.objects.get(pk=pk)
-        except Arquivo_Docs_Contas_Modelo_1.DoesNotExists:
+            return Arquivo_Docs_Pac_Contas_Modelo_1.objects.get(pk=pk)
+        except Arquivo_Docs_Pac_Contas_Modelo_1.DoesNotExists:
             return Http404
 
 
@@ -2301,20 +2418,59 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
         return JsonResponse(dados, safe=False)
 
     def delete(self, request, pk):
-        obj_arquivo = self.get_object(pk)
-        cod_conta = obj_arquivo.cod_conta.cod_conta
-        lista_reg_arquivo = Registros_Arqv_Docs_Contas_Modelo_1.objects.filter(cod_arquivo=obj_arquivo)
-        if len(lista_reg_arquivo) > 0:
-            for reg in lista_reg_arquivo:
-                reg.delete()
-        caminho_completo = os.path.join(BASE_DIR,
-                                        'media\\' + str(obj_arquivo.nome_arquivo_importado).replace('/', '\\'))
-        os.remove(caminho_completo)
-        obj_arquivo.delete()
+        obj_arquivo = self.get_object(pk.split('_')[0])
+        obj_conta = Conta.objects.get(pk=pk.split('_')[1])
+        cod_pacote = obj_conta.cod_pacote_conta.cod_pacote_conta
+        if cod_pacote == 3:
+            docs = Docs_Pac_Contas_Pagar_Receber_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 4:
+            docs = Docs_Pac_Estoque_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 5:
+            docs = Docs_Pac_Folha_Pag_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 6:
+            docs = Docs_Pac_Contas_Compensacao_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 7:
+            docs = Docs_Pac_Tributos_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 9:
+            docs = Docs_Pac_Finac_Disponib_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 10:
+            docs = Docs_Pac_Intercompany_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 11:
+            docs = Docs_Pac_Imobilizado_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+        elif cod_pacote == 13:
+            docs = Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            for doc in docs:
+                doc.delete()
+
+
         data = dict()
         data = {
-            'cod_conta': cod_conta,
-            'msg': 'Arquivo e registros excluídos com sucesso!'
+            'cod_conta': obj_conta.cod_conta,
+            'msg': 'Registros da conta excluídos com sucesso!'
         }
         return JsonResponse(data, safe=False)
 
@@ -2401,16 +2557,17 @@ class Comp_Cb_Contas_Imp_Docs_Pac_M1_View(View):
 
 class Form_Atualiza_Contratos_Benner_View(View):
     def post(self, request):
-        lista_cod_contas = request.GET['lista_cod_contas']
+        lista_cod_contas = request.POST['lista_cod_contas']
         lista_parcelas_atualizados = []
         for cod_conta in lista_cod_contas.split(','):
             obj_conta = Conta.objects.get(pk=cod_conta)
             lista_parcelas_para_atualizar = (Parcela_Contrato.objects
-                                                 .filter(data_liquidacao__is_null=True,
+                                                 .filter(data_liquidacao__isnull=True,
                                                          cod_contrato__cod_conta=obj_conta,
                                                          cod_contrato__sincronizar_benner='S'))
             for parc in lista_parcelas_para_atualizar:
                 reg_contrato = {
+                    'cod_conta': parc.cod_contrato.cod_conta.cod_conta,
                     'desc_conta': parc.cod_contrato.cod_conta.desc_conta,
                     'num_contrato': parc.cod_contrato.num_contrato,
                     'num_parcela': parc.ordem_parcela,

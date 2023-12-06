@@ -277,14 +277,22 @@ class ConexaoBancoBenner():
                       WHERE lan_taxas.PARCELA = fn_parc.handle
                         AND	lan_taxas.TIPO = '3'
                         AND lan_taxas.ORIGEM = 2
-                        AND	con_taxas.NOME LIKE '%TAXA%')	AS	val_fn_taxas
+                        AND	con_taxas.NOME LIKE '%TAXA%')	AS	val_fn_taxas,
+                    (SELECT MIN(lan_fundo.VALOR)
+                       FROM FN_LANCAMENTOS lan_fundo
+                       LEFT JOIN FN_CONTAS con_fundo
+                         ON (con_fundo.HANDLE = lan_fundo.CONTA)
+                      WHERE lan_fundo.PARCELA = fn_parc.handle
+                        AND	lan_fundo.TIPO = '3'
+                        AND lan_fundo.ORIGEM = 2
+                        AND	con_fundo.NOME LIKE '%FUNDO%')	AS	val_fn_fundo
               FROM	FN_PARCELAS fn_parc (NOLOCK) 
               LEFT	JOIN	FN_DOCUMENTOS fn_doc (NOLOCK) 
                  ON	fn_parc.DOCUMENTO = fn_doc.HANDLE 
               LEFT	JOIN GN_OPERACOES gn_op (NOLOCK) 
                 ON	gn_op.HANDLE = fn_doc.OPERACAO 
               LEFT	JOIN FN_MOVIMENTACOES fn_mov (NOLOCK) 
-                ON	(fn_parc.HANDLE = fn_mov.PARCELA
+                ON	(fn_mov.PARCELA = fn_parc.HANDLE 
                 AND	fn_mov.tipomovimento = 1
                 AND	fn_mov.AUTORIZACAOPAGAMENTO IS NOT NULL)
               LEFT	JOIN FN_LANCAMENTOS fn_lan_principal (NOLOCK) 
@@ -332,7 +340,8 @@ class ConexaoBancoBenner():
                 'data_liquidacao': row.data_liquidacao,
                 'val_total_pago': row.val_corrigido,
                 'val_principal': row.val_fn_principal,
-                'val_taxas': row.val_fn_taxas
+                'val_taxas': row.val_fn_taxas,
+                'val_fundo': row.val_fn_fundo
             }
             lista_parcelas_contrato_benner.append(parcela)
 
@@ -1408,3 +1417,69 @@ class ConexaoBancoBenner():
         if item != None:
             desc_item = item.descricao+'_'+item.unidade
         return desc_item
+
+    def atualiza_dados_parcela(self, handle_parcela):
+        '''Objeto a retornar'''
+        lista_parcelas_contrato_benner = []
+
+        '''Processamento'''
+        cursor = self.__conn.cursor()
+        sql_parcelas = (
+            f'''
+            SELECT  fn_parc.VALOR 					AS	val_conta,
+                    CAST(fn_parc.VCTOPRORROGADO AS DATE)		
+                                                    AS data_vencimento,
+                    CASE	WHEN DATEDIFF(MONTH,'20221231',fn_parc.VCTOPRORROGADO) > 12 
+                        THEN	'LP'
+                     ELSE 'CP'
+                    END 							AS	tipo_prazo,
+                    CAST(fn_parc.DATALIQUIDACAO AS DATE)		
+                                                    AS	data_liquidacao,
+                    fn_mov.VALORTOTAL		        AS	val_corrigido,
+                    MAX(fn_lan_principal.VALOR)		AS	val_fn_principal,
+                    (SELECT MIN(lan_taxas.VALOR)
+                       FROM FN_LANCAMENTOS lan_taxas
+                       LEFT JOIN FN_CONTAS con_taxas
+                         ON (con_taxas.HANDLE = lan_taxas.CONTA)
+                      WHERE lan_taxas.PARCELA = fn_parc.handle
+                        AND	lan_taxas.TIPO = '3'
+                        AND lan_taxas.ORIGEM = 2
+                        AND	con_taxas.NOME LIKE '%TAXA%')	AS	val_fn_taxas
+              FROM	FN_PARCELAS fn_parc (NOLOCK)
+              LEFT	JOIN FN_MOVIMENTACOES fn_mov (NOLOCK) 
+                ON	(fn_mov.PARCELA = fn_parc.HANDLE 
+                AND	fn_mov.tipomovimento = 1
+                AND	fn_mov.AUTORIZACAOPAGAMENTO IS NOT NULL)
+              LEFT	JOIN FN_LANCAMENTOS fn_lan_principal (NOLOCK) 
+                ON	(fn_lan_principal.PARCELA = fn_parc.HANDLE
+               AND	fn_lan_principal.TIPO = '3'
+               AND 	fn_lan_principal.ORIGEM = 2	)
+             WHERE	1 = 1
+               AND	fn_parc.handle = {handle_parcela}
+             GROUP	BY fn_parc.VALOR,
+                    fn_parc.VCTOPRORROGADO,
+                    fn_parc.DATALIQUIDACAO,
+                    fn_mov.VALORTOTAL
+             ORDER	BY fn_parc.AP;
+               '''
+        )
+        cursor.execute(sql_parcelas)
+        registros_cursor = cursor.fetchall()
+        for row in registros_cursor:
+            parcela = {
+                'valor_conta': row.val_conta,
+                'valor_corrigido': row.val_corrigido,
+                'data_vencimento': row.data_vencimento,
+                'tipo_prazo': row.tipo_prazo,
+                'data_liquidacao': row.data_liquidacao,
+                'val_total_pago': row.val_corrigido,
+                'val_principal': row.val_fn_principal,
+                'val_taxas': row.val_fn_taxas
+            }
+            lista_parcelas_contrato_benner.append(parcela)
+
+        '''Fecha componentes'''
+        cursor.close()
+        self.__conn.close()
+
+        return lista_parcelas_contrato_benner
