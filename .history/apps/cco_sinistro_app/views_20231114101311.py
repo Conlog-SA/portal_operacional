@@ -392,8 +392,6 @@ class Form_cad_equipamentos_veiculos(View):
             obj_sinistro.cod_usu = obj_usuario_sessao
             obj_sinistro.cod_motivo_sinistro = Motivo_Sinistro.objects.get(pk=motivo_sinistro_eqp)
             obj_sinistro.cod_projeto = Projeto.objects.get(pk=projeto_eqp)
-            obj_sinistro.save()
-
 
             obj_sinistro_eqp_veic.data_comunicacao_seguradora = dt_comunicacao_seguradora_eqp
             obj_sinistro_eqp_veic.data_comunicacao_cco = dt_comunicacao_cco_eqp
