@@ -56,49 +56,57 @@ class Form_Imp_Contratos_Conta_View(View):
         cod_conta_form = request.GET['cod_conta']
         tipo_pesq_form = request.GET['tipo_pesq']
         num_contrato_form = request.GET['num_contrato']
-        num_contrato_form = request.GET['num_contrato']
+
+        dados = self.atualiza_dados_contratos_parcelas(cod_conta_form, num_contrato_form, tipo_pesq_form)
+
+
+        data = dict()
+        data = {
+            'lista_contratos': dados[0],
+            'msg': dados[1]
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def atualiza_dados_contratos_parcelas(self, cod_conta_form, num_contrato_form, tipo_pesq_form):
         obj_conta = Conta.objects.get(pk=cod_conta_form)
         handle_conta_cp = obj_conta.handle_conta_contabil_cp
         handle_conta_lp = obj_conta.handle_conta_contabil_lp
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
-        msg = ''
 
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
 
-        cod_usuario_sessao = request.session['cod_usuario_logado']
-        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
-
 
         lista_contratos = []
-        lista_contratos_benner = ConexaoBancoBenner()\
+        lista_parcelas_atualizadas = []
+        lista_contratos_benner = ConexaoBancoBenner() \
             .retorna_dados_contratos_conta(tipo_pesq_form, num_contrato_form, handle_conta_cp, handle_conta_lp)
         if lista_contratos_benner != None:
             for contrato in lista_contratos_benner:
-                obj_empresa = Empresa.objects.filter(cod_empresa = contrato['cod_empresa']).first()
+                obj_empresa = Empresa.objects.filter(cod_empresa=contrato['cod_empresa']).first()
                 prox_parc_pendente = 0
                 if contrato['proxima_parc_pendente'] != None:
                     prox_parc_pendente = contrato['proxima_parc_pendente'].split('/')[1]
-                obj_contrato = Contrato.objects.filter(handle_fn_doc = contrato['handle_fn_doc']).first()
+                obj_contrato = Contrato.objects.filter(handle_fn_doc=contrato['handle_fn_doc']).first()
                 if obj_contrato == None:
                     obj_contrato = Contrato(
-                        handle_fn_doc = contrato['handle_fn_doc'],
-                        num_contrato = contrato['num_contrato'],
-                        data_emissao_contrato = contrato['data_emissao_contrato'],
-                        nome_fornecedor = contrato['fornecedor'],
-                        handle_operacao = contrato['handle_operacao'],
-                        desc_op = contrato['nome_operacao'],
-                        num_doc_contabil = contrato['doc_contabil'],
-                        val_nominal = contrato['val_nominal'],
-                        val_liquido = contrato['val_liquido'],
-                        cod_conta = obj_conta,
-                        sincronizar_benner = 'S',
-                        dia_util = None,
-                        qtd_parcelas = prox_parc_pendente,
-                        cod_empresa= obj_empresa
+                        handle_fn_doc=contrato['handle_fn_doc'],
+                        num_contrato=contrato['num_contrato'],
+                        data_emissao_contrato=contrato['data_emissao_contrato'],
+                        nome_fornecedor=contrato['fornecedor'],
+                        handle_operacao=contrato['handle_operacao'],
+                        desc_op=contrato['nome_operacao'],
+                        num_doc_contabil=contrato['doc_contabil'],
+                        val_nominal=contrato['val_nominal'],
+                        val_liquido=contrato['val_liquido'],
+                        cod_conta=obj_conta,
+                        sincronizar_benner='S',
+                        dia_util=None,
+                        qtd_parcelas=prox_parc_pendente,
+                        cod_empresa=obj_empresa
                     )
                     obj_contrato.save()
-                    msg = 'Contrato adicionado com sucesso!'
                 else:
                     obj_contrato.num_contrato = contrato['num_contrato']
                     obj_contrato.data_emissao_contrato = contrato['data_emissao_contrato']
@@ -108,13 +116,12 @@ class Form_Imp_Contratos_Conta_View(View):
                     obj_contrato.num_doc_contabil = contrato['doc_contabil']
                     obj_contrato.val_nominal = contrato['val_nominal']
                     obj_contrato.val_liquido = contrato['val_liquido']
-                    obj_contrato.cod_conta = obj_conta
-                    obj_contrato.sincronizar_benner = 'S'
-                    obj_contrato.dia_util = None
+                    # obj_contrato.cod_conta = obj_conta
+                    # obj_contrato.sincronizar_benner = 'S'
+                    # obj_contrato.dia_util = None
                     obj_contrato.qtd_parcelas = prox_parc_pendente
-                    obj_contrato.cod_empresa = obj_empresa
+                    # obj_contrato.cod_empresa = obj_empresa
                     obj_contrato.save()
-                    msg = 'Contrato atualizado com sucesso!'
 
                 data_emissao = datetime.strptime(contrato['data_emissao_contrato'], "%Y-%m-%d")
                 data_emissao_formatada = data_emissao.strftime("%d-%m-%Y")
@@ -124,10 +131,10 @@ class Form_Imp_Contratos_Conta_View(View):
                     data_vencimento = datetime.strptime(contrato['data_venc_proxima_parc_pendente'], "%Y-%m-%d")
                     data_vencimento_formatada = data_vencimento.strftime("%d-%m-%Y")
 
-
                 lista_parcelas_contrato_form = []
-                lista_parcelas_contrato = ConexaoBancoBenner().retorna_dados_parcelas_contrato(contrato['handle_fn_doc'])
-                #lista_contratos_benner.append(lista_parcelas_contrato)
+                lista_parcelas_contrato = ConexaoBancoBenner().retorna_dados_parcelas_contrato(
+                    contrato['handle_fn_doc'])
+                # lista_contratos_benner.append(lista_parcelas_contrato)
                 val_tt_contrato_reajustado = 0
                 val_tt_liq_cp = 0
                 val_tt_contrato_reajustado_cp = 0
@@ -168,28 +175,29 @@ class Form_Imp_Contratos_Conta_View(View):
                         if parcela['val_total_pago'] != None:
                             val_pago = decimal.Decimal(parcela['val_total_pago'])
 
-                        obj_parcela = Parcela_Contrato.objects.filter(handle_parcela = parcela['handle_parc']).first()
+                        obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parcela['handle_parc']).first()
                         if obj_parcela == None:
                             obj_parcela = Parcela_Contrato(
-                                handle_parcela = parcela['handle_parc'],
-                                ap_parcela = parcela['ap_parcela'],
-                                ordem_parcela = parcela['ordem_parcela'],
-                                val_conta = decimal.Decimal(parcela['valor_conta']),
-                                val_corrigido = val_corrigido,
-                                val_principal = decimal.Decimal(parcela['val_principal']),
-                                val_fundo = decimal.Decimal(val_fundo),
-                                val_taxas  = decimal.Decimal(val_taxas),
-                                natureza = parcela['natureza'],
-                                data_vencimento = parcela['data_vencimento'],
-                                tipo_prazo = tipo_prazo_parc,
-                                data_liquidacao = parcela['data_liquidacao'],
-                                val_pago = val_pago,
-                                cod_contrato = obj_contrato
+                                handle_parcela=parcela['handle_parc'],
+                                ap_parcela=parcela['ap_parcela'],
+                                ordem_parcela=parcela['ordem_parcela'],
+                                val_conta=decimal.Decimal(parcela['valor_conta']),
+                                val_corrigido=val_corrigido,
+                                val_principal=decimal.Decimal(parcela['val_principal']),
+                                val_fundo=decimal.Decimal(val_fundo),
+                                val_taxas=decimal.Decimal(val_taxas),
+                                natureza=parcela['natureza'],
+                                data_vencimento=parcela['data_vencimento'],
+                                tipo_prazo=tipo_prazo_parc,
+                                data_liquidacao=parcela['data_liquidacao'],
+                                val_pago=val_pago,
+                                cod_contrato=obj_contrato
                             )
                             obj_parcela.save()
-                        elif obj_parcela.data_liquidacao == None:
-                            #obj_parcela.ap_parcela = parcela['ap_parcela']
-                            #obj_parcela.ordem_parcela = parcela['ordem_parcela']
+                        elif obj_contrato.sincronizar_benner == 'S' and (
+                                obj_parcela.data_liquidacao == None or obj_parcela.data_liquidacao == ''):
+                            # obj_parcela.ap_parcela = parcela['ap_parcela']
+                            # obj_parcela.ordem_parcela = parcela['ordem_parcela']
                             obj_parcela.val_conta = decimal.Decimal(parcela['valor_conta'])
                             obj_parcela.val_corrigido = val_corrigido
                             obj_parcela.val_principal = decimal.Decimal(parcela['val_principal'])
@@ -200,9 +208,10 @@ class Form_Imp_Contratos_Conta_View(View):
                             obj_parcela.tipo_prazo = tipo_prazo_parc
                             obj_parcela.data_liquidacao = parcela['data_liquidacao']
                             obj_parcela.val_pago = val_pago
-                            #obj_parcela.cod_contrato = obj_contrato
+                            # obj_parcela.cod_contrato = obj_contrato
                             obj_parcela.save()
 
+                            lista_parcelas_atualizadas.append(obj_parcela)
                         val_principal_parc = 0
                         if parcela['val_principal'] != None:
                             val_principal_parc = parcela['val_principal']
@@ -227,22 +236,31 @@ class Form_Imp_Contratos_Conta_View(View):
                             if val_pago_parc == 0:
                                 val_tt_a_pagar_lp += (val_principal_parc + val_taxas)
 
-
                         data_vencimento_formatada = ''
                         if parcela['data_vencimento'] != None:
                             data_vencimento = datetime.strptime(parcela['data_vencimento'], "%Y-%m-%d")
                             data_vencimento_formatada = data_vencimento.strftime("%d-%m-%Y")
 
                         data_liquidacao_formatada = ''
-                        valor_corrigido = ''
-                        val_total_pago = ''
+                        valor_corrigido = 0.00
+                        val_total_pago = 0.00
                         if parcela['data_liquidacao'] != None:
                             data_liquidacao = datetime.strptime(parcela['data_liquidacao'], "%Y-%m-%d")
                             data_liquidacao_formatada = data_liquidacao.strftime("%Y-%m-%d")
-                            #data_liquidacao_formatada = parcela['data_liquidacao']
+                            # data_liquidacao_formatada = parcela['data_liquidacao']
 
-                            valor_corrigido = locale.currency(parcela['valor_corrigido'], grouping=True, symbol=None)
-                            val_total_pago = locale.currency(parcela['val_total_pago'], grouping=True, symbol=None)
+                            if parcela['valor_corrigido'] != None:
+                                valor_corrigido = locale.currency(parcela['valor_corrigido'], grouping=True, symbol=None)
+                            if parcela['val_total_pago'] != None:
+                                val_total_pago = locale.currency(parcela['val_total_pago'], grouping=True, symbol=None)
+
+                        val_taxa_parcela = decimal.Decimal(0.00)
+                        if obj_parcela.val_taxas != None:
+                            val_taxa_parcela = obj_parcela.val_taxas
+
+                        val_fundo_parcela = decimal.Decimal(0.00)
+                        if obj_parcela.val_fundo != None:
+                            val_fundo_parcela = obj_parcela.val_fundo
 
                         parcela_form = {
                             'handle_fn_doc': obj_contrato.handle_fn_doc,
@@ -252,10 +270,11 @@ class Form_Imp_Contratos_Conta_View(View):
                             'valor_conta': locale.currency(obj_parcela.val_conta, grouping=True, symbol=None),
                             'valor_corrigido': valor_corrigido,
                             'valor_principal': locale.currency(obj_parcela.val_principal, grouping=True, symbol=None),
-                            'valor_fundo': locale.currency(val_fundo, grouping=True, symbol=None),
+                            'valor_fundo': locale.currency(val_fundo_parcela, grouping=True, symbol=None),
                             'valor_taxas': locale.currency(obj_parcela.val_taxas, grouping=True, symbol=None),
-                            'valor_total': locale.currency(obj_parcela.val_principal + obj_parcela.val_taxas + obj_parcela.val_fundo, grouping=True,
-                                                           symbol=None),
+                            'valor_total': locale.currency(
+                                obj_parcela.val_principal + val_taxa_parcela + val_fundo_parcela, grouping=True,
+                                symbol=None),
                             'natureza': obj_parcela.natureza,
                             'data_vencimento': data_vencimento_formatada,
                             'tipo_prazo': obj_parcela.tipo_prazo,
@@ -282,17 +301,20 @@ class Form_Imp_Contratos_Conta_View(View):
                 if contrato['val_liquido'] != None:
                     val_liquido_var = locale.currency(contrato['val_liquido'], grouping=True, symbol=None)
 
-
                 total_pago_var = 0.00
                 if contrato['total_pago'] != None:
                     total_pago_var = locale.currency(contrato['total_pago'], grouping=True, symbol=None)
 
 
+                atualiza_benner = 'SIM'
+                if obj_contrato.sincronizar_benner == 'N':
+                    atualiza_benner = 'NÃO'
+
                 contrato_form = {
                     'cod_contrato': obj_contrato.cod_contrato,
                     'handle_fn_doc': contrato['handle_fn_doc'],
                     'num_contrato': contrato['num_contrato'],
-                    'atualiza_benner' : 'SIM',
+                    'atualiza_benner': atualiza_benner,
                     'data_emissao_contrato': data_emissao_formatada,
                     'val_nominal': val_nominal_var,
                     'val_liquido': val_liquido_var,
@@ -308,23 +330,23 @@ class Form_Imp_Contratos_Conta_View(View):
                     'total_pago': total_pago_var,
                     'nome_empresa': obj_empresa.desc_empresa,
                     'val_tt_contrato_reajustado': locale.currency(val_tt_contrato_reajustado, grouping=True,
-                                                                   symbol=None),
+                                                                  symbol=None),
                     'val_tt_liq_cp': locale.currency(val_tt_liq_cp, grouping=True,
-                                                                   symbol=None),
+                                                     symbol=None),
                     'val_tt_contrato_reajustado_cp': locale.currency(val_tt_contrato_reajustado_cp, grouping=True,
-                                                                      symbol=None),
+                                                                     symbol=None),
                     'val_tt_pago_contrato_cp': locale.currency(val_tt_pago_contrato_cp, grouping=True,
-                                                                      symbol=None),
+                                                               symbol=None),
                     'val_tt_a_pagar_cp': locale.currency(val_tt_a_pagar_cp, grouping=True,
-                                                                      symbol=None),
+                                                         symbol=None),
                     'val_tt_liq_lp': locale.currency(val_tt_liq_lp, grouping=True,
-                                                                   symbol=None),
+                                                     symbol=None),
                     'val_tt_contrato_reajustado_lp': locale.currency(val_tt_contrato_reajustado_lp, grouping=True,
-                                                                      symbol=None),
+                                                                     symbol=None),
                     'val_tt_pago_contrato_lp': locale.currency(val_tt_pago_contrato_lp, grouping=True,
-                                                                      symbol=None),
+                                                               symbol=None),
                     'val_tt_a_pagar_lp': locale.currency(val_tt_a_pagar_lp, grouping=True,
-                                                                      symbol=None)
+                                                         symbol=None)
                 }
                 dic_contrato_parcelas = {
                     'contrato': contrato_form,
@@ -333,12 +355,9 @@ class Form_Imp_Contratos_Conta_View(View):
                 lista_contratos.append(dic_contrato_parcelas)
 
 
-        data = dict()
-        data = {
-            'lista_contratos': lista_contratos,
-            'msg': msg
-        }
-        return JsonResponse(data, safe=False)
+        msg = 'Processo finalizado'
+
+        return lista_contratos, msg, lista_parcelas_atualizadas
 
 class Form_Cad_Conta_View(View):
     def get(self, request):
@@ -481,6 +500,7 @@ class Form_Cad_Contrato_View(View):
     def post(self, request):
         transacao_form = request.POST['transacao']
         msg = ''
+        data = dict()
         if transacao_form == 'cadastro':
             cod_conta_form = request.POST['cod_conta']
             num_contrato_form = request.POST['num_contrato']
@@ -554,6 +574,10 @@ class Form_Cad_Contrato_View(View):
                 else:
                     data_ini = data_ini.replace(month=data_ini.month + 1)
             msg = 'Contrato associado com sucesso. Parcelas criadas com sucesso !!!'
+            data = {
+                'msg': msg
+            }
+
         elif transacao_form == 'status_sincronia_benner':
             handle_contrato_form = request.POST['handle_contrato']
             status_sincronia_contrato_benner_form = request.POST['status_sincronia_contrato_benner']
@@ -561,12 +585,23 @@ class Form_Cad_Contrato_View(View):
             obj_contrato = Contrato.objects.get(pk=handle_contrato_form)
             obj_contrato.sincronizar_benner = status_sincronia_contrato_benner_form
             obj_contrato.save()
-            msg = 'Status alterado com sucesso !'
 
-        data = dict()
-        data = {
-            'msg': msg
-        }
+            lista_contas_para_atualizar_benner = list(Contrato.objects
+                                                     .filter(cod_conta__tipo_modelo=obj_contrato.cod_conta.tipo_modelo,
+                                                             cod_conta__status_comp='A',
+                                                             sincronizar_benner='S')
+                                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                                             'cod_conta__cod_red_conta_contabil_cp',
+                                                             'cod_conta__cod_red_conta_contabil_lp')
+                                                     .distinct())
+            msg = 'Status alterado com sucesso !'
+            data = {
+                'msg': msg,
+                'lista_contas_para_atualizar_benner' : lista_contas_para_atualizar_benner
+            }
+
+
+
         return JsonResponse(data, safe=False)
 
     def get(self, request):
@@ -592,9 +627,16 @@ class Form_Cad_Contrato_View(View):
             if dic_val_total_ctr_principal['val_total_principal'] != None:
                 val_total_ctr_principal = dic_val_total_ctr_principal['val_total_principal']
             dic_val_total_ctr_taxas = lista_parcelas.aggregate(val_total_taxas=Sum('val_taxas'))
+
             val_total_ctr_taxas = 0
             if dic_val_total_ctr_taxas['val_total_taxas'] != None:
                 val_total_ctr_taxas = dic_val_total_ctr_taxas['val_total_taxas']
+
+            dic_val_total_ctr_fundo = lista_parcelas.aggregate(val_total_fundo=Sum('val_fundo'))
+            val_total_ctr_fundo = 0
+            if dic_val_total_ctr_fundo['val_total_fundo'] != None:
+                val_total_ctr_fundo = dic_val_total_ctr_fundo['val_total_fundo']
+
             val_tt_contrato_reajustado = val_total_ctr_principal + val_total_ctr_taxas
             val_balancete = val_tt_contrato_reajustado
             if lista_parcelas != None:
@@ -629,7 +671,7 @@ class Form_Cad_Contrato_View(View):
                     data_liquidacao = ''
                     if parc.data_liquidacao != None:
                         data_liquidacao = datetime.strftime(parc.data_liquidacao, '%Y-%m-%d')
-                        val_total_pago = parc.val_pago
+                        val_total_pago += parc.val_pago
 
 
                     val_fundo = 0
@@ -637,7 +679,8 @@ class Form_Cad_Contrato_View(View):
                         val_fundo = parc.val_fundo
 
                     val_tt_parc = parc.val_principal + parc.val_taxas + val_fundo
-                    val_balancete = val_balancete - val_corrigido
+                    #val_balancete = val_balancete - val_corrigido
+                    val_balancete = val_balancete - (val_principal_parc + val_taxas_parc)
                     parcela = {
                         'handle_fn_doc': parc.cod_contrato.handle_fn_doc,
                         'handle_parc': parc.handle_parcela,
@@ -645,15 +688,15 @@ class Form_Cad_Contrato_View(View):
                         'ordem_parcela': parc.ordem_parcela,
                         'valor_conta': locale.currency(parc.val_conta, grouping=True, symbol=None),
                         'valor_corrigido': val_corrigido,
-                        'valor_principal': locale.currency(parc.val_principal, grouping=True, symbol=None),
-                        'valor_taxas': locale.currency(parc.val_taxas, grouping=True, symbol=None),
+                        'valor_principal': locale.currency(val_principal_parc, grouping=True, symbol=None),
+                        'valor_taxas': locale.currency(val_taxas_parc, grouping=True, symbol=None),
                         'valor_fundo': locale.currency(val_fundo, grouping=True, symbol=None),
                         'valor_total': locale.currency(val_tt_parc, grouping=True, symbol=None),
                         'natureza': parc.natureza,
                         'data_vencimento': datetime.strftime(parc.data_vencimento, '%d-%m-%Y'),
                         'tipo_prazo': parc.tipo_prazo,
                         'data_liquidacao': data_liquidacao,
-                        'val_total_pago': locale.currency(val_total_pago, grouping=True, symbol=None),
+                        'val_total_pago': locale.currency(val_pago_parc, grouping=True, symbol=None),
                         'val_balancete': locale.currency(val_balancete, grouping=True, symbol=None)
                     }
                     lista_parcelas_contrato.append(parcela)
@@ -2559,31 +2602,63 @@ class Comp_Cb_Contas_Imp_Docs_Pac_M1_View(View):
 class Form_Atualiza_Contratos_Benner_View(View):
     def post(self, request):
         lista_cod_contas = request.POST['lista_cod_contas']
-        lista_parcelas_atualizados = []
+        lista_parcelas_atualizadas_form = []
         for cod_conta in lista_cod_contas.split(','):
             obj_conta = Conta.objects.get(pk=cod_conta)
-            lista_parcelas_para_atualizar = (Parcela_Contrato.objects
+            lista_contratos_para_atualizar = (Parcela_Contrato.objects
                                                  .filter(data_liquidacao__isnull=True,
                                                          cod_contrato__cod_conta=obj_conta,
-                                                         cod_contrato__sincronizar_benner='S'))
-            for parc in lista_parcelas_para_atualizar:
-                reg_contrato = {
-                    'cod_conta': parc.cod_contrato.cod_conta.cod_conta,
-                    'desc_conta': parc.cod_contrato.cod_conta.desc_conta,
-                    'num_contrato': parc.cod_contrato.num_contrato,
-                    'num_parcela': parc.ordem_parcela,
-                    'val_corrigido': parc.val_corrigido,
-                    'val_principal': parc.val_principal,
-                    'val_taxas': parc.val_taxas,
-                    'val_fundo': parc.val_fundo,
-                    'data_vencimento': parc.data_vencimento,
-                    'data_liquidacao': parc.data_liquidacao,
-                    'handle_parcela': parc.handle_parcela
-                }
-                lista_parcelas_atualizados.append(reg_contrato)
+                                                         cod_contrato__sincronizar_benner='S')
+                                              .values('cod_contrato__num_contrato').distinct())
+
+
+
+            for contrato in lista_contratos_para_atualizar:
+                lista_parcelas_atualizadas = Form_Imp_Contratos_Conta_View().\
+                    atualiza_dados_contratos_parcelas(obj_conta.cod_conta, contrato['cod_contrato__num_contrato'],
+                                                                                  'C')[2]
+                for parc in lista_parcelas_atualizadas:
+                    val_pago = 0.00
+                    if parc.val_corrigido != None:
+                        val_pago = locale.currency(round(parc.val_corrigido, 2), grouping=True, symbol=None)
+
+                    val_principal = 0.00
+                    if parc.val_principal != None:
+                        val_principal = locale.currency(round(parc.val_principal, 2), grouping=True, symbol=None)
+
+                    val_taxas = 0.00
+                    if parc.val_taxas != None:
+                        val_taxas = locale.currency(round(parc.val_taxas, 2), grouping=True, symbol=None)
+
+                    val_fundo = 0.00
+                    if parc.val_fundo != None:
+                        val_fundo = locale.currency(round(parc.val_fundo, 2), grouping=True, symbol=None)
+
+                    data_liquidacao = 0.00
+                    if parc.data_liquidacao != None:
+                        data_liquidacao = (datetime.strptime(parc.data_liquidacao, '%Y-%m-%d')
+                                           .strftime('%d-%m-%Y'))
+
+                    reg_parc = {
+                        'cod_conta': parc.cod_contrato.cod_conta.cod_conta,
+                        'desc_conta': parc.cod_contrato.cod_conta.desc_conta,
+                        'num_contrato': parc.cod_contrato.num_contrato,
+                        'num_parcela': parc.ordem_parcela,
+                        'val_pago': val_pago,
+                        'val_principal': val_principal,
+                        'val_taxas': val_taxas,
+                        'val_fundo': val_fundo,
+                        'data_vencimento': datetime.strptime(parc.data_vencimento, '%Y-%m-%d')\
+                            .strftime('%d-%m-%Y'),
+                        'data_liquidacao': data_liquidacao,
+                        'handle_parcela': parc.handle_parcela
+                    }
+                    lista_parcelas_atualizadas_form.append(reg_parc)
+                '''
+                lista_parcelas_atualizados.append(reg_contrato)'''
         data = dict()
         data = {
-            'lista_parcelas_atualizados': lista_parcelas_atualizados
+            'lista_parcelas_atualizados': lista_parcelas_atualizadas_form
         }
         return JsonResponse(data, safe=False)
 

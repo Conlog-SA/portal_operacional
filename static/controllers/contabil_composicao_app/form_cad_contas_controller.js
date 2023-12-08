@@ -1071,6 +1071,7 @@ $(document).on('click','button', function(){
         $("#modal_atualiza_contratos_benner").show();
 
     } else if (let_nome_btn == 'btn_fecha_modal_atualiza_contratos_benner') {
+        $("#tab_reg_atualizacao_benner").DataTable().clear().draw();
         $("#modal_atualiza_contratos_benner").hide();
 
     } else if (let_nome_btn == 'btn_desmarcar_contas_atualiza_contratos_benner'){
@@ -1102,7 +1103,7 @@ $(document).on('click','button', function(){
                         parc.desc_conta,
                         parc.num_contrato,
                         parc.num_parcela,
-                        parc.val_corrigido,
+                        parc.val_pago,
                         parc.val_principal,
                         parc.val_taxas,
                         parc.val_fundo,
@@ -1116,11 +1117,11 @@ $(document).on('click','button', function(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": "370px",
+                    "scrollY": true,
                     "scrollX": true,
                     "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
+                    "paging": true,
+                    "pageLength": 6,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
@@ -1132,7 +1133,7 @@ $(document).on('click','button', function(){
                         { title: "Conta" },
                         { title: "Núm contrato" },
                         { title: "Núm parcela" },
-                        { title: "Val corrigido" },
+                        { title: "Val pago" },
                         { title: "Val principal" },
                         { title: "Val taxas" },
                         { title: "Val fundo" },
@@ -1216,6 +1217,16 @@ $(document).on('change','input', function(){
         dataType: 'json',
         success: function (dados) {
             $("#div_status_atualiza_benner").empty();
+
+            $("#sl_contas_atualiza_contratos_benner option").remove();
+            dados.lista_contas_para_atualizar_benner.forEach( conta => {
+                $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
+                conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
+                " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+            });
+            $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
+
             $.gritter.add({
                 title: 'Atenção!',
                 text: dados.msg,
@@ -1972,7 +1983,7 @@ function atualiza_tab_contratos_conta(cod_conta){
                             </div>
                             <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
                                 <div class="d-flex justify-content-between align-items-center ">
-                                    <table id"tab_parcelas_contrato_${ctr.handle_fn_doc}"
+                                    <table id"tab_parcelas_contrato"
                                     class="display wrap w-100 cl_tab_principal_pagina"
                                         style="font-size:12px; color: #000000;">
                                         <thead>
@@ -2091,37 +2102,65 @@ function atualiza_tab_contratos_conta(cod_conta){
 
                 `;
 
-                $("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
-                        "bJQueryUI": true,
-                        "pageLength": 10,
-                        "destroy": true,
-                        "dom": 'Bfrtip',
-                        "buttons": ['excelHtml5',
-                                    'pdfHtml5'
-                        ],
-                        "oLanguage": {
-                            "sProcessing":   "Processando...",
-                            "sLengthMenu":   "Mostrar _MENU_ registros",
-                            "sZeroRecords":  "Não foram encontrados resultados",
-                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                            "sInfoFiltered": "",
-                            "sInfoPostFix":  "",
-                            "sSearch":       "Pesquisar:",
-                            "sUrl":          "",
-                            "oPaginate": {
-                                "sFirst":    "Primeiro",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Proximo",
-                                "sLast":     "Último"
-                            }
+                /*$("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
+                    "bJQueryUI": true,
+                    "pageLength": 10,
+                    "destroy": true,
+                    "dom": 'Bfrtip',
+                    "buttons": ['excelHtml5',
+                                'pdfHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
                         }
-                    });
+                    }
+                });*/
 
             });
             let_html_pagina += `
                 </div>
             `;
+
+            $("#tab_parcelas_contrato").DataTable( {
+                    "bJQueryUI": true,
+                    "pageLength": 10,
+                    "destroy": true,
+                    "dom": 'Bfrtip',
+                    "buttons": ['excelHtml5',
+                                'pdfHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        }
+                    }
+                });
+
             $("#div_contratos").html(let_html_pagina);
             let_loader_frm_cad_contas.style.display = "none";
         },
@@ -2479,6 +2518,11 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 
             $("#list_contratos_conta_anexo option").remove();
             dados.lista_contratos.forEach( ctr => {
+                let let_verifica_check_atualiza_benner = ``;
+                if(ctr.contrato.atualiza_benner == 'SIM'){
+                    let_verifica_check_atualiza_benner = `checked="checked"`;
+                }
+
                 $("#list_contratos_conta_anexo").append("<option value='"+
                 ctr.contrato.cod_contrato+"'>"+ctr.contrato.num_contrato+"</option>");
 
@@ -2591,24 +2635,24 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                         <div class="accordion-body flex-wrap d-flex justify-content-between align-items-center">
                             <div class="d-flex justify-content-between align-items-between w-100 mb-6">
                                 <div class="d-flex flex-column w-100" style="margin-top: 2rem;">
-                                    <button type='button' id="btn_excluir_contrato_${ctr.cod_contrato}"
+                                    <button type='button' id="btn_excluir_contrato_${ctr.contrato.cod_contrato}"
                                             name="btn_excluir_contrato"
                                             class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                            value="${ctr.cod_contrato}">
+                                            value="${ctr.contrato.cod_contrato}">
                                         <i class="fa-solid fa-trash"></i>
                                         <span>Excluir contrato</span>
                                     </button>
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                     <label class="col-form-label text-left cursor-pointer"
-                                           for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
+                                           for="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
                                         Atualiza com o Benner ?</label>
                                     <div class="container">
-                                        <input type="checkbox" checked="checked" class="checkbox"
+                                        <input type="checkbox" `+let_verifica_check_atualiza_benner+`  class="checkbox"
                                                name="chk_atualiza_dados_benner_contrato"
-                                               id="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
+                                               id="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
                                         <label class="switch"
-                                               for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
+                                               for="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
                                             <span class="slider"></span>
                                         </label>
                                     </div>
@@ -2624,7 +2668,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                             </div>
                             <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
                                 <div class="d-flex justify-content-between align-items-center ">
-                                        <table id="tab_parcelas_contrato_${ctr.contrato.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                        <table id="tab_parcelas_contrato"  class="display wrap w-100 cl_tab_principal_pagina"
                                             style="font-size:12px; color: #000000;">
                                             <thead>
                                                 <tr>
@@ -2738,7 +2782,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 
 
                 $("#list_contratos_conta_anexo").selectpicker('refresh');
-
+                /*
                 $("#tab_parcelas_contrato_" + ctr.contrato.handle_fn_doc).DataTable( {
                         "bJQueryUI": true,
                         "pageLength": 10,
@@ -2765,13 +2809,47 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                             }
                         }
                     });
+                    */
 
             });
             let_html_pagina += `
                 </div>
             `;
+            $("#tab_parcelas_contrato").DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 10,
+                        "destroy": true,
+                        "dom": 'Bfrtip',
+                        "buttons": ['excelHtml5',
+                                    'pdfHtml5'
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            }
+                        }
+                    });
             $("#div_contratos").html(let_html_pagina);
             let_loader_frm_cad_contas.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
         },
         error: function (request, status, error) {
             let_loader_frm_cad_contas.style.display = "none";
