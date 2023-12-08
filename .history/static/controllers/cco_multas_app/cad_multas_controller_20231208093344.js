@@ -345,10 +345,17 @@ function atualiza_tab_pesquisa_anexo(cod_multa_antt){
 };
 
 function formatDate(dateString) {
-    // Use o Moment.js para formatar a data
-    return moment(dateString).format('DD/MM/YYYY');
-}
+    // Converte a string de data para um objeto Date
+    const date = new Date(dateString);
 
+    // Obtém o dia, mês e ano
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adiciona 1 porque os meses começam do zero
+    const year = date.getFullYear();
+
+    // Formata a data como dd/mm/yyyy
+    return `${day}/${month}/${year}`;
+}
 
 function atualiza_tab_pesquisa_multa (tipo_pesquisa){
     dados_parametros = ''

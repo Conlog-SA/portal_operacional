@@ -13,7 +13,6 @@ class Motivo_Sinistro(models.Model):
 class CCO_Sinistro(models.Model):
     cod_sinistro = models.AutoField(primary_key=True, editable=False, auto_created=True)
     nome_mot = models.CharField(max_length=80, null=False, blank=False)
-    status_processo = models.CharField(max_length=20, null=False, blank=False)
     data_inclusao = models.DateField(max_length=15, null=False, blank=False)
     cpf_mot = models.CharField(max_length=11, null=True, blank=True)
     placa_veiculo_cavalo = models.CharField(max_length=12, null=False, blank=False)

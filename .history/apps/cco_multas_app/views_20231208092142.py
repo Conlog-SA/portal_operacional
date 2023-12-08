@@ -11,7 +11,7 @@ from proj_portal_operacional.settings import BASE_DIR
 
 class Multas_View(View):
     def get(self, request):
-        lista_projetos = list(Projeto.objects.filter(data_inativado__isnull=True, handle_benner__gt=0).values('cod_projeto', 'desc_proj', 'handle_benner'))
+        lista_projetos = list(Projeto.objects.filter(data_inativado__isnull=True).values('cod_projeto', 'desc_proj', 'handle_benner'))
         lista_tipo_multa = list(CCO_Tipo_Multa.objects.filter().values('cod_tipo_multa', 'desc_multa'))
         lista_placas = list(CCO_Multas.objects.filter().values('placa_multa', 'cod_multa_antt'))
 

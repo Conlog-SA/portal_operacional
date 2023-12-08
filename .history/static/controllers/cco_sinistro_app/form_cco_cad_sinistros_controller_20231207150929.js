@@ -348,7 +348,6 @@ $(document).on('click','button', function(){
                     $("#cb_status_processo_carga").selectpicker('refresh');
                     $("#txt_observacoes_finais_sinistro_carga").val(dados.dic_sinistro_form.observacao);//Observações Finais cadastro de Cargas
                     $("#btn_finalizar_cadastro_sinistro").val(dados.dic_sinistro_form.cod_sinistro_carga);
-                    
 
                 }
 
@@ -394,7 +393,6 @@ $(document).on('click','button', function(){
                     $("#cb_tipo_acionamento_eqp").selectpicker('refresh');
                     $("#numero_processo_eqp").val(dados.dic_sinistro_form.num_processo);
                     $("#dt_inicio_dados_processo_eqp").val(dados.dic_sinistro_form.data_inicio_processo);
-                    $("status_processo_eqp").val(dados.dic_sinistro_form.status_processo)
                     $("#dt_fim_processo_sinistro_carga_eqp").val(dados.dic_sinistro_form.data_fim_processo);
                     $("#observacoes_finais_eqp").val(dados.dic_sinistro_form.observacao);//Observações finais cadastro de Equipamentos
                     $("#btn_finalizar_cadastro_sinistro_cad_eqp_veic").val(dados.dic_sinistro_form.cod_sinistro_eqp_veic);
