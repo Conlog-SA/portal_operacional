@@ -1614,15 +1614,29 @@ $(document).on('change','input', function(){
                     } );
 
         }
+        let let_competencia = $("#dt_conciliacao_comp_benner").val()
+        if (let_tipo_rel == 'A' && let_competencia == '') {
 
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Por favor selecione uma competência',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            $("#rd_modelo_conta_conc_comp_benner_1").attr('checked', false);
+            $("#rd_modelo_conta_conc_comp_benner_2").attr('checked', false);
+            $("#rd_modelo_conta_conc_comp_benner_3").attr('checked', false);
 
-        $.ajax({
+        } else {
+            $.ajax({
             type: 'GET',
             url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
             cache: false,
             data: {
                 'tipo_rel': let_tipo_rel,
-                'cod_modelo_conta'   :   let_cod_modelo_conta
+                'cod_modelo_conta'   :   let_cod_modelo_conta,
+                'data_competencia' : let_competencia
             },
             dataType: 'json',
             success: function (data) {
@@ -1667,6 +1681,9 @@ $(document).on('change','input', function(){
                 });
           }
         });
+        }
+
+
 
     }
     else if ( let_nome_inp == "rd_modelo_conta" ) {
@@ -1727,6 +1744,54 @@ $(document).on('change','input', function(){
 
           }
         });
+    }
+    else if ( let_nome_inp == "dt_conciliacao_comp_benner" ){
+        let let_competencia = $("#dt_conciliacao_comp_benner").val()
+        let let_cod_modelo_conta = 0
+        if ( $("#rd_modelo_conta_conc_comp_benner_1").is("checked") == true ) {
+            let_cod_modelo_conta = 1;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is("checked") == true ) {
+            let_cod_modelo_conta = 2;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is("checked") == true ) {
+            let_cod_modelo_conta = 3;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
+            cache: false,
+            data: {
+                'tipo_rel': 'A',
+                'cod_modelo_conta'   :   let_cod_modelo_conta,
+                'data_competencia' : let_competencia
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#cb_contas_conciliacao_comp_benner option").remove();
+                data.lista_contas.forEach(conta => {
+                    $("#cb_contas_conciliacao_comp_benner").append("<option value='"+
+                    conta.cod_conta__cod_conta+"'>"+conta.cod_conta__desc_conta+" - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                    " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+
+                });
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('selectAll');
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+
+
     }
 
 
