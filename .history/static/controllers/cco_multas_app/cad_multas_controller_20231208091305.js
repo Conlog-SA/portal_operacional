@@ -344,7 +344,6 @@ function atualiza_tab_pesquisa_anexo(cod_multa_antt){
     });
 };
 
-
 function atualiza_tab_pesquisa_multa (tipo_pesquisa){
     dados_parametros = ''
     if(tipo_pesquisa =='placa'){

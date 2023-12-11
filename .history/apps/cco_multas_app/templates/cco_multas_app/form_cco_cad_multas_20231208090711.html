@@ -2,6 +2,7 @@
 
 {% block link_static_css %}
     <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" />
     <link rel="stylesheet" href="{% static 'css/cco_multas_app/cco_multas_app.css' %}" />
 {% endblock %}
 
@@ -48,8 +49,7 @@
                <!-- Form pesquisa de Multas-->
                <div class="row align-items-start" id="frm_cco_pesq_sinistros" style="margin-top:15px">
                   <div class="form-group col-sm-3"  style="padding-right:0px">
-                     <select class="selectpicker form-control" id="select_placa_multa"
-                      name="select_placa_multa" style="margin-bottom:12px" data-live-search="true" title="Placa">
+                     <select class="selectpicker form-control" id="select_placa_multa" name="select_placa_multa" style="margin-bottom:12px">
                         {% for placa in lista_placas %}
                         <option value="{{placa.placa_multa}}">
                            {{placa.placa_multa}}
@@ -138,11 +138,10 @@
                      </div>
                      <div class="form-group col-sm-2">
                         <label for="input_proj" > Projeto </label>
-                        <select class="selectpicker form-control" id="input_proj" name="input_proj" 
-                        placeholder="Projeto" data-live-search="true" required>
+                        <select class="selectpicker form-control" id="input_proj" name="input_proj" placeholder="Projeto" required>
                            {% for projeto in lista_projetos %}
                               <option value="{{projeto.cod_projeto}}" >
-                                 {{projeto.handle_benner}} - {{projeto.desc_proj}}
+                                 {{projeto.desc_proj}}
                               </option>
                            {% endfor %}
                         </select>
@@ -246,3 +245,5 @@
 </div>
 
 <script src="{% static 'controllers/cco_multas_app/cad_multas_controller.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>

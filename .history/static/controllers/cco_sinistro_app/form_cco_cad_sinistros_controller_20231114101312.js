@@ -132,7 +132,6 @@ $('#form_cadastro_eqp_veiculos').submit(function(event){
         dt_inicio_dados_processo_eqp = document.getElementById("dt_inicio_dados_processo_eqp").value //Data de inicio do processo
         dt_fim_processo_sinistro_carga_eqp = document.getElementById("dt_fim_processo_sinistro_carga_eqp").value //Data de fim do processo
         observacoes_finais = document.getElementById("observacoes_finais_eqp").value //Observações Finais do Cadastro
-        status_processo_eqp = document.getElementById("status_processo_eqp").value
         cod_cad_sinistro_eqp_veic = document.getElementById("btn_finalizar_cadastro_sinistro_cad_eqp_veic").value //Defino valor inicial como 0 ao Button
 
     // Envio de dados para a view
@@ -163,7 +162,6 @@ $('#form_cadastro_eqp_veiculos').submit(function(event){
                 feito_reembolso_eqp : feito_reembolso_eqp,
                 tipo_acionamento_eqp : tipo_acionamento_eqp,
                 numero_processo_eqp : numero_processo_eqp,
-                status_processo_eqp : status_processo_eqp,
                 dt_inicio_dados_processo_eqp : dt_inicio_dados_processo_eqp,
                 dt_fim_processo_sinistro_carga_eqp : dt_fim_processo_sinistro_carga_eqp,
                 observacoes_finais : observacoes_finais,
@@ -348,7 +346,6 @@ $(document).on('click','button', function(){
                     $("#cb_status_processo_carga").selectpicker('refresh');
                     $("#txt_observacoes_finais_sinistro_carga").val(dados.dic_sinistro_form.observacao);//Observações Finais cadastro de Cargas
                     $("#btn_finalizar_cadastro_sinistro").val(dados.dic_sinistro_form.cod_sinistro_carga);
-                    
 
                 }
 
@@ -394,7 +391,6 @@ $(document).on('click','button', function(){
                     $("#cb_tipo_acionamento_eqp").selectpicker('refresh');
                     $("#numero_processo_eqp").val(dados.dic_sinistro_form.num_processo);
                     $("#dt_inicio_dados_processo_eqp").val(dados.dic_sinistro_form.data_inicio_processo);
-                    $("status_processo_eqp").val(dados.dic_sinistro_form.status_processo)
                     $("#dt_fim_processo_sinistro_carga_eqp").val(dados.dic_sinistro_form.data_fim_processo);
                     $("#observacoes_finais_eqp").val(dados.dic_sinistro_form.observacao);//Observações finais cadastro de Equipamentos
                     $("#btn_finalizar_cadastro_sinistro_cad_eqp_veic").val(dados.dic_sinistro_form.cod_sinistro_eqp_veic);

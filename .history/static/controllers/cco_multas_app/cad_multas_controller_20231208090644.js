@@ -1,6 +1,11 @@
 let let_lista_multas_bd = [];
 
 
+$(document).ready(function(){
+    $("#select_placa_multa").select2(); 
+});
+
+
 
 $(document).on('click','button', function(){
     let let_id_btn = $(this).attr('id');
@@ -343,7 +348,6 @@ function atualiza_tab_pesquisa_anexo(cod_multa_antt){
 	    }
     });
 };
-
 
 function atualiza_tab_pesquisa_multa (tipo_pesquisa){
     dados_parametros = ''

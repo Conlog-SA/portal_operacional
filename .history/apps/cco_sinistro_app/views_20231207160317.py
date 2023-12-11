@@ -386,7 +386,7 @@ class Form_cad_equipamentos_veiculos(View):
             obj_sinistro.placa_veiculo_cavalo = placa_cavalo_cad_eqp
             obj_sinistro.data_nasc = dt_nascimento_motorista_eqp
             obj_sinistro.data_ocorre_sinistro = dt_ocorrencia_sinistro_carga_eqp
-            obj_sinistro.cod_estado = estado_sinistro_eqp
+            obj_sinistro.cod_estado = OP_Estados.objects.get(pk=estado_sinistro_eqp)
             obj_sinistro.cidade = cidade_sinistro_eqp
             obj_sinistro.tipo_sinistro = Motivo_Sinistro.objects.get(pk=motivo_sinistro_eqp).tipo_motivo_sinistro
             obj_sinistro.acionado_seguro = acionado_seguro_eqp
@@ -397,7 +397,7 @@ class Form_cad_equipamentos_veiculos(View):
             obj_sinistro.cod_usu = obj_usuario_sessao
             obj_sinistro.status_processo = status_processo_eqp
             obj_sinistro.cod_motivo_sinistro = Motivo_Sinistro.objects.get(pk=motivo_sinistro_eqp)
-            obj_sinistro.cod_projeto = projeto_eqp
+            obj_sinistro.cod_projeto = Projeto.objects.get(pk=projeto_eqp)
             obj_sinistro.save()
 
 

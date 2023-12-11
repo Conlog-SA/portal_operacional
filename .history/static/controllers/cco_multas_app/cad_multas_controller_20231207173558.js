@@ -1,6 +1,12 @@
 let let_lista_multas_bd = [];
 
 
+$(document).ready(function(){
+    $("#cb_placa_pesq_sinistros_carga").select2();
+    $("#select_placa_multa").select2(); 
+});
+
+
 
 $(document).on('click','button', function(){
     let let_id_btn = $(this).attr('id');
@@ -344,7 +350,6 @@ function atualiza_tab_pesquisa_anexo(cod_multa_antt){
     });
 };
 
-
 function atualiza_tab_pesquisa_multa (tipo_pesquisa){
     dados_parametros = ''
     if(tipo_pesquisa =='placa'){
@@ -502,7 +507,7 @@ function atualiza_placa_multa (placa){
                 placa.placa_multa+"'>"+placa.placa_multa+"</option>");
 
             });
-            $("#select_placa_multa").selectpicker('refresh');
+            $("#select_placa_multa").select('refresh');
     
         },
         error: function(request, status, error){

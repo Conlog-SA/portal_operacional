@@ -397,7 +397,7 @@ class Form_cad_equipamentos_veiculos(View):
             obj_sinistro.cod_usu = obj_usuario_sessao
             obj_sinistro.status_processo = status_processo_eqp
             obj_sinistro.cod_motivo_sinistro = Motivo_Sinistro.objects.get(pk=motivo_sinistro_eqp)
-            obj_sinistro.cod_projeto = projeto_eqp
+            obj_sinistro.cod_projeto = Projeto.objects.get(pk=projeto_eqp)
             obj_sinistro.save()
 
 

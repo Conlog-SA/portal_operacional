@@ -344,6 +344,18 @@ function atualiza_tab_pesquisa_anexo(cod_multa_antt){
     });
 };
 
+function formatDate(dateString) {
+    // Converte a string de data para um objeto Date
+    const date = new Date(dateString);
+
+    // Obtém o dia, mês e ano
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Adiciona 1 porque os meses começam do zero
+    const year = date.getFullYear();
+
+    // Formata a data como dd/mm/yyyy
+    return `${day}/${month}/${year}`;
+}
 
 function atualiza_tab_pesquisa_multa (tipo_pesquisa){
     dados_parametros = ''
@@ -375,7 +387,7 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
                 /* 0 */linha.placa_multa,
                 /* 1 */linha.num_auto_infracao,
                 /* 2 */linha.desc_projeto,
-                /* 3 */linha.data_auto,
+                /* 3 */formatDate(linha.data_auto),
                 /* 4 */linha.desc_multa,
                 /* 5 */linha.nome_condutor,
                 /* 6 */linha.data_recebe_multa,
