@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
     <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
     <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/seguranca_safety_app/seguranca_safety.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/safety_layout_checklist_app/safety_layout_checklist_app.css' %}" />
 
 {% endblock %}
 
@@ -25,7 +25,7 @@
                             <select class="selectpicker form-control" data-live-search="true" name="modelos_existentes"
                                     id="modelos_existentes" name="modelos_existentes" title="Selecione um check existente" required>
                                 {% for ch in lista_checks %}
-                                    <option value="{{ch.cod_check}}">{{ch.desc_check}}</option>>
+                                    <option value="{{ch.cod_check}}">{{ch.desc_check}}</option>
                                 {% endfor %}
                             </select>
                         </div>
@@ -98,7 +98,7 @@
                                             <label>Liberado para as filiais:</label>
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <select class="selectpicker form-control"
+                                            <select class="selectpicker form-control" data-live-search="true" multiple
                                             id="liberado_filiais" name="liberado_filiais" placeholder="Liberado Filiais" required>
                                             </select>
                                         </div>
@@ -112,43 +112,48 @@
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="descricao_item_check"> Descrição do Item</label>
-                                            <input type="text" class="form-control" id="descricao_item_check">
+                                            <input type="text" class="form-control" id="descricao_item_check" disabled>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="select_tipo_item">Tipo de Item</label>
                                             <select class="selectpicker form-control"
-                                               id="select_tipo_item" name="select_tipo_item" placeholder="Tipo de Item" required>
+                                               id="select_tipo_item" name="select_tipo_item" placeholder="Tipo de Item" disabled>
+                                                <option value="1">Item</option>
+                                                <option value="2">Agrupador</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="select_tipo_resposta">Tipo De Resposta</label>
                                             <select class="selectpicker form-control"
                                             id="select_tipo_resposta" name="select_tipo_resposta"
-                                            placeholder="Tipo de Resposta" required>
+                                            placeholder="Tipo de Resposta" disabled>
+                                               <option value="1">OK</option>
+                                               <option value="2">Não OK</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="input_ordem_check">Ordem</label>
-                                            <input type="text" class="form-control" id="input_ordem_check">
+                                            <input type="text" class="form-control" id="input_ordem_check" disabled>
                                         </div>
                                         <div class="form-group col-sm-4">
                                             <label for="desativar_item_date">Desativar em:</label>
-                                            <input type="date" class="form-control" id="desativar_item_date">
+                                            <input type="date" class="form-control" id="desativar_item_date" disabled>
                                         </div>
                                         <div class="form-group col-sm-2 check-box">
                                             <div class="label">
                                                 <label for="obs_imagem_check_box"> Campo Imagem e OBS</label>
                                             </div>
-                                            <div class="container" style="padding-right: 72px; padding-left: 72px;">
-                                                <input type="checkbox" checked="checked" class="checkbox" name="obs_imagem_check_box" id="obs_imagem_check_box" style="width:10px; height:10px;">
-                                                <label class="switch" for="obs_imagem_check_box">
-                                                    <span class="slider"></span>
-                                                </label>
+                                            <div class="container">
+                                                <input type="checkbox" class="checkbox" role="switch" name="obs_imagem_check_box" id="obs_imagem_check_box" disabled>
                                             </div>
                                         </div>
-                                        <div class="form-group  col-md-6 w-15 d-flex justify-content-end" style="margin-top:10px; margin-botton:10px;">
+                                        <div class="form-group col-sm-12 w-15 d-flex justify-content-end" style="margin-top:10px; margin-botton:10px;">
+                                            <button type="button" class="btn btn-primary btn-form" id="btn_reset_item"
+                                             name="btn_reset_item" style="margin-top:10px;margin-bottom:10px" hidden>
+                                             <i class="fa-solid fa-arrow-left"></i>
+                                              Voltar </button>
                                             <button type="button" class="btn btn-primary btn-form btn-cadastro" id="btn_new_item"
-                                                    name="btn_new_item" style="margin-bottom: 10px;margin-top: 10px;">
+                                                    name="btn_new_item" style="margin-bottom: 10px;margin-top: 10px;margin-left:10px">
                                                 <i class="fa-solid fa-file-circle-plus"></i>
                                                 Adicionar item
                                             </button>
@@ -162,14 +167,7 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <ul id="sortable">
-                                        <li class="ui-state-default">Item 1</li>
-                                        <li class="ui-state-default">Item 2</li>
-                                        <li class="ui-state-default">Item 3</li>
-                                        <li class="ui-state-default">Item 4</li>
-                                        <li class="ui-state-default">Item 5</li>
-                                        <li class="ui-state-default">Item 6</li>
-                                        <li class="ui-state-default">Item 7</li>
+                                    <ul id="sortable" class="sortable">
                                     </ul>
                                 </div>
                         </div>
@@ -189,8 +187,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(document).ready(function(){
-        $("#sortable").sortable();
-    });
-</script>
