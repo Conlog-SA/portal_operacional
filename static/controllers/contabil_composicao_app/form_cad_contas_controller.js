@@ -995,9 +995,11 @@ $(document).on('click','button', function(){
 
     }
     else if (let_nome_btn == 'btn_exclui_arq_conta_mod_1') {
+        let let_cod_conta = $("#cb_contas").val();
+        let let_cod_arquivo_mais_cod_conta = let_val_btn + '_' + let_cod_conta;
         $.ajax({
             type: 'DELETE',
-            url: '/contabil_composicao_app/exclui_arquivo_conta_m_1/'+let_val_btn,
+            url: '/contabil_composicao_app/exclui_arquivo_conta_m_1/'+let_cod_arquivo_mais_cod_conta,
             dataType: 'json',
             success: function(data){
                 $.gritter.add({
@@ -1065,6 +1067,126 @@ $(document).on('click','button', function(){
         }
 
 
+    } else if (let_nome_btn == 'btn_abrir_modal_atualiza_contratos_benner') {
+        $("#modal_atualiza_contratos_benner").show();
+
+    } else if (let_nome_btn == 'btn_fecha_modal_atualiza_contratos_benner') {
+        $("#tab_reg_atualizacao_benner").DataTable().clear().draw();
+        $("#modal_atualiza_contratos_benner").hide();
+
+    } else if (let_nome_btn == 'btn_desmarcar_contas_atualiza_contratos_benner'){
+        $("#sl_contas_atualiza_contratos_benner").selectpicker('deselectAll');
+    }
+    else if (let_nome_btn == 'btn_marcar_contas_atualiza_contratos_benner'){
+        $("#sl_contas_atualiza_contratos_benner").selectpicker('selectAll');
+    }
+    else if (let_nome_btn == 'btn_atualiza_dados_contrato_benner'){
+        let let_loader_frm_modal_atualiza_contratos_benner =
+            document.getElementById("loader_frm_modal_atualiza_contratos_benner");
+        let_loader_frm_modal_atualiza_contratos_benner.style.display = "flex";
+        let let_lista_cod_contas = $("#sl_contas_atualiza_contratos_benner").val().toString();
+
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/atualiza_contratos_com_dados_do_benner',
+            data: {
+                'lista_cod_contas': let_lista_cod_contas
+            },
+            dataType: 'json',
+            success: function (dados) {
+                let let_lista_reg_table = []
+                dados.lista_parcelas_atualizados.forEach( parc => {
+                    let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
+                    let reg = [
+                        let_img,
+                        parc.cod_conta,
+                        parc.desc_conta,
+                        parc.num_contrato,
+                        parc.num_parcela,
+                        parc.val_pago,
+                        parc.val_principal,
+                        parc.val_taxas,
+                        parc.val_fundo,
+                        parc.data_vencimento,
+                        parc.data_liquidacao,
+                        parc.handle_parcela
+                    ];
+                    let_lista_reg_table.push(reg);
+                });
+                $('#tab_reg_atualizacao_benner').DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": true,
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 6,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_reg_table,
+                    "columns": [
+                        { title: "" },
+                        { title: "Cód. conta" },
+                        { title: "Conta" },
+                        { title: "Núm contrato" },
+                        { title: "Núm parcela" },
+                        { title: "Val pago" },
+                        { title: "Val principal" },
+                        { title: "Val taxas" },
+                        { title: "Val fundo" },
+                        { title: "Data vencimento" },
+                        { title: "Data liquidação" },
+                        { title: "Handle parcela" }
+                    ],
+                    /*"columnDefs": [
+                        {"className": "dt-center", "targets": [0,1,3,12,21,22,23,24,25,26,27]},
+                        {"className": "dt-left", "targets": [2]},
+                        {"className": "dt-right", "targets": [4,5,6,7,8,9,10,11,13,14,15,16,17,18,19,20]}
+                    ],*/
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+                let_loader_frm_modal_atualiza_contratos_benner.style.display = "none";
+            },
+            error: function (request, status, error) {
+                let_loader_frm_modal_atualiza_contratos_benner.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+
     }
 });
 
@@ -1073,12 +1195,16 @@ $(document).on('change','input', function(){
     let let_id_inp = $(this).attr('id');
     let let_chk_inp = $(this).prop('checked')
 
-    if(let_nome_inp == "chk_atualiza_com_benner_contrato"){
+    if(let_nome_inp == "chk_atualiza_dados_benner_contrato"){
+
         let let_handle_contrato = let_id_inp.split('_')[5];
         let let_status_componente = $(this).prop("checked");
+        let let_div_status_atualiza_benner = `Atualiza com o Benner ? <strong>SIM</strong>`;
         let let_status_sincroniza_benner = 'S';
         if(let_status_componente == false){
             let_status_sincroniza_benner = 'N';
+            let_div_status_atualiza_benner = `Atualiza com o Benner ? <strong>NÃO</strong>`;
+
         }
         $.ajax({
         type: 'POST',
@@ -1090,6 +1216,17 @@ $(document).on('change','input', function(){
         },
         dataType: 'json',
         success: function (dados) {
+            $("#div_status_atualiza_benner").empty();
+
+            $("#sl_contas_atualiza_contratos_benner option").remove();
+            dados.lista_contas_para_atualizar_benner.forEach( conta => {
+                $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
+                conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
+                " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+            });
+            $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
+
             $.gritter.add({
                 title: 'Atenção!',
                 text: dados.msg,
@@ -1097,6 +1234,7 @@ $(document).on('change','input', function(){
                 sticky: false,
                 time: '',
             });
+            $("#div_status_atualiza_benner").html(let_div_status_atualiza_benner);
 
         },
         error: function (request, status, error) {
@@ -1476,15 +1614,29 @@ $(document).on('change','input', function(){
                     } );
 
         }
+        let let_competencia = $("#dt_conciliacao_comp_benner").val()
+        if (let_tipo_rel == 'A' && let_competencia == '') {
 
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Por favor selecione uma competência',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            $("#rd_modelo_conta_conc_comp_benner_1").attr('checked', false);
+            $("#rd_modelo_conta_conc_comp_benner_2").attr('checked', false);
+            $("#rd_modelo_conta_conc_comp_benner_3").attr('checked', false);
 
-        $.ajax({
+        } else {
+            $.ajax({
             type: 'GET',
             url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
             cache: false,
             data: {
                 'tipo_rel': let_tipo_rel,
-                'cod_modelo_conta'   :   let_cod_modelo_conta
+                'cod_modelo_conta'   :   let_cod_modelo_conta,
+                'data_competencia' : let_competencia
             },
             dataType: 'json',
             success: function (data) {
@@ -1529,6 +1681,9 @@ $(document).on('change','input', function(){
                 });
           }
         });
+        }
+
+
 
     }
     else if ( let_nome_inp == "rd_modelo_conta" ) {
@@ -1589,6 +1744,54 @@ $(document).on('change','input', function(){
 
           }
         });
+    }
+    else if ( let_nome_inp == "dt_conciliacao_comp_benner" ){
+        let let_competencia = $("#dt_conciliacao_comp_benner").val()
+        let let_cod_modelo_conta = 0
+        if ( $("#rd_modelo_conta_conc_comp_benner_1").is("checked") == true ) {
+            let_cod_modelo_conta = 1;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is("checked") == true ) {
+            let_cod_modelo_conta = 2;
+        } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is("checked") == true ) {
+            let_cod_modelo_conta = 3;
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
+            cache: false,
+            data: {
+                'tipo_rel': 'A',
+                'cod_modelo_conta'   :   let_cod_modelo_conta,
+                'data_competencia' : let_competencia
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#cb_contas_conciliacao_comp_benner option").remove();
+                data.lista_contas.forEach(conta => {
+                    $("#cb_contas_conciliacao_comp_benner").append("<option value='"+
+                    conta.cod_conta__cod_conta+"'>"+conta.cod_conta__desc_conta+" - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                    " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+
+                });
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
+                $("#cb_contas_conciliacao_comp_benner").selectpicker('selectAll');
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+
+
     }
 
 
@@ -1703,6 +1906,11 @@ function atualiza_tab_contratos_conta(cod_conta){
             `;
 
             dados.lista_contratos.forEach( ctr => {
+                let let_verifica_check_atualiza_benner = ``;
+                if(ctr.atualiza_benner == 'SIM'){
+                    let_verifica_check_atualiza_benner = `checked="checked"`;
+                }
+
                 let_html_pagina += `
                     <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
                         <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header"
@@ -1719,13 +1927,8 @@ function atualiza_tab_contratos_conta(cod_conta){
                                         <div class="col-md-3">
                                             <strong>Empresa:</strong> ${ctr.nome_empresa}
                                         </div>
-                                        <div class="col-md-3">
-                                            <label>
-                                                <input type="checkbox" checked="checked" class="checkbox"
-                                                    id="chk_atualiza_com_benner_contrato_${ctr.handle_fn_doc}"
-                                                    name="chk_atualiza_com_benner_contrato">
-                                                Atualiza com o Benner ?
-                                            </label>
+                                        <div class="col-md-3" id="div_status_atualiza_benner">
+                                            Atualiza com o Benner ? <strong>${ctr.atualiza_benner}</strong>
                                         </div>
                                         <div class="col-md-3" align="right">
 
@@ -1822,13 +2025,14 @@ function atualiza_tab_contratos_conta(cod_conta){
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                     <label class="col-form-label text-left cursor-pointer"
-                                           for="chk_atualiza_com_benner">
+                                           for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                         Atualiza com o Benner ?</label>
                                     <div class="container">
-                                        <input type="checkbox" checked="checked" class="checkbox"
+                                        <input type="checkbox" `+let_verifica_check_atualiza_benner+` class="checkbox"
                                                name="chk_atualiza_dados_benner_contrato"
                                                id="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
-                                        <label class="switch" for="chk_atualiza_com_benner">
+                                        <label class="switch"
+                                               for="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
                                             <span class="slider"></span>
                                         </label>
                                     </div>
@@ -1844,7 +2048,8 @@ function atualiza_tab_contratos_conta(cod_conta){
                             </div>
                             <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
                                 <div class="d-flex justify-content-between align-items-center ">
-                                    <table id"tab_parcelas_contrato_${ctr.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                    <table id"tab_parcelas_contrato"
+                                    class="display wrap w-100 cl_tab_principal_pagina"
                                         style="font-size:12px; color: #000000;">
                                         <thead>
                                             <tr>
@@ -1962,37 +2167,65 @@ function atualiza_tab_contratos_conta(cod_conta){
 
                 `;
 
-                $("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
-                        "bJQueryUI": true,
-                        "pageLength": 10,
-                        "destroy": true,
-                        "dom": 'Bfrtip',
-                        "buttons": ['excelHtml5',
-                                    'pdfHtml5'
-                        ],
-                        "oLanguage": {
-                            "sProcessing":   "Processando...",
-                            "sLengthMenu":   "Mostrar _MENU_ registros",
-                            "sZeroRecords":  "Não foram encontrados resultados",
-                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                            "sInfoFiltered": "",
-                            "sInfoPostFix":  "",
-                            "sSearch":       "Pesquisar:",
-                            "sUrl":          "",
-                            "oPaginate": {
-                                "sFirst":    "Primeiro",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Proximo",
-                                "sLast":     "Último"
-                            }
+                /*$("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
+                    "bJQueryUI": true,
+                    "pageLength": 10,
+                    "destroy": true,
+                    "dom": 'Bfrtip',
+                    "buttons": ['excelHtml5',
+                                'pdfHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
                         }
-                    });
+                    }
+                });*/
 
             });
             let_html_pagina += `
                 </div>
             `;
+
+            $("#tab_parcelas_contrato").DataTable( {
+                    "bJQueryUI": true,
+                    "pageLength": 10,
+                    "destroy": true,
+                    "dom": 'Bfrtip',
+                    "buttons": ['excelHtml5',
+                                'pdfHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        }
+                    }
+                });
+
             $("#div_contratos").html(let_html_pagina);
             let_loader_frm_cad_contas.style.display = "none";
         },
@@ -2138,11 +2371,15 @@ function atualiza_tab_anexos_conta(cod_conta){
                     let_num_contrato = doc.cod_contrato__num_contrato;
                 }
 
+                let let_competencia = doc.data_competencia.split('-')[2] + '-' +
+                    doc.data_competencia.split('-')[1] + '-' +
+                    doc.data_competencia.split('-')[0]
+
 
                 reg = [
                     ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
                     let_num_contrato,
-                    doc.data_competencia,
+                    let_competencia,
                     doc.desc_anexo,
                     var_btn_visualizar_anexo,
                     var_btn_exclui_anexo
@@ -2346,8 +2583,15 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 
             $("#list_contratos_conta_anexo option").remove();
             dados.lista_contratos.forEach( ctr => {
+                let let_verifica_check_atualiza_benner = ``;
+                if(ctr.contrato.atualiza_benner == 'SIM'){
+                    let_verifica_check_atualiza_benner = `checked="checked"`;
+                }
+
                 $("#list_contratos_conta_anexo").append("<option value='"+
                 ctr.contrato.cod_contrato+"'>"+ctr.contrato.num_contrato+"</option>");
+
+
 
                 let_html_pagina += `
                     <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
@@ -2365,13 +2609,8 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                         <div class="col-md-3">
                                             <strong>Empresa:</strong> ${ctr.contrato.nome_empresa}
                                         </div>
-                                        <div class="col-md-6">
-                                            <label>
-                                                <input type="checkbox" checked="checked" class="checkbox"
-                                                    id="chk_atualiza_com_benner_contrato_${ctr.contrato.handle_fn_doc}"
-                                                    name="chk_atualiza_com_benner_contrato">
-                                                Atualiza com o Benner ?
-                                            </label>
+                                        <div class="col-md-6" id="div_status_atualiza_benner">
+                                            Atualiza com o Benner ? <strong>${ctr.contrato.atualiza_benner}</strong>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -2461,23 +2700,24 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                         <div class="accordion-body flex-wrap d-flex justify-content-between align-items-center">
                             <div class="d-flex justify-content-between align-items-between w-100 mb-6">
                                 <div class="d-flex flex-column w-100" style="margin-top: 2rem;">
-                                    <button type='button' id="btn_excluir_contrato_${ctr.cod_contrato}"
+                                    <button type='button' id="btn_excluir_contrato_${ctr.contrato.cod_contrato}"
                                             name="btn_excluir_contrato"
                                             class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                            value="${ctr.cod_contrato}">
+                                            value="${ctr.contrato.cod_contrato}">
                                         <i class="fa-solid fa-trash"></i>
                                         <span>Excluir contrato</span>
                                     </button>
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                     <label class="col-form-label text-left cursor-pointer"
-                                           for="chk_atualiza_com_benner">
+                                           for="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
                                         Atualiza com o Benner ?</label>
                                     <div class="container">
-                                        <input type="checkbox" checked="checked" class="checkbox"
+                                        <input type="checkbox" `+let_verifica_check_atualiza_benner+`  class="checkbox"
                                                name="chk_atualiza_dados_benner_contrato"
-                                               id="chk_atualiza_dados_benner_contrato_${ctr.cod_contrato}">
-                                        <label class="switch" for="chk_atualiza_com_benner">
+                                               id="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
+                                        <label class="switch"
+                                               for="chk_atualiza_dados_benner_contrato_${ctr.contrato.cod_contrato}">
                                             <span class="slider"></span>
                                         </label>
                                     </div>
@@ -2493,7 +2733,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                             </div>
                             <div class="d-flex mt-3 flex-column align-items-start justify-content-start w-100 cl_div_tabela_principal_pagina">
                                 <div class="d-flex justify-content-between align-items-center ">
-                                        <table id="tab_parcelas_contrato_${ctr.contrato.handle_fn_doc}"  class="display wrap w-100 cl_tab_principal_pagina"
+                                        <table id="tab_parcelas_contrato"  class="display wrap w-100 cl_tab_principal_pagina"
                                             style="font-size:12px; color: #000000;">
                                             <thead>
                                                 <tr>
@@ -2607,7 +2847,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 
 
                 $("#list_contratos_conta_anexo").selectpicker('refresh');
-
+                /*
                 $("#tab_parcelas_contrato_" + ctr.contrato.handle_fn_doc).DataTable( {
                         "bJQueryUI": true,
                         "pageLength": 10,
@@ -2634,13 +2874,47 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                             }
                         }
                     });
+                    */
 
             });
             let_html_pagina += `
                 </div>
             `;
+            $("#tab_parcelas_contrato").DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 10,
+                        "destroy": true,
+                        "dom": 'Bfrtip',
+                        "buttons": ['excelHtml5',
+                                    'pdfHtml5'
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            }
+                        }
+                    });
             $("#div_contratos").html(let_html_pagina);
             let_loader_frm_cad_contas.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
         },
         error: function (request, status, error) {
             let_loader_frm_cad_contas.style.display = "none";
@@ -3165,16 +3439,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
                 </label>
             </div>
         `);
-        /*$("#li_cad_conta_2").html("");
-        $("#li_cad_conta_2").html(`
-            <a class="nav-link" id="a_tab_contratos" data-toggle="tab"
-               href="#div_tab_contratos" role="tab"
-               aria-controls="div_tab_contratos"
-               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
-                <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
-                Contratos
-            </a>
-        `);*/
+
          let let_html_btn = `
             <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>Contratos
         `;
@@ -3383,6 +3648,16 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             });
             $("#cb_pacote_conta").selectpicker('refresh');
 
+            $("#sl_contas_atualiza_contratos_benner option").remove();
+            data.lista_contas_para_atualizar_benner.forEach( conta => {
+                $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
+                conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
+                " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+            });
+            $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
+
+
         },
         error: function (request, status, error) {
             $.gritter.add({
@@ -3408,105 +3683,32 @@ function atualiza_doc_contas_modelo_1(cod_conta){
         },
         url: '/contabil_composicao_app/retorna_lista_docs_contas_modelo_1',
         success: function(dados) {
-            let let_tabela = `
-                <table id="tab_arq_conta_mod_1"  class="display wrap w-100 cl_tab_principal_pagina">
-                    <thead>
-                        <tr>
-                            <th scope="col"></th>
-                            <th scope="col">Importado em:</th>
-                            <th scope="col">Nome arquivo</th>
-                            <th scope="col">Qtd. registros</th>
-                            <th scope="col">Competência</th>
-                            <th scope="col">Usuario</th>
-                            <th scope="col">Val. relatório(R$)</th>
-                            <th scope="col">Val. razão(R$)</th>
-                            <th scope="col">Excluir</th>
-                          </tr>
-                    </thead>
-                    <tbody>
 
-                    </tbody>
-
-                </table>
-            `;
-            $("#div_tab_doc_contas_modelo_1").html(let_tabela);
-            $("#tab_arq_conta_mod_1").DataTable( {
-                "bJQueryUI": true,
-                "destroy": true,
-                "searching": true,
-                "paging": false,
-
-                "dom": 'Bfrtip',
-                "buttons": [
-                    'copyHtml5'
-                ],
-                "columns": [
-                    { title: "" },
-                    { title: "Importado em:" },
-                    { title: "Nome arquivo" },
-                    { title: "Qtd. registros" },
-                    { title: "Competencia" },
-                    { title: "Usuário" },
-                    { title: "Val. relatório(R$)" },
-                    { title: "Val. razão(R$)" },
-                    { title: "Excluir" }
-                ],
-                "columnDefs": [
-                    {"className": "dt-center", "targets": [0,2,3]},
-                    {"className": "dt-left", "targets": [1]}
-                ],
-                "language": {
-                    "decimal": ",",
-                    "thousands": ".",
-                    "sProcessing":   "Processando...",
-                    "sLengthMenu":   "",
-                    "sZeroRecords":  "Não foram encontrados resultados",
-                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                    "sInfoFiltered": "",
-                    "sInfoPostFix":  "",
-                    "sSearch":       "Pesquisar:",
-                    "sUrl":          "",
-                    "oPaginate": {
-                        "sFirst":    "Primeiro",
-                        "sPrevious": "Anterior",
-                        "sNext":     "Proximo",
-                        "sLast":     "Último"
-                    },
-                    "buttons":{
-                        "copyTitle": 'Dados Copiados',
-                        "copySuccess": {
-                            _: '%d linhas copiadas',
-                            1: '1 linha copiada'
-                        }
-                    }
-                }
-            });
             let let_lista_docs = [];
             dados.registros_tabela.forEach( reg => {
                 let let_btn_exclui_arquivo = `
                     <button type="button" name="btn_exclui_arq_conta_mod_1"
-                        id="btn_exclui_arq_conta_mod_1_${reg.cod_arquivo}"
+                        id="btn_exclui_arq_conta_mod_1_${reg.cod_arquivo__cod_arquivo}"
                         class="btn btn-rounded btn-space"
-                        value="${reg.cod_arquivo}">
+                        value="${reg.cod_arquivo__cod_arquivo}">
                         <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
                     </button>
                 `;
-                let let_dt_imp = reg.data_imp.split('-')[2] + '-' + reg.data_imp.split('-')[1] +
-                    '-' + reg.data_imp.split('-')[0]
+                let let_dt_imp = reg.cod_arquivo__data_imp.split('-')[2] + '-' + reg.cod_arquivo__data_imp.split('-')[1] +
+                    '-' + reg.cod_arquivo__data_imp.split('-')[0]
 
-                let let_dt_comp = reg.data_competencia.split('-')[2] + '-' + reg.data_competencia.split('-')[1] +
-                    '-' + reg.data_competencia.split('-')[0]
+                let let_dt_comp = reg.cod_arquivo__data_competencia.split('-')[2] + '-' + reg.cod_arquivo__data_competencia.split('-')[1] +
+                    '-' + reg.cod_arquivo__data_competencia.split('-')[0]
 
                 reg = [
-                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    ` <i class="fa-solid fa-bookmark" style="color: #f46424"></i>`,
                     let_dt_imp,
-                    reg.nome_arqv_original,
-                    reg.qtd_reg_imp,
+                    reg.cod_arquivo__nome_arqv_original,
+                    reg.qtd_registros,
                     let_dt_comp,
-                    reg.usuario,
-                    reg.val_relatorio,
-                    reg.val_total_razao,
+                    reg.cod_arquivo__cod_usu__login_usu,
+                    reg.tt_val_rel,
+                    reg.tt_val_razao,
                     let_btn_exclui_arquivo
                 ];
                 let_lista_docs.push(reg);
@@ -3565,6 +3767,7 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                     }
                 }
             });
+
             let_loader_frm_cad_contas.style.display = "none";
         },
         error: function(request, status, error){

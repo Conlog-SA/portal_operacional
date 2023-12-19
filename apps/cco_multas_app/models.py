@@ -30,4 +30,11 @@ class CCO_Multas(models.Model):
         managed = True
         db_table = 'ger_cco_multas'
 
-
+class CCO_Anexos(models.Model):
+    cod_anexo_cco = models.AutoField(primary_key=True, editable=False, auto_created=True)
+    caminho_anexo = models.CharField(null=False, blank=True, max_length=100)
+    cod_multa_antt = models.ForeignKey(CCO_Multas, models.CASCADE, db_column='cod_multa_antt')
+    tipo_anexo = models.CharField(null=False, blank=True, max_length=20)
+    class Meta():
+        managed = True
+        db_table = 'ger_cco_anexos'

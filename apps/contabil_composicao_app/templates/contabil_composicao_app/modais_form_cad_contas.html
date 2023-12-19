@@ -1,0 +1,122 @@
+
+
+<!-- Modal atualiza contratos benner -->
+<div id="modal_atualiza_contratos_benner" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 1320px; width: 1320px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-repeat fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Atualiza contratos contas Benner</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_atualiza_contratos_benner"
+                                id="btn_fecha_modal_atualiza_contratos_benner"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_atualiza_contratos_benner" name="frm_atualiza_contratos_benner"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100" style="margin: 0.25rem; width: 70%;">
+                            <label style="color: #000000;">
+                                <button type='button' id="btn_marcar_contas_atualiza_contratos_benner"
+                                        name="btn_marcar_contas_atualiza_contratos_benner"
+                                        class="btn btn-rounded btn-space"
+                                        title="Selecionar todos os projetos"
+                                        style="width: 50px;">
+                                    <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                                </button>
+                                Selecionar todas as contas
+                                <button type='button' id="btn_desmarcar_contas_atualiza_contratos_benner"
+                                        name="btn_desmarcar_contas_atualiza_contratos_benner"
+                                        class="btn btn-rounded btn-space"
+                                        title="Limpar seleção"
+                                        style="width: 50px;">
+                                    <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                                </button>
+                                Desmarcar contas
+                            </label>
+                            <select class="selectpicker form-control" id="sl_contas_atualiza_contratos_benner"
+                                    name="sl_contas_atualiza_contratos_benner"
+                                    style="color: #999999; font-size: 20px; height: 54.65px"
+                                    multiple data-selected-text-format="count > 0"
+                                    data-live-search="true"
+                                    title="Selecione as contas a atualizar">
+
+                            </select>
+                        </div>
+
+                        <div class="d-flex flex-column" style="margin: 0.25rem; margin-top: 2.7rem; width: 30%;">
+                            <button type="button" name="btn_atualiza_dados_contrato_benner"
+                                    id="btn_atualiza_dados_contrato_benner"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                                <i class="fa-solid fa-check"></i>
+                                Atualizar dados
+                            </button>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-start align-items-start w-100">
+                        <div class="loader" id="loader_frm_modal_atualiza_contratos_benner" style="margin-top: 0.5rem;">
+                            <div class="loader-inner">
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column cl_div_tabela_principal_pagina" id="div_contratos_atualizados"
+                             style="width: 98%; height: 40%; border-radius: 10px; margin: 1rem;">
+
+                            <table id="tab_reg_atualizacao_benner"  class="display wrap w-100 cl_tab_principal_pagina">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Cód. conta</th>
+                                        <th scope="col">Conta</th>
+                                        <th scope="col">Núm. contrato</th>
+                                        <th scope="col">Núm. parcela</th>
+                                        <th scope="col">Val. pago</th>
+                                        <th scope="col">Val. principal</th>
+                                        <th scope="col">Val. taxas</th>
+                                        <th scope="col">Val. fundo</th>
+                                        <th scope="col">Data vencimento</th>
+                                        <th scope="col">Data liquidação</th>
+                                        <th scope="col">Handle parcela</th>
+                                      </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+
+
+                        </div>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
