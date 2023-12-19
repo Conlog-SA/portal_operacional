@@ -380,9 +380,8 @@ function Popular_Itens(cod_check) {
        //                 $("#sortable").append(
        //                 "<div class=\"item_li_sortable\">"+
        //                 "<label>teste</label>"+
-       //                 "<li class=\"ui-state-default item_li_sortable\" value='"+
-       //                 item.cod_item_check+"'>"+item.desc_check+"</li>"+
-       //                 "</div>"
+       //                 "<input type=\"text\" class=\"ui-state-default\"></input>"+
+       //                 "</div>");
                            $("#sortable").append(
                                 "<li class=\"ui-state-default item_li_sortable\" value='"+
                                 item.cod_item_check+"'>"+item.desc_check+"</li>");

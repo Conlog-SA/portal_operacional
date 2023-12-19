@@ -40,6 +40,8 @@ label{
 .item_li_sortable{
     margin-left:40px;
     width: fit-content;
-    border-style:double;
+    border-style:ridge;
     border-color:white;
+    display:flex;
+    flex-direction:column;
 }

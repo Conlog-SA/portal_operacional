@@ -363,7 +363,6 @@ $('#form_pesquisa_fluxo_punitivo_tabela').submit(function(event) {
         },
         success: function(data) {
             console.log(data.linhas_tabela)
-
             let let_linhas_fluxo_punitivo = [];
             data.linhas_tabela.forEach( linha => {
                 let let_linha = [
@@ -373,6 +372,7 @@ $('#form_pesquisa_fluxo_punitivo_tabela').submit(function(event) {
                     linha.data_ocorrencia,
                     linha.motivo_juridico,
                     linha.motivo_especifico,
+                    'Excluir'
                 ];
                 let_linhas_fluxo_punitivo.push(let_linha);
             })
@@ -393,6 +393,7 @@ $('#form_pesquisa_fluxo_punitivo_tabela').submit(function(event) {
                     { title: "Data Ocorrência" },
                     { title: "Motivo Jurídico" },
                     { title: "Motivo Específico" },
+                    { title: "Remover" },
                 ],
                 "columnDefs": [
                     // { "width": "10%", "targets": 0 },
