@@ -55,7 +55,6 @@ class Atividade(models.Model):
 
 class Projeto(models.Model):
     cod_projeto = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    cod_reduzido_benner = models.IntegerField(null=False)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', blank=True, null=True)
     cod_atividade = models.ForeignKey(Atividade, models.DO_NOTHING, db_column='cod_atividade', blank=True, null=True)
     cod_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='cod_empresa', null=True)

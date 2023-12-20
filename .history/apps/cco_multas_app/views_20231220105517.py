@@ -170,7 +170,7 @@ class Pesquisa_Multa_View(View):
                     'valor_pago' : registro.valor_pago, #Valor pago da multa[13]
                     'data_inclusao' : registro.data_inclusao, #data inclusão CCO[14]
                     'cod_infracao' : registro.cod_infracao, #código da infração[15]
-                    'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto[16]
+                    'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto[17]
                     'cod_tipo_multa' : registro.cod_tipo_multa.cod_tipo_multa# Envia o Código do tipo de multa[17]
                 }
                 linhasTabela.append(dadosregistro)

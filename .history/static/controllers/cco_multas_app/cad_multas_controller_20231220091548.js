@@ -103,27 +103,25 @@ $(document).on('click','button', function(){
             $("#a_tab_cadastro_multas").addClass("active");
             $("#div_tab_pesq_multas").removeClass("active");
             $("#div_cad_multas").addClass("active");
+            $("#btn_cadastrar_multa").val(let_lista_multas_bd[let_indice_tabela][17]);
             $("#txt_placa").val(let_lista_multas_bd[let_indice_tabela][0]);
-            $("#input_nome_condutor").val(let_lista_multas_bd[let_indice_tabela][5]);
             $("#input_auto_infracao").val(let_lista_multas_bd[let_indice_tabela][1]);
             $("#input_data_infracao").val(let_lista_multas_bd[let_indice_tabela][3]);
-            $("#data_recebe_multa_cco").val(let_lista_multas_bd[let_indice_tabela][6]);
-            $("#select_data_receb_multa").val(let_lista_multas_bd[let_indice_tabela][11]);
-            $("#dt_pagamento_multa").val(let_lista_multas_bd[let_indice_tabela][12]);
-            $("#input_local_autuacao").val(let_lista_multas_bd[let_indice_tabela][7]);
-            $("#select_status_multa_cad").val(let_lista_multas_bd[let_indice_tabela][8]);
-            $("#select_status_multa_cad").selectpicker('refresh');
-            $("#input_valor_infracao").val(let_lista_multas_bd[let_indice_tabela][13]);
-            $("#input_valor_pago_infracao").val(let_lista_multas_bd[let_indice_tabela][14]);
-            $("#txt_obs").val(let_lista_multas_bd[let_indice_tabela][15]);
-            $("#btn_cadastrar_multa").val(let_lista_multas_bd[let_indice_tabela][17]);
             $("#input_codigo_infracao").val(let_lista_multas_bd[let_indice_tabela][18]);
-            $("#input_proj").val(let_lista_multas_bd[let_indice_tabela][20]);
-            $("#input_proj").selectpicker('refresh');
             $("#select_tipo_multa").val(let_lista_multas_bd[let_indice_tabela][21]);
             $("#select_tipo_multa").selectpicker('refresh');
+            $("#input_nome_condutor").val(let_lista_multas_bd[let_indice_tabela][5]);
+            $("#select_data_receb_multa").val(let_lista_multas_bd[let_indice_tabela][6]);
+            $("#input_local_autuacao").val(let_lista_multas_bd[let_indice_tabela][7]);
+            $("#select_status_multa").val(let_lista_multas_bd[let_indice_tabela][8]);
+            $("#input_valor_infracao").val(let_lista_multas_bd[let_indice_tabela][11]);
+            $("#input_valor_pago_infracao").val(let_lista_multas_bd[let_indice_tabela][12]);
+            $("#select_data_receb_multa").val(let_lista_multas_bd[let_indice_tabela][13]);
+            $("#dt_pagamento_multa").val(let_lista_multas_bd[let_indice_tabela][14]);
+            $("#txt_obs").val(let_lista_multas_bd[let_indice_tabela][15]);
+            $("#input_proj").val(let_lista_multas_bd[let_indice_tabela][20]);
             $("#btn_anexa_pdf").val(let_lista_multas_bd[let_indice_tabela][17]);
-
+            $("#input_proj").selectpicker('refresh');
 
             atualiza_tab_pesquisa_anexo(let_lista_multas_bd[let_indice_tabela][17]);
         }
@@ -142,65 +140,68 @@ $(document).on('click','button', function(){
         valor_pago = document.getElementById("input_valor_pago_infracao").value
         data_recebimento_infracao = document.getElementById("select_data_receb_multa").value
         data_pagamento_infracao = document.getElementById("dt_pagamento_multa").value
-        status_multa = document.getElementById("select_status_multa_cad").value
+        status_multa = document.getElementById("select_status_multa").value
         obs = document.getElementById("txt_obs").value
-        data_recebe_multa_cco = document.getElementById("data_recebe_multa_cco").value
         nome_condutor = document.getElementById("input_nome_condutor").value
         cod_cad_multa = document.getElementById("btn_cadastrar_multa").value
         
+        if (projeto === '') {
+            // Se o campo projeto for uma string vazia, exibe uma mensagem e não envia a solicitação AJAX
+            alert('É necessário informar um projeto para cadastrar.');
+        }
+        else{
+            $.ajax({
+                type: "POST",
+                url:"/cco_multas_app/cadastro_multas",
+                data: {
+                    csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+                    placa : placa,
+                    numero_auto : numero_auto,
+                    cod_infracao : cod_infracao,
+                    tipo_multa : tipo_multa,
+                    local_auto : local_auto,
+                    projeto : projeto,
+                    data_infracao : data_infracao,
+                    valor_infracao : valor_infracao,
+                    valor_pago : valor_pago,
+                    data_recebimento_infracao : data_recebimento_infracao,
+                    data_pagamento_infracao : data_pagamento_infracao,
+                    status_multa : status_multa,
+                    obs : obs,
+                    nome_condutor : nome_condutor,
+                    cod_cad_multa : cod_cad_multa,
+                },
+                success: function(data){
+                $('#btn_cadastrar_multa').val(data.cod_multa);
+                $('#btn_anexa_pdf').val(data.cod_multa);
+                atualiza_placa_multa();
 
-        $.ajax({
-            type: "POST",
-            url:"/cco_multas_app/cadastro_multas",
-            data: {
-                csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-                placa : placa,
-                numero_auto : numero_auto,
-                cod_infracao : cod_infracao,
-                tipo_multa : tipo_multa,
-                data_recebe_multa_cco : data_recebe_multa_cco,
-                local_auto : local_auto,
-                projeto : projeto,
-                data_infracao : data_infracao,
-                valor_infracao : valor_infracao,
-                valor_pago : valor_pago,
-                data_recebimento_infracao : data_recebimento_infracao,
-                data_pagamento_infracao : data_pagamento_infracao,
-                status_multa : status_multa,
-                obs : obs,
-                nome_condutor : nome_condutor,
-                cod_cad_multa : cod_cad_multa,
-            },
-            success: function(data){
-               $('#btn_cadastrar_multa').val(data.cod_multa);
-               $('#btn_anexa_pdf').val(data.cod_multa);
-               atualiza_placa_multa();
+                // Resetar o formulário
+                    $("#form_cadastro_multas")[0].reset();
+                    // Dar foco ao campo de entrada desejado (por exemplo, o campo "input_nome_condutor")
+                    $("#input_nome_condutor").focus();
 
-               // Resetar o formulário
-                $("#form_cadastro_multas")[0].reset();
-                // Dar foco ao campo de entrada desejado (por exemplo, o campo "input_nome_condutor")
-                $("#input_nome_condutor").focus();
+                    $.gritter.add({
+                        title: "sucesso!",
+                        text: data.msg,
+                        image : '/static/icons/sucess_icon.svg',
+                        sticky: false,
+                        time: new Date().toLocaleTimeString(),
+                    });
+                    
 
-                $.gritter.add({
-                    title: "sucesso!",
-                    text: data.msg,
-                    image : '/static/icons/sucess_icon.svg',
-                    sticky: false,
-                    time: new Date().toLocaleTimeString(),
-                });
-                
-
-            },
-                error: function(error) {
-                $.gritter.add({
-                    title: 'Erro!',
-                    text: "Por gentileza contate o adm.",
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: new Date().toLocaleTimeString(),
-                });
-            }
-        });
+                },
+                    error: function(error) {
+                    $.gritter.add({
+                        title: 'Erro!',
+                        text: "Por gentileza contate o adm.",
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: new Date().toLocaleTimeString(),
+                    });
+                }
+            });
+        }
     }
 
     else if(let_name_btn == 'btn_excluir_anexo'){
@@ -380,7 +381,7 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
                 /* 3 */linha.data_auto,
                 /* 4 */linha.desc_multa,
                 /* 5 */linha.nome_condutor,
-                /* 6 */linha.data_recebe_multa_cco,
+                /* 6 */linha.data_recebe_multa,
                 /* 7 */linha.local_multa,
                 /* 8 */linha.status,
                 /* 9 */`
@@ -403,10 +404,10 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
                     <i class="fa-solid fa-trash-can"></i>
                 </button>
                 `,
-                /* 11 */linha.data_recebe_multa,
-                /* 12 */linha.data_pag_multa,
-                /* 13 */linha.valor_pagar,
-                /* 14 */linha.valor_pago,
+                /* 11 */linha.valor_pagar,
+                /* 12 */linha.valor_pago,
+                /* 13 */linha.data_recebe_multa,
+                /* 14 */linha.data_pag_multa,
                 /* 15 */linha.obs,
                 /* 16 */linha.data_inclusao,
                 /* 17 */linha.cod_multa_antt,
@@ -414,7 +415,6 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
                 /* 19 */let_indice_registro += 1,
                 /* 20 */linha.cod_projeto,
                 /* 21 */linha.cod_tipo_multa,
-
             ])
 
             $('#tab_multas').DataTable({

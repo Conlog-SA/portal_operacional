@@ -23,7 +23,6 @@ class CCO_Sinistro(models.Model):
     acionado_seguro = models.CharField(max_length=3, null=True, blank=True, default='S')
     data_inicio_processo = models.DateField(null=True, blank=True)
     data_fim_processo = models.DateField(null=True, blank=True)
-    data_recebe_multa_cco = models.DateField(null=True, blank=True)
     num_processo = models.CharField(max_length=15, null=True, blank=True)
     tipo_sinistro = models.CharField(null=True, blank=True, max_length=20)
     obs = models.CharField(max_length=500, null=True, blank=True)
