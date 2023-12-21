@@ -177,7 +177,7 @@ class Form_Imp_Contratos_Conta_View(View):
 
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parcela['handle_parc']).first()
                         if obj_parcela == None:
-<<<<<<< HEAD
+
                             val_corrigido = decimal.Decimal(0.00)
                             if parcela['valor_corrigido'] != None:
                                 val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
@@ -186,8 +186,6 @@ class Form_Imp_Contratos_Conta_View(View):
                             if parcela['val_total_pago'] != None:
                                 val_pago = decimal.Decimal(parcela['val_total_pago'])
 
-=======
->>>>>>> master
                             obj_parcela = Parcela_Contrato(
                                 handle_parcela=parcela['handle_parc'],
                                 ap_parcela=parcela['ap_parcela'],
