@@ -6,7 +6,6 @@ from django.core.files.storage import FileSystemStorage
 from apps.cco_multas_app.models import CCO_Multas, CCO_Tipo_Multa, CCO_Anexos
 from apps.usuario_app.models import Usuario, Projeto
 import os
-from datetime import datetime
 
 from proj_portal_operacional.settings import BASE_DIR
 
@@ -51,7 +50,6 @@ class Cadastro_Multas_View(View):
             tipo_multa = request.POST['tipo_multa']
             local_auto = request.POST['local_auto']
             projeto = request.POST['projeto']
-            data_recebe_multa_cco = request.POST['data_recebe_multa_cco']
             data_infracao = request.POST['data_infracao']
             valor_infracao = request.POST['valor_infracao']
             valor_pago = request.POST['valor_pago']
@@ -63,28 +61,10 @@ class Cadastro_Multas_View(View):
             cod_usuario_sessao = request.session['cod_usuario_logado']
             obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
-
-            if data_infracao == '':
-                data_infracao = None
-            else:
-                data_infracao = datetime.strptime(data_infracao, '%Y-%m-%d')
-
-            if data_recebimento_infracao == '':
-                data_recebimento_infracao = None
-            else:
-                data_recebimento_infracao = datetime.strptime(data_recebimento_infracao, '%Y-%m-%d')
-
-            if data_pagamento_infracao == '':
-                data_pagamento_infracao = None
-            else:
-                data_pagamento_infracao = datetime.strptime(data_pagamento_infracao, '%Y-%m-%d')
-
-            if data_recebe_multa_cco == '':
-                data_recebe_multa_cco = None
-            else:
-                data_recebe_multa_cco = datetime.strptime(data_recebe_multa_cco, '%Y-%m-%d')
-
-
+            if not projeto:
+                projeto = None
+            else :
+                projeto = Projeto.objects.get(pk=projeto)
 
             if cod_cad_multa == '0':
                 multa = CCO_Multas(
@@ -95,7 +75,6 @@ class Cadastro_Multas_View(View):
                     cod_infracao=cod_infracao,
                     data_recebe_multa=data_recebimento_infracao,
                     local_multa=local_auto,
-                    data_recebe_multa_cco=data_recebe_multa_cco,
                     cod_projeto=Projeto.objects.get(pk=projeto),
                     cod_tipo_multa=CCO_Tipo_Multa.objects.get(pk=tipo_multa),
                     cod_usu=obj_usuario_sessao,
@@ -118,7 +97,6 @@ class Cadastro_Multas_View(View):
                 obj_cadastro_multa.data_recebe_multa = data_recebimento_infracao
                 obj_cadastro_multa.cod_infracao = cod_infracao
                 obj_cadastro_multa.local_multa = local_auto
-                obj_cadastro_multa.data_recebe_multa_cco = data_recebe_multa_cco
                 obj_cadastro_multa.cod_projeto = Projeto.objects.get(pk=projeto)
                 obj_cadastro_multa.cod_tipo_multa = CCO_Tipo_Multa.objects.get(pk=tipo_multa)
                 obj_cadastro_multa.cod_usu = obj_usuario_sessao
@@ -154,24 +132,23 @@ class Pesquisa_Multa_View(View):
             for registro in queryMultasPlaca:
                 dadosregistro = {
                     'cod_multa_antt' : registro.cod_multa_antt, #codigo da multa código transito
-                    'placa_multa' : registro.placa_multa, #placa do cavalo[0]
-                    'num_auto_infracao': registro.num_auto_infracao, #Número do Auto de infração[1]
-                    'desc_projeto' : registro.cod_projeto.desc_proj, # Descrição do Projeto[2]
-                    'data_auto' : registro.data_auto, #Data que levou a multa[3]
-                    'data_recebe_multa_cco': registro.data_recebe_multa_cco,#[4]
-                    'data_recebe_multa': registro.data_recebe_multa,  # data CCO Recebeu Multa[5]
-                    'data_pag_multa': registro.data_pag_multa,  # data Pagamento da Multa[6]
-                    'desc_multa' : registro.cod_tipo_multa.desc_multa, #Descrição Tipo de multa[7]
-                    'nome_condutor' : registro.nome_condutor, #Nome Condutor[8]
-                    'local_multa' : registro.local_multa, #local da multa[9]
-                    'status': registro.status, #Status do processo[10]
-                    'obs' : registro.obs, #Observação[11]
-                    'valor_pagar' : registro.valor_pagar, #Valor a pagar da Multa[12]
-                    'valor_pago' : registro.valor_pago, #Valor pago da multa[13]
-                    'data_inclusao' : registro.data_inclusao, #data inclusão CCO[14]
-                    'cod_infracao' : registro.cod_infracao, #código da infração[15]
-                    'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto[16]
-                    'cod_tipo_multa' : registro.cod_tipo_multa.cod_tipo_multa# Envia o Código do tipo de multa[17]
+                    'placa_multa' : registro.placa_multa, #placa do cavalo
+                    'num_auto_infracao': registro.num_auto_infracao, #Número do Auto de infração
+                    'desc_projeto' : registro.cod_projeto.desc_proj, # Descrição do Projeto
+                    'data_auto' : registro.data_auto, #Data que levou a multa
+                    'desc_multa' : registro.cod_tipo_multa.desc_multa, #Descrição Tipo de multa
+                    'nome_condutor' : registro.nome_condutor, #Nome Condutor
+                    'local_multa' : registro.local_multa, #local da multa
+                    'status': registro.status, #Status do processo
+                    'obs' : registro.obs, #Observação
+                    'valor_pagar' : registro.valor_pagar, #Valor a pagar da Multa
+                    'valor_pago' : registro.valor_pago, #Valor pago da multa
+                    'data_recebe_multa' : registro.data_recebe_multa, #data CCO Recebeu Multa
+                    'data_pag_multa' : registro.data_pag_multa, #data Pagamento da Multa
+                    'data_inclusao' : registro.data_inclusao, #data inclusão CCO
+                    'cod_infracao' : registro.cod_infracao, #código da infração
+                    'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto
+                    'cod_tipo_multa' : registro.cod_tipo_multa.cod_tipo_multa# Envia o Código do tipo de multa
                 }
                 linhasTabela.append(dadosregistro)
                 
@@ -181,25 +158,23 @@ class Pesquisa_Multa_View(View):
             for registro in queryStatusPlaca:
                 dadosregistro = {
                     'cod_multa_antt' : registro.cod_multa_antt, #codigo da multa código transito
-                    'placa_multa' : registro.placa_multa, #placa do cavalo[0]
-                    'num_auto_infracao': registro.num_auto_infracao, #Número do Auto de infração[1]
-                    'desc_projeto' : registro.cod_projeto.desc_proj, # Descrição do Projeto[1]
-                    'data_auto' : registro.data_auto, #Data que levou a multa[2]
-                    'data_recebe_multa_cco': registro.data_recebe_multa_cco,#[3]
-                    'data_recebe_multa': registro.data_recebe_multa,  # data CCO Recebeu Multa[4]
-                    'data_pag_multa': registro.data_pag_multa,  # data Pagamento da Multa[5]
-                    'desc_multa' : registro.cod_tipo_multa.desc_multa, #Descrição Tipo de multa[6]
-                    'nome_condutor' : registro.nome_condutor, #Nome Condutor[7]
-                    'local_multa' : registro.local_multa, #local da multa[8]
-                    'status': registro.status, #Status do processo[9]
-                    'obs' : registro.obs, #Observação[10]
+                    'placa_multa' : registro.placa_multa, #placa do cavalo
+                    'num_auto_infracao': registro.num_auto_infracao, #Número do Auto de infração
+                    'desc_projeto' : registro.cod_projeto.desc_proj, # Descrição do Projeto
+                    'data_auto' : registro.data_auto, #Data que levou a multa
+                    'desc_multa' : registro.cod_tipo_multa.desc_multa, #Descrição Tipo de multa
+                    'nome_condutor' : registro.nome_condutor, #Nome Condutor
+                    'local_multa' : registro.local_multa, #local da multa
+                    'status': registro.status, #Status do processo
+                    'obs' : registro.obs, #Observação
                     'valor_pagar' : registro.valor_pagar, #Valor a pagar da Multa
                     'valor_pago' : registro.valor_pago, #Valor pago da multa
+                    'data_recebe_multa' : registro.data_recebe_multa, #data CCO Recebeu Multa
+                    'data_pag_multa' : registro.data_pag_multa, #data Pagamento da Multa
                     'data_inclusao' : registro.data_inclusao, #data inclusão CCO
                     'cod_infracao' : registro.cod_infracao, #código da infração
                     'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto
                     'cod_tipo_multa' : registro.cod_tipo_multa.cod_tipo_multa# Envia o Código do tipo de multa
-
                 }
                 linhasTabela.append(dadosregistro)
 

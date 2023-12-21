@@ -15,17 +15,18 @@ class CCO_Multas(models.Model):
     num_auto_infracao = models.CharField(null=True, blank=True, max_length=20)
     data_auto = models.DateField(null=True, blank=True)
     cod_infracao = models.DecimalField(null=True, blank=True, max_digits=15, decimal_places=2)
+    data_recebe_multa_cco = models.DateField(null=True, blank=True)
     data_recebe_multa = models.DateField(null=True, blank=True)
     data_inclusao = models.DateField(null=False, blank=False, auto_created=True, auto_now=True)
     local_multa = models.CharField(null=True, blank=True, max_length=30)
     cod_tipo_multa = models.ForeignKey(CCO_Tipo_Multa, models.CASCADE, db_column='cod_tipo_multa')
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)
     data_pag_multa = models.DateField(null=True, blank=True)
-    status = models.CharField(null=True, blank=True, max_length=12)
+    status = models.CharField(null=True, blank=True, max_length=30)
     valor_pagar = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)
     valor_pago = models.DecimalField(null=True, blank=True, max_digits=10, decimal_places=2)
     nome_condutor = models.CharField(null=True, blank=True, max_length=30)
-    obs = models.CharField(null=True, blank=True, max_length=100)
+    obs = models.CharField(null=True, blank=True, max_length=500)
     class Meta():
         managed = True
         db_table = 'ger_cco_multas'
