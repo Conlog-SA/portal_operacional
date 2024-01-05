@@ -491,6 +491,14 @@
                                                name="dt_fim_processo_sinistro_carga">
                                     </label>
                                 </div>
+                                <div class="d-flex flex-column w-100 cl_div_data_fim_processo">
+                                    <label class="label-padrao">
+                                        Data de Fim do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_fim_processo_sinistro_carga"
+                                               name="dt_fim_processo_sinistro_carga">
+                                    </label>
+                                </div>
                             </div>
                             <div style="text-align:left; color: #f46424;">
                                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -624,11 +632,11 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-between w-100 md-5">
                                 <div class="d-flex flex-column w-100 margin-divs">
-                                    <label class="label-padrao">
-                                        Data ocorrência
+                                    <label class="label-padrao" >
+                                        Data ocorrência *
                                         <input type="date" class="form-control"
                                                id ="dt_ocorrencia_sinistro_carga_eqp"
-                                               name ="dt_ocorrencia_sinistro_carga_eqp">
+                                               name ="dt_ocorrencia_sinistro_carga_eqp" required>
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column w-100 margin-divs">
@@ -795,7 +803,8 @@
                                         <input type="number" class="form-control"
                                                id="value_prejuizo_eqp"
                                                name ="value_prejuizo_eqp"
-                                               value ="0.00">
+                                               value ="0.00"
+                                               step ="0.01">
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column w-100 margin-divs">
@@ -830,7 +839,7 @@
                                                 data-live-search="true" title="Tipo de acionamento">
                                             <option value="A">Administrativamente</option>
                                             <option value="J">Judicialmente</option>
-                                            <option value="L">Locado ra</option>
+                                            <option value="L">Locado</option>
                                             <option value="T">Terceiro</option>
                                             <option value="N">Não acionado</option>
                                             <option value="TI">Terceiro Invadiu</option>
@@ -876,6 +885,20 @@
                                     </label>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between w-50 md-1">
+                                <label class="label-padrao">
+                                    Status do Processo
+                                    <select class="selectpicker form-control"
+                                            id="status_processo_eqp"
+                                            name="status_processo_eqp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Status Processo">
+                                        <option value="A">Aberto</option>
+                                        <option value="T">Em tratativa</option>
+                                        <option value="F">Finalizado</option>
+                                    </select>
+                                </label>
+                            </div>
                             <div style="text-align:left; color: #f46424;">
                                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
                             </div>
@@ -886,7 +909,7 @@
                                         <textarea class="form-control"
                                                   id="observacoes_finais_eqp"
                                                   name="observacoes_finais_eqp"
-                                                  autocomplete="off"
+                                                  autocomplete="on"
                                                   rows="5"
                                                   cols="120"
                                                   style="height:auto;"></textarea>
