@@ -76,14 +76,14 @@
                      <div class="form-group col-sm-2"  style="padding-right:0px">
                         <select class="selectpicker form-control" id="select_num_infracao"
                         name="select_num_infracao" style="margin-bottom:12px" data-live-search="true" title="Numero Infração">
-                           {% for infracao in lista_infracoes %}
+                           {% for infracao in lista_infracao %}
                            <option value="{{infracao.num_auto_infracao}}">
                               {{infracao.num_auto_infracao}}
                            {% endfor %}
                         </select>
                      </div>
                      <div class="form-group col-sm-2 d-flex justify-content-start" >
-                        <button class="btn btn-primary btn-form" type="button" name="btn_pesq_infracao" id="btn_pesq_infracao">
+                        <button class="btn btn-primary btn-form" type="button" name="btn_pesq_placa" id="btn_pesq_placa">
                            <i class="fa-solid fa-magnifying-glass"></i>
                            Pesquisar
                         </button>

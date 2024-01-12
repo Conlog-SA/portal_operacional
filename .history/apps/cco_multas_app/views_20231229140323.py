@@ -206,9 +206,10 @@ class Pesquisa_Multa_View(View):
                 linhasTabela.append(dadosregistro)
 
         elif tipo_pesquisa == 'numero_autuacao':
-            num_infracao_selecionada = request.GET['infracao_selecionada']
+            num_infracao_selecionada = request.GET['numero_autuacao']
             queryNumAutuacao = CCO_Multas.objects.filter(num_auto_infracao = num_infracao_selecionada)
             for registro in queryNumAutuacao :
+                  
                 dadosregistro = {
                   'cod_multa_antt' : registro.cod_multa_antt, #codigo da multa código transito
                     'placa_multa' : registro.placa_multa, #placa do cavalo[0]

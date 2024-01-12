@@ -205,33 +205,6 @@ class Pesquisa_Multa_View(View):
                 }
                 linhasTabela.append(dadosregistro)
 
-        elif tipo_pesquisa == 'numero_autuacao':
-            num_infracao_selecionada = request.GET['infracao_selecionada']
-            queryNumAutuacao = CCO_Multas.objects.filter(num_auto_infracao = num_infracao_selecionada)
-            for registro in queryNumAutuacao :
-                dadosregistro = {
-                  'cod_multa_antt' : registro.cod_multa_antt, #codigo da multa código transito
-                    'placa_multa' : registro.placa_multa, #placa do cavalo[0]
-                    'num_auto_infracao': registro.num_auto_infracao, #Número do Auto de infração[1]
-                    'desc_projeto' : registro.cod_projeto.desc_proj, # Descrição do Projeto[1]
-                    'data_auto' : registro.data_auto, #Data que levou a multa[2]
-                    'data_recebe_multa_cco': registro.data_recebe_multa_cco,#[3]
-                    'data_recebe_multa': registro.data_recebe_multa,  # data CCO Recebeu Multa[4]
-                    'data_pag_multa': registro.data_pag_multa,  # data Pagamento da Multa[5]
-                    'desc_multa' : registro.cod_tipo_multa.desc_multa, #Descrição Tipo de multa[6]
-                    'nome_condutor' : registro.nome_condutor, #Nome Condutor[7]
-                    'local_multa' : registro.local_multa, #local da multa[8]
-                    'status': registro.status, #Status do processo[9]
-                    'obs' : registro.obs, #Observação[10]
-                    'valor_pagar' : registro.valor_pagar, #Valor a pagar da Multa
-                    'valor_pago' : registro.valor_pago, #Valor pago da multa
-                    'data_inclusao' : registro.data_inclusao, #data inclusão CCO
-                    'cod_infracao' : registro.cod_infracao, #código da infração
-                    'cod_projeto' : registro.cod_projeto.cod_projeto, # Envia o Código do projeto
-                    'cod_tipo_multa' : registro.cod_tipo_multa.cod_tipo_multa# Envia o Código do tipo de multa
-                }
-                linhasTabela.append(dadosregistro)
-
         data = dict()
         data = {
             'linhasTabela' : linhasTabela

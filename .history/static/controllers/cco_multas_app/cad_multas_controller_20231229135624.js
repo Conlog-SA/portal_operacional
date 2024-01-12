@@ -15,8 +15,8 @@ $(document).on('click','button', function(){
         atualiza_tab_pesquisa_multa('status')
     }
 
-    else if(let_name_btn == 'btn_pesq_infracao'){
-        atualiza_tab_pesquisa_multa('numero_autuacao')
+    else if(let_name_btn == 'btn_pesquisa_num_infracao'){
+        atualiza_tab_pesquisa_multa('num_infracao')
     }
 
     else if (let_name_btn == 'btn_anexa_pdf'){

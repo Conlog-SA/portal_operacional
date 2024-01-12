@@ -15,8 +15,8 @@ $(document).on('click','button', function(){
         atualiza_tab_pesquisa_multa('status')
     }
 
-    else if(let_name_btn == 'btn_pesq_infracao'){
-        atualiza_tab_pesquisa_multa('numero_autuacao')
+    else if(let_name_btn == 'btn_pesquisa_num_infracao'){
+        atualiza_tab_pesquisa_multa('num_infracao')
     }
 
     else if (let_name_btn == 'btn_anexa_pdf'){
@@ -370,11 +370,11 @@ function atualiza_tab_pesquisa_multa (tipo_pesquisa){
        }
         
     }
-    else if(tipo_pesquisa == 'numero_autuacao'){
-        infracao_selecionada = $("#select_num_infracao").val();
+    else if(tipo_pesquisa == 'num_infracao'){
+        num_infracao = $("#select_num_infracao").val();
         dados_parametros = {
             csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-            infracao_selecionada : infracao_selecionada,
+            num_infracao : num_infracao,
             tipo_pesquisa_multa : tipo_pesquisa
         }
     }

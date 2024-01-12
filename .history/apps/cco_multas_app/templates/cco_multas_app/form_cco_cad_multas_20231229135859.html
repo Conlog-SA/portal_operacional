@@ -76,7 +76,7 @@
                      <div class="form-group col-sm-2"  style="padding-right:0px">
                         <select class="selectpicker form-control" id="select_num_infracao"
                         name="select_num_infracao" style="margin-bottom:12px" data-live-search="true" title="Numero Infração">
-                           {% for infracao in lista_infracoes %}
+                           {% for infracao in lista_infracao %}
                            <option value="{{infracao.num_auto_infracao}}">
                               {{infracao.num_auto_infracao}}
                            {% endfor %}
