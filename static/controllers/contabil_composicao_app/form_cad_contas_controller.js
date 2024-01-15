@@ -1746,6 +1746,15 @@ $(document).on('change','input', function(){
         });
     }
     else if ( let_nome_inp == "dt_conciliacao_comp_benner" ){
+
+        $("#rd_modelo_conta_conc_comp_benner_1").prop("checked", false);
+        $("#rd_modelo_conta_conc_comp_benner_2").prop("checked", false);
+        $("#rd_modelo_conta_conc_comp_benner_3").prop("checked", false);
+        $("#cb_contas_conciliacao_comp_benner option").remove();
+        $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
+        $("#div_tab_conciliacao_composicao_benner_aud").empty();
+
+        /*
         let let_competencia = $("#dt_conciliacao_comp_benner").val()
         let let_cod_modelo_conta = 0
         if ( $("#rd_modelo_conta_conc_comp_benner_1").is("checked") == true ) {
@@ -1788,7 +1797,7 @@ $(document).on('change','input', function(){
                 });
           }
         });
-
+        */
 
 
 

@@ -631,7 +631,7 @@ class ConexaoBancoBenner():
                                   AND	com_ant.filial = compra.filial
                                   AND	com_ant.HANDLE < compra.HANDLE
                                   AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                                  AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3820,3831)
+                                  AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
                                   AND	prod_ant.tipo = 1
                                   AND	com_ant.status = 4                                     	
                                 ORDER	BY item_ant.HANDLE DESC
@@ -650,7 +650,7 @@ class ConexaoBancoBenner():
                                                                  AND	com_ant.filial = compra.filial
                                                                  AND	com_ant.HANDLE < compra.HANDLE
                                                                  AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                                                                 AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3820,3831)
+                                                                 AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
                                                                  AND	prod_ant.tipo = 1
                                                                  AND	com_ant.status = 4                                     	
                                                                ORDER	BY item_ant.HANDLE DESC
@@ -670,7 +670,7 @@ class ConexaoBancoBenner():
                              AND	com_ant.filial = compra.filial
                              AND	com_ant.HANDLE < compra.HANDLE
                              AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                             AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3820,3831)
+                             AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
                              AND	prod_ant.tipo = 1
                              AND	com_ant.status = 4                                     	
                            ORDER	BY item_ant.HANDLE DESC
@@ -693,8 +693,8 @@ class ConexaoBancoBenner():
             LEFT    JOIN CM_UNIDADESMEDIDA un_med (NOLOCK)
               ON    (un_med.HANDLE = itens_compra.UNIDADE)
            WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
-                    /* Zerbone(1600), Spall(2529), Frnaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616) */
-             AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3820,3831)
+                    /* Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344) */
+             AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344, 3820,3831)
              AND	prod_itens_compra.tipo = 1
              AND	compra.status = 4 /* status 4 : compra encerrada */
              AND    compra.filial = {handle_filial}
@@ -833,8 +833,8 @@ class ConexaoBancoBenner():
                LEFT	JOIN K_TIPODECOMPRA tipo_compra
                  ON	(tipo_compra.HANDLE = req_pai.K_TIPODECOMPRA) 
               WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
-              /* Zerbone(1600), Spall(2529), Frnaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616) */
-                AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3820,3831)               
+              /* Zerbone(1600), Spall(2529), Frnaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344)  */
+                AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344, 3820,3831)               
                 AND	prod_itens_compra.tipo = 1
                 AND	compra.status = 4 /* status 4 : compra encerrada */
                 AND compra.filial = {handle_filial}
@@ -1119,8 +1119,8 @@ class ConexaoBancoBenner():
                       "  AND pd_st_atend.HANDLEREGISTROORIGEM = req_pai.HANDLE " +
                       "  AND pd_st_atend.nomestatus in ('Atendida', 'Confirmada')) " +
                       "    AND	ordem_compra.datadaordem BETWEEN '"+param_data_inicial+" 00:00' AND '"+param_data_final+" 23:59' " +
-                      #"    //Respectivo : Eduardo, Spall Fernanda Anibal, Rafael Lemos, Marcionei Finger, Franciele Rodrigues, Valquiria Silva, Kathleen Goedert " +
-                      "    AND	comprador.handle in (2529, 2616, 1651, 2614, 2933, 1484, 2646) " +
+                      #"    //Respectivo : Eduardo Spall, Fernanda Anibal, Rafael Lemos, Marcionei Finger, Franciele Rodrigues, Valquiria Silva, Kathleen Goedert, Larissa(3344)  " +
+                      "    AND	comprador.handle in (2529, 2616, 1651, 2614, 2933, 1484, 2646, 3344) " +
                       "  ORDER	BY ordem_compra.datadaordem")
         cursor.execute(sql_string)
         requisicoes_cursor = cursor.fetchall()

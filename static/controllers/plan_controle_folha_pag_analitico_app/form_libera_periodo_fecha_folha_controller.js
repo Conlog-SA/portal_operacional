@@ -147,9 +147,9 @@ $(document).on('click', 'button', function(){
                             <div class="container">
                                 <input type="checkbox" class="checkbox"
                                        name="rbn_ativa_periodo"
-                                       id="rbn_ativa_periodo_{{periodo.ano_competencia_periodo}}_{{periodo.mes_competencia_periodo}}_{{periodo.periodo}}"
+                                       id="rbn_ativa_periodo_${comp.ano_competencia_periodo}_${comp.mes_competencia_periodo}"
                                        ${ comp.acao }}>
-                                <label class="switch" for="rbn_ativa_periodo_{{periodo.ano_competencia_periodo}}_{{periodo.mes_competencia_periodo}}_{{periodo.periodo}}">
+                                <label class="switch" for="rbn_ativa_periodo_${comp.ano_competencia_periodo}_${comp.mes_competencia_periodo}">
                                     <span class="slider"></span>
                                 </label>
                             </div>

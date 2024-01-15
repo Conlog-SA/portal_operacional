@@ -289,9 +289,9 @@ class Docs_Pac_Tributos_M1_View(models.Model):
     cod_pac_doc_tributos = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_emissao = models.DateField(null=True, blank=True)
     data_entrada = models.DateField(null=True, blank=True)
-    nome_fornecedor = models.CharField(max_length=70)
-    num_doc = models.CharField(max_length=15)
-    num_doc_contabil = models.CharField(max_length=15)
+    nome_fornecedor = models.CharField(max_length=70, null=True, blank=True)
+    num_doc = models.CharField(max_length=15, null=True, blank=True)
+    num_doc_contabil = models.CharField(max_length=15, null=True, blank=True)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
@@ -386,11 +386,21 @@ class Docs_Pac_Intercompany_M1_View(models.Model):
 
 
 
-
-
-
-
-
-
-
-
+class Docs_Demais_Contas_M1_View(models.Model):
+    cod_pac_doc_outros = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_entrada = models.DateField(null=True, blank=True)
+    data_lancto = models.DateField(null=True, blank=True)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    num_doc = models.CharField(max_length=15)
+    num_doc_contabil = models.CharField(max_length=15)
+    val_rel = models.DecimalField(max_digits=12, decimal_places=4)
+    val_razao = models.DecimalField(max_digits=12, decimal_places=4)
+    val_dif = models.DecimalField(max_digits=12, decimal_places=4)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_outros_m1'
