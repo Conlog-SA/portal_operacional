@@ -24,7 +24,7 @@ from apps.contabil_composicao_app.models import Pacote_Conta, Conta, Contrato, P
     Arquivo_Docs_Pac_Contas_Modelo_1, Docs_Pac_Contas_Pagar_Receber_M1_View, Docs_Pac_Estoque_M1_View, \
     Docs_Pac_Folha_Pag_M1_View, Docs_Pac_Contas_Compensacao_M1_View, Docs_Pac_Tributos_M1_View, \
     Docs_Pac_Finac_Disponib_M1_View, Docs_Pac_Intercompany_M1_View, Docs_Pac_Imobilizado_M1_View, \
-    Docs_Pac_Consorcio_Ativo_M1_View
+    Docs_Pac_Consorcio_Ativo_M1_View, Docs_Demais_Contas_M1_View
 from apps.estrut_org_app.models import Empresa, Filial
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -2182,6 +2182,24 @@ class Form_Imp_Arq_Contas_M1_View(View):
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
                 ).save()
+        elif obj_pac_conta.cod_pacote_conta == 14:
+            for index, row in df_conteudo_arqv.iterrows():
+                doc = Docs_Demais_Contas_M1_View(
+                    data_lancto = row['Data Lançto'],
+                    data_entrada = row['Data Entrada'],
+                    num_doc = row['Nº Documento'],
+                    num_doc_contabil = row['Documento Contábil'],
+                    val_rel = row['Valor Relatório'],
+                    val_razao = row['Valor Razsão'],
+                    val_dif = row['Diferença'],
+                    obs = row['Observação'],
+                    historico = row['Histórico'],
+                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
+                                                       cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
+                    cod_arquivo = obj_arqv
+                ).save()
+
         msg = 'Arquivo importado com sucesso'
         '''except Exception as erro:
             obj_arqv.delete()

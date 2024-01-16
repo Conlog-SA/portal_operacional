@@ -58,7 +58,7 @@ urlpatterns = [
          name='pesq_dados_importado_contas_m1'),
     path('retorna_lista_docs_contas_modelo_1', views.Tabela_Doc_Contas_Modelo_1_View.as_view(),
          name='retorna_lista_docs_contas_modelo_1'),
-    path('exclui_arquivo_conta_m_1/<int:pk>/', views.Tabela_Doc_Contas_Modelo_1_View.as_view(),
+    path('exclui_arquivo_conta_m_1/<str:pk>/', views.Tabela_Doc_Contas_Modelo_1_View.as_view(),
          name='exclui_arquivo_conta_m_1'),
     path('acessa_form_auditoria_comp', views.Form_Composicao_Auditoria_View.as_view(),
          name='acessa_form_auditoria_comp'),
