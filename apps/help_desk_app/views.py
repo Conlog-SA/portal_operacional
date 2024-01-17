@@ -1,6 +1,6 @@
 from datetime import datetime
-
-import pyodbc
+import mariadb
+from django.http import JsonResponse
 from django.shortcuts import render
 
 from apps.calendario_app.models import Calendario_Dias
@@ -9,17 +9,15 @@ from apps.ti_tma_app.models import Chamado_Atendido_TMA
 
 class ConexaoHelpDesk():
     def __init__(self):
-        self.__conn = pyodbc.connect(
-            'DRIVER={MySQL };'
-            'SERVER=itjm-srv-250;'
-            'DATABASE=bd_portal_chamados;'
-            'UID=danilo.costa;'
-            'PWD=dap@1104!;'
+        self.__conn = mariadb.connect(
+            user="kaian.almeida",
+            password="knd@7880!",
+            host="172.16.40.250",
+            port=3306,
+            database="bd_portal_chamados",
         )
 
-        '''DRIVER={MySQL ODBC 8.0 ANSI Driver};'''
-
-    def retorna_chamados_atendidos(self):
+    def retorna_chamados_atendidos(self, data_ini_periodo, data_fim_periodo):
         lista_chamados_atendidos = []
 
         cursor = self.__conn.cursor()
@@ -74,8 +72,10 @@ class ConexaoHelpDesk():
                 ON	(hist_status_cancelado.id_chamado = ch.id_chamado
                AND	hist_status_cancelado.id_status in (6))
                
-             WHERE	ch.id_status = 5               
-               AND  ch.id_chamado = 99920766
+             WHERE	ch.id_status = 5
+                    AND ch.data_abertura >= '{data_ini_periodo}'
+                    AND hist_status_atendido.data_status <= '{data_fim_periodo}'
+                    
               GROUP BY ch.id_chamado,
                     usu_abr.usuario,
                     top.descricao,
@@ -86,29 +86,21 @@ class ConexaoHelpDesk():
                     status.descricao;
             '''
         )
+        print(sql_chamados_atendidos)
         cursor.execute(sql_chamados_atendidos)
         chamados_cursor = cursor.fetchall()
-        for row in chamados_cursor:
-
-            data_ini = datetime.strptime(row.data_abertura_ch, '%Y-%m-%d')
-            data_fim = datetime.strptime(row.data_atendido_ch, '%Y-%m-%d')
-            print(f'Data ini: {data_ini}, data fim: {data_fim}')
-            data_prevista_sql = (Calendario_Dias.objects
-                                 .filter(data_dia__range=[data_ini,data_fim], classificacao_dia='U'))
-            for data in data_prevista_sql:
-                print(data)
-            '''obj_chamado = Chamado_Atendido_TMA(
-                row.id_ch,
-                row.login_usu_abr_ch,
-                row.desc_top_ch,
-                row.desc_sub_topico_ch,
-                row.data_abertura_ch,
-                row.data_atendido_ch,
-                row.sla_horas_ch,
-                data_sla = data_prevista_sql,
-                login_atendente = row.login_atend_ch
-            )'''
-
-        return None
+        for chamado in chamados_cursor:
+            reg = {
+                'num_chamado' : chamado[0],
+                'login_usuario': chamado[1],
+                'desc_topico': chamado[2],
+                'desc_subtopico': chamado[3],
+                'data_abertura': chamado[4],
+                'data_fechamento': chamado[5],
+                'sla_hora': chamado[6],
+                'login_atendente': chamado[8]
+            }
+            lista_chamados_atendidos.append(reg)
+        return lista_chamados_atendidos
 
 

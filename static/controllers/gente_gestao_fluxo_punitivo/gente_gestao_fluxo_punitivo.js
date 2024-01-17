@@ -433,7 +433,6 @@ function atualizarTabela(filial,competencia) {
         },
         success: function(data) {
             console.log(data.linhas_tabela)
-
             let let_linhas_fluxo_punitivo = [];
             data.linhas_tabela.forEach( linha => {
                 let let_linha = [
@@ -443,6 +442,7 @@ function atualizarTabela(filial,competencia) {
                     linha.data_ocorrencia,
                     linha.motivo_juridico,
                     linha.motivo_especifico,
+<<<<<<< HEAD
                     linha.ativo === 'N' ? '<i class="fa-solid fa-times icon-desativado"></i>' : 
                     `
                     <button type='button'
@@ -460,6 +460,9 @@ function atualizarTabela(filial,competencia) {
                     `,
                     linha.cod_punicao,
                     linha.obs_punicao
+=======
+                    'Excluir'
+>>>>>>> 65b058713f9fea93a1e3d6bdb85195a90d6fb4ba
                 ];
 
                 let_linha.push(linha.ativo === 'N' ? 'linha-desativada' : '');
@@ -481,7 +484,11 @@ function atualizarTabela(filial,competencia) {
                     { title: "Data Ocorrência" },
                     { title: "Motivo Jurídico" },
                     { title: "Motivo Específico" },
+<<<<<<< HEAD
                     { title: "Desativa Punição"}
+=======
+                    { title: "Remover" },
+>>>>>>> 65b058713f9fea93a1e3d6bdb85195a90d6fb4ba
                 ],
                 "columnDefs": [
                     {"className": "dt-left", "targets": [0, 1, 2, 3, 4, 5]}, // Aplica classe text-left a todas as colunas

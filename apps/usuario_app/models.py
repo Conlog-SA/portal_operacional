@@ -19,7 +19,6 @@ class Usuario(models.Model):
         managed = True
         db_table = 'ger_usuarios'
 
-
 class Usu_Menu(models.Model):
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
     cod_menu = models.ForeignKey(Menu, models.DO_NOTHING, db_column='cod_menu')
@@ -28,7 +27,6 @@ class Usu_Menu(models.Model):
         managed = True
         db_table = 'ger_usu_menu'
         unique_together = (('cod_usu', 'cod_menu'))
-
 
 class Proj_Usu(models.Model):
     cod_proj_usu = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)

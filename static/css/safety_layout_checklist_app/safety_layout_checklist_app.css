@@ -26,3 +26,22 @@ label{
 .w-95{
     width: 95%;
 }
+
+.sortable{
+    width:30%;
+    padding:0px;
+    margin-left:200px;
+}
+
+.agrupador_li_sortable{
+    width: fit-content;
+}
+
+.item_li_sortable{
+    margin-left:40px;
+    width: fit-content;
+    border-style:ridge;
+    border-color:white;
+    display:flex;
+    flex-direction:column;
+}
