@@ -392,7 +392,8 @@ $(document).on('click','button', function(){
                             dados.registros_tab_pagamentos_terc[i].data.split('-')[0];
 
                         var registro_pag = [
-                            varDataFormatada,
+                            //varDataFormatada,
+                            dados.registros_tab_pagamentos_terc[i].data,
                             dados.registros_tab_pagamentos_terc[i].mapa,
                             dados.registros_tab_pagamentos_terc[i].placa,
                             dados.registros_tab_pagamentos_terc[i].val_frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),

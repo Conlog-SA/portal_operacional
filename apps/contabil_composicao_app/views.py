@@ -1995,6 +1995,8 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 lista_registros_arqv = Docs_Pac_Imobilizado_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 13:
                 lista_registros_arqv = Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+            elif obj_pac_conta.cod_pacote_conta == 14:
+                lista_registros_arqv = Docs_Demais_Contas_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
             for reg in lista_registros_arqv:
                 reg.delete()
 
@@ -2056,8 +2058,12 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 5:
             for index, row in df_conteudo_arqv.iterrows():
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = row['Data Lançto']
+
                 doc = Docs_Pac_Folha_Pag_M1_View(
-                    data_lancto=row['Data Lançto'],
+                    data_lancto=data_lancto,
                     matricula = row['Matrícula'],
                     historico = row['Histórico'],
                     num_doc = row['Nº Documento'],
@@ -2073,9 +2079,17 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 6:
             for index, row in df_conteudo_arqv.iterrows():
+                data_emissao = None
+                if row['Data Emissão'] != '':
+                    data_emissao = row['Data Emissão']
+
+                data_entrada = None
+                if row['Data Entrada'] != '':
+                    data_entrada = row['Data Entrada']
+
                 doc = Docs_Pac_Contas_Compensacao_M1_View(
-                    data_emissao = row['Data Emissão'],
-                    data_entrada = row['Data Entrada'],
+                    data_emissao = data_emissao,
+                    data_entrada = data_entrada,
                     cnpj = row['CNPJ'],
                     nome_fornecedor = row['Nome Fornecedor'],
                     num_doc = row['Nº Documento'],
@@ -2118,9 +2132,13 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 9:
             for index, row in df_conteudo_arqv.iterrows():
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = row['Data Lançto']
+
                 doc = Docs_Pac_Finac_Disponib_M1_View(
                     num_doc = row['Nº Documento'],
-                    data_lancto = row['Data Lançto'],
+                    data_lancto = data_lancto,
                     val_rel = row['Valor Relatório'],
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
@@ -2133,9 +2151,13 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 10:
             for index, row in df_conteudo_arqv.iterrows():
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = row['Data Lançto']
+
                 doc = Docs_Pac_Intercompany_M1_View(
                     num_doc=row['Nº Documento'],
-                    data_lancto=row['Data Lançto'],
+                    data_lancto=data_lancto,
                     val_rel=row['Valor Relatório'],
                     val_razao=row['Valor Razão'],
                     val_dif=row['Diferença'],
@@ -2148,8 +2170,12 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 11:
             for index, row in df_conteudo_arqv.iterrows():
+                data_entrada = None
+                if row['Data Entrada'] != '':
+                    data_entrada = row['Data Entrada']
+
                 doc = Docs_Pac_Imobilizado_M1_View(
-                    data_entrada=row['Data Entrada'],
+                    data_entrada=data_entrada,
                     plaqueta = row['Plaqueta'],
                     desc_imobilizado = row['Descrição Imobilizado'],
                     val_aquisicao = row['Valor aquisição'],
@@ -2169,10 +2195,14 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 13:
             for index, row in df_conteudo_arqv.iterrows():
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = row['Data Lançto']
+
                 doc = Docs_Pac_Consorcio_Ativo_M1_View(
                     historico = row['Histórico'],
                     num_doc = row['Nº Documento'],
-                    data_lancto = row['Data Lançto'],
+                    data_lancto = data_lancto,
                     val_rel = row['Valor Relatório'],
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
@@ -2184,13 +2214,21 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 ).save()
         elif obj_pac_conta.cod_pacote_conta == 14:
             for index, row in df_conteudo_arqv.iterrows():
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = row['Data Lançto']
+
+                data_entrada = None
+                if row['Data Entrada'] != '':
+                    data_entrada = row['Data Entrada']
+
                 doc = Docs_Demais_Contas_M1_View(
-                    data_lancto = row['Data Lançto'],
-                    data_entrada = row['Data Entrada'],
+                    data_lancto = data_lancto,
+                    data_entrada = data_entrada,
                     num_doc = row['Nº Documento'],
                     num_doc_contabil = row['Documento Contábil'],
                     val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razsão'],
+                    val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
                     historico = row['Histórico'],
