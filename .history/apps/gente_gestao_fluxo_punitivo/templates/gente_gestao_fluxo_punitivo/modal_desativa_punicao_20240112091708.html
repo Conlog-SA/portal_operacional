@@ -1,0 +1,40 @@
+{% load static %}
+
+<div id="modal_desativa_punicao" name="modal_desativa_punicao" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9 align="left" id=>
+          <span class="text-white">
+            <i class="fa-solid fa-gears"></i>
+            <span>Por que está Cancelando a Punição?</span>
+        </div>
+
+        <div class="col-md-3 align="right">
+          <button type="button" name="btn_fecha_modal_desativa_fluxo" id="btn_fecha_modal_desativa_fluxo" class="btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="input-group input-group-sm mb-3">
+          <span class="input-group-text" id="inputGroup-sizing-sm">Descrição</span>
+          <input type="text" id="input_desc_desativacao" class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm">
+        </div>
+
+        <button type='button' id="btn_cancela_modal_desativa_fluxo" name="btn_cancela_modal_desativa_fluxo" class="btn btn-primary btn-rounded fluxoPunitivo__botao" >
+          <i class="fa-solid fa-xmark"></i>
+          <span>Cancelar</span>
+        </button>
+        <button type='button' id="btn_modal_cria_novo_desativacao" name="btn_modal_cria_novo_desativacao" class="btn btn-primary btn-rounded fluxoPunitivo__botao" >
+          <i class="fa-solid fa-check"></i>
+          <span>Cadastrar</span>
+        </button>
+
+      </div>
+
+    </div>
+  </div>
+</div>

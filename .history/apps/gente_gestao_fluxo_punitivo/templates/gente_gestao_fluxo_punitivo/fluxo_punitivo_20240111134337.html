@@ -1,0 +1,273 @@
+{% load static %}
+
+
+{% block link_static_css %}
+    <link type="text/css" href="{% static 'libs/bootstrap_4/css/bootstrap.min.css' %}" rel="stylesheet"
+    xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+    xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/gente_gestao_fluxo_punitivo/fluxo_punitivo.css' %}" />
+
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100" style="margin-right: 0px; width:100%;">
+    <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px; padding-left:0px;">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-face-frown fa-2xl" style="font-size:50px; margin-left:15px; margin-right:15px; color:#cf6a15;"></i>
+            <h1 class="titlePadraoMenu">Fluxo Punitivo</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+    <div class="containerApp">
+        <div class="form-group cl_div_tabela_principal_pagina" style="padding-top:0px; padding-left:0px">
+            <div class="col-md-12 h-100"style="padding-left: 5px; padding-right: 5px;">
+                <nav class="nav nav-tabs" id="myTab" role="tablist" style="font-size:15px;">
+                    <button class="nav-link active" id="a_tab_cadastrar_ocorrencia" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_cadastrar_ocorrencia" type="button" role="tab"
+                                aria-controls="div_tab_cadastrar_ocorrencia" aria-selected="true"
+                                style="border-radius:10px 10px 0 0;" >
+                            <i class="fa-regular fa-square-plus" style="color: #f46424;"></i>
+                        Cadastrar Ocorrência
+                    </button>
+                    <button class="nav-link" id="a_tab_editar_ocorrencia" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_editar_ocorrencia" type="button" role="tab"
+                            aria-controls="div_tab_editar_ocorrencia" aria-selected="true"
+                            style="border-radius:10px 10px 0 0;" >
+                        <i class="fa-solid fa-file-invoice-dollar" style="color: #f46424;"></i>
+                        Dados da conta
+                    </button>
+                </nav>
+            </div>
+            <div class="tab-content" style="border-radius:0 10px 10px 10px;">
+                <div class="tab-pane active" id="div_tab_cadastrar_ocorrencia" name="div_tab_cadastrar_ocorrencia"
+                     role="tabpanel" aria-labelledby="a_tab_cadastrar_ocorrencia" style="margin-left:10px;">
+                    <form class="d-flex justify-content-between align-items-between flex-wrap w-100" id="form_cadastra_fluxo_punitivo" style="font-size:13px;">
+                        <div class="d-flex align-items-center justify-content-between w-100">
+                            <div class="d-flex flex-column w-60">
+                                <label for="geg_select_filial" class="labelBotoes">Selecione a filial:</label>
+                                <select class="selectpicker form-control" required id="geg_select_filial"
+                                        name="geg_select_filial"  data-live-search="true" title="Selecione a filial">
+                                    {% for filial in lista_obj_filiais %}
+                                    <option value="{{ filial.cod_filial }}">{{ filial.desc_filial }} ({{filial.cod_empresa.desc_empresa}}) </option>
+                                    {% endfor %}
+                                </select>
+                
+                                <label for="geg_select_colab" class="labelBotoes mt-3">Selecione o colaborador:</label>
+                                <select class="selectpicker form-control" required id="geg_select_colab" name="geg_select_colab"  data-live-search="true" title="Selecione o colaborador">
+                                </select>
+                                
+                                <div class="d-flex w-100">
+                                    <div class="w-75 text-left">
+                                        <label for="geg_select_penalidade" class="labelBotoes mt-3">Selecione a penalidade:</label>
+                                        <select class="selectpicker form-control" required id="geg_select_penalidade" name="geg_select_penalidade"  data-live-search="true" title="Selecione a penalidade">
+                                            <option value="N">Notificação</option>
+                                            <option value="AV">Advertência Verbal</option>
+                                            <option value="AE">Advertência Escrita</option>
+                                            <option value="S">Suspensão</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="d-flex flex-column align-items-start justify-content-end ml-2">
+                                        <label for="geg_input_dias_suspensao">Dias de suspensão:</label>
+                                        <input type="number" disabled class="form-control" id="geg_input_dias_suspensao" value="0">
+                                    </div>
+
+                                </div>
+                            </div>
+                
+                            <div class="d-flex flex-column containerCardDadosColab">
+                                <div class="w-100 p-2 d-flex cabecalhoCardDadosColab">
+                                    <div class="p-2">
+                                        <i class="fa-regular fa-address-card text-white"></i>
+                                    </div>
+                                    <div class="p-2 tituloCardDados">
+                                        <span class="labelCardDados">Dados do Colaborador</span>
+                                    </div>
+                                </div>
+                
+                                <div class="w-100 p-3 d-flex justify-content-between align-items-center">
+                                    <div class="w-25 d-flex align-items-center justify-content-center fundoIconCardDados">
+                                        <i class="fa-solid fa-user iconUserCard"></i>
+                                    </div>
+                
+                                    <div class=" w-75 d-flex flex-column containerInfoColab">
+                                        <div class="w-100 text-center">
+                                            <p  id="cardDados_nome" style="margin-bottom: 0 !important"><b>Colaborador</b></p>
+                                            <p class=""><span id="cardDados_cargo" style="font-size: 0.865rem">Cargo</span></p>
+                                        </div>
+                
+                                        <div class="w-100 d-flex">
+                                            <div class="" style="width: 55%; font-size:0.85rem">
+                                                <p class=""><b>CPF:</b> <span id="cardDados_cpf"></span></p>
+                                                <p class=""><b>Admissão:</b> <span id="cardDados_admissao"></span></p>
+                                            </div>
+                
+                                            <div class="" style="width: 45%; font-size:0.85rem">
+                                                <p class=""><b>Matrícula:</b> <span id="cardDados_matricula"></span></p>
+                                                <p class=""><b>Situação:</b> <span id="cardDados_situacao"></span></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="w-100 d-flex" >
+                            <div class="w-50 d-flex flex-column align-items-start justify-content-start" style="">
+                                <label for="geg_select_motivo_juridico" class="labelBotoes mt-3">Selecione o motivo jurídico:</label>
+                                <select class="selectpicker form-control" required id="geg_select_motivo_juridico" name="geg_select_motivo_juridico"  data-live-search="true" title="Selecione o motivo jurídico:">
+                                    {% for motivo_juridico in lista_motivo_juridico %}
+                                    <option value="{{ motivo_juridico.cod_mot_juridico }}">{{ motivo_juridico.desc_motivo_juridico }} </option>
+                                    {% endfor %}
+                                </select>
+
+                                <label for="geg_select_motivo_especifico" class="labelBotoes mt-3">Selecione o motivo específico:</label>
+                                <select class="selectpicker form-control" required id="geg_select_motivo_especifico" name="geg_select_motivo_especifico"  data-live-search="true" title="Selecione o motivo específico:">
+                                    {% for motivo_especifico in lista_motivo_especifico %}
+                                    <option value="{{ motivo_especifico.cod_mot_especifico }}">{{ motivo_especifico.desc_motivo_especifico }} </option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="d-flex justify-content-between w-100 mt-3 mr-3">
+                                    <div class="d-flex flex-column align-items-start justify-content-start w-25">
+                                        <label for="geg_input_data_ocorrencia">Data da ocorrência:</label>
+                                        <input type="date" class="form-control " id="geg_input_data_ocorrencia">
+                                    </div>
+
+                                    <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-75">
+                                        <label for="geg_input_colab_lancamento">Colaborador responsável:</label>
+                                        <input type="text" disabled class="form-control" id="geg_input_colab_lancamento" value="{{obj_usuario_sessao.nome_usu}}">
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-start w-100 mt-3 mr-3">
+                                    <div class="w-25 d-flex justify-content-start align-items-center">
+                                        <div class="loader" id="loader_lancamento">
+                                            <div class="loader-inner">
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                                <div class="loader-block"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="w-75  d-flex justify-content-start align-items-center">
+                                        <button type='submit' id="btn_confirmar_lancamento" name="btn_confirmar_lancamento" class="mr-2 btn btn-primary btn-rounded fluxoPunitivo__botao" >
+                                            <i class="fa-solid fa-check"></i>
+                                            <span>Confirmar</span>
+                                        </button>
+                                        
+                                        <button type='button' id="btn_limpar_lancamento" name="btn_limpar_lancamento" onclick="limpaFormulario()" class=" btn btn-primary btn-rounded fluxoPunitivo__botao" >
+                                            <i class="fa-solid fa-eraser"></i>
+                                            <span>Limpar</span>
+                                        </button>
+                                    </div>
+                                </div> 
+                            </div>
+
+                            <div class="w-50 ml-3 d-flex flex-column align-items-start justify-content-start mt-3">
+                                <div class="form-group w-100" style="color: #000; text-align:left;">
+                                    <label for="text_area_desc_punicao">Descrição da ocorrência:</label>
+                                    <textarea required class="form-control" id="text_area_desc_punicao" rows="3"></textarea>
+                                </div>
+                                <div class="form-group w-100" style="color: #000; text-align:left;">
+                                    <label for="text_area_obs_punicao">Observação:</label>
+                                    <textarea class="form-control" id="text_area_obs_punicao" rows="3"></textarea>
+                                </div>
+
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <div class="d-flex justify-content-end w-100 mr-3">
+                                        <button type='button' id="btn_cad_mot_juridico"
+                                                name="btn_cad_mot_juridico"
+                                                class=" mr-2 btn btn-primary btn-rounded fluxoPunitivo__botao">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Novo motivo jurídico</span>
+                                        </button>
+
+                                        <button type='button' id="btn_cad_motivo_especifico"
+                                                name="btn_motivo_especifico"
+                                                class=" btn btn-primary btn-rounded fluxoPunitivo__botao">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Novo motivo específico</span>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                                {% if obj_usuario_sessao.corporativo == 'N' %}
+                                    <div class="d-flex justify-content-end w-100 mr-3">
+                                        <button type='button' disabled="disabled" id="btn_cad_mot_juridico"
+                                                name="btn_cad_mot_juridico"
+                                                class=" mr-2 btn btn-primary btn-rounded fluxoPunitivo__botao"
+                                                title="Função habilitada somente para o corporativo">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Novo motivo jurídico</span>
+                                        </button>
+
+                                        <button type='button' disabled="disabled" id="btn_cad_motivo_especifico"
+                                                name="btn_motivo_especifico"
+                                                class=" btn btn-primary btn-rounded fluxoPunitivo__botao"
+                                                title="Função habilitada somente para o corporativo">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Novo motivo específico</span>
+                                        </button>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="tab-pane" id="div_tab_editar_ocorrencia" name="div_tab_editar_ocorrencia" role="tabpanel" aria-labelledby="a_tab_editar_ocorrencia">
+                    <form class="d-flex justify-content-end align-items-end flex-wrap w-100" id="form_pesquisa_fluxo_punitivo_tabela">
+                        
+                        <div class="d-flex flex-column mr-1 w-25">
+                            <label for="geg_fluxo_punitivo_pesquisa_filial" class="labelBotoes">Selecione a filial</label>
+                            <select class="selectpicker form-control" required id="geg_fluxo_punitivo_pesquisa_filial" name="geg_fluxo_punitivo_pesquisa_filial"  data-live-search="true" title="Selecione a filial">
+                                {% for filial in lista_obj_filiais %}
+                                <option value="{{ filial.cod_filial }}">{{ filial.desc_filial }} ({{filial.cod_empresa.desc_empresa}}) </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                       
+                        <div class="d-flex flex-column mr-1">
+                            <label for="competencia_pesquisa_fluxo_punitivo" class="labelBotoes">Competência</label>
+                            <input required type="month" required class="form-control " id="competencia_pesquisa_fluxo_punitivo">
+                        </div>
+            
+                        <button type='submit' id="" name="" class="btn btn-primary btn-rounded fluxoPunitivo__botao" style="width:100px; height="80px";>
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <span></span>
+                        </button>
+                        <div class="containerTabela w-100 mt-4">
+                            <table id="table_fluxo_punitivo"  class="display w-100">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Matricula</th>
+                                        <th scope="col">Colaborador</th>
+                                        <th scope="col">Cargo</th>
+                                        <th scope="col">Data Ocorrência</th>
+                                        <th scope="col">Motivo Jurídico</th>
+                                        <th scope="col">Motivo Específico</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="">
+                    
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'gente_gestao_fluxo_punitivo/modal_cad_mot_juridico.html' %}
+{% include 'gente_gestao_fluxo_punitivo/modal_cad_mot_especifico.html' %}
+
+<script src="{% static 'controllers/gente_gestao_fluxo_punitivo/gente_gestao_fluxo_punitivo.js' %}"></script>

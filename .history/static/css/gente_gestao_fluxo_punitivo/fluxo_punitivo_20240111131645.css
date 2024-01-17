@@ -1,0 +1,115 @@
+.labelBotoes{
+    text-align: left !important;
+}
+
+.w-60{
+    width: 60% !important;
+}
+
+.containerCardDadosColab{
+    background-color: whitesmoke;
+    /* border: 1px black solid; */
+    border-radius: 0.5rem;
+    width: 37%;
+
+    -webkit-box-shadow: 10px 10px 5px -3px rgba(0,0,0,0.75);
+    -moz-box-shadow: 10px 10px 5px -3px rgba(0,0,0,0.75);
+    box-shadow: 10px 10px 5px -3px rgba(0,0,0,0.75);
+}
+
+.cabecalhoCardDadosColab{
+    background-color: #0E6595;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.tituloCardDados{
+    width: calc(100% - 18px);
+}
+
+.labelCardDados{
+    font-weight: 600;
+    color: white !important;
+}
+
+.fundoIconCardDados{
+    background-color: rgba(208, 208, 208, 0.671);
+    border-radius: 0.5rem;
+    height: 7rem;
+}
+
+.iconUserCard{
+    color: #094566;
+    font-size: 3.8rem;
+
+}
+
+.containerInfoColab{
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: black;
+    text-align: left !important;
+    font-weight: 400;
+}
+
+.containerInfoColab p{
+    margin-bottom: 0.3rem !important;
+}
+
+.containerInfoColab b{
+    color: #0E6595;
+}
+
+#cardDados_nome, .cardDados_nome{
+    font-size: 1.3rem;
+}
+
+.nav-link{
+    background-color: rgba(208, 208, 208, 0.671) !important;
+    color: black !important;
+    border: 0px solid !important;
+}
+
+.nav-link.active{
+    background-color: var(--cor_cinza_claro2) !important;
+    color: black !important;
+    border: 0px solid !important;
+    box-shadow: 0px 1px 20px -7px rgba(0, 0, 0, 0.3);
+}
+
+.nav-link:hover{
+    background-color: #d0d0d0 !important;
+    color: black;
+    border: 0px solid !important;
+}
+
+.nav-tabs{
+    border: 0px !important;
+} 
+
+.fluxoPunitivo__botao{
+    font-size: 0.925em;
+    border-color: var(--cor_empresa) !important;
+    background-color: var(--cor_empresa) !important;
+    /* height: 40px; */
+}
+
+.fluxoPunitivo__botao:hover{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_hover) !important;
+    background-color: var(--cor_empresa_hover) !important;
+}
+.fluxoPunitivo__botao:active{
+    color: var(--cor_branco) !important;
+    border-color: var(--cor_empresa_active) !important;
+    background-color: var(--cor_empresa_active) !important;
+}
+
+#modal_mot_juridico{
+    background-color: rgba(0,0,0,0.8);
+}
+
+.btn_fecha_modal{
+    border: none !important;
+    background-color: rgba(0,0,0,0);
+}

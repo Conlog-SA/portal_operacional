@@ -1,0 +1,962 @@
+{% load static %}
+
+{% block link_static_css %}
+<link type="text/css" href="{% static 'libs/bootstrap_4/css/bootstrap.min.css' %}" rel="stylesheet"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"
+      xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html"/>
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/cco_sinistro_app/cco_sinistro_app.css' %}" />
+
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100" style="margin-right: 0px; width:100%;">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo" style="padding-bottom:15px; padding-left:0px;">
+        <div class="d-flex align-items-center justify-content-center">
+            <h1 class="titlePadraoMenu">Cadastro de Sinistros</h1>
+            <i class="fa-solid fa-car-burst" style="color: #f46424; border:2 px solid; font-size:2.0rem;"></i>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <div class="form-group cl_div_tabela_principal_pagina" style="padding-top:0px; padding-left:0px">
+            <div class="col-md-12 h-100"style="padding-left: 5px; padding-right: 5px;">
+                <div class="col-md-12 h-100"style="padding-left: 0px; padding-right: 5px;">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active tabs-nav" id="a_tab_pesq_sinistros_cargas" data-toggle="tab"
+                               href="#div_tab_pesq_sinistros_cargas" role="tab"
+                               aria-controls="div_tab_pesq_sinistros_cargas"
+                               aria-selected="false" style="border-radius:0px 10px 0 0;" >
+                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
+                                Pesquisa
+                            </a>
+                        </li>
+                        <li class="nav-item" >
+                            <a class="nav-link tabs-nav" id="a_tab_cad_sinistros_cargas" data-toggle="tab"
+                               href="#div_cadastro_sinistros_cargas" role="tab"
+                               aria-controls="div_tab_cad_sinistros_cargas"
+                               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                Cadastro Carga
+                            </a>
+                        </li>
+                        <li class="nav-item" >
+                            <a class="nav-link tabs-nav" id="a_tab_cad_sinistros_cad_eqp_veic" data-toggle="tab"
+                               href="#div_tab_cad_sinistros_cad_eqp_veic" role="tab"
+                               aria-controls="div_tab_cad_sinistros_cad_eqp_veic"
+                               aria-selected="false"  style="border-radius:10px 10px 0 0;" >
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                Cadastro Equipamentos e Veiculos
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" style="border-radius:0 0 10px 10px;">
+                    <div class="tab-pane active" id="div_tab_pesq_sinistros_cargas" name="div_tab_pesq_sinistros_cargas"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_pesq_sinistros_cargas" style="padding-left:5px;">
+                        <!-- Form pesquisa de sinistros de cargas-->
+                        <div class="row align-items-center" id="frm_cco_pesq_sinistros" name="frm_cco_pesq_sinistros">
+                            <div class="col-sm-2 justify-content-between" style="padding-right: 0px; margin-top: 2rem;">
+                                <select class="selectpicker form-control" id="cb_placa_pesq_sinistros_carga"
+                                        name="cb_placa_pesq_sinistros_carga"
+                                        style="color: #999999; font-size: 20px; height: 54.65px; width:250px;"
+                                        data-live-search="true" title="Placa">
+                                    {% for placa in lista_placas %}
+                                    <option value="{{ placa.placa_veiculo_cavalo }}">{{ placa.placa_veiculo_cavalo }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-auto" style="padding-left: 0px; margin-top: 2rem;">
+                                <button type="button" id="btn_pesq_sinistros_carga" class="btn btn-primary btn-rounded button-primary" name="btn_pesq_sinistros_carga"
+                                        style="margin-left:10px; width:120px;">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Pesquisar
+                                </button>
+                            </div>
+                            <div class="col-sm-auto ml-auto" style="padding-right:10px">
+                                <label for="competencia_selecionada" class="label-padrao">Competência ocorreu Sinistro</label>
+                                <input required type="month" class="form-control " id="competencia_selecionada" style="width: 200px;">
+                            </div>
+                            <div class="col-sm-auto" style="padding-left:0px; margin-top: 2rem;">
+                                <button type='button' id="btn_pesq_sinistros_date" class="btn btn-primary btn-rounded button-primary" name="btn_pesq_sinistros_date"
+                                        style="width: 150px;">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    Pesquisar
+                                </button>
+                            </div>
+                        </div>
+                        <!---Tabela pesquisa Sinistros--->
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <input type="hidden" id="hd_tipo_pesquisa_sinistro" name="hd_tipo_pesquisa_sinistro">
+                                <table id="table_sinistros_cargas"  class="display"  style="width:100%">
+                                    <thead>
+                                    <tr>
+                                        <th scope="col">Tipo Sinistro</th>
+                                        <th scope="col">Motorista</th>
+                                        <th scope="col">CPF</th>
+                                        <th scope="col">Dt Nasc.</th>
+                                        <th scope="col">Projetos</th>
+                                        <th scope="col">Placa</th>
+                                        <th scope="col">Data Sinistro</th>
+                                        <th scope="col">Motivo do Sinistro</th>
+                                        <th scope="col">Seguro Acionado?</th>
+                                        <th scope="col">Nº do Processo</th>
+                                        <th scope="col">Editar</th>
+                                        <th scope="col">Excluir</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!--Form Cadastro Cargas-->
+                    <div class="tab-pane" id="div_cadastro_sinistros_cargas" role="tabpanel" aria-labelledby="a_tab_cad_sinistros_cargas">
+                        <form id="form_cadastro_sinistros_cargas" name="form_cadastro_sinistros_cargas">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO MOTORISTA</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_sel_empresa margin-divs">
+                                    <label class="label-padrao">
+                                        Escolha a empresa *
+                                        <select class="selectpicker form-control"
+                                                id="cb_empresa_sin_carga"
+                                                name="cb_empresa_sin_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione a empresa" required>
+                                            <option value="conlogsa">Conlog SA</option>
+                                            <option value="deep_portuaria">Deep Portuária</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_txt_nome_motorista margin-divs">
+                                    <label class="label-padrao">
+                                        Nome do Motorista *
+                                        <input type="text" class="form-control" id="txt_nome_motorista_carga"
+                                               name="txt_nome_motorista_carga" placeholder="Digite o Nome"
+                                               required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_dt_nascimento_motorista ">
+                                    <label class="label-padrao">
+                                        Data Nascimento
+                                        <input  type="date"
+                                                class="form-control"
+                                                id="dt_nascimento_motorista_carga"
+                                                name="dt_nascimento_motorista_carga" >
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO VEICULO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_sel_tipo_frota margin-divs">
+                                    <label class="label-padrao">
+                                        Selecione o Tipo de frota *
+                                        <select class="selectpicker form-control"
+                                                id="cb_tipo_frota_carga"
+                                                name="cb_tipo_frota_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione o Tipo:" required>
+                                            <option value="PR">Própria</option>
+                                            <option value="AG">Agregado</option>
+                                            <option value="TC">Terceiro</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_transportador_mot margin-divs">
+                                    <label class="label-padrao">
+                                        Transportador
+                                        <input type="text" class="form-control"
+                                               id="txt_nome_transportador_dados_veiculo_carga"
+                                               name="txt_nome_transportador_dados_veiculo_carga">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_sel_projeto_carga">
+                                    <label class="label-padrao">
+                                        Selecione o Projeto *&nbsp;
+                                        <select class="selectpicker form-control"
+                                                id="cb_tipo_projeto_carga"
+                                                name="cb_tipo_projeto_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione um projeto" required>
+                                            {% for projeto in lista_projetos %}
+                                            <option value="{{ projeto.cod_projeto }}">{{ projeto.desc_proj }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_dix_sel_tipo_veiculo margin-divs">
+                                    <label class="label-padrao">
+                                        Tipo de Veiculo *
+                                        <select class="selectpicker form-control"
+                                                id="cb_tipo_veic_carga"
+                                                name="cb_tipo_veic_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Tipo de veiculo" required>
+                                            <option value="BA">Baú</option>
+                                            <option value="GR">Graneleiro</option>
+                                            <option value="SD">Sider</option>
+
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_placa_cavalo margin-divs">
+                                    <label class="label-padrao">
+                                    Placa do Cavalo *
+                                        <input type="text" class="form-control"
+                                               id="txt_placa_veiculo_carga"
+                                               name="txt_placa_veiculo_carga"
+                                               placeholder="Digite a Placa do Veiculo"
+                                               oninput="formatarPlaca(this)" maxlength="12"
+                                               required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_placa_carreta">
+                                    <label class="label-padrao">
+                                        Placa da carreta
+                                        <input type="text" class="form-control"
+                                               id = "txt_placa_carreta_carga"
+                                               name = "txt_placa_carreta_carga"
+                                               placeholder="Digite a placa da Carreta">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex flex-column w-100">
+                                <div class="d-flex flex-column w-100">
+                                     <h2 class="subtitle-sinistro">DADOS DA CARGA</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_tx_cliente margin-divs">
+                                    <label class="label-padrao">
+                                        Cliente *
+                                        <input type="text" class="form-control"
+                                               id="txt_nome_cliente_carga"
+                                               placeholder="Digite o nome do Cliente" required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_mercadoria margin-divs">
+                                    <label class="label-padrao"> Qual a mercadoria ? *
+                                        <input type="text"
+                                        class="form-control"
+                                        id="txt_tipo_mercadoria_carga" placeholder="Ex : Cerveja" required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_total_produtos">
+                                    <label class="label-padrao">
+                                        Valor total Dos Produtos R$
+                                        <input type="number" class="form-control"
+                                               id="num_valor_dos_produtos_carga"
+                                               value ="0.00">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                                <div class="d-flex flex-column w-100 cl_div_tx_nota_fiscal" style="margin-right:5rem;">
+                                    <label class="label-padrao">
+                                        Nº Nota Fiscal
+                                        <input type="text" class="form-control"
+                                               id="txt_numero_nota_carga"
+                                               placeholder="Digite o número da nota">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_cte_serie">
+                                    <label class="label-padrao">
+                                        CT-e / Série
+                                        <input type="text" class="form-control"
+                                               id="txt_numero_serie_carga"
+                                               placeholder="Digite a série CT-e">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <!--Dados do Sinistro-->
+                            <div class ="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO SINISTRO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                <div class="d-flex flex-column w-100 cl_div_dt_data_ocorrencia margin-divs">
+                                    <label class="label-padrao" for="dt_ocorrencia_sinistro_carga">
+                                        Data ocorrência *
+                                        <input type="date" class="form-control" id="dt_ocorrencia_sinistro_carga" required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_tx_cidade margin-divs">
+                                    <label class="label-padrao" for="txt_cidade_sinistro_carga">
+                                        Cidade
+                                        <input type="text" class="form-control" id="txt_cidade_sinistro_carga" name="txt_cidade_sinistro_carga">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_estado_sinistro margin-divs">
+                                    <label class="label-padrao" for="sel_estado_sinistro_carga">
+                                        Estado
+                                        <select class="selectpicker form-control"
+                                            id="sel_estado_sinistro_carga"
+                                            name="sel_estado_sinistro_carga"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Escolha o estado">
+                                            {% for estado in lista_estados %}
+                                            <option value="{{ estado.cod_estado}}">{{ estado.estado }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_horario_sinistro">
+                                    <label class="label-padrao">
+                                        Horario do Sinistro
+                                        <input type="time" class="form-control"
+                                               id="hr_sinistro_carga"
+                                               name="hr_sinistro_carga">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_local_sinistro margin-divs">
+                                    <label class="label-padrao">
+                                        Local do Sinistro
+                                        <input type="text" class="form-control"
+                                               id="txt_local_sinistro_carga"
+                                               placeholder="Ex : Via pública">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_motivo_sinistro margin-divs">
+                                    <label class="label-padrao">
+                                        Motivo do Sinistro *
+                                        <select class="selectpicker form-control"
+                                                id="cb_motivo_sinistro_carga"
+                                                name="cb_motivo_sinistro_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione o motivo de sinistro"
+                                                required>
+                                                {% for motivo in lista_motivos_sinistro %}
+                                                    {% if motivo.tipo_motivo_sinistro == 'C' %}
+                                                        <option value="{{motivo.cod_motivo_sinistro}}">
+                                                            {{motivo.desc_motivo_sinistro}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_valor_sinistro">
+                                    <label class="label-padrao">
+                                        Valor do Sinistro R$
+                                        <input type="number"
+                                        class="form-control"
+                                        id="num_valor_sinistro_carga" value="0.00" >
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-1">
+                                <label for="txt_resposta_seguro_sinistro_carga" class="flex-grow-1 d-flex" style="font-size:20px">
+                                    Qual a Resposta do Seguro?
+                                    <input type="text" class="form-control"
+                                           id="txt_resposta_seguro_sinistro_carga"
+                                           name="txt_resposta_seguro_sinistro_carga"
+                                           placeholder="">
+                                </label>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex column flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS REGISTRO DO SINISTRO</h2>
+                                </div>
+                            </div>
+                            <!--Aqui começa os dados do Registro do Sinistro-->
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_data_abertura_sinistro margin-divs">
+                                    <label class="label-padrao">
+                                        Qual data de Abertura do Sinistro ?*
+                                        <input type="date" class="form-control"
+                                               id="dt_abertura_registro_sinistro_carga" name="dt_abertura_registro_sinistro_carga" required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_seguradora_sinistro margin-divs">
+                                    <label class="label-padrao">
+                                        Seguradora
+                                        <input type="text" class="form-control"
+                                               id="txt_seguradora_sinistro_carga"
+                                               name="txt_seguradora_sinistro_carga"
+                                               placeholder="EX : AZIZ">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_reguladora_sinistro">
+                                    <label class="label-padrao">
+                                        Reguladora
+                                        <input type="text" class="form-control"
+                                               id="txt_reguladora_sinistro_carga"
+                                               name="txt_reguladora_sinistro_carga"
+                                               placeholder="EX : SERVAPOIO">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_feito_reemb_sinistro margin-divs">
+                                    <label class="label-padrao" for="cb_feito_reembolso_sinistro_carga">
+                                        Feito Reembolso ?
+                                        <select class="selectpicker form-control"
+                                                id="cb_feito_reembolso_sinistro_carga"
+                                                name="cb_feito_reembolso_sinistro_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Feito?">
+                                            <option value="S">Sim</option>
+                                            <option value="N">Não</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_valor_reemb_sinistro margin-divs">
+                                    <label class="label-padrao">
+                                        Valor Reembolso R$
+                                        <input type="number" class="dinheiro form-control"
+                                               id="number_remboolso_registro_sinistro"
+                                               name="number_remboolso_registro_sinistro"
+                                               value="0.00">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_data_encerramento_sinistro">
+                                    <label class="label-padrao">
+                                        Data de Encerramento
+                                        <input type="date" class="form-control"
+                                               id="dt_encerramento_registro_sinistro_carga"
+                                               name="dt_encerramento_registro_sinistro_carga">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex column flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO PROCESSO</h2>
+                                </div>
+                            </div>
+                            <!--Formulário de Dados do processo-->
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column w-100 cl_div_num_processo margin-divs">
+                                    <label class="label-padrao">
+                                        Nº Processo
+                                        <input type="text"
+                                               class="form-control"
+                                               id="txt_numero_dados_processo_sinistro_carga"
+                                               name="txt_numero_dados_processo_sinistro_carga"
+                                               placeholder="Nº Processo">
+
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_data_abertura_processo margin-divs">
+                                    <label class="label-padrao">
+                                        Data de abertura do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_abertura_processo_sinistro_carga"
+                                               name="dt_abertura_processo_sinistro_carga">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_data_fim_processo">
+                                    <label class="label-padrao">
+                                        Data de Fim do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_fim_processo_sinistro_carga"
+                                               name="dt_fim_processo_sinistro_carga">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 cl_div_data_fim_processo">
+                                    <label class="label-padrao">
+                                        Data de Fim do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_fim_processo_sinistro_carga"
+                                               name="dt_fim_processo_sinistro_carga">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex column flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DOCUMENTAÇÃO E COMPLEMENTOS</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                                <div class="d-flex column flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Status do Processo *
+                                        <select class="selectpicker form-control"
+                                                id="cb_status_processo_carga"
+                                                name="cb_status_processo_carga"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione o Status do processo" required>
+                                            <option value="EV">Enviado</option>
+                                            <option value="PF">Processo Finalizado</option>
+                                            <option value="PN">Processo Negado</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex column flex-column w-100">
+                                    <label class="label-padrao">
+                                        Observações Finais
+                                        <input type="text" class="form-control"
+                                               id="txt_observacoes_finais_sinistro_carga"
+                                               name="txt_observacoes_finais_sinistro_carga"
+                                               autocomplete="off"
+                                               placeholder rows="3"
+                                               cols="33" style="width:900px; height:200px">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between flex-row-reverse">
+                                <div class="d-flex flex-column">
+                                    <button class="btn btn-primary btn-rounded button-primary" type='submit' id="btn_finalizar_cadastro_sinistro"
+                                            name="btn_finalizar_cadastro_sinistro"
+                                            value="0">
+                                        <i class="fa-regular fa-square-plus"></i>
+                                        Lançar Sinistro
+                                    </button>
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <button class="btn btn-primary btn-rounded button-primary" type='button' id="btn_limpar_campos_cargas"
+                                            name="btn_limpar_campos_cargas">
+                                        <i class="fa-solid fa-eraser"></i>
+                                        Limpar Campos
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--Cadastro Equipamentos e veiculos-->
+                    <div class="tab-pane" id="div_tab_cad_sinistros_cad_eqp_veic" role="tabpanel" aria-labelledby="a_tab_cad_sinistros_cad_eqp_veic">
+                        <form id="form_cadastro_eqp_veiculos" name="form_cadastro_eqp_veiculos">
+                            <div class="d-flex justify-content-between align-items-between w-100 md-1">
+                                <div class="d-flex flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO MOTORISTA</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 md-3">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Nome do Motorista
+                                        <input type="text" class="form-control" id="txt_nome_motorista_carga_cad_eqp"
+                                               name="nome_motorista_eqp" placeholder="Digite o Nome :">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Data Nascimento&nbsp;&nbsp;
+                                        <input  type="date" id="dt_nascimento_motorista_eqp"
+                                                class="form-control"
+                                                name="dt_nascimento_motorista_eqp">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Digite o CPF
+                                        <input type="text" class="form-control" id="cpf_motorista_eqp"
+                                               name="cpf_motorista_eqp" placeholder="Digite o CPF" maxlength="11">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100 md-1">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <h2 class="subtitle-sinistro">DADOS DO VEICULO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 md-2">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Selecione o Projeto
+                                        <select class="selectpicker form-control"
+                                                id="select_projeto_eqp"
+                                                name="select_projeto_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione um projeto">
+                                            {% for p in lista_projetos %}
+                                            <option value="{{ p.cod_projeto }}">{{ p.desc_proj }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Placa do Cavalo *
+                                        <input type="text" class="form-control"
+                                               id="txt_placa_cavalo_cad_eqp"
+                                               name="txt_placa_cavalo_cad_eqp"
+                                               placeholder="Digite a Placa do Cavalo" maxlength="12" required>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between align-items-between w-100 md-1">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <h2 class="subtitle-sinistro">DADOS DO SINISTRO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 md-5">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao" >
+                                        Data ocorrência *
+                                        <input type="date" class="form-control"
+                                               id ="dt_ocorrencia_sinistro_carga_eqp"
+                                               name ="dt_ocorrencia_sinistro_carga_eqp" required>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Motivo do Sinistro *
+                                        <select class="selectpicker form-control"
+                                                id="cb_motivo_sinistro_carga_eqp"
+                                                name="cb_motivo_sinistro_carga_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione o motivo do sinistro"
+                                                required>
+                                            {% for motivo in lista_motivos_sinistro %}
+                                                {% if motivo.tipo_motivo_sinistro == 'E' %}
+                                                    <option value="{{motivo.cod_motivo_sinistro}}">
+                                                        {{motivo.desc_motivo_sinistro}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Acionado Seguro?
+                                        <select class="selectpicker form-control"
+                                                id="select_acionado_seg_eqp"
+                                                name="select_acionado_seg_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Acionado?">
+                                            <option value="N">Não</option>
+                                            <option value="S">Sim</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Cidade
+                                        <input type="text" class="form-control"
+                                               id ="cidade_sinistro_eqp"
+                                               name = "cidade_sinistro_eqp"
+                                               placeholder="Qual o nome da Cidade?">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Estado:
+                                        <select class="selectpicker form-control"
+                                                id="estado_sinistro_eqp"
+                                                name="estado_sinistro_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Selecione o Estado">
+                                            {% for estado in lista_estados %}
+                                            <option value="{{ estado.cod_estado }}">{{ estado.estado }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <div class="d-flex justify-content-between w-100 md-5">
+                                <div class="d-flex flex-column w-100">
+                                     <h2 class="subtitle-sinistro">COMUNICAÇÃO SINISTRO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-100 md-2">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Data de Comunicação a seguradora
+                                        <input type="date" class="form-control"
+                                               id="dt_comunicacao_seguradora_eqp"
+                                               name = "dt_comunicacao_seguradora_eqp">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Data de Comunicação ao CCO
+                                        <input type="date" class="form-control"
+                                               id ="dt_comunicacao_cco_eqp"
+                                               name ="dt_comunicacao_cco_eqp">
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <!--Cadastro de informações Adicionais-->
+                            <div class="d-flex justify-content-between w-100 md-1">
+                                <div class="d-flex flex-column w-100">
+                                     <h2 class="subtitle-sinistro">INFORMAÇÕES ADICIONAIS</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-100 md-5">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Responsável pelo Dano
+                                        <select class="selectpicker form-control"
+                                                id="txt_responsavel_por_dano_eqp"
+                                                name="select_responsalvel_dano_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Informe o responsável">
+                                            <option value="Emp1">Conlog</option>
+                                            <option value="Emp2">Terceiro</option>
+                                            <option value="Emp3">Motorista</option>
+                                            <option value="Emp4">Seguradora</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Desconto ao colaborador
+                                        <select class="selectpicker form-control"
+                                                id="cb_feito_desconto_colaborador_eqp"
+                                                name="cb_feito_desconto_colaborador_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Informe a situação">
+                                            <option value="S">Sim</option>
+                                            <option value="N">Não</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Indenizado
+                                        <select class="selectpicker form-control"
+                                                id="select_indenizado_eqp"
+                                                name="select_indenizado_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Informe a situação">
+                                            <option value="S">Sim</option>
+                                            <option value="N">Não</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Houve danos a empresa?
+                                        <select class="selectpicker form-control"
+                                                id="cb_houve_dano_aempresa_eqp"
+                                                name="cb_houve_dano_aempresa_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Informe a situação">
+                                            <option value="S">Sim</option>
+                                            <option value="N">Não</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Valor indenizado R$:
+                                        <input type="number" class="form-control"
+                                               id="value_indenizado_eqp"
+                                               name = "value_indenizado_eqp"
+                                               value ="0.00"
+                                               step ="0.01">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-100 md-4">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Valor Prejuizo R$:
+                                        <input type="number" class="form-control"
+                                               id="value_prejuizo_eqp"
+                                               name ="value_prejuizo_eqp"
+                                               value ="0.00"
+                                               step ="0.01">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Responsável pela indenização de Dano
+                                        <input type="text" class="form-control"
+                                               id="txt_responsavel_pag_indenizacao_dano_eqp"
+                                               name="txt_responsavel_pag_indenizacao_dano_eqp"
+                                               placeholder="EX : SERVAPOIO">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Feito Reembolso ?
+                                        <select class="selectpicker form-control"
+                                                id="txt_feito_reembolso_eqp_veic"
+                                                name="txt_feito_reembolso_eqp_veic"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Sim ou Não">
+                                            <option value="S">Sim</option>
+                                            <option value="N">Não</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Qual foi o tipo de acionamento?
+                                        <select class="selectpicker form-control"
+                                                id="cb_tipo_acionamento_eqp"
+                                                name="cb_tipo_acionamento_eqp"
+                                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                                data-live-search="true" title="Tipo de acionamento">
+                                            <option value="A">Administrativamente</option>
+                                            <option value="J">Judicialmente</option>
+                                            <option value="L">Locado</option>
+                                            <option value="T">Terceiro</option>
+                                            <option value="N">Não acionado</option>
+                                            <option value="TI">Terceiro Invadiu</option>
+                                            <option value="S">Seguradora</option>
+                                        </select>
+                                    </label>
+                                </div>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <hr style="border: solid 1px;margin-top: 2px;margin-bottom: 2px;">
+                            <!--Formulário de Dados do processo-->
+                            <div class="d-flex justify-content-between w-100 md-1">
+                                <div class="d-flex flex-column w-100">
+                                    <h2 class="subtitle-sinistro">DADOS DO PROCESSO</h2>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-100 md-3">
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Nº Processo
+                                        <input type="text" class="form-control"
+                                               id="numero_processo_eqp"
+                                               name="numero_processo_eqp"
+                                               placeholder="Nº Processo">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Data de Inicio do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_inicio_dados_processo_eqp"
+                                               name="dt_inicio_dados_processo_eqp">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100 margin-divs">
+                                    <label class="label-padrao">
+                                        Data de Fim do Processo
+                                        <input type="date" class="form-control"
+                                               id="dt_fim_processo_sinistro_carga_eqp"
+                                               name="dt_fim_processo_sinistro_carga_eqp">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between w-50 md-1">
+                                <label class="label-padrao">
+                                    Status do Processo
+                                    <select class="selectpicker form-control"
+                                            id="status_processo_eqp"
+                                            name="status_processo_eqp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Status Processo">
+                                        <option value="A">Aberto</option>
+                                        <option value="T">Em tratativa</option>
+                                        <option value="F">Finalizado</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div style="text-align:left; color: #f46424;">
+                                <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <label class="label-padrao">
+                                        Observações Finais
+                                        <textarea class="form-control"
+                                                  id="observacoes_finais_eqp"
+                                                  name="observacoes_finais_eqp"
+                                                  autocomplete="on"
+                                                  rows="5"
+                                                  cols="120"
+                                                  style="height:auto;"></textarea>
+                                    </label>
+                                </div>
+                                <div class="col-lg-2 d-flex align-items-end">
+                                    <div class="d-flex flex-column mt-7" style="margin-top:75px; margin-bottom:10px">
+                                        <button class="btn btn-primary btn-rounded button-primary" type="submit" id="btn_finalizar_cadastro_sinistro_cad_eqp_veic"
+                                                name="btn_finalizar_cadastro_sinistro_cad_eqp_veic"
+                                                value="0"
+                                                style="margin-bottom:5px">
+                                            <i class="fa-regular fa-square-plus"></i>
+                                            Lançar Sinistro
+                                        </button>
+                                        <button class="btn btn-primary btn-rounded button-primary" type="button" id="btn_criar_form_eqp"
+                                                name="btn_criar_form_eqp">
+                                            <i class="fa-solid fa-eraser"></i>
+                                            Limpar Campos
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="modal" tabindex="-1" role="dialog" id="msg_erro_cod">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Erro</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Código não encontrado. Mensagem de erro aqui.
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="{% static 'controllers/cco_sinistro_app/form_cco_cad_sinistros_controller.js' %}"></script>
+<script src="{% static 'libs/bootstrap_4/js/bootstrap.min.js' %}"></script>
