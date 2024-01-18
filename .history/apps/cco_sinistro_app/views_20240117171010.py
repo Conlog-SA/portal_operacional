@@ -311,6 +311,9 @@ class Form_cad_equipamentos_veiculos(View):
         if valor_indenizado_eqp != None:
            valor_indenizado_eqp = locale.atof(valor_indenizado_eqp.strip("R$").replace(".", "").replace(",", "."))
 
+        print(valor_indenizado_eqp);
+
+
         if valor_prejuizo_eqp != None:
             valor_prejuizo_eqp = locale.atof(valor_prejuizo_eqp.strip("R$").replace(".", "").replace(",", "."))
 

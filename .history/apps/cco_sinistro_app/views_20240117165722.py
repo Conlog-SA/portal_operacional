@@ -304,15 +304,16 @@ class Form_cad_equipamentos_veiculos(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
         
 
-        
+        print(valor_indenizado_eqp)
 
         #Tratamento para Campo de Valores com Locale - Junior
 
         if valor_indenizado_eqp != None:
-           valor_indenizado_eqp = locale.atof(valor_indenizado_eqp.strip("R$").replace(".", "").replace(",", "."))
+            valor_indenizado_eqp = locale.currency(valor_indenizado_eqp, grouping=True, symbol=None)
+
 
         if valor_prejuizo_eqp != None:
-            valor_prejuizo_eqp = locale.atof(valor_prejuizo_eqp.strip("R$").replace(".", "").replace(",", "."))
+            valor_prejuizo_eqp = locale.currency(valor_prejuizo_eqp, grouping=True, symbol=None)
 
         #Tratamento para que Datas não preenchidas se tornem NUll, caso contrário preencha com data formatada.
         if dt_nascimento_motorista_eqp == '':

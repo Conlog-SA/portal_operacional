@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from datetime import datetime
 from datetime import timedelta
+import simplejson as json
 
 from apps.calendario_app.models import Calendario_Dias
 from apps.help_desk_app.views import ConexaoHelpDesk
