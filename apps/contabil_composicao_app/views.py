@@ -21,10 +21,10 @@ from apps.benner_app.views import ConexaoBancoBenner
 from apps.contabil_composicao_app.models import Pacote_Conta, Conta, Contrato, Parcela_Contrato, Responsaveis_Conta, \
     Anexos_Contrato, Auditoria_Status_Composicao_Competencia, \
     Layout_Campos_Contas_Modelo_1, Arquivo_Docs_Contas_Modelo_1, Registros_Arqv_Docs_Contas_Modelo_1, \
-    Arquivo_Docs_Pac_Contas_Modelo_1, Docs_Pac_Contas_Pagar_Receber_M1_View, Docs_Pac_Estoque_M1_View, \
+    Arquivo_Docs_Pac_Contas_Modelo_1, Docs_Pac_Contas_Pagar_Receber_M1, Docs_Pac_Estoque_M1_View, \
     Docs_Pac_Folha_Pag_M1_View, Docs_Pac_Contas_Compensacao_M1_View, Docs_Pac_Tributos_M1_View, \
     Docs_Pac_Finac_Disponib_M1_View, Docs_Pac_Intercompany_M1_View, Docs_Pac_Imobilizado_M1_View, \
-    Docs_Pac_Consorcio_Ativo_M1_View, Docs_Demais_Contas_M1_View
+    Docs_Pac_Consorcio_Ativo_M1_View, Docs_Demais_Contas_M1_View, Docs_Pac_Contas_Pagar_Receber_M1
 from apps.estrut_org_app.models import Empresa, Filial
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -497,7 +497,6 @@ class Form_Cad_Conta_View(View):
             'msg': msg
         }
         return JsonResponse(data, safe=False)
-
 
 class Form_Cad_Contrato_View(View):
     def get_object(self, pk):
@@ -1933,14 +1932,11 @@ class Tabela_Pac_Contas_Modelo_1_View(View):
         return JsonResponse(data, safe=False)
 
 
-
 class Form_Imp_Arq_Contas_M1_View(View):
     def get(self, request):
-        #lista_pacotes_conta = Pacote_Conta.objects.filter(cod_modelo=1)
         lista_contas = Conta.objects.filter(tipo_modelo=1, status_comp= 'A')
         context = {
             'lista_contas': lista_contas
-            #'lista_pacotes_conta': lista_pacotes_conta
         }
         return render(request, 'contabil_composicao_app/form_importa_arquivo_modelo_1.html', context)
 
@@ -2342,7 +2338,6 @@ class Form_Pesq_Arq_Contas_M1_View(View):
         return JsonResponse(dados, safe=False)
 
 
-
 class Form_Pesq_Arq_Pac_Contas_M1_View(View):
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
@@ -2352,7 +2347,7 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
 
         lista_docs = None
         if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
-            lista_docs = list(Docs_Pac_Contas_Pagar_Receber_M1_View.objects
+            lista_docs = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_contas_pagar_receber', 'cod_filial__desc_filial','data_lancto',
                                       'cnpj', 'nome_fornecedor', 'num_doc', 'num_ap', 'data_venc', 'num_parc',
@@ -2513,14 +2508,30 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                 if doc['data_lancto'] != None:
                     doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
 
+        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
+            lista_docs = list(Docs_Demais_Contas_M1_View.objects
+                              .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
+                              .values('cod_pac_doc_outros', 'data_entrada', 'data_lancto', 'cod_filial__cod_reduzido',
+                                      'historico', 'num_doc', 'num_doc_contabil', 'val_rel', 'val_razao', 'val_dif',
+                                      'obs'))
+            for doc in lista_docs:
+                if doc['val_rel'] != None:
+                    doc['val_rel'] = locale.currency(round(float(doc['val_rel']), 2), grouping=True, symbol=None)
+                if doc['val_razao'] != None:
+                    doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
+                if doc['val_dif'] != None:
+                    doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
+                if doc['data_entrada'] != None:
+                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
+                if doc['data_lancto'] != None:
+                    doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
+
 
         dados = dict()
         dados = {
             'lista_docs': lista_docs
         }
         return JsonResponse(dados, safe=False)
-
-
 
 
 class Tabela_Doc_Contas_Modelo_1_View(View):
@@ -2680,7 +2691,6 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
         return JsonResponse(data, safe=False)
 
 
-
 class Form_Composicao_Auditoria_View(View):
     def get(self, request):
         # lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
@@ -2703,7 +2713,6 @@ class Form_Vincula_Resp_Contas_View(View):
             'lista_pacotes': lista_pacotes
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
-
 
 
 class Importa_Anexos_Contas_View(View):
@@ -2740,12 +2749,16 @@ class Importa_Anexos_Contas_View(View):
         return JsonResponse(data, safe=False)
 
 
-
 class Form_Doc_Pac_Modelo_1_View(View):
     def get(self, request):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
         dic_pacotes = Pacote_Conta.objects.filter(cod_modelo=1)
+        lista_filiais = Filial.objects.filter(cod_empresa=obj_usu.cod_filial.cod_empresa, cod_reduzido__isnull=False)
         contexto = {
-            'dic_pacotes': dic_pacotes
+            'dic_pacotes': dic_pacotes,
+            'lista_filiais': lista_filiais
         }
         return render(request, 'contabil_composicao_app/form_importa_arquivo_por_pac_modelo_1.html', contexto)
 
@@ -2761,8 +2774,6 @@ class Comp_Cb_Contas_Imp_Docs_Pac_M1_View(View):
             'lista_contas': lista_contas
         }
         return JsonResponse(data, safe=False)
-
-
 
 
 class Form_Atualiza_Contratos_Benner_View(View):
@@ -2827,5 +2838,94 @@ class Form_Atualiza_Contratos_Benner_View(View):
             'lista_parcelas_atualizados': lista_parcelas_atualizadas_form
         }
         return JsonResponse(data, safe=False)
+
+
+
+class Docs_Pac_Contas_Pagar_Receber_M1_View(View):
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Pac_Contas_Pagar_Receber_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'cnpj_fornec': obj_doc.cnpj,
+            'nome_fornec': obj_doc.nome_fornecedor,
+            'num_doc': obj_doc.num_doc,
+            'num_ap': obj_doc.num_ap,
+            'data_lancto': obj_doc.data_lancto,
+            'data_venc': obj_doc.data_venc,
+            'num_parc': obj_doc.num_parc,
+            'val_rel': round(obj_doc.val_rel, 2),
+            'val_razao': round(obj_doc.val_razao, 2),
+            'val_dif': round(obj_doc.val_dif, 2),
+            'obs': obj_doc.obs,
+            'cod_pac_doc_contas_pagar_receber': obj_doc.cod_pac_doc_contas_pagar_receber
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        cnpj_fornec_frm = request.POST['cnpj_fornec']
+        nome_fornec_frm = request.POST['nome_fornec']
+        num_doc_frm = request.POST['num_doc']
+        num_ap_frm = request.POST['num_ap']
+        data_lancto_frm = request.POST['data_lancto']
+        data_venc_frm = request.POST['data_venc']
+        num_parc_frm = request.POST['num_parc']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        data_lancto = None
+        if data_lancto_frm != '':
+            data_lancto = data_lancto_frm
+
+        data_venc = None
+        if data_venc_frm != '':
+            data_venc = data_venc_frm
+
+        obj_doc = Docs_Pac_Contas_Pagar_Receber_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.data_lancto = data_lancto
+        obj_doc.cnpj = cnpj_fornec_frm
+        obj_doc.nome_fornecedor = nome_fornec_frm
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.num_ap = num_ap_frm
+        obj_doc.num_parc = num_parc_frm
+        obj_doc.data_venc = data_venc
+        obj_doc.val_rel = val_rel_frm
+        obj_doc.val_razao = val_razao_frm
+        obj_doc.val_dif = val_dif_frm
+        obj_doc.obs = obs_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
+
 
 

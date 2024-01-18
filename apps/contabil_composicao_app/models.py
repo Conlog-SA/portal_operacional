@@ -204,18 +204,18 @@ class Arquivo_Docs_Pac_Contas_Modelo_1(models.Model):
         managed = True
         db_table = 'op_contabil_arqv_doc_pac_contas_m1'
 
-class Docs_Pac_Contas_Pagar_Receber_M1_View(models.Model):
+class Docs_Pac_Contas_Pagar_Receber_M1(models.Model):
     cod_pac_doc_contas_pagar_receber = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_lancto = models.DateField(null=True, blank=True)
-    cnpj = models.CharField(max_length=18)
-    nome_fornecedor = models.CharField(max_length=70)
-    num_doc = models.CharField(max_length=30)
-    num_ap = models.CharField(max_length=15)
-    num_parc = models.CharField(max_length=15)
+    cnpj = models.CharField(max_length=18, null=True, blank=True)
+    nome_fornecedor = models.CharField(max_length=70, null=True, blank=True)
+    num_doc = models.CharField(max_length=30, null=True, blank=True)
+    num_ap = models.CharField(max_length=15, null=True, blank=True)
+    num_parc = models.CharField(max_length=15, null=True, blank=True)
     data_venc = models.DateField(null=True, blank=True)
-    val_rel = models.DecimalField(max_digits=12, decimal_places=4)
-    val_razao = models.DecimalField(max_digits=12, decimal_places=4)
-    val_dif = models.DecimalField(max_digits=12, decimal_places=4)
+    val_rel = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
+    val_razao = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
+    val_dif = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     obs = models.CharField(max_length=200, null=True, blank=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
@@ -391,7 +391,7 @@ class Docs_Demais_Contas_M1_View(models.Model):
     data_entrada = models.DateField(null=True, blank=True)
     data_lancto = models.DateField(null=True, blank=True)
     historico = models.CharField(max_length=200, null=True, blank=True)
-    num_doc = models.CharField(max_length=15)
+    num_doc = models.CharField(max_length=25)
     num_doc_contabil = models.CharField(max_length=15)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
