@@ -55,6 +55,18 @@ $(document).on('click', 'a', function(){
                 $('.selectpicker').selectpicker();
                 $('.class_mask_campo_val').mask('###0,00', {reverse: true});
 
+                $(".class_mask_negative_number").inputmask({
+                    alias: 'decimal',
+                    radixPoint: ',',
+                   // groupSeparator: ',',
+                    inputtype: "text",
+                    autoGroup: true,
+                    digits: 2,
+                    allowMinus: true,
+                    rightAlign: true
+
+                });
+
                 /*
                     "bJQueryUI": true,
                     "pageLength": 10,

@@ -217,6 +217,7 @@ class Docs_Pac_Contas_Pagar_Receber_M1(models.Model):
     val_razao = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo', null=True)
@@ -224,17 +225,18 @@ class Docs_Pac_Contas_Pagar_Receber_M1(models.Model):
         managed=True
         db_table = 'op_contabil_docs_pac_contas_pagar_receber_m1'
 
-class Docs_Pac_Estoque_M1_View(models.Model):
+class Docs_Pac_Estoque_M1(models.Model):
     cod_pac_doc_estoque = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    nome_almoxarifado = models.CharField(max_length=70)
-    cod_produto = models.IntegerField()
-    desc_produto = models.CharField(max_length=70)
-    qtd_prod = models.IntegerField()
+    nome_almoxarifado = models.CharField(max_length=70, null=True, blank=True)
+    cod_produto = models.IntegerField(null=True, blank=True)
+    desc_produto = models.CharField(max_length=70, null=True, blank=True)
+    qtd_prod = models.IntegerField(null=True, blank=True)
     custo_medio = models.DecimalField(max_digits=12, decimal_places=4)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -244,7 +246,7 @@ class Docs_Pac_Estoque_M1_View(models.Model):
         db_table = 'op_contabil_docs_pac_estoque_m1'
 
 
-class Docs_Pac_Folha_Pag_M1_View(models.Model):
+class Docs_Pac_Folha_Pag_M1(models.Model):
     cod_pac_doc_folha_pag = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_lancto = models.DateField(null=True, blank=True)
     matricula = models.CharField(max_length=15)
@@ -255,6 +257,7 @@ class Docs_Pac_Folha_Pag_M1_View(models.Model):
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -263,18 +266,19 @@ class Docs_Pac_Folha_Pag_M1_View(models.Model):
         managed=True
         db_table = 'op_contabil_docs_pac_folha_pag_m1'
 
-class Docs_Pac_Contas_Compensacao_M1_View(models.Model):
+class Docs_Pac_Contas_Compensacao_M1(models.Model):
     cod_pac_doc_contas_compensacao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_emissao = models.DateField(null=True, blank=True)
     data_entrada = models.DateField(null=True, blank=True)
-    cnpj = models.CharField(max_length=18)
-    nome_fornecedor = models.CharField(max_length=70)
-    num_doc = models.CharField(max_length=15)
-    num_doc_contabil = models.CharField(max_length=15)
+    cnpj = models.CharField(max_length=18, null=True, blank=True)
+    nome_fornecedor = models.CharField(max_length=70, null=True, blank=True)
+    num_doc = models.CharField(max_length=15, null=True, blank=True)
+    num_doc_contabil = models.CharField(max_length=15, null=True, blank=True)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     historico = models.CharField(max_length=200, null=True, blank=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
@@ -285,18 +289,19 @@ class Docs_Pac_Contas_Compensacao_M1_View(models.Model):
         db_table = 'op_contabil_docs_pac_contas_compensacao_m1'
 
 
-class Docs_Pac_Tributos_M1_View(models.Model):
+class Docs_Pac_Tributos_M1(models.Model):
     cod_pac_doc_tributos = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_emissao = models.DateField(null=True, blank=True)
     data_entrada = models.DateField(null=True, blank=True)
     nome_fornecedor = models.CharField(max_length=70, null=True, blank=True)
-    num_doc = models.CharField(max_length=15, null=True, blank=True)
-    num_doc_contabil = models.CharField(max_length=15, null=True, blank=True)
+    num_doc = models.CharField(max_length=25, null=True, blank=True)
+    num_doc_contabil = models.CharField(max_length=25, null=True, blank=True)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
     historico = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -315,6 +320,7 @@ class Docs_Pac_Finac_Disponib_M1_View(models.Model):
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     historico = models.CharField(max_length=200, null=True, blank=True)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -339,6 +345,7 @@ class Docs_Pac_Imobilizado_M1_View(models.Model):
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -357,6 +364,7 @@ class Docs_Pac_Consorcio_Ativo_M1_View(models.Model):
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     historico = models.CharField(max_length=200, null=True, blank=True)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -375,6 +383,7 @@ class Docs_Pac_Intercompany_M1_View(models.Model):
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     historico = models.CharField(max_length=200, null=True, blank=True)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
@@ -397,6 +406,7 @@ class Docs_Demais_Contas_M1_View(models.Model):
     val_razao = models.DecimalField(max_digits=12, decimal_places=4)
     val_dif = models.DecimalField(max_digits=12, decimal_places=4)
     obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
     cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',

@@ -65,11 +65,12 @@ class Form_Gerar_Pag_2Art_View(View):
 
         if (obj_reg_2art_ter_financ.nomespot_2art_terc_financ != obj_reg_2art_ter_financ.cod_reg_2art.nomespot) or (
                 obj_reg_2art_ter_financ.placa_2art_terc_financ != obj_reg_2art_ter_financ.cod_reg_2art.placa):
-            obj_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(cod_projeto=obj_reg_2art_ter_financ.cod_projeto,
-                                                                      placa_cad_placa_terc=obj_reg_2art_ter_financ.cod_reg_2art.placa,
-                                                                      perfil_veiculo_cad_placa_terc=obj_reg_2art_ter_financ.cod_reg_2art.nomespot).extra(
-                where=["'" + str(
-                    obj_reg_2art_ter_financ.data_2art_terc_financ) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+            obj_cad_placa_terc = (CadastroPlacaTerceiro.objects
+                                  .filter(cod_projeto=obj_reg_2art_ter_financ.cod_projeto,
+                                          placa_cad_placa_terc=obj_reg_2art_ter_financ.cod_reg_2art.placa,
+                                          perfil_veiculo_cad_placa_terc=obj_reg_2art_ter_financ.cod_reg_2art.nomespot)
+                                  .extra(where=["'" + str(obj_reg_2art_ter_financ.data_2art_terc_financ) +
+                                                "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
 
             obj_cad_frete_terc = None
             if obj_cad_placa_terc is not None:

@@ -3363,7 +3363,25 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
         $("#div_tab_contratos").html("");
         $("#div_tab_contratos").html(`
             <div id="div_tab_doc_contas_modelo_1" class="form-group  cl_div_tabela_principal_pagina w-100">
+                <table id="tab_arq_conta_mod_1"  class="display wrap w-100 cl_tab_principal_pagina">
+                    <thead>
+                        <tr>
+                            <th scope="col"></th>
+                            <th scope="col">Importado em:</th>
+                            <th scope="col">Nome arquivo</th>
+                            <th scope="col">Qtd. registros</th>
+                            <th scope="col">Competência</th>
+                            <th scope="col">Usuario</th>
+                            <th scope="col">Val. relatório(R$)</th>
+                            <th scope="col">Val. razão(R$)</th>
+                            <th scope="col">Excluir</th>
+                          </tr>
+                    </thead>
+                    <tbody>
 
+                    </tbody>
+
+                </table>
 
             </div>
         `);
@@ -3807,166 +3825,181 @@ function gera_conciliacao_comp_benner_auditoria(){
         cod_modelo_selecionado = 3;
     }
 
-    let let_loader_comp_aud = document.getElementById("loader_comp_aud");
-    let_loader_comp_aud.style.display = "flex";
-    $.ajax({
-            type: 'GET',
-            url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
-            data: {
-                'cod_modelo_selecionado' : cod_modelo_selecionado,
-                'cod_conta'     :   let_cod_conta,
-                'competencia'   :   let_competencia,
-                'tipo_visualizacao' :   'A'
-            },
-            dataType: 'json',
-            success: function (data) {
-                $("#tab_conciliacao_composicao_benner_aud").dataTable().fnClearTable();
-                $("#tab_conciliacao_composicao_benner_aud").dataTable().fnDestroy();
-                //const tabela = new DataTable("#tab_conciliacao_composicao_benner_aud");
+    if ( let_cod_conta == '' ) {
+        $.gritter.add({
+            title: 'Atenção!',
+            text: 'Nenhuma conta selecionada',
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+    } else {
+        let let_loader_comp_aud = document.getElementById("loader_comp_aud");
+        let_loader_comp_aud.style.display = "flex";
+        $.ajax({
+                type: 'GET',
+                url: '/contabil_composicao_app/gera_conciliacao_comp_benner',
+                data: {
+                    'cod_modelo_selecionado' : cod_modelo_selecionado,
+                    'cod_conta'     :   let_cod_conta,
+                    'competencia'   :   let_competencia,
+                    'tipo_visualizacao' :   'A'
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $("#tab_conciliacao_composicao_benner_aud").dataTable().fnClearTable();
+                    $("#tab_conciliacao_composicao_benner_aud").dataTable().fnDestroy();
+                    //const tabela = new DataTable("#tab_conciliacao_composicao_benner_aud");
 
-                let let_lista_dados_conciliacao = [];
-                let let_lista_dados = [];
-                for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
-                    let let_img = `
-                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
-                    `;
-
-                    if( cod_modelo_selecionado == 1 ) {
-
-                        let let_btn_detalhes_conta = `
-                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
-                                    name="btn_detalhes_conta"
-                                    class="btn btn-rounded btn-space"
-                                    value="${data.lista_contas_conciliacao[i][0]}"
-                                    title="${data.lista_contas_conciliacao[i][3]}">
-                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
-                            </button>
-
+                    let let_lista_dados_conciliacao = [];
+                    let let_lista_dados = [];
+                    for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
+                        let let_img = `
+                            <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
                         `;
-                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                            title='Não há Documento Anexado'></i>`;
-                        if(data.lista_contas_conciliacao[i][7] != '0'){
-                            let_btn_visualiza_doc = `
-                                <button type='button' name='btn_visualiza_doc_contrato'
-                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][7]}'
-                                    class='btn btn-rounded btn-space'
-                                    value='${data.lista_contas_conciliacao[i][7]}' title='Visualizar Documento Anexado'>
-                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+
+                        if( cod_modelo_selecionado == 1 ) {
+
+                            let let_btn_detalhes_conta = `
+                                <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                        name="btn_detalhes_conta"
+                                        class="btn btn-rounded btn-space"
+                                        value="${data.lista_contas_conciliacao[i][0]}"
+                                        title="${data.lista_contas_conciliacao[i][3]}">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
                                 </button>
+
                             `;
+                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                                title='Não há Documento Anexado'></i>`;
+                            if(data.lista_contas_conciliacao[i][7] != '0'){
+                                let_btn_visualiza_doc = `
+                                    <button type='button' name='btn_visualiza_doc_contrato'
+                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][7]}'
+                                        class='btn btn-rounded btn-space'
+                                        value='${data.lista_contas_conciliacao[i][7]}' title='Visualizar Documento Anexado'>
+                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                    </button>
+                                `;
+                            }
+
+                            let_reg = [
+                                /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
+                                /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                                /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                                /* 6 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
+                                /* 7 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
+                                /* 8 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
+                                /* 10 */let_btn_detalhes_conta,
+                                /* 11 */let_btn_visualiza_doc
+                            ];
+                            let_lista_dados.push(let_reg);
                         }
+                        else if( cod_modelo_selecionado == 3 ) {
 
-                        let_reg = [
-                            /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
-                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
-                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
-                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
-                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
-                            /* 8 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
-                            /* 10 */let_btn_detalhes_conta,
-                            /* 11 */let_btn_visualiza_doc
-                        ];
-                        let_lista_dados.push(let_reg);
-                    }
-                    else if( cod_modelo_selecionado == 3 ) {
-
-                        let let_btn_detalhes_conta = `
-                            <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
-                                    name="btn_detalhes_conta"
-                                    class="btn btn-rounded btn-space"
-                                    value="${data.lista_contas_conciliacao[i][0]}"
-                                    title="${data.lista_contas_conciliacao[i][3]}">
-                                <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
-                            </button>
-
-                        `;
-                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                            title='Não há Documento Anexado'></i>`;
-                        if(data.lista_contas_conciliacao[i][11] != '0'){
-                            let_btn_visualiza_doc = `
-                                <button type='button' name='btn_visualiza_doc_contrato'
-                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11]}'
-                                    class='btn btn-rounded btn-space'
-                                    value='${data.lista_contas_conciliacao[i][11]}' title='Visualizar Documento Anexado'>
-                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                            let let_btn_detalhes_conta = `
+                                <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
+                                        name="btn_detalhes_conta"
+                                        class="btn btn-rounded btn-space"
+                                        value="${data.lista_contas_conciliacao[i][0]}"
+                                        title="${data.lista_contas_conciliacao[i][3]}">
+                                    <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
                                 </button>
-                            `;
-                        }
 
-                        let_reg = [
-                            /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
-                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
-                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
-                            /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5],
-                            /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
-                            /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
-                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] + `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
-                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+ `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
-                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden" id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
-                            /* 9 */let_btn_detalhes_conta,
-                            /* 10 */let_btn_visualiza_doc
-                        ];
-                        let_lista_dados.push(let_reg);
+                            `;
+                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
+                                title='Não há Documento Anexado'></i>`;
+                            if(data.lista_contas_conciliacao[i][11] != '0'){
+                                let_btn_visualiza_doc = `
+                                    <button type='button' name='btn_visualiza_doc_contrato'
+                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11]}'
+                                        class='btn btn-rounded btn-space'
+                                        value='${data.lista_contas_conciliacao[i][11]}' title='Visualizar Documento Anexado'>
+                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                    </button>
+                                `;
+                            }
+
+                            let_reg = [
+                                /* 0 - cod_estrutura */let_img + ' ' + data.lista_contas_conciliacao[i][2],
+                                /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
+                                /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                                /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5],
+                                /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
+                                /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
+                                /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] + `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
+                                /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+ `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
+                                /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden" id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
+                                /* 9 */let_btn_detalhes_conta,
+                                /* 10 */let_btn_visualiza_doc
+                            ];
+                            let_lista_dados.push(let_reg);
+                        }
+                            /*
+                        tabela.row
+                            .add(let_reg)
+                            .draw(false);
+                           */
                     }
-                        /*
-                    tabela.row
-                        .add(let_reg)
-                        .draw(false);
-                       */
-                }
-                $("#tab_conciliacao_composicao_benner_aud").DataTable( {
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": false, //770px
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
-                    "searching": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "data":let_lista_dados,
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
+                    $("#tab_conciliacao_composicao_benner_aud").DataTable( {
+                        "bJQueryUI": true,
+                        "destroy": true,
+                        "fixedHeader": true,
+                        "scrollY": false, //770px
+                        "scrollX": true,
+                        "scrollCollapse": true,
+                        "paging": false,
+                        //"pageLength": 7,
+                        "searching": true,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "data":let_lista_dados,
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
                             }
                         }
-                    }
-                } );
-                let_loader_comp_aud.style.display = "none";
-            },
-            error: function (request, status, error) {
-                let_loader_comp_aud.style.display = "none";
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-          }
-        });}
+                    } );
+                    let_loader_comp_aud.style.display = "none";
+                },
+                error: function (request, status, error) {
+                    let_loader_comp_aud.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+    }
+
+
+
+}
 
 
 

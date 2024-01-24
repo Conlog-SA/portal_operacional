@@ -98,21 +98,21 @@
 
                     <div class="d-flex justify-content-between align-items-between w-100">
                         <div class="d-flex flex-column w-100">
-                            <label for="num_val_rel_pac_pg_rb" style="color: #000000;">Val. Relatório</label>
-                            <input type="number" id="num_val_rel_pac_pg_rb"
-                                   name="num_val_rel_pac_pg_rb" class="form-control">
+                            <label for="num_val_rel_pac_pg_rb" style="color: #000000;">Val. Relatório(R$)</label>
+                            <input type="text" id="num_val_rel_pac_pg_rb"
+                                   name="num_val_rel_pac_pg_rb" class="form-control class_mask_campo_val">
                         </div>
 
                         <div class="d-flex flex-column w-100" >
-                            <label for="num_val_raz_doc_pac_pg_rb" style="color: #000000;">Val. Razão</label>
-                            <input type="number" id="num_val_raz_doc_pac_pg_rb"
-                                   name="num_val_raz_doc_pac_pg_rb" class="form-control">
+                            <label for="num_val_raz_doc_pac_pg_rb" style="color: #000000;">Val. Razão(R$)</label>
+                            <input type="text" id="num_val_raz_doc_pac_pg_rb"
+                                   name="num_val_raz_doc_pac_pg_rb" class="form-control class_mask_campo_val">
                         </div>
 
                         <div class="d-flex flex-column w-100">
-                            <label for="num_val_dif_doc_pac_pg_rb" style="color: #000000;">Val. Diferença</label>
-                            <input type="number" id="num_val_dif_doc_pac_pg_rb"
-                                   name="num_val_dif_doc_pac_pg_rb" class="form-control">
+                            <label for="num_val_dif_doc_pac_pg_rb" style="color: #000000;">Val. Diferença(R$)</label>
+                            <input type="text" id="num_val_dif_doc_pac_pg_rb"
+                                   name="num_val_dif_doc_pac_pg_rb" class="form-control class_mask_campo_val">
                         </div>
                     </div>
 
@@ -147,4 +147,883 @@
             </div>
         </div>
     </div>
+</div>
+
+
+<!-- Modal exclui pac CONTAS A PAGAR/RECEBER -->
+<div id="modal_exclui_doc_pac_pagar_receber" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9" align="left">
+            <p>
+                <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                <span style="color:#ffffff; font-size:15px">Inativar registro</span>
+            </p>
+
+        </div>
+
+        <div class="col-md-3" align="right">
+          <button type="button" name="btn_fecha_modal_exclui_doc_pac_pagar_receber"
+                  id="btn_fecha_modal_exclui_doc_pac_pagar_receber" class="btn btn-sm btn-rounded btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-body">
+          <div class="mt-3 d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex flex-column w-100">
+                  <textarea class="form-control" id="ta_justificativa_exclusao_doc_pac_pagar_receber"
+                            name="ta_justificativa_exclusao_doc_pac_pagar_receber"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+              </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+              <div class="d-flex flex-column w-100">
+              </div>
+              <div class="d-flex flex-column w-100">
+                  <button type="button" name="btn_confirma_exclusao_doc_pac_pagar_receber"
+                          id="btn_confirma_exclusao_doc_pac_pagar_receber"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #2E8B57;"></i>
+                      Inativar
+                  </button>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal edita pac ESTOQUE -->
+<div id="modal_edita_doc_pac_estoque" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 700px; width: 700px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Edita dados docs</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_edita_doc_pac_estoque"
+                                id="btn_fecha_modal_edita_doc_pac_estoque"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_modal_edita_doc_pac_estoque" name="frm_modal_edita_doc_pac_pagar_receber"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label style="color: #000000;">
+                                Filial
+                            </label>
+                            <select class="selectpicker form-control" id="sl_filial_pac_estoque"
+                                    name="sl_filial_pac_estoque"
+                                    style="color: #999999; font-size: 20px; height: 54.65px"
+                                    data-live-search="true">
+                                {% for f in lista_filiais %}
+                                    <option value={{f.cod_reduzido}}>{{f.desc_filial}} - Cód. Red.: {{ f.cod_reduzido }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_nome_almoxarifado_pac_estoque" style="color: #000000;">
+                                Nome Almoxarifado
+                            </label>
+                            <input type="text" id="txt_nome_almoxarifado_pac_estoque"
+                                   name="txt_nome_almoxarifado_pac_estoque"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column" style="margin: 0.25rem; width: 15%;">
+                            <label for="txt_cod_prod_pac_estoque" style="color: #000000;">
+                                Cód.
+                            </label>
+                            <input type="text" id="txt_cod_prod_pac_estoque" name="txt_cod_prod_pac_estoque"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin: 0.25rem; width: 70%;">
+                            <label for="txt_desc_prod_pac_estoque" style="color: #000000;">
+                                Produto
+                            </label>
+                            <input type="text" id="txt_desc_prod_pac_estoque"
+                                   name="txt_desc_prod_pac_estoque"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column" style="margin: 0.25rem; width: 15%;">
+                            <label for="txt_qtd_prod_pac_estoque" style="color: #000000;">
+                                Qtd.
+                            </label>
+                            <input type="text" id="txt_qtd_prod_pac_estoque" name="txt_qtd_prod_pac_estoque"
+                                   class="form-control">
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_custo_medio_pac_estoque" style="color: #000000;">Custo Médio(R$)</label>
+                            <input type="text" id="num_custo_medio_pac_estoque"
+                                   name="num_custo_medio_pac_estoque" class="form-control class_mask_campo_val">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_rel_pac_estoque" style="color: #000000;">Val. Relatório(R$)</label>
+                            <input type="text" id="num_val_rel_pac_estoque"
+                                   name="num_val_rel_pac_estoque" class="form-control class_mask_campo_val">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" >
+                            <label for="num_val_raz_doc_estoque" style="color: #000000;">Val. Razão(R$)</label>
+                            <input type="text" id="num_val_raz_doc_estoque"
+                                   name="num_val_raz_doc_estoque" class="form-control class_mask_campo_val">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_dif_doc_pac_estoque" style="color: #000000;">Val. Diferença(R$)</label>
+                            <input type="text" id="num_val_dif_doc_pac_estoque"
+                                   name="num_val_dif_doc_pac_estoque" class="form-control class_mask_campo_val">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_obs_pac_estoque" style="color: #000000;">Obs.</label>
+                            <input type="text" id="txt_obs_pac_estoque"
+                                   name="txt_obs_pac_estoque" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-4" >
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                            <button type='button' id="btn_confirma_update_doc_pac_estoque"
+                                    name="btn_confirma_update_doc_pac_estoque"
+                                    class="btn btn-primary btn-rounded botaoPrincipal" >
+                                <i class="fa-solid fa-check" style="color:#2E8B57;"></i>
+                                Atualizar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal exclui pac ESTOQUE-->
+<div id="modal_exclui_doc_pac_estoque" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9" align="left">
+            <p>
+                <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                <span style="color:#ffffff; font-size:15px">Inativar registro</span>
+            </p>
+
+        </div>
+
+        <div class="col-md-3" align="right">
+          <button type="button" name="btn_fecha_modal_exclui_doc_pac_estoque"
+                  id="btn_fecha_modal_exclui_doc_pac_estoque" class="btn btn-sm btn-rounded btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-body">
+          <div class="mt-3 d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex flex-column w-100">
+                  <textarea class="form-control" id="ta_justificativa_exclusao_doc_pac_estoque"
+                            name="ta_justificativa_exclusao_doc_pac_estoque"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+              </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+              <div class="d-flex flex-column w-100">
+              </div>
+              <div class="d-flex flex-column w-100">
+                  <button type="button" name="btn_confirma_exclusao_doc_pac_estoque"
+                          id="btn_confirma_exclusao_doc_pac_estoque"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #2E8B57;"></i>
+                      Inativar
+                  </button>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal edita pac FOLHA PAG -->
+<div id="modal_edita_doc_pac_folha_pag" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 700px; width: 700px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Edita dados docs</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_edita_doc_pac_folha_pag"
+                                id="btn_fecha_modal_edita_doc_pac_folha_pag"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_modal_edita_doc_pac_folha_pag" name="frm_modal_edita_doc_pac_folha_pag"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label style="color: #000000;">
+                                Filial
+                            </label>
+                            <select class="selectpicker form-control" id="sl_filial_pac_pag_folha"
+                                    name="sl_filial_pac_pag_folha"
+                                    style="color: #999999; font-size: 20px; height: 54.65px"
+                                    data-live-search="true">
+                                {% for f in lista_filiais %}
+                                    <option value={{f.cod_reduzido}}>{{f.desc_filial}} - Cód. Red.: {{ f.cod_reduzido }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column" style="margin: 0.25rem; width: 30%;">
+                            <label for="txt_matricula_pac_folha_pag" style="color: #000000;">
+                                Matrícula
+                            </label>
+                            <input type="text" id="txt_matricula_pac_folha_pag" name="txt_matricula_pac_folha_pag"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin: 0.25rem; width: 70%;">
+                            <label for="txt_historico_pac_folha_pag" style="color: #000000;">
+                                Histórico
+                            </label>
+                            <input type="text" id="txt_historico_pac_folha_pag"
+                                   name="txt_historico_pac_folha_pag"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_pac_folha_pag" style="color: #000000;">
+                                Núm. Doc.
+                            </label>
+                            <input type="text" id="txt_num_doc_pac_folha_pag"
+                                   name="txt_num_doc_pac_folha_pag"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_cont_pac_folha_pag" style="color: #000000;">
+                                Núm. Doc. Contábil
+                            </label>
+                            <input type="text" id="txt_num_doc_cont_pac_folha_pag"
+                                   name="txt_num_doc_cont_pac_folha_pag"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="dt_lancto_pac_folha_pag" style="color: #000000;">
+                                Data Lançamento
+                            </label>
+                            <input type="date" id="dt_lancto_pac_folha_pag"
+                                   name="dt_lancto_pac_folha_pag"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_rel_pac_folha_pag" style="color: #000000;">Val. Relatório(R$)</label>
+                            <input type="text" id="num_val_rel_pac_folha_pag"
+                                   name="num_val_rel_pac_folha_pag" class="form-control class_mask_campo_val">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" >
+                            <label for="num_val_raz_doc_folha_pag" style="color: #000000;">Val. Razão(R$)</label>
+                            <input type="text" id="num_val_raz_doc_folha_pag"
+                                   name="num_val_raz_doc_folha_pag" class="form-control class_mask_campo_val">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_dif_doc_pac_folha_pag" style="color: #000000;">Val. Diferença(R$)</label>
+                            <input type="text" id="num_val_dif_doc_pac_folha_pag"
+                                   name="num_val_dif_doc_pac_folha_pag" class="form-control class_mask_campo_val">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_obs_pac_folha_pag" style="color: #000000;">Obs.</label>
+                            <input type="text" id="txt_obs_pac_folha_pag"
+                                   name="txt_obs_pac_folha_pag" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-4" >
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                            <button type='button' id="btn_confirma_update_doc_pac_folha_pag"
+                                    name="btn_confirma_update_doc_pac_folha_pag"
+                                    class="btn btn-primary btn-rounded botaoPrincipal" >
+                                <i class="fa-solid fa-check" style="color:#2E8B57;"></i>
+                                Atualizar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal exclui pac FOLHA PAG-->
+<div id="modal_exclui_doc_pac_folha_pag" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9" align="left">
+            <p>
+                <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                <span style="color:#ffffff; font-size:15px">Inativar registro</span>
+            </p>
+
+        </div>
+
+        <div class="col-md-3" align="right">
+          <button type="button" name="btn_fecha_modal_exclui_doc_pac_folha_pag"
+                  id="btn_fecha_modal_exclui_doc_pac_folha_pag" class="btn btn-sm btn-rounded btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-body">
+          <div class="mt-3 d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex flex-column w-100">
+                  <textarea class="form-control" id="ta_justificativa_exclusao_doc_pac_folha_pag"
+                            name="ta_justificativa_exclusao_doc_pac_folha_pag"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+              </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+              <div class="d-flex flex-column w-100">
+              </div>
+              <div class="d-flex flex-column w-100">
+                  <button type="button" name="btn_confirma_exclusao_doc_pac_folha_pag"
+                          id="btn_confirma_exclusao_doc_pac_folha_pag"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #2E8B57;"></i>
+                      Inativar
+                  </button>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal edita pac COMPENSAÇÃO -->
+<div id="modal_edita_doc_pac_compensacao" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 700px; width: 700px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Edita dados docs</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_edita_doc_pac_compensacao"
+                                id="btn_fecha_mmodal_edita_doc_pac_compensacao"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_modal_edita_doc_pac_compensacao" name="frm_modal_edita_doc_pac_compensacao"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="sl_filial_pac_comp" style="color: #000000;">
+                                Filial
+                            </label>
+                            <select class="selectpicker form-control" id="sl_filial_pac_comp"
+                                    name="sl_filial_pac_comp"
+                                    style="color: #999999; font-size: 20px; height: 54.65px"
+                                    data-live-search="true">
+                                {% for f in lista_filiais %}
+                                    <option value={{f.cod_reduzido}}>{{f.desc_filial}} - Cód. Red.: {{ f.cod_reduzido }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column" style="margin: 0.25rem; width: 30%;">
+                            <label for="txt_cnpj_fornec_pac_comp" style="color: #000000;">
+                                CNPJ Fornec.
+                            </label>
+                            <input type="text" id="txt_cnpj_fornec_pac_comp" name="txt_cnpj_fornec_pac_comp"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin: 0.25rem; width: 70%;">
+                            <label for="txt_nome_fornec_pac_comp" style="color: #000000;">
+                                Nome Fornecedor
+                            </label>
+                            <input type="text" id="txt_nome_fornec_pac_comp"
+                                   name="txt_nome_fornec_pac_comp"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_pac_comp" style="color: #000000;">
+                                Núm. Doc.
+                            </label>
+                            <input type="text" id="txt_num_doc_pac_comp"
+                                   name="txt_num_doc_pac_comp"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_cont_pac_comp" style="color: #000000;">
+                                Núm. Doc. Contábil
+                            </label>
+                            <input type="text" id="txt_num_doc_cont_pac_comp"
+                                   name="txt_num_doc_cont_pac_comp"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="dt_emissao_pac_comp" style="color: #000000;">
+                                Data Emissão
+                            </label>
+                            <input type="date" id="dt_emissao_pac_comp"
+                                   name="dt_emissao_pac_comp"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="dt_entrada_pac_comp" style="color: #000000;">
+                                Data Entrada
+                            </label>
+                            <input type="date" id="dt_entrada_pac_comp"
+                                   name="dt_entrada_pac_comp"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_historico_pac_comp" style="color: #000000;">
+                                Histórico
+                            </label>
+                            <input type="text" id="txt_historico_pac_comp"
+                                   name="txt_historico_pac_comp"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_rel_pac_comp" style="color: #000000;">Val. Relatório(R$)</label>
+                            <input type="text" id="num_val_rel_pac_comp"
+                                   name="num_val_rel_pac_comp" class="form-control class_mask_negative_number">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" >
+                            <label for="num_val_raz_doc_comp" style="color: #000000;">Val. Razão(R$)</label>
+                            <input type="text" id="num_val_raz_doc_comp"
+                                   name="num_val_raz_doc_comp" class="form-control class_mask_negative_number">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_dif_doc_pac_comp" style="color: #000000;">Val. Diferença(R$)</label>
+                            <input type="text" id="num_val_dif_doc_pac_comp"
+                                   name="num_val_dif_doc_pac_comp" class="form-control class_mask_negative_number">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_obs_pac_comp" style="color: #000000;">Obs.</label>
+                            <input type="text" id="txt_obs_pac_comp"
+                                   name="txt_obs_pac_comp" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-4" >
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                            <button type='button' id="btn_confirma_update_doc_pac_comp"
+                                    name="btn_confirma_update_doc_pac_comp"
+                                    class="btn btn-primary btn-rounded botaoPrincipal" >
+                                <i class="fa-solid fa-check" style="color:#2E8B57;"></i>
+                                Atualizar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal exclui pac COMPENSAÇÃO-->
+<div id="modal_exclui_doc_pac_compensacao" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9" align="left">
+            <p>
+                <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                <span style="color:#ffffff; font-size:15px">Inativar registro</span>
+            </p>
+
+        </div>
+
+        <div class="col-md-3" align="right">
+          <button type="button" name="btn_fecha_modal_exclui_doc_pac_compensacao"
+                  id="btn_fecha_modal_exclui_doc_pac_compensacao" class="btn btn-sm btn-rounded btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-body">
+          <div class="mt-3 d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex flex-column w-100">
+                  <textarea class="form-control" id="ta_justificativa_exclusao_doc_pac_compensacao"
+                            name="ta_justificativa_exclusao_doc_pac_compensacao"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+              </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+              <div class="d-flex flex-column w-100">
+              </div>
+              <div class="d-flex flex-column w-100">
+                  <button type="button" name="btn_confirma_exclusao_doc_pac_compensacao"
+                          id="btn_confirma_exclusao_doc_pac_compensacao"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #2E8B57;"></i>
+                      Inativar
+                  </button>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal edita pac TRIBUTOS -->
+<div id="modal_edita_doc_pac_tributos" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 700px; width: 700px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-pen-to-square fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Edita dados docs</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_edita_doc_pac_tributos"
+                                id="btn_fecha_modal_edita_doc_pac_tributos"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_modal_edita_doc_pac_tributos" name="frm_modal_edita_doc_pac_tributos"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="sl_filial_pac_trib" style="color: #000000;">
+                                Filial
+                            </label>
+                            <select class="selectpicker form-control" id="sl_filial_pac_trib"
+                                    name="sl_filial_pac_trib"
+                                    style="color: #999999; font-size: 20px; height: 54.65px"
+                                    data-live-search="true">
+                                {% for f in lista_filiais %}
+                                    <option value={{f.cod_reduzido}}>{{f.desc_filial}} - Cód. Red.: {{ f.cod_reduzido }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_nome_fornec_pac_trib" style="color: #000000;">
+                                Nome Fornecedor
+                            </label>
+                            <input type="text" id="txt_nome_fornec_pac_trib"
+                                   name="txt_nome_fornec_pac_trib"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_pac_trib" style="color: #000000;">
+                                Núm. Doc.
+                            </label>
+                            <input type="text" id="txt_num_doc_pac_trib"
+                                   name="txt_num_doc_pac_trib"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_num_doc_cont_pac_trib" style="color: #000000;">
+                                Núm. Doc. Contábil
+                            </label>
+                            <input type="text" id="txt_num_doc_cont_pac_trib"
+                                   name="txt_num_doc_cont_pac_trib"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="dt_emissao_pac_trib" style="color: #000000;">
+                                Data Emissão
+                            </label>
+                            <input type="date" id="dt_emissao_pac_trib"
+                                   name="dt_emissao_pac_trib"
+                                   class="form-control">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="dt_entrada_pac_trib" style="color: #000000;">
+                                Data Entrada
+                            </label>
+                            <input type="date" id="dt_entrada_pac_trib"
+                                   name="dt_entrada_pac_trib"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_historico_pac_trib" style="color: #000000;">
+                                Histórico
+                            </label>
+                            <input type="text" id="txt_historico_pac_trib"
+                                   name="txt_historico_pac_trib"
+                                   class="form-control">
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_rel_pac_trib" style="color: #000000;">Val. Relatório(R$)</label>
+                            <input type="text" id="num_val_rel_pac_trib"
+                                   name="num_val_rel_pac_trib" class="form-control class_mask_negative_number">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" >
+                            <label for="num_val_raz_doc_trib" style="color: #000000;">Val. Razão(R$)</label>
+                            <input type="text" id="num_val_raz_doc_trib"
+                                   name="num_val_raz_doc_trib" class="form-control class_mask_negative_number">
+                        </div>
+
+                        <div class="d-flex flex-column w-100">
+                            <label for="num_val_dif_doc_pac_trib" style="color: #000000;">Val. Diferença(R$)</label>
+                            <input type="text" id="num_val_dif_doc_pac_trib"
+                                   name="num_val_dif_doc_pac_trib" class="form-control class_mask_negative_number">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100">
+                            <label for="txt_obs_pac_trib" style="color: #000000;">Obs.</label>
+                            <input type="text" id="txt_obs_pac_trib"
+                                   name="txt_obs_pac_trib" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-4" >
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                        </div>
+                        <div class="d-flex flex-column w-100">
+                            <button type='button' id="btn_confirma_update_doc_pac_trib"
+                                    name="btn_confirma_update_doc_pac_trib"
+                                    class="btn btn-primary btn-rounded botaoPrincipal" >
+                                <i class="fa-solid fa-check" style="color:#2E8B57;"></i>
+                                Atualizar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal exclui pac TRIBUTOS-->
+<div id="modal_exclui_doc_pac_trib" role="dialog" class="modal">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;">
+        <div class="col-md-9" align="left">
+            <p>
+                <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                <span style="color:#ffffff; font-size:15px">Inativar registro</span>
+            </p>
+
+        </div>
+
+        <div class="col-md-3" align="right">
+          <button type="button" name="btn_fecha_modal_exclui_doc_pac_trib"
+                  id="btn_fecha_modal_exclui_doc_pac_trib" class="btn btn-sm btn-rounded btn_fecha_modal">
+            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+          </button>
+        </div>
+
+      </div>
+      <div class="modal-body">
+          <div class="mt-3 d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex flex-column w-100">
+                  <textarea class="form-control" id="ta_justificativa_exclusao_doc_pac_trib"
+                            name="ta_justificativa_exclusao_doc_pac_trib"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+              </div>
+          </div>
+
+          <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+              <div class="d-flex flex-column w-100">
+              </div>
+              <div class="d-flex flex-column w-100">
+                  <button type="button" name="btn_confirma_exclusao_doc_pac_trib"
+                          id="btn_confirma_exclusao_doc_pac_trib"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #2E8B57;"></i>
+                      Inativar
+                  </button>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </div>
 </div>
