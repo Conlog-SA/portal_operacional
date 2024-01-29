@@ -735,6 +735,628 @@ $(document).on('click','button', function(){
             }
         });
     }
+    else if ( let_nome_btn == 'btn_abre_modal_edita_doc_pac_financ_disp' ) {
+        let let_cod_doc = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_doc_pac_financ_disp',
+            data: {
+                'cod_doc'    :   let_cod_doc
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                let let_cod_red = dados.doc_dic.cod_red_fil;
+                $("#sl_filial_pac_financ_disp").val(let_cod_red);
+                $("#sl_filial_pac_financ_disp").selectpicker('refresh');
+
+                $("#txt_num_doc_pac_financ_disp").val(dados.doc_dic.num_doc);
+
+                $("#dt_lancto_pac_financ_disp").val(dados.doc_dic.data_lancto);
+                $("#num_val_rel_pac_financ_disp").val(dados.doc_dic.val_rel);
+                $("#num_val_raz_doc_pac_financ_disp").val(dados.doc_dic.val_razao);
+                $("#num_val_dif_doc_pac_financ_disp").val(dados.doc_dic.val_dif);
+                $("#txt_historico_pac_financ_disp").val(dados.doc_dic.historico);
+                $("#txt_obs_pac_financ_disp").val(dados.doc_dic.obs);
+                $("#btn_confirma_update_doc_pac_financ_disp").val(dados.doc_dic.cod_pac_doc_financ_disp);
+
+                $("#modal_edita_doc_pac_financ_disp").show();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+          }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_edita_doc_pac_financ_disp') {
+         $("#modal_edita_doc_pac_financ_disp").hide();
+    }
+    else if( let_nome_btn == 'btn_confirma_update_doc_pac_financ_disp') {
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_dados_doc_pac_financ_disp',
+            data: {
+                'let_cod_doc': let_val_btn,
+                'cod_red_fil': $("#sl_filial_pac_financ_disp").val(),
+                'data_lancto': $("#dt_lancto_pac_financ_disp").val(),
+                'num_doc': $("#txt_num_doc_pac_financ_disp").val(),
+                'val_rel': $("#num_val_rel_pac_financ_disp").val(),
+                'val_razao': $("#num_val_raz_doc_pac_financ_disp").val(),
+                'val_dif': $("#num_val_dif_doc_pac_financ_disp").val(),
+                'obs': $("#txt_obs_pac_financ_disp").val(),
+                'historico': $("#txt_historico_pac_financ_disp").val()
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#modal_edita_doc_pac_financ_disp").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+                atualiza_tab_imp_docs_pac_mod_1();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_excluir_doc_pac_financ_disp' ) {
+        $("#btn_confirma_exclusao_doc_pac_financ_disp").val(let_val_btn);
+        $("#modal_exclui_doc_pac_financ_disp").show();
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_financ_disp' ) {
+        $("#modal_exclui_doc_pac_financ_disp").hide();
+    }
+    else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_financ_disp') {
+        //cod_reg/obs
+        let let_cod_reg = let_val_btn;
+        let let_motivo = $("#ta_justificativa_exclusao_doc_pac_financ_disp").val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_doc_pac_financ_disp/'+let_val_btn + '_' + let_motivo,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#modal_exclui_doc_pac_financ_disp").hide();
+                atualiza_tab_imp_docs_pac_mod_1();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_edita_doc_pac_intercompany' ) {
+        let let_cod_doc = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_doc_pac_intercompany',
+            data: {
+                'cod_doc'    :   let_cod_doc
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                let let_cod_red = dados.doc_dic.cod_red_fil;
+                $("#sl_filial_pac_intercompany").val(let_cod_red);
+                $("#sl_filial_pac_intercompany").selectpicker('refresh');
+
+                $("#txt_num_doc_pac_intercompany").val(dados.doc_dic.num_doc);
+
+                $("#dt_lancto_pac_intercompany").val(dados.doc_dic.data_lancto);
+                $("#num_val_rel_pac_intercompany").val(dados.doc_dic.val_rel);
+                $("#num_val_raz_doc_pac_intercompany").val(dados.doc_dic.val_razao);
+                $("#num_val_dif_doc_pac_intercompany").val(dados.doc_dic.val_dif);
+                $("#txt_historico_pac_intercompany").val(dados.doc_dic.historico);
+                $("#txt_obs_pac_intercompany").val(dados.doc_dic.obs);
+                $("#btn_confirma_update_doc_pac_intercompany").val(dados.doc_dic.cod_pac_doc_intercompany);
+
+                $("#modal_edita_doc_pac_intercompany").show();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+          }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_edita_doc_pac_intercompany') {
+         $("#modal_edita_doc_pac_intercompany").hide();
+    }
+    else if( let_nome_btn == 'btn_confirma_update_doc_pac_intercompany') {
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_dados_doc_pac_intercompany',
+            data: {
+                'let_cod_doc': let_val_btn,
+                'cod_red_fil': $("#sl_filial_pac_intercompany").val(),
+                'data_lancto': $("#dt_lancto_pac_intercompany").val(),
+                'num_doc': $("#txt_num_doc_pac_intercompany").val(),
+                'val_rel': $("#num_val_rel_pac_intercompany").val(),
+                'val_razao': $("#num_val_raz_doc_pac_intercompany").val(),
+                'val_dif': $("#num_val_dif_doc_pac_intercompany").val(),
+                'obs': $("#txt_obs_pac_intercompany").val(),
+                'historico': $("#txt_historico_pac_intercompany").val()
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#modal_edita_doc_pac_intercompany").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+                atualiza_tab_imp_docs_pac_mod_1();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_excluir_doc_pac_intercompany' ) {
+        $("#btn_confirma_exclusao_doc_pac_intercompany").val(let_val_btn);
+        $("#modal_exclui_doc_pac_intercompany").show();
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_intercompany' ) {
+        $("#modal_exclui_doc_pac_intercompany").hide();
+    }
+    else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_intercompany') {
+        //cod_reg/obs
+        let let_cod_reg = let_val_btn;
+        let let_motivo = $("#ta_justificativa_exclusao_doc_pac_intercompany").val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_doc_pac_intercompany/'+let_val_btn + '_' + let_motivo,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#modal_exclui_doc_pac_intercompany").hide();
+                atualiza_tab_imp_docs_pac_mod_1();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_edita_doc_pac_imobilizado' ) {
+        let let_cod_doc = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_doc_pac_imobilizado',
+            data: {
+                'cod_doc'    :   let_cod_doc
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                let let_cod_red = dados.doc_dic.cod_red_fil;
+                $("#sl_filial_pac_imob").val(let_cod_red);
+                $("#sl_filial_pac_imob").selectpicker('refresh');
+
+                $("#txt_plaqueta_pac_imob").val(dados.doc_dic.plaqueta);
+                $("#txt_desc_imob_pac_imob").val(dados.doc_dic.desc_imobilizado);
+                $("#txt_val_aquisicao_pac_imob").val(dados.doc_dic.val_aquisicao);
+                $("#txt_num_doc_pac_imob").val(dados.doc_dic.num_doc);
+                $("#txt_nome_fornec_pac_imob").val(dados.doc_dic.nome_fornecedor);
+                $("#dt_entrada_pac_imob").val(dados.doc_dic.data_entrada);
+                $("#num_deprec_acum_pac_imob").val(dados.doc_dic.depreciacao_acum);
+                $("#num_val_liq_pac_imob").val(dados.doc_dic.val_liq);
+                $("#num_taxa_depre_doc_pac_imob").val(dados.doc_dic.taxa_depreciacao);
+
+                $("#num_val_rel_pac_imob").val(dados.doc_dic.val_rel);
+                $("#num_val_raz_doc_pac_imob").val(dados.doc_dic.val_razao);
+                $("#num_val_dif_doc_pac_imob").val(dados.doc_dic.val_dif);
+
+                $("#txt_obs_pac_imob").val(dados.doc_dic.obs);
+                $("#btn_confirma_update_doc_pac_imob").val(dados.doc_dic.cod_pac_doc_imobilizado);
+
+                $("#modal_edita_doc_pac_imobilizado").show();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+          }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_edita_doc_pac_imobilizado') {
+         $("#modal_edita_doc_pac_imobilizado").hide();
+    }
+    else if( let_nome_btn == 'btn_confirma_update_doc_pac_imob') {
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_dados_doc_imobilizado',
+            data: {
+                'let_cod_doc': let_val_btn,
+                'cod_red_fil': $("#sl_filial_pac_imob").val(),
+                'plaqueta': $("#txt_plaqueta_pac_imob").val(),
+                'desc_imobilizado': $("#txt_desc_imob_pac_imob").val(),
+                'val_aquisicao': $("#txt_val_aquisicao_pac_imob").val(),
+                'num_doc': $("#txt_num_doc_pac_imob").val(),
+                'nome_fornec': $("#txt_nome_fornec_pac_imob").val(),
+                'data_entrada': $("#dt_entrada_pac_imob").val(),
+                'deprec_acum': $("#num_deprec_acum_pac_imob").val(),
+                'val_liq': $("#num_val_liq_pac_imob").val(),
+                'taxa_deprec': $("#num_taxa_depre_doc_pac_imob").val(),
+                'val_rel': $("#num_val_rel_pac_imob").val(),
+                'val_razao': $("#num_val_raz_doc_pac_imob").val(),
+                'val_dif': $("#num_val_dif_doc_pac_imob").val(),
+                'obs': $("#txt_obs_pac_imob").val()
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#modal_edita_doc_pac_imobilizado").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+                atualiza_tab_imp_docs_pac_mod_1();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_excluir_doc_pac_imobilizado' ) {
+        $("#btn_confirma_exclusao_doc_pac_imobilizado").val(let_val_btn);
+        $("#modal_exclui_doc_pac_imobilizado").show();
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_imobilizado' ) {
+        $("#modal_exclui_doc_pac_imobilizado").hide();
+    }
+    else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_imobilizado') {
+        //cod_reg/obs
+        let let_cod_reg = let_val_btn;
+        let let_motivo = $("#ta_justificativa_exclusao_doc_pac_imobilizado").val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_doc_pac_imobilizado/'+let_val_btn + '_' + let_motivo,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#modal_exclui_doc_pac_imobilizado").hide();
+                atualiza_tab_imp_docs_pac_mod_1();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_edita_doc_pac_consorc_atv' ) {
+        let let_cod_doc = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_doc_pac_consorc_atv',
+            data: {
+                'cod_doc'    :   let_cod_doc
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                let let_cod_red = dados.doc_dic.cod_red_fil;
+                $("#sl_filial_pac_consorc_atv").val(let_cod_red);
+                $("#sl_filial_pac_consorc_atv").selectpicker('refresh');
+
+                $("#txt_historico_pac_consorc_atv").val(dados.doc_dic.historico);
+                $("#txt_num_doc_pac_consorc_atv").val(dados.doc_dic.num_doc);
+                $("#dt_lancto_pac_consorc_atv").val(dados.doc_dic.data_lancto);
+
+                $("#num_val_rel_pac_consorc_atv").val(dados.doc_dic.val_rel);
+                $("#num_val_raz_doc_pac_consorc_atv").val(dados.doc_dic.val_razao);
+                $("#num_val_dif_doc_pac_consorc_atv").val(dados.doc_dic.val_dif);
+
+                $("#txt_obs_pac_consorc_atv").val(dados.doc_dic.obs);
+                $("#btn_confirma_update_doc_pac_consorc_atv").val(dados.doc_dic.cod_pac_doc_consorcio_ativo);
+
+                $("#modal_edita_doc_pac_consorcios_ativos").show();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+          }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_edita_doc_pac_consorcios_ativos') {
+         $("#modal_edita_doc_pac_consorcios_ativos").hide();
+    }
+    else if( let_nome_btn == 'btn_confirma_update_doc_pac_consorc_atv') {
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_dados_doc_consorc_atv',
+            data: {
+                'let_cod_doc': let_val_btn,
+                'cod_red_fil': $("#sl_filial_pac_consorc_atv").val(),
+                'data_lancto': $("#dt_lancto_pac_consorc_atv").val(),
+                'num_doc': $("#txt_num_doc_pac_consorc_atv").val(),
+                'val_rel': $("#num_val_rel_pac_consorc_atv").val(),
+                'val_razao': $("#num_val_raz_doc_pac_consorc_atv").val(),
+                'val_dif': $("#num_val_dif_doc_pac_consorc_atv").val(),
+                'obs': $("#txt_obs_pac_consorc_atv").val(),
+                'historico': $("#txt_historico_pac_consorc_atv").val()
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#modal_edita_doc_pac_consorcios_ativos").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+                atualiza_tab_imp_docs_pac_mod_1();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_excluir_doc_pac_consorcio_ativo' ) {
+        $("#btn_confirma_exclusao_doc_pac_consorcios_ativos").val(let_val_btn);
+        $("#modal_exclui_doc_pac_consorcios_ativos").show();
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_imobilizado' ) {
+        $("#modal_exclui_doc_pac_consorcios_ativos").hide();
+    }
+    else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_consorcios_ativos') {
+        //cod_reg/obs
+        let let_cod_reg = let_val_btn;
+        let let_motivo = $("#ta_justificativa_exclusao_doc_pac_consorcios_ativos").val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_doc_pac_consorcios_ativos/'+let_val_btn + '_' + let_motivo,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#modal_exclui_doc_pac_consorcios_ativos").hide();
+                atualiza_tab_imp_docs_pac_mod_1();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_edita_doc_pac_demais_contas' ) {
+        let let_cod_doc = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_dados_doc_pac_demais_contas',
+            data: {
+                'cod_doc'    :   let_cod_doc
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                let let_cod_red = dados.doc_dic.cod_red_fil;
+                $("#sl_filial_pac_demais_contas").val(let_cod_red);
+                $("#sl_filial_pac_demais_contas").selectpicker('refresh');
+
+                $("#txt_num_doc_pac_demais_contas").val(dados.doc_dic.num_doc);
+                $("#txt_num_doc_cont_pac_demais_contas").val(dados.doc_dic.num_doc_contabil);
+
+
+                $("#dt_lancto_pac_demais_contas").val(dados.doc_dic.data_lancto);
+                $("#dt_entrada_pac_demais_contas").val(dados.doc_dic.data_entrada);
+                $("#num_val_rel_pac_demais_contas").val(dados.doc_dic.val_rel);
+                $("#num_val_raz_doc_demais_contas").val(dados.doc_dic.val_razao);
+                $("#num_val_dif_doc_pac_demais_contas").val(dados.doc_dic.val_dif);
+                $("#txt_historico_pac_demais_contas").val(dados.doc_dic.historico);
+                $("#txt_obs_pac_demais_contas").val(dados.doc_dic.obs);
+                $("#btn_confirma_update_doc_pac_demais_contas").val(dados.doc_dic.cod_pac_doc_outros);
+
+                $("#modal_edita_doc_pac_demais_contas").show();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+          }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_edita_doc_pac_demais_contas') {
+         $("#modal_edita_doc_pac_demais_contas").hide();
+    }
+    else if( let_nome_btn == 'btn_confirma_update_doc_pac_demais_contas') {
+        let let_val_rel = $("#num_val_rel_pac_demais_contas").val();
+        let let_val_raz = $("#num_val_raz_doc_demais_contas").val();
+        let let_dif = $("#num_val_dif_doc_pac_demais_contas").val();
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_dados_doc_pac_demais_contas',
+            data: {
+                'let_cod_doc': let_val_btn,
+                'cod_red_fil': $("#sl_filial_pac_demais_contas").val(),
+                'data_lancto': $("#dt_lancto_pac_demais_contas").val(),
+                'data_entrada': $("#dt_entrada_pac_demais_contas").val(),
+                'num_doc': $("#txt_num_doc_pac_demais_contas").val(),
+                'num_doc_contabil': $("#txt_num_doc_cont_pac_demais_contas").val(),
+                'val_rel': let_val_rel,
+                'val_razao': let_val_raz,
+                'val_dif': let_dif,
+                'obs': $("#txt_obs_pac_demais_contas").val(),
+                'historico': $("#txt_historico_pac_demais_contas").val()
+            },
+            //dataType: 'json',
+            success: function (dados) {
+                $("#modal_edita_doc_pac_demais_contas").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+
+                atualiza_tab_imp_docs_pac_mod_1();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: true,
+                    time: '',
+                });
+          }
+        });
+    }
+    else if ( let_nome_btn == 'btn_abre_modal_excluir_doc_pac_demais_contas' ) {
+        $("#btn_confirma_exclusao_doc_pac_demais_contas").val(let_val_btn);
+        $("#modal_exclui_doc_pac_demais_contas").show();
+    }
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_demais_contas' ) {
+        $("#modal_exclui_doc_pac_demais_contas").hide();
+    }
+    else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_demais_contas') {
+        //cod_reg/obs
+        let let_cod_reg = let_val_btn;
+        let let_motivo = $("#ta_justificativa_exclusao_doc_pac_demais_contas").val();
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_doc_pac_demais_contas/'+let_val_btn + '_' + let_motivo,
+            dataType: 'json',
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#modal_exclui_doc_pac_demais_contas").hide();
+                atualiza_tab_imp_docs_pac_mod_1();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
 
 });
 
@@ -909,8 +1531,9 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                 let let_lista_docs = [];
                 let let_columns_tab = [];
 
-                //Contas a pagar/receber
+
                 if(let_cod_pac=='3'){
+                    //Contas a pagar/receber
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
                             <button type="button" name="btn_abre_modal_edita_doc_pac_pagar_receber"
@@ -923,8 +1546,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="modal_exclui_doc_pac_pagar_receber"
-                                id="modal_exclui_doc_pac_pagar_receber_${reg.cod_pac_doc_contas_pagar_receber}"
+                            <button type="button" name="btn_abre_modal_exclui_doc_pac_pagar_receber"
+                                id="btn_abre_modal_exclui_doc_pac_pagar_receber_${reg.cod_pac_doc_contas_pagar_receber}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_contas_pagar_receber}"
                                 title="Excluir Registro">
@@ -1172,8 +1795,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                     //Financeiro disponibilidades
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
-                            <button type="button" name="btn_editar_doc_pac_conta_mod_1"
-                                id="btn_editar_doc_pac_conta_mod_1_${reg.cod_pac_doc_financ_disp}"
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_financ_disp"
+                                id="btn_abre_modal_edita_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_financ_disp}">
                                 <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
@@ -1181,8 +1804,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="btn_excluir_doc_pac_conta_mod_1"
-                                id="btn_excluir_doc_pac_conta_mod_1_${reg.cod_pac_doc_financ_disp}"
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_financ_disp"
+                                id="btn_abre_modal_excluir_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_financ_disp}">
                                 <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
@@ -1219,8 +1842,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                     //Intercompany
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
-                            <button type="button" name="btn_editar_doc_pac_conta_mod_1"
-                                id="btn_editar_doc_pac_conta_mod_1_${reg.cod_pac_doc_intercompany}"
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_intercompany"
+                                id="btn_abre_modal_edita_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_intercompany}">
                                 <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
@@ -1228,8 +1851,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="btn_excluir_doc_pac_conta_mod_1"
-                                id="btn_excluir_doc_pac_conta_mod_1_${reg.cod_pac_doc_intercompany}"
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_intercompany"
+                                id="btn_abre_modal_excluir_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_intercompany}">
                                 <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
@@ -1266,8 +1889,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                     //Imobilizado
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
-                            <button type="button" name="btn_editar_doc_pac_conta_mod_1"
-                                id="btn_editar_doc_pac_conta_mod_1_${reg.cod_pac_doc_imobilizado}"
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_imobilizado"
+                                id="btn_abre_modal_edita_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_imobilizado}">
                                 <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
@@ -1275,8 +1898,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="btn_excluir_doc_pac_conta_mod_1"
-                                id="btn_excluir_doc_pac_conta_mod_1_${reg.cod_pac_doc_imobilizado}"
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_imobilizado"
+                                id="btn_abre_modal_excluir_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_imobilizado}">
                                 <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
@@ -1294,10 +1917,16 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         }
 
                         let doc = [
+                            reg.data_entrada,
                             reg.cod_filial__desc_filial,
-                            reg.historico,
+                            reg.plaqueta,
+                            reg.desc_imobilizado,
+                            reg.val_aquisicao,
                             reg.num_doc,
-                            reg.data_lancto,
+                            reg.nome_fornecedor,
+                            reg.depreciacao_acum,
+                            reg.val_liq,
+                            reg.taxa_depreciacao,
                             reg.val_rel,
                             reg.val_razao,
                             reg.val_dif,
@@ -1313,8 +1942,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                     //Consorcios ativo
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
-                            <button type="button" name="btn_editar_doc_pac_conta_mod_1"
-                                id="btn_editar_doc_pac_conta_mod_1_${reg.cod_pac_doc_consorcio_ativo}"
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_consorc_atv"
+                                id="btn_abre_modal_edita_doc_pac_consorc_atv_${reg.cod_pac_doc_consorcio_ativo}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_consorcio_ativo}">
                                 <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
@@ -1322,8 +1951,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="btn_excluir_doc_pac_conta_mod_1"
-                                id="btn_excluir_doc_pac_conta_mod_1_${reg.cod_pac_doc_consorcio_ativo}"
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_consorcio_ativo"
+                                id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_${reg.cod_pac_doc_consorcio_ativo}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_consorcio_ativo}">
                                 <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
@@ -1357,11 +1986,11 @@ function atualiza_tab_imp_docs_pac_mod_1() {
 
                 }
                 else if(let_cod_pac=='14'){
-                    //Consorcios ativo
+                    //Demais Contas
                     dados.lista_docs.forEach( reg => {
                         let let_btn_editar_arquivo = `
-                            <button type="button" name="btn_editar_doc_pac_demais_contas_mod_1"
-                                id="btn_editar_doc_pac_demais_contas_mod_1_${reg.cod_pac_doc_outros}"
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_demais_contas"
+                                id="btn_abre_modal_edita_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_outros}">
                                 <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
@@ -1369,8 +1998,8 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         `;
 
                         let let_btn_excluir_arquivo = `
-                            <button type="button" name="btn_excluir_doc_pac_demais_conta_mod_1"
-                                id="btn_excluir_doc_pac_demais_conta_mod_1_${reg.cod_pac_doc_outros}"
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_demais_contas"
+                                id="btn_abre_modal_excluir_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_outros}">
                                 <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
@@ -1390,7 +2019,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                         let doc = [
                             reg.data_entrada,
                             reg.data_lancto,
-                            reg.cod_filial__cod_reduzido,
+                            reg.cod_filial__desc_filial,
                             reg.historico,
                             reg.num_doc,
                             reg.num_doc_contabil,

@@ -2086,14 +2086,17 @@ function atualiza_tab_contratos_conta(cod_conta){
                                                 <input type="date" id="dt_data_pag_parc_${parc.handle_parc}" readonly value="${parc.data_liquidacao}">
                                             `;
                                             let let_valor_pago = `
-                                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" readonly value="${parc.val_total_pago}" style="width: 87.2px;text-align:right;">
+                                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}"
+                                                readonly value="${parc.val_total_pago}"
+                                                style="width: 87.2px;text-align:right;">
                                             `;
                                             let let_btn_liquidar = `
                                                 <i class="fa-solid fa-receipt" style="color: #3CB371;"
                                                             title="Pagamento Efetuado"></i>
                                             `;
                                             let let_readonly = 'readonly';
-                                            if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                                            //if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                                            if (parc.tipo_prazo != 'PG') {
                                                 let_readonly = ''
                                                 let_img = `
                                                     <i class="fa-solid fa-triangle-exclamation" style="color: #f46424;" title="Pendente"></i>
@@ -2102,7 +2105,9 @@ function atualiza_tab_contratos_conta(cod_conta){
                                                     <input type="date" id="dt_data_pag_parc_${parc.handle_parc}">
                                                 `;
                                                 let_valor_pago = `
-                                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" style="width: 87.2px;text-align:right;">
+                                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}"
+                                                    style="width: 87.2px;text-align:right;"
+                                                    value="${parc.val_total_pago}" >
                                                 `;
                                                 let_btn_liquidar = `
                                                     <button type='button' name='btn_liquidar_parcela'
@@ -2766,17 +2771,20 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                         ctr.lista_parcelas_contrato.forEach( parc => {
                             let let_img = `<i class="fa-solid fa-check" style="color: #f46424;" title="Pago"></i>`;
                             let let_data_pagamento = `
-                                <input type="date" id="dt_data_pag_parc_${parc.handle_parc}" readonly value="${parc.data_liquidacao}">
+                                <input type="date" id="dt_data_pag_parc_${parc.handle_parc}" readonly
+                                value="${parc.data_liquidacao}">
                             `;
                             let let_valor_pago = `
-                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" readonly value="${parc.val_total_pago}" style="width: 87.2px;text-align:right;">
+                                <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" readonly
+                                value="${parc.val_total_pago}" style="width: 87.2px;text-align:right;">
                             `;
                             let let_btn_liquidar = `
                                 <i class="fa-solid fa-receipt" style="color: #3CB371;"
                                             title="Pagamento Efetuado"></i>
                             `;
                             let let_readonly = 'readonly';
-                            if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                            //if (parc.data_liquidacao == null || parc.data_liquidacao == '') {
+                            if (parc.tipo_prazo != 'PG') {
                                 let_readonly = '';
                                 let_img = `
                                     <i class="fa-solid fa-triangle-exclamation" style="color: #f46424;" title="Pendente"></i>
@@ -2785,7 +2793,8 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                     <input type="date" id="dt_data_pag_parc_${parc.handle_parc}">
                                 `;
                                 let_valor_pago = `
-                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}" style="width: 87.2px;text-align:right;">
+                                    <input type="text" id="txt_val_pag_parc_${parc.handle_parc}"
+                                    style="width: 87.2px;text-align:right;" value="${parc.val_total_pago}">
                                 `;
                                 let_btn_liquidar = `
                                     <button type='button' name='btn_liquidar_parcela'
@@ -2819,13 +2828,19 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                         ${parc.valor_conta}
                                     </td>
                                     <td>
-                                        <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}" name="txt_val_principal" value="${parc.valor_principal}" style="width: 87.2px;text-align:right;">
+                                        <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}"
+                                        name="txt_val_principal" value="${parc.valor_principal}"
+                                        style="width: 87.2px;text-align:right;">
                                     </td>
                                     <td>
-                                        <input type="text" `+ let_readonly +` id="txt_val_taxas_${parc.handle_parc}" name="txt_val_taxas" value="${parc.valor_taxas}" style="width: 87.2px;text-align:right;">
+                                        <input type="text" `+ let_readonly +` id="txt_val_taxas_${parc.handle_parc}"
+                                        name="txt_val_taxas" value="${parc.valor_taxas}"
+                                        style="width: 87.2px;text-align:right;">
                                     </td>
                                     <td>
-                                        <input type="text" `+ let_readonly +` id="txt_val_fundo_${parc.handle_parc}" name="txt_val_fundo" value="${parc.valor_fundo}" style="width: 87.2px;text-align:right;">
+                                        <input type="text" `+ let_readonly +` id="txt_val_fundo_${parc.handle_parc}"
+                                        name="txt_val_fundo" value="${parc.valor_fundo}"
+                                        style="width: 87.2px;text-align:right;">
                                     </td>
                                     <td id="td_val_total_${parc.handle_parc}">
                                         ${parc.valor_total}

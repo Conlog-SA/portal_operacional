@@ -23,8 +23,8 @@ from apps.contabil_composicao_app.models import Pacote_Conta, Conta, Contrato, P
     Layout_Campos_Contas_Modelo_1, Arquivo_Docs_Contas_Modelo_1, Registros_Arqv_Docs_Contas_Modelo_1, \
     Arquivo_Docs_Pac_Contas_Modelo_1, Docs_Pac_Contas_Pagar_Receber_M1, Docs_Pac_Estoque_M1, \
     Docs_Pac_Folha_Pag_M1, Docs_Pac_Contas_Compensacao_M1, Docs_Pac_Tributos_M1, \
-    Docs_Pac_Finac_Disponib_M1_View, Docs_Pac_Intercompany_M1_View, Docs_Pac_Imobilizado_M1_View, \
-    Docs_Pac_Consorcio_Ativo_M1_View, Docs_Demais_Contas_M1_View, Docs_Pac_Contas_Pagar_Receber_M1
+    Docs_Pac_Finac_Disponib_M1, Docs_Pac_Intercompany_M1, Docs_Pac_Imobilizado_M1, \
+    Docs_Pac_Consorcio_Ativo_M1, Docs_Demais_Contas_M1, Docs_Pac_Contas_Pagar_Receber_M1
 from apps.estrut_org_app.models import Empresa, Filial
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -147,8 +147,12 @@ class Form_Imp_Contratos_Conta_View(View):
                 num_parc = 0
                 if lista_parcelas_contrato != None:
                     for parcela in lista_parcelas_contrato:
+                        val_pago = decimal.Decimal(0.00)
+                        if parcela['val_total_pago'] != None:
+                            val_pago = decimal.Decimal(parcela['val_total_pago'])
+
                         tipo_prazo_parc = ''
-                        if parcela['data_liquidacao'] != None:
+                        if parcela['data_liquidacao'] != None and val_pago >= decimal.Decimal(parcela['val_principal']):
                             tipo_prazo_parc = 'PG'
                         elif datetime.strptime(parcela['data_vencimento'], '%Y-%m-%d') <= data_hora_atual:
                             tipo_prazo_parc = 'CP'
@@ -171,9 +175,7 @@ class Form_Imp_Contratos_Conta_View(View):
                         if parcela['valor_corrigido'] != None:
                             val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
 
-                        val_pago = decimal.Decimal(0.00)
-                        if parcela['val_total_pago'] != None:
-                            val_pago = decimal.Decimal(parcela['val_total_pago'])
+
 
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parcela['handle_parc']).first()
                         if obj_parcela == None:
@@ -258,10 +260,10 @@ class Form_Imp_Contratos_Conta_View(View):
                             data_liquidacao_formatada = data_liquidacao.strftime("%Y-%m-%d")
                             # data_liquidacao_formatada = parcela['data_liquidacao']
 
-                            if parcela['valor_corrigido'] != None:
-                                valor_corrigido = locale.currency(parcela['valor_corrigido'], grouping=True, symbol=None)
-                            if parcela['val_total_pago'] != None:
-                                val_total_pago = locale.currency(parcela['val_total_pago'], grouping=True, symbol=None)
+                        if parcela['valor_corrigido'] != None:
+                            valor_corrigido = locale.currency(parcela['valor_corrigido'], grouping=True, symbol=None)
+                        if parcela['val_total_pago'] != None:
+                            val_total_pago = locale.currency(parcela['val_total_pago'], grouping=True, symbol=None)
 
                         val_taxa_parcela = decimal.Decimal(0.00)
                         if obj_parcela.val_taxas != None:
@@ -892,7 +894,10 @@ class Form_Cad_Parcelas_Contrato_View(View):
             data_pag_form = request.POST['data_pag']
             val_pag_form = request.POST['val_pag']
 
-            obj_parcela.data_liquidacao = data_pag_form
+            if data_pag_form != '':
+                obj_parcela.data_liquidacao = data_pag_form
+                obj_parcela.tipo_prazo = 'PG'
+
             obj_parcela.val_pago = val_pag_form.replace('.','').replace(',','.')
             obj_parcela.save()
             msg = 'Pagamento efetivado com sucesso!'
@@ -1052,8 +1057,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         tipo_visualizacao_form = request.GET['tipo_visualizacao']
 
         data_competencia = competencia_form + '-01'
-        ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]))[1]
-        ultimo_dia_mes_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), ultimo_dia_mes_calendar)
+        ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_form.split('-')[0]),
+                                                      int(competencia_form.split('-')[1]))[1]
+        ultimo_dia_mes_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]),
+                                       ultimo_dia_mes_calendar)
         primeiro_dia_ano = datetime(int(competencia_form.split('-')[0]), 1, 1)
         ultimo_dia_ano = datetime(int(competencia_form.split('-')[0]), 12, 31)
 
@@ -1070,49 +1077,57 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
                         registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
                         registros_tabela = list(Docs_Pac_Estoque_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
                         registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
                         registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
                         registros_tabela = list(Docs_Pac_Tributos_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-                        registros_tabela = list(Docs_Pac_Intercompany_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Intercompany_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-                        registros_tabela = list(Docs_Pac_Imobilizado_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
-
 
 
                     val_composicao = 0
@@ -1305,47 +1320,56 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
                         registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
                         registros_tabela = list(Docs_Pac_Estoque_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
                         registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
                         registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
                         registros_tabela = list(Docs_Pac_Tributos_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-                        registros_tabela = list(Docs_Pac_Intercompany_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Intercompany_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-                        registros_tabela = list(Docs_Pac_Imobilizado_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1_View.objects
+                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
                                                 .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia)
+                                                        cod_arquivo__data_competencia=data_competencia,
+                                                        ativo='S')
                                                 .annotate(tt_val_rel=Sum('val_rel')))
                     val_composicao = 0
                     for reg in registros_tabela:
@@ -1659,9 +1683,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         elif tipo_prazo == 'LP':
             cod_red = conta.cod_red_conta_contabil_lp
             cod_estrutura = conta.cod_estrut_lp
-            val_composicao_ano_dic = Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato, data_vencimento__gte=ultimo_dia_data_competencia_mais_12_meses_date) \
-                .aggregate(sum_principal=Sum('val_principal'))
+            val_composicao_ano_dic = (Parcela_Contrato.objects \
+                .filter(cod_contrato=contrato, data_vencimento__gte=ultimo_dia_data_competencia_mais_12_meses_date)
+                                      .exclude(tipo_prazo='PG') \
+                .aggregate(sum_principal=Sum('val_principal')))
             val_composicao_ano = 0
             if val_composicao_ano_dic['sum_principal'] != None:
                 val_composicao_ano = val_composicao_ano_dic['sum_principal']
@@ -1996,15 +2021,15 @@ class Form_Imp_Arq_Contas_M1_View(View):
             elif obj_pac_conta.cod_pacote_conta == 7:
                 lista_registros_arqv = Docs_Pac_Tributos_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 9:
-                lista_registros_arqv = Docs_Pac_Finac_Disponib_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+                lista_registros_arqv = Docs_Pac_Finac_Disponib_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 10:
-                lista_registros_arqv = Docs_Pac_Intercompany_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+                lista_registros_arqv = Docs_Pac_Intercompany_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 11:
-                lista_registros_arqv = Docs_Pac_Imobilizado_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+                lista_registros_arqv = Docs_Pac_Imobilizado_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 13:
-                lista_registros_arqv = Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+                lista_registros_arqv = Docs_Pac_Consorcio_Ativo_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             elif obj_pac_conta.cod_pacote_conta == 14:
-                lista_registros_arqv = Docs_Demais_Contas_M1_View.objects.filter(cod_arquivo=obj_arqv_pesq)
+                lista_registros_arqv = Docs_Demais_Contas_M1.objects.filter(cod_arquivo=obj_arqv_pesq)
             for reg in lista_registros_arqv:
                 reg.delete()
 
@@ -2144,7 +2169,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 if row['Data Lançto'] != '':
                     data_lancto = row['Data Lançto']
 
-                doc = Docs_Pac_Finac_Disponib_M1_View(
+                doc = Docs_Pac_Finac_Disponib_M1(
                     num_doc = row['Nº Documento'],
                     data_lancto = data_lancto,
                     val_rel = row['Valor Relatório'],
@@ -2163,7 +2188,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 if row['Data Lançto'] != '':
                     data_lancto = row['Data Lançto']
 
-                doc = Docs_Pac_Intercompany_M1_View(
+                doc = Docs_Pac_Intercompany_M1(
                     num_doc=row['Nº Documento'],
                     data_lancto=data_lancto,
                     val_rel=row['Valor Relatório'],
@@ -2182,7 +2207,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 if row['Data Entrada'] != '':
                     data_entrada = row['Data Entrada']
 
-                doc = Docs_Pac_Imobilizado_M1_View(
+                doc = Docs_Pac_Imobilizado_M1(
                     data_entrada=data_entrada,
                     plaqueta = row['Plaqueta'],
                     desc_imobilizado = row['Descrição Imobilizado'],
@@ -2207,7 +2232,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 if row['Data Lançto'] != '':
                     data_lancto = row['Data Lançto']
 
-                doc = Docs_Pac_Consorcio_Ativo_M1_View(
+                doc = Docs_Pac_Consorcio_Ativo_M1(
                     historico = row['Histórico'],
                     num_doc = row['Nº Documento'],
                     data_lancto = data_lancto,
@@ -2230,7 +2255,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 if row['Data Entrada'] != '':
                     data_entrada = row['Data Entrada']
 
-                doc = Docs_Demais_Contas_M1_View(
+                doc = Docs_Demais_Contas_M1(
                     data_lancto = data_lancto,
                     data_entrada = data_entrada,
                     num_doc = row['Nº Documento'],
@@ -2376,7 +2401,6 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                 if doc['data_venc'] != None:
                     doc['data_venc'] = datetime.strftime(doc['data_venc'], '%d-%m-%Y')
 
-
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
             lista_docs = list(Docs_Pac_Estoque_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
@@ -2446,7 +2470,7 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
 
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-            lista_docs = list(Docs_Pac_Finac_Disponib_M1_View.objects
+            lista_docs = list(Docs_Pac_Finac_Disponib_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_financ_disp', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs', 'ativo'))
@@ -2461,7 +2485,7 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
 
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-            lista_docs = list(Docs_Pac_Intercompany_M1_View.objects
+            lista_docs = list(Docs_Pac_Intercompany_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_intercompany', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs', 'ativo'))
@@ -2476,7 +2500,7 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
 
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-            lista_docs = list(Docs_Pac_Imobilizado_M1_View.objects
+            lista_docs = list(Docs_Pac_Imobilizado_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_imobilizado', 'data_entrada', 'cod_filial__desc_filial', 'plaqueta',
                                       'desc_imobilizado', 'val_aquisicao', 'num_doc', 'nome_fornecedor',
@@ -2502,11 +2526,9 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     doc['val_razao'] = locale.currency(round(float(doc['val_razao']), 2), grouping=True, symbol=None)
                 if doc['val_dif'] != None:
                     doc['val_dif'] = locale.currency(round(float(doc['val_dif']), 2), grouping=True, symbol=None)
-                if doc['data_entrada'] != None:
-                    doc['data_entrada'] = datetime.strftime(doc['data_entrada'], '%d-%m-%Y')
 
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-            lista_docs = list(Docs_Pac_Consorcio_Ativo_M1_View.objects
+            lista_docs = list(Docs_Pac_Consorcio_Ativo_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
                               .values('cod_pac_doc_consorcio_ativo', 'cod_filial__desc_filial', 'historico',
                                       'num_doc', 'data_lancto', 'val_rel', 'val_razao', 'val_dif', 'obs', 'ativo'))
@@ -2521,9 +2543,9 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     doc['data_lancto'] = datetime.strftime(doc['data_lancto'], '%d-%m-%Y')
 
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
-            lista_docs = list(Docs_Demais_Contas_M1_View.objects
+            lista_docs = list(Docs_Demais_Contas_M1.objects
                               .filter(cod_conta=obj_conta, cod_arquivo__data_competencia=competencia_form)
-                              .values('cod_pac_doc_outros', 'data_entrada', 'data_lancto', 'cod_filial__cod_reduzido',
+                              .values('cod_pac_doc_outros', 'data_entrada', 'data_lancto', 'cod_filial__desc_filial',
                                       'historico', 'num_doc', 'num_doc_contabil', 'val_rel', 'val_razao', 'val_dif',
                                       'obs', 'ativo'))
             for doc in lista_docs:
@@ -2601,7 +2623,7 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
                                         tt_val_rel=Sum('val_rel'),
                                         tt_val_razao=Sum('val_razao')))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-            registros_tabela = list(Docs_Pac_Finac_Disponib_M1_View.objects.filter(cod_conta=obj_conta)
+            registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects.filter(cod_conta=obj_conta)
                               .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
                                       'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
                                       'cod_arquivo__cod_usu__login_usu')
@@ -2609,7 +2631,7 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
                                         tt_val_rel=Sum('val_rel'),
                                         tt_val_razao=Sum('val_razao')))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-            registros_tabela = list(Docs_Pac_Intercompany_M1_View.objects.filter(cod_conta=obj_conta)
+            registros_tabela = list(Docs_Pac_Intercompany_M1.objects.filter(cod_conta=obj_conta)
                               .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
                                       'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
                                       'cod_arquivo__cod_usu__login_usu')
@@ -2617,7 +2639,7 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
                                         tt_val_rel=Sum('val_rel'),
                                         tt_val_razao=Sum('val_razao')))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-            registros_tabela = list(Docs_Pac_Imobilizado_M1_View.objects.filter(cod_conta=obj_conta)
+            registros_tabela = list(Docs_Pac_Imobilizado_M1.objects.filter(cod_conta=obj_conta)
                               .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
                                       'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
                                       'cod_arquivo__cod_usu__login_usu')
@@ -2625,7 +2647,7 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
                                         tt_val_rel=Sum('val_rel'),
                                         tt_val_razao=Sum('val_razao')))
         elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-            registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_conta=obj_conta)
+            registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects.filter(cod_conta=obj_conta)
                               .values('cod_arquivo__cod_arquivo', 'cod_arquivo__data_imp',
                                       'cod_arquivo__nome_arqv_original', 'cod_arquivo__data_competencia',
                                       'cod_arquivo__cod_usu__login_usu')
@@ -2675,22 +2697,22 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
                 doc.delete()
 
         elif cod_pacote == 9:
-            docs = Docs_Pac_Finac_Disponib_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            docs = Docs_Pac_Finac_Disponib_M1.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
             for doc in docs:
                 doc.delete()
 
         elif cod_pacote == 10:
-            docs = Docs_Pac_Intercompany_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            docs = Docs_Pac_Intercompany_M1.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
             for doc in docs:
                 doc.delete()
 
         elif cod_pacote == 11:
-            docs = Docs_Pac_Imobilizado_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            docs = Docs_Pac_Imobilizado_M1.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
             for doc in docs:
                 doc.delete()
 
         elif cod_pacote == 13:
-            docs = Docs_Pac_Consorcio_Ativo_M1_View.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
+            docs = Docs_Pac_Consorcio_Ativo_M1.objects.filter(cod_conta=obj_conta, cod_arquivo=obj_arquivo)
             for doc in docs:
                 doc.delete()
 
@@ -3248,6 +3270,7 @@ class Docs_Pac_Tributos_M1_View(View):
             return Docs_Pac_Tributos_M1.objects.get(pk=pk)
         except Docs_Pac_Tributos_M1.DoesNotExists:
             return Http404
+
     def get(self, request):
         cod_doc_frm = request.GET['cod_doc']
         obj_doc = Docs_Pac_Tributos_M1.objects.get(pk=cod_doc_frm)
@@ -3315,6 +3338,457 @@ class Docs_Pac_Tributos_M1_View(View):
         }
         return JsonResponse(data, safe=False)
 
+    def delete(self, request, pk):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
+        obj_doc = self.get_object(pk.split('_')[0])
+        obj_doc.obs += (' / desativação:' + pk.split('_')[1] + ', por: ' + obj_usu.login_usu + ', em: '
+                        + data_hora_atual_h_m_y)
+        obj_doc.ativo = 'N'
+        obj_doc.save()
+        msg = 'Registro inativado com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Docs_Pac_Finac_Disponib_M1_View(View):
+
+    def get_object(self, pk):
+        try:
+            return Docs_Pac_Finac_Disponib_M1.objects.get(pk=pk)
+        except Docs_Pac_Finac_Disponib_M1.DoesNotExists:
+            return Http404
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Pac_Finac_Disponib_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'data_lancto': obj_doc.data_lancto,
+            'num_doc': obj_doc.num_doc,
+            'val_rel': obj_doc.val_rel,  # locale.currency(round(obj_doc.val_rel, 2), grouping=True, symbol=None),
+            'val_razao': obj_doc.val_razao,  # locale.currency(round(obj_doc.val_razao, 2), grouping=True, symbol=None),
+            'val_dif': obj_doc.val_dif,  # locale.currency(round(obj_doc.val_dif, 2), grouping=True, symbol=None),
+            'historico': obj_doc.historico,
+            'obs': obj_doc.obs,
+            'cod_pac_doc_financ_disp': obj_doc.cod_pac_doc_financ_disp
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        data_lancto_frm = request.POST['data_lancto']
+        num_doc_frm = request.POST['num_doc']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+        historico_frm = request.POST['historico']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        obj_doc = Docs_Pac_Finac_Disponib_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.data_lancto = data_lancto_frm
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.val_rel = val_rel_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_razao = val_razao_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_dif = val_dif_frm.replace('.', '').replace(',', '.')
+        obj_doc.obs = obs_frm
+        obj_doc.historico = historico_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def delete(self, request, pk):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
+        obj_doc = self.get_object(pk.split('_')[0])
+        obj_doc.obs += (' / desativação:' + pk.split('_')[1] + ', por: ' + obj_usu.login_usu + ', em: '
+                        + data_hora_atual_h_m_y)
+        obj_doc.ativo = 'N'
+        obj_doc.save()
+        msg = 'Registro inativado com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Docs_Pac_Intercompany_M1_View(View):
+    def get_object(self, pk):
+        try:
+            return Docs_Pac_Intercompany_M1.objects.get(pk=pk)
+        except Docs_Pac_Intercompany_M1.DoesNotExists:
+            return Http404
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Pac_Intercompany_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'data_lancto': obj_doc.data_lancto,
+            'num_doc': obj_doc.num_doc,
+            'val_rel': obj_doc.val_rel,  # locale.currency(round(obj_doc.val_rel, 2), grouping=True, symbol=None),
+            'val_razao': obj_doc.val_razao,  # locale.currency(round(obj_doc.val_razao, 2), grouping=True, symbol=None),
+            'val_dif': obj_doc.val_dif,  # locale.currency(round(obj_doc.val_dif, 2), grouping=True, symbol=None),
+            'historico': obj_doc.historico,
+            'obs': obj_doc.obs,
+            'cod_pac_doc_intercompany': obj_doc.cod_pac_doc_intercompany
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        data_lancto_frm = request.POST['data_lancto']
+        num_doc_frm = request.POST['num_doc']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+        historico_frm = request.POST['historico']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        obj_doc = Docs_Pac_Intercompany_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.data_lancto = data_lancto_frm
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.val_rel = val_rel_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_razao = val_razao_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_dif = val_dif_frm.replace('.', '').replace(',', '.')
+        obj_doc.obs = obs_frm
+        obj_doc.historico = historico_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def delete(self, request, pk):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
+        obj_doc = self.get_object(pk.split('_')[0])
+        obj_doc.obs += (' / desativação:' + pk.split('_')[1] + ', por: ' + obj_usu.login_usu + ', em: '
+                        + data_hora_atual_h_m_y)
+        obj_doc.ativo = 'N'
+        obj_doc.save()
+        msg = 'Registro inativado com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+class Docs_Pac_Imobilizado_M1_View(View):
+    def get_object(self, pk):
+        try:
+            return Docs_Pac_Imobilizado_M1.objects.get(pk=pk)
+        except Docs_Pac_Imobilizado_M1.DoesNotExists:
+            return Http404
+
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Pac_Imobilizado_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'data_entrada': obj_doc.data_entrada,
+            'plaqueta': obj_doc.plaqueta,
+            'desc_imobilizado': obj_doc.desc_imobilizado,
+            'val_aquisicao': locale.currency(round(obj_doc.val_aquisicao, 2), grouping=True, symbol=None),
+            'num_doc': obj_doc.num_doc,
+            'nome_fornecedor': obj_doc.nome_fornecedor,
+            'depreciacao_acum': locale.currency(round(obj_doc.depreciacao_acum, 2), grouping=True, symbol=None),
+            'val_liq': locale.currency(round(obj_doc.val_liq, 2), grouping=True, symbol=None),
+            'taxa_depreciacao': locale.currency(round(obj_doc.taxa_depreciacao, 2), grouping=True, symbol=None),
+            'val_rel': locale.currency(round(obj_doc.val_rel, 2), grouping=True, symbol=None),
+            'val_razao': locale.currency(round(obj_doc.val_razao, 2), grouping=True, symbol=None),
+            'val_dif': locale.currency(round(obj_doc.val_dif, 2), grouping=True, symbol=None),
+            'obs': obj_doc.obs,
+            'cod_pac_doc_imobilizado': obj_doc.cod_pac_doc_imobilizado
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        plaqueta_frm = request.POST['plaqueta']
+        desc_imobilizado_frm = request.POST['desc_imobilizado']
+        val_aquisicao_frm = request.POST['val_aquisicao']
+        num_doc_frm = request.POST['num_doc']
+        nome_fornec_frm = request.POST['nome_fornec']
+        data_entrada_frm = request.POST['data_entrada']
+        deprec_acum_frm = request.POST['deprec_acum']
+        val_liq_frm = request.POST['val_liq']
+        taxa_deprec_frm = request.POST['taxa_deprec']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        obj_doc = Docs_Pac_Imobilizado_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.plaqueta = plaqueta_frm
+        obj_doc.desc_imobilizado = desc_imobilizado_frm
+        obj_doc.val_aquisicao = val_aquisicao_frm.replace('.', '').replace(',', '.')
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.nome_fornecedor = nome_fornec_frm
+        obj_doc.depreciacao_acum = deprec_acum_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_liq = val_liq_frm.replace('.', '').replace(',', '.')
+        obj_doc.taxa_depreciacao = taxa_deprec_frm.replace('.', '').replace(',', '.')
+        obj_doc.data_entrada = data_entrada_frm
+        obj_doc.val_rel = val_rel_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_razao = val_razao_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_dif = val_dif_frm.replace('.', '').replace(',', '.')
+        obj_doc.obs = obs_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def delete(self, request, pk):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
+        obj_doc = self.get_object(pk.split('_')[0])
+        obj_doc.obs += (' / desativação:' + pk.split('_')[1] + ', por: ' + obj_usu.login_usu + ', em: '
+                        + data_hora_atual_h_m_y)
+        obj_doc.ativo = 'N'
+        obj_doc.save()
+        msg = 'Registro inativado com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+class Docs_Pac_Consorcio_Ativo_M1_View(View):
+    def get_object(self, pk):
+        try:
+            return Docs_Pac_Consorcio_Ativo_M1.objects.get(pk=pk)
+        except Docs_Pac_Consorcio_Ativo_M1.DoesNotExists:
+            return Http404
+
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Pac_Consorcio_Ativo_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'num_doc': obj_doc.num_doc,
+            'data_lancto': obj_doc.data_lancto,
+            'val_rel': locale.currency(round(obj_doc.val_rel, 2), grouping=True, symbol=None),
+            'val_razao': locale.currency(round(obj_doc.val_razao, 2), grouping=True, symbol=None),
+            'val_dif': locale.currency(round(obj_doc.val_dif, 2), grouping=True, symbol=None),
+            'historico': obj_doc.historico,
+            'obs': obj_doc.obs,
+            'cod_pac_doc_consorcio_ativo': obj_doc.cod_pac_doc_consorcio_ativo
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        data_lancto_frm = request.POST['data_lancto']
+        num_doc_frm = request.POST['num_doc']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+        historico_frm = request.POST['historico']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        obj_doc = Docs_Pac_Consorcio_Ativo_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.data_lancto = data_lancto_frm
+        obj_doc.val_rel = val_rel_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_razao = val_razao_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_dif = val_dif_frm.replace('.', '').replace(',', '.')
+        obj_doc.historico = historico_frm
+        obj_doc.obs = obs_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def delete(self, request, pk):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
+        obj_doc = self.get_object(pk.split('_')[0])
+        obj_doc.obs += (' / desativação:' + pk.split('_')[1] + ', por: ' + obj_usu.login_usu + ', em: '
+                        + data_hora_atual_h_m_y)
+        obj_doc.ativo = 'N'
+        obj_doc.save()
+        msg = 'Registro inativado com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Docs_Demais_Contas_M1_View(View):
+    def get_object(self, pk):
+        try:
+            return Docs_Demais_Contas_M1.objects.get(pk=pk)
+        except Docs_Demais_Contas_M1.DoesNotExists:
+            return Http404
+    def get(self, request):
+        cod_doc_frm = request.GET['cod_doc']
+        obj_doc = Docs_Demais_Contas_M1.objects.get(pk=cod_doc_frm)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        doc_dic = {
+            'cod_red_fil': obj_doc.cod_filial.cod_reduzido,
+            'data_entrada': obj_doc.data_entrada,
+            'data_lancto': obj_doc.data_lancto,
+            'historico': obj_doc.historico,
+            'num_doc': obj_doc.num_doc,
+            'num_doc_contabil': obj_doc.num_doc_contabil,
+            'val_rel': locale.currency(round(obj_doc.val_rel, 2), grouping=True, symbol=None),
+            'val_razao': locale.currency(round(obj_doc.val_razao, 2), grouping=True, symbol=None),
+            'val_dif': locale.currency(round(obj_doc.val_dif, 2), grouping=True, symbol=None),
+            'obs': obj_doc.obs,
+            'cod_pac_doc_outros': obj_doc.cod_pac_doc_outros
+        }
+        data = dict()
+        data = {
+            'doc_dic': doc_dic
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def post(self, request):
+        let_cod_doc_frm = request.POST['let_cod_doc']
+        cod_red_fil_frm = request.POST['cod_red_fil']
+        data_lancto_frm = request.POST['data_lancto']
+        data_entrada_frm = request.POST['data_entrada']
+        num_doc_frm = request.POST['num_doc']
+        num_doc_contabil_frm = request.POST['num_doc_contabil']
+        val_rel_frm = request.POST['val_rel']
+        val_razao_frm = request.POST['val_razao']
+        val_dif_frm = request.POST['val_dif']
+        obs_frm = request.POST['obs']
+        historico_frm = request.POST['historico']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        obj_filial = (Filial.objects
+                      .filter(cod_reduzido=cod_red_fil_frm, cod_empresa=obj_usu.cod_filial.cod_empresa)
+                      .first())
+
+        obj_doc = Docs_Demais_Contas_M1.objects.get(pk=let_cod_doc_frm)
+        obj_doc.num_doc = num_doc_frm
+        obj_doc.num_doc_contabil = num_doc_contabil_frm
+        obj_doc.data_entrada = data_entrada_frm
+        obj_doc.data_lancto = data_lancto_frm
+        obj_doc.val_rel = val_rel_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_razao = val_razao_frm.replace('.', '').replace(',', '.')
+        obj_doc.val_dif = val_dif_frm.replace('.', '').replace(',', '.')
+        obj_doc.historico = historico_frm
+        obj_doc.obs = obs_frm
+        obj_doc.cod_filial = obj_filial
+        obj_doc.save()
+
+        data = dict()
+        data = {
+            'msg': 'Doc alterado com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
 
 
     def delete(self, request, pk):

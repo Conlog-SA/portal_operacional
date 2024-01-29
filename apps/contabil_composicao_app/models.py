@@ -311,7 +311,7 @@ class Docs_Pac_Tributos_M1(models.Model):
         db_table = 'op_contabil_docs_pac_tributos_m1'
 
 
-class Docs_Pac_Finac_Disponib_M1_View(models.Model):
+class Docs_Pac_Finac_Disponib_M1(models.Model):
     cod_pac_doc_financ_disp = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     num_doc = models.CharField(max_length=15)
     data_lancto = models.DateField(null=True, blank=True)
@@ -330,7 +330,26 @@ class Docs_Pac_Finac_Disponib_M1_View(models.Model):
         db_table = 'op_contabil_docs_pac_financ_disp_m1'
 
 
-class Docs_Pac_Imobilizado_M1_View(models.Model):
+class Docs_Pac_Intercompany_M1(models.Model):
+    cod_pac_doc_intercompany = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    num_doc = models.CharField(max_length=15)
+    data_lancto = models.DateField(null=True, blank=True)
+    val_rel = models.DecimalField(max_digits=12, decimal_places=4)
+    val_razao = models.DecimalField(max_digits=12, decimal_places=4)
+    val_dif = models.DecimalField(max_digits=12, decimal_places=4)
+    historico = models.CharField(max_length=200, null=True, blank=True)
+    obs = models.CharField(max_length=200, null=True, blank=True)
+    ativo = models.CharField(max_length=1, default='S')
+    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
+    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
+                                    null=True)
+    class Meta:
+        managed=True
+        db_table = 'op_contabil_docs_pac_intercompany_disp_m1'
+
+
+class Docs_Pac_Imobilizado_M1(models.Model):
     cod_pac_doc_imobilizado = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_entrada = models.DateField(null=True, blank=True)
     plaqueta = models.CharField(max_length=15)
@@ -355,7 +374,7 @@ class Docs_Pac_Imobilizado_M1_View(models.Model):
         db_table = 'op_contabil_docs_pac_imobilizado_disp_m1'
 
 
-class Docs_Pac_Consorcio_Ativo_M1_View(models.Model):
+class Docs_Pac_Consorcio_Ativo_M1(models.Model):
     cod_pac_doc_consorcio_ativo = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     num_doc = models.CharField(max_length=15)
     data_lancto = models.DateField(null=True, blank=True)
@@ -374,28 +393,12 @@ class Docs_Pac_Consorcio_Ativo_M1_View(models.Model):
         db_table = 'op_contabil_docs_pac_consorcio_ativo_disp_m1'
 
 
-class Docs_Pac_Intercompany_M1_View(models.Model):
-    cod_pac_doc_intercompany = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    num_doc = models.CharField(max_length=15)
-    data_lancto = models.DateField(null=True, blank=True)
-    val_rel = models.DecimalField(max_digits=12, decimal_places=4)
-    val_razao = models.DecimalField(max_digits=12, decimal_places=4)
-    val_dif = models.DecimalField(max_digits=12, decimal_places=4)
-    historico = models.CharField(max_length=200, null=True, blank=True)
-    obs = models.CharField(max_length=200, null=True, blank=True)
-    ativo = models.CharField(max_length=1, default='S')
-    cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True)
-    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', null=True)
-    cod_arquivo = models.ForeignKey(Arquivo_Docs_Pac_Contas_Modelo_1, models.DO_NOTHING, db_column='cod_arquivo',
-                                    null=True)
-    class Meta:
-        managed=True
-        db_table = 'op_contabil_docs_pac_intercompany_disp_m1'
 
 
 
 
-class Docs_Demais_Contas_M1_View(models.Model):
+
+class Docs_Demais_Contas_M1(models.Model):
     cod_pac_doc_outros = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_entrada = models.DateField(null=True, blank=True)
     data_lancto = models.DateField(null=True, blank=True)
