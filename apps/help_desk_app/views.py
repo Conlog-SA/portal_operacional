@@ -11,7 +11,7 @@ class ConexaoHelpDesk():
     def __init__(self):
         self.__conn = mariadb.connect(
             user="kaian.almeida",
-            password="knd@7880!",
+            password="Knd@7880!",
             host="172.16.40.250",
             port=3306,
             database="bd_portal_chamados",
@@ -37,7 +37,10 @@ class ConexaoHelpDesk():
                        LEFT	JOIN chm_usuarios usu
                          ON	(usu.id_usu = alt_usu.id_usu)
                       WHERE	alt_usu.id_historico_status_chamado = MAX(atend_chm_abr.id_historico_status_chamado)            
-                    )								AS	login_atend_ch
+                    )								AS	login_atend_ch,
+                    
+                    CASE when hist_status_espera.id_historico_status_chamado IS NULL then
+                    		'N' ELSE 'S' END 		AS	status_ch_espera
               FROM	chm_chamados ch
               LEFT	JOIN chm_status_chamado status
                 ON	(status.id_status = ch.id_status)
@@ -72,9 +75,13 @@ class ConexaoHelpDesk():
                 ON	(hist_status_cancelado.id_chamado = ch.id_chamado
                AND	hist_status_cancelado.id_status in (6))
                
+            /* Definir data do status esperando*/
+              LEFT	JOIN chm_alteracoes_status_chamado hist_status_espera
+                ON	(hist_status_espera.id_chamado = ch.id_chamado
+					AND	hist_status_espera.id_status = 4)
+               
              WHERE	ch.id_status = 5
-                    AND ch.data_abertura >= '{data_ini_periodo}'
-                    AND hist_status_atendido.data_status <= '{data_fim_periodo}'
+                    AND CAST(hist_status_atendido.data_status AS DATE) BETWEEN '{data_ini_periodo}' AND '{data_fim_periodo}'
                     
               GROUP BY ch.id_chamado,
                     usu_abr.usuario,
@@ -86,7 +93,6 @@ class ConexaoHelpDesk():
                     status.descricao;
             '''
         )
-        print(sql_chamados_atendidos)
         cursor.execute(sql_chamados_atendidos)
         chamados_cursor = cursor.fetchall()
         for chamado in chamados_cursor:
@@ -98,9 +104,64 @@ class ConexaoHelpDesk():
                 'data_abertura': chamado[4],
                 'data_fechamento': chamado[5],
                 'sla_hora': chamado[6],
-                'login_atendente': chamado[8]
+                'login_atendente': chamado[8],
+                'status_ch_espera': chamado[9]
             }
             lista_chamados_atendidos.append(reg)
         return lista_chamados_atendidos
 
+    def retorna_status_chamado(self, num_chamado):
+        lista_status_chamado = []
 
+        cursor = self.__conn.cursor()
+        sql_status_chamados_atendidos = (
+            f'''
+            SELECT
+                a.data_status,
+                a.id_status,
+                b.usuario
+            FROM 
+                chm_alteracoes_status_chamado a
+            LEFT JOIN 
+                chm_usuarios b
+            ON 
+                (a.id_usu = b.id_usu)
+            WHERE 
+                id_chamado = {num_chamado}
+            ORDER BY 
+                data_status ASC;
+            '''
+        )
+        cursor.execute(sql_status_chamados_atendidos)
+        status_cursor = cursor.fetchall()
+
+        for status in status_cursor:
+            reg = {
+                'data_status' : status[0],
+                'id_status': status[1],
+                'usuario': status[2]
+            }
+            lista_status_chamado.append(reg)
+        return lista_status_chamado
+
+    def retorna_atendente(self, num_chamado):
+        cursor = self.__conn.cursor()
+        sql_status_chamados_atendidos = (
+            f'''
+                    SELECT
+                        b.usuario
+                    FROM 
+                        chm_alteracoes_status_chamado a
+                    LEFT JOIN 
+                        chm_usuarios b
+                    ON 
+                        (a.id_usu = b.id_usu)
+                    WHERE 
+                        id_chamado = {num_chamado}
+                        AND id_status = 5;
+                    '''
+        )
+        cursor.execute(sql_status_chamados_atendidos)
+        status = cursor.fetchone()
+
+        return status[0]

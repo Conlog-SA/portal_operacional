@@ -1700,7 +1700,6 @@ function atualiza_tab_placas_intativas_benner(param_nome_componenete_acionado){
                         value="`+var_value_button_altera_status_mapa+`"
                         title="Alterar Status">
                         <i class="fa-solid fa-rotate-right" style="color: #f46424;"></i>
-
                     </button>
                 `;
                 let let_img = `<i class="fa-solid fa-location-dot" style="color: #f46424;"></i>`;

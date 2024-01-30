@@ -8,6 +8,7 @@ class Chamado_Atendido_TMA(models.Model):
     desc_sub_topico = models.CharField(max_length=80, null=True, blank=True)
     aberto_em = models.DateTimeField(null=True, blank=True)
     fechado_em = models.DateTimeField(null=True, blank=True)
+    horas_atendimento = models.IntegerField(blank=False, null=False)
     sla = models.IntegerField(blank=False, null=False)
     data_sla = models.DateTimeField(null=True, blank=True)
     login_atendente = models.CharField(max_length=70, null=True, blank=True)

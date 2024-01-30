@@ -45,6 +45,7 @@ $(document).on('click', 'button', function(){
     let let_data_fim = [year, month, day].join('-')
 
 	if (let_name_btn == "btn_pesq_tma_ti") {
+	loader_tma_ti.style.display = "flex";
 	    $.ajax({
 	        type: 'POST',
 	        data: {
@@ -53,7 +54,90 @@ $(document).on('click', 'button', function(){
             },
 	        url: '/ti_tma_app/gera_tma_chamados_ti',
 	        success: function(response) {
+                console.log(response)
+                let lista_tma_ti = [];
+                response.lista_chamados_retorno.forEach(reg => {
+                    let let_tma_ti = [
+                        reg.status,
+                        reg.chamado,
+                        reg.usuario,
+                        reg.topico,
+                        reg.subtopico,
+                        reg.dt_abertura,
+                        reg.data_sla,
+                        reg.dt_fechamento,
+                        reg.sla,
+                        reg.horas_atendimento,
+                        reg.atendente
+                    ]
+                    lista_tma_ti.push(let_tma_ti)
+                });
+                $('#tab_frm_gera_tma_ti').DataTable({
+                "bJQueryUI": true,
+                "pageLength": 10,
+                "destroy": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5',
+                ],
+                "data":lista_tma_ti,
+                    "columns": [
+                            { title: "Status" },
+                            { title: "Chamado" },
+                            { title: "Usuário" },
+                            { title: "Tópico" },
+                            { title: "Subtópico" },
+                            { title: "Aberto" },
+                            { title: "Previsto" },
+                            { title: "Fechado" },
+                            { title: "SLA(h)" },
+                            { title: "Atendido(h)" },
+                            { title: "Atendente" },
+                        ],
+                    "columnDefs": [
+                    {
+                        "orderable": false, "targets": [5, 6, 7]
+                    },
+                    {
+                    "targets": 0,
+                    "mRender": function(lista_tma_ti, type)
+                        {
+                        console.log(type)
+                        if (type !== 'display')
+                        {
+                            return lista_tma_ti;
+                        }
 
+                            return '<i class="fas fa-dot-circle" ' + lista_tma_ti + '></i>';
+                        }
+                    }
+                ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+	            });
+	            loader_tma_ti.style.display = "none";
 	        },
 	        error: function(request, status, error){
                 $.gritter.add({
@@ -63,9 +147,8 @@ $(document).on('click', 'button', function(){
                     sticky: false,
                     time: '',
                 });
+                loader_tma_ti.style.display = "none";
 	        }
 	    });
-
 	}
-
 });

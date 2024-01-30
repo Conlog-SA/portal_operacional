@@ -33,7 +33,9 @@ urlpatterns = [
     path('ti_tma_app/', include('apps.ti_tma_app.urls')),
     path('safety_layout_checklist_app/', include('apps.safety_layout_checklist_app.urls')),
     path('bi_app/', include('apps.bi_app.urls')),
-    path('cco_multas_app/', include('apps.cco_multas_app.urls'))
+    path('cco_multas_app/', include('apps.cco_multas_app.urls')),
+    path('safety_checks_aplicados_app/', include('apps.safety_checks_aplicados_app.urls')),
+    path('safety_gab_op_emp_app/', include('apps.safety_gab_op_emp_app.urls'))
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

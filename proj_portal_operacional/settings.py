@@ -73,7 +73,9 @@ INSTALLED_APPS = [
     'apps.ti_tma_app',
     'apps.safety_layout_checklist_app',
     'apps.bi_app',
-    'apps.cco_multas_app'
+    'apps.cco_multas_app',
+    'apps.safety_checks_aplicados_app',
+    'apps.safety_gab_op_emp_app'
 ]
 
 MIDDLEWARE = [
