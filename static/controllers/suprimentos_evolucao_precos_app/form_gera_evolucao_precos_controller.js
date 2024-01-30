@@ -47,10 +47,10 @@ $(document).on('click', 'button', function(){
     var valButton = $(this).attr('value');
 
     if( nomeDoButton == 'btn_gera_evolucao_precos' || nomeDoButton == 'btn_gera_evolucao_pela_req' ) {
-        var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val();
+        var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val().toString();
         var var_data_ini = $("#txt_data_ini_evolucao_precos").val();
         var var_data_fim = $("#txt_data_fim_evolucao_precos").val();
-        var var_handle_familia = $("#cb_familia_gera_evolucao_precos").val();
+        var var_handle_familia = $("#cb_familia_gera_evolucao_precos").val().toString();
         var var_cod_ref_item = $("#cb_item_gera_evolucao_precos").val();
         var var_num_requisicao = 0;
         var var_validacao_campos = 'nok';
@@ -101,16 +101,19 @@ $(document).on('click', 'button', function(){
 
                     dados.lista_evolucao_precos_tab.forEach( reg => {
 
-                        $("#cb_itens_aud_evolucao_precos").append("<option value='"+reg.cod_ref_item+"'>"+
-                            reg.desc_item+"</option>");
+                        $("#cb_itens_aud_evolucao_precos").append("<option value='"+reg.handle_filial_compra+"_"+
+                            reg.cod_ref_item+"'>"+reg.nome_filial+" - " + reg.desc_item+"</option>");
 
                         var var_status_analise_compra = ''
                         if(reg.analise == 'Compra Maior'){
-                            var_status_analise_compra = "<span style='background-color:#FA8072;color:#FF0000;'>"+reg.analise+"</span>"
+                            var_status_analise_compra = "<span style='background-color:#FA8072;color:#FF0000;'>"+
+                                reg.analise+"</span>"
                         }else if(reg.analise == 'Compra Menor'){
-                            var_status_analise_compra = "<span style='background-color:#FFE4B5;color:#f2652;'>"+reg.analise+"</span>"
+                            var_status_analise_compra = "<span style='background-color:#FFE4B5;color:#f2652;'>"+
+                                reg.analise+"</span>"
                         }else if(reg.analise == 'Compra OK'){
-                            var_status_analise_compra = "<span style='background-color:#98FB98;color:#3CB371;'>"+reg.analise+"</span>"
+                            var_status_analise_compra = "<span style='background-color:#98FB98;color:#3CB371;'>"+
+                                reg.analise+"</span>"
                         }else {
                             var_status_analise_compra = reg.analise
                         }
@@ -122,7 +125,7 @@ $(document).on('click', 'button', function(){
 
                         reg_compra = [
                             "<input type='hidden' id='hd_info_pesq_compras' name='hd_info_pesq_compras' " +
-                            "value='"+reg.handle_filial_form+"_"+reg.data_ini_form+"_"+reg.data_fim_form+"_"+reg.cod_ref_item+"'>",
+                            "value='"+reg.handle_filial_compra+"_"+reg.data_ini_form+"_"+reg.data_fim_form+"_"+reg.cod_ref_item+"'>",
                             reg.desc_familia,
                             reg.cod_ref_item,
                             reg.desc_item,
@@ -141,7 +144,9 @@ $(document).on('click', 'button', function(){
                             reg.val_total_item_periodo,
                             reg.val_dispersao_unit_periodo,
                             reg.total_dispersao_periodo,
-                            reg.val_pretencao_prox_compra
+                            reg.val_pretencao_prox_compra,
+                            reg.atendente_ult_compra,
+                            reg.nome_filial
                         ];
                         var_lista_reg.push(reg_compra);
                     });
@@ -216,7 +221,9 @@ $(document).on('click', 'button', function(){
                                 title: "Sugestão Compra(R$)",
                                 name: "col20",
                                 class: "details-column-sugestao-compra"
-                            }
+                            },
+                            { title: "Atendente", name: "col5" },
+                            { title: "Filial", name: "col5" }
                         ],
                         "columnDefs": [
                             {"className": "dt-center", "targets": [6,8,10,13,15]},
@@ -338,12 +345,13 @@ $(document).on('click', 'button', function(){
 
     }
     else if( nomeDoButton == 'btn_pesq_compras_itens_aud_evolucao_precos' ){
-        var var_cod_filial = $("#cb_filial_gera_evolucao_precos").val();
+        //var var_cod_filial = $("#cb_filial_gera_evolucao_precos").val();
+        var var_cod_filial = $("#cb_itens_aud_evolucao_precos").val().split('_')[0];
         var var_comp_data_ini = $("#txt_data_ini_evolucao_precos").val();
         var var_data_ini = var_comp_data_ini.split('-')[0]+"-01-01";
             var_comp_data_ini.split('-')[0]
         var var_data_fim = $("#txt_data_fim_evolucao_precos").val();
-        var var_cod_ref_item = $("#cb_itens_aud_evolucao_precos").val();
+        var var_cod_ref_item = $("#cb_itens_aud_evolucao_precos").val().split('_')[1];
         let let_loader_evolucao_preco = document.getElementById("loader_evolucao_preco");
         let_loader_evolucao_preco.style.display = "flex";
         $.ajax({
@@ -478,7 +486,7 @@ $(document).on('click', 'button', function(){
     }
     else if( nomeDoButton == 'btn_salva_compras_itens' ) {
         $("#modalConfirmaArmazenamentoComprasEditadasBenner").hide();
-        console.log(var_lista_persistencia_compra_aud);
+        //console.log(var_lista_persistencia_compra_aud);
         /* Val. Unitario*/
         var_lista_persistencia_compra_aud[valButton]['val_unit'] = $("#txt_val_unit_"+valButton).val();
         /* Quantidade*/
@@ -583,7 +591,7 @@ $(document).on('change', '#cb_empresas_gera_evolucao_precos', function(){
 
 $(document).on('change', '#cb_familia_gera_evolucao_precos', function(){
     var var_cod_familia_selecionada = $(this).val();
-    var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val();
+    var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val().toString();
     $.ajax({
         type: 'GET',
         url:"/suprimentos_evolucao_precos_app/povoa_cd_itens_by_familia",
