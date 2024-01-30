@@ -563,6 +563,7 @@ class ConexaoBancoBenner():
                 handle,
                 nome
             FROM PD_FAMILIASPRODUTOS (NOLOCK)
+           WHERE handle NOT IN (42)
             {filtro_lista_handle_familias}
             '''
         )
@@ -591,6 +592,10 @@ class ConexaoBancoBenner():
             param_item = ' AND prod_itens_compra.handle in (' + \
                          str(lista_handle_str).replace('[', '').replace(']','') + ') '
 
+        '''Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), 
+        Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344),
+        Lucas.Fernandes(4128)'''
+        handle_atendentes = '65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831,4128'
 
         sql_evolucao_ultimas_compras = (
             f'''
@@ -631,7 +636,7 @@ class ConexaoBancoBenner():
                                   AND	com_ant.filial = compra.filial
                                   AND	com_ant.HANDLE < compra.HANDLE
                                   AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                                  AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
+                                  AND	com_ant.usuarioincluiu in ({handle_atendentes})
                                   AND	prod_ant.tipo = 1
                                   AND	com_ant.status = 4                                     	
                                 ORDER	BY item_ant.HANDLE DESC
@@ -650,7 +655,7 @@ class ConexaoBancoBenner():
                                                                  AND	com_ant.filial = compra.filial
                                                                  AND	com_ant.HANDLE < compra.HANDLE
                                                                  AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                                                                 AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
+                                                                 AND	com_ant.usuarioincluiu in ({handle_atendentes})
                                                                  AND	prod_ant.tipo = 1
                                                                  AND	com_ant.status = 4                                     	
                                                                ORDER	BY item_ant.HANDLE DESC
@@ -670,7 +675,7 @@ class ConexaoBancoBenner():
                              AND	com_ant.filial = compra.filial
                              AND	com_ant.HANDLE < compra.HANDLE
                              AND	com_ant.datadaordem BETWEEN '{data_ini}' AND compra.DATADAORDEM
-                             AND	com_ant.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831)
+                             AND	com_ant.usuarioincluiu in ({handle_atendentes})
                              AND	prod_ant.tipo = 1
                              AND	com_ant.status = 4                                     	
                            ORDER	BY item_ant.HANDLE DESC
@@ -693,11 +698,11 @@ class ConexaoBancoBenner():
             LEFT    JOIN CM_UNIDADESMEDIDA un_med (NOLOCK)
               ON    (un_med.HANDLE = itens_compra.UNIDADE)
            WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
-                    /* Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344) */
-             AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344, 3820,3831)
+             AND	compra.usuarioincluiu in ({handle_atendentes})
              AND	prod_itens_compra.tipo = 1
              AND	compra.status = 4 /* status 4 : compra encerrada */
-             AND    compra.filial = {handle_filial}
+             AND    compra.filial in ({handle_filial})
+             AND    prod_itens_compra.familia NOT IN (42)
              /* AND	prod_itens_compra.codigoreferencia = '22183' */
              {param_familia}	
              {param_item}
@@ -761,6 +766,10 @@ class ConexaoBancoBenner():
 
     def retorna_compras_by_item_filial(self, handle_filial, cod_ref_item, data_ini, data_fim):
         cursor = self.__conn.cursor()
+        '''Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), 
+                Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344),
+                Lucas.Fernandes(4128)'''
+        handle_atendentes = '65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831,4128'
         sql_compras_item = (
             f'''
             SELECT	compra.filial							AS	handle_filial_compra,
@@ -833,13 +842,12 @@ class ConexaoBancoBenner():
                LEFT	JOIN K_TIPODECOMPRA tipo_compra
                  ON	(tipo_compra.HANDLE = req_pai.K_TIPODECOMPRA) 
               WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
-              /* Zerbone(1600), Spall(2529), Frnaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344)  */
-                AND	compra.usuarioincluiu in (65,1484,1600,1651,2529,2614,2616,2933,3274,3344, 3820,3831)               
+                AND	compra.usuarioincluiu in ({handle_atendentes})  
+                AND prod_itens_compra.familia NOT IN (42)             
                 AND	prod_itens_compra.tipo = 1
                 AND	compra.status = 4 /* status 4 : compra encerrada */
                 AND compra.filial = {handle_filial}
                 AND prod_itens_compra.codigoreferencia = '{cod_ref_item}'
-                /* AND	prod_itens_compra.familia not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92) */ 	
               ORDER	BY 13 ASC;
             '''
         )
@@ -874,7 +882,7 @@ class ConexaoBancoBenner():
     def retorna_itens_by_familia_filial(self, handle_familia, handle_filial):
         param_handle_familia = ''
         if handle_familia != '0':
-            param_handle_familia = ' AND p.FAMILIA = ' + str(handle_familia) + ' '
+            param_handle_familia = ' AND p.FAMILIA in (' + handle_familia + ') '
         cursor = self.__conn.cursor()
         lista_itens = []
         sql_pd_produtos = (
@@ -885,7 +893,7 @@ class ConexaoBancoBenner():
                     p.codigoreferencia
                                 AS  codigoreferencia
               FROM  PD_PRODUTOS p (NOLOCK)
-             WHERE  p.FILIAL = {handle_filial}
+             WHERE  p.FILIAL in ( {handle_filial} )
             {param_handle_familia}
             '''
         )

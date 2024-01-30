@@ -45,7 +45,7 @@
                         Unidade
                         <select class="selectpicker form-control" id="cb_filial_gera_evolucao_precos"
                             name="cb_filial_gera_evolucao_precos"
-                            data-live-search="true"
+                            data-live-search="true" multiple data-selected-text-format="count > 1"
                             title="Selecione a filial">
                             {% for f in lista_filiais %}
                                 <option value="{{ f.HANDLE }}">{{ f.NOME }}</option>
@@ -77,7 +77,7 @@
                         Família
                         <select class="selectpicker form-control" id="cb_familia_gera_evolucao_precos"
                             name="cb_familia_gera_evolucao_precos"
-                            data-live-search="true">
+                            data-live-search="true" multiple data-selected-text-format="count > 1">
                             <option value="0" selected="selected"> -- Todas as famílias -- </option>
                             {% for familia in lista_familias %}
                                 <option value="{{ familia.handle }}">{{ familia.nome }}</option>
@@ -194,6 +194,8 @@
                                         <th scope="col">Disp. Unit. Periodo(R$)</th>
                                         <th scope="col">TT. Disp. Período(R$)</th>
                                         <th scope="col" class="details-column-sugestao-compra">Sugestão Compra(R$)</th>
+                                        <th scope="col">Atendente</th>
+                                        <th scope="col">Filial</th>
                                     </tr>
                                 </thead>
                                 <tbody>

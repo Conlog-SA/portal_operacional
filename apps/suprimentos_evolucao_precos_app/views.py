@@ -22,7 +22,7 @@ class Form_Gera_Evolucao_Precos_View(View):
     def get(self, request):
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(' WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
+            .retorna_familias(' AND handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
         context = {
@@ -163,7 +163,7 @@ class Dash_Evolucao_Precos_View(View):
 
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(' WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
+            .retorna_familias(' AND handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
         context = {
             #'plot1': self.grafico_pizza_plotly(),
             'lista_familias': lista_familias,
@@ -235,7 +235,8 @@ class Gera_Dash_Evolucao_Precos_View(View):
         return plot_div
 
 
-    def grafico_barras_agrupado(self, lista_labels, lista_val_compra_maior, lista_val_compra_menor, lista_val_compra_ok, titulo, width, height):
+    def grafico_barras_agrupado(self, lista_labels, lista_val_compra_maior, lista_val_compra_menor, lista_val_compra_ok,
+                                titulo, width, height):
 
         trace1 = go.Bar(
             x=lista_labels,
@@ -299,7 +300,8 @@ class Gera_Dash_Evolucao_Precos_View(View):
         #df_evolucao_preco = None
         for handle_fil in handle_filial_form.split(','):
             def_evolucao_preco_fil = ConexaoBancoBenner() \
-                .retorna_df_ultimas_compras(handle_fil, data_ini_form, data_fim_form, '0', '0', '0')
+                .retorna_df_ultimas_compras(handle_fil, data_ini_form, data_fim_form, '0', '0',
+                                            '0')
             lista_df_evolucao_preco_filial.append(def_evolucao_preco_fil)
 
         df_evolucao_preco = pd.concat(lista_df_evolucao_preco_filial)
@@ -563,7 +565,9 @@ class Gera_Evolucao_Precos_View(View):
 
 
         df_tt_evolucao_produtos_base_count = df_tt_evolucao_produtos \
-            .groupby(['handle_filial_compra', 'cod_ref_prod'])[['handle_compra']].count().reset_index()
+            .groupby(['handle_filial_compra', 'nome_filial_compra', 'cod_ref_prod'])[['handle_compra']].count().reset_index()
+
+
 
 
         df_tt_evolucao_produtos_base = pd.merge(
@@ -731,6 +735,7 @@ class Gera_Evolucao_Precos_View(View):
 
 
             row = {
+                'nome_filial': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_filial_compra']),
                 'cod_ref_item': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'cod_ref_prod']),
                 'desc_item': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_produto'],
                 'desc_variacao': '',#str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'desc_variacao']),
@@ -755,10 +760,12 @@ class Gera_Evolucao_Precos_View(View):
                                                               ,grouping=True,symbol=False),
                 'total_dispersao_periodo':locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
                                                           .loc[index, 'val_disp_total'],grouping=True,symbol=False),
-                'handle_filial_form': handle_filial_form,
+                #'handle_filial_form': handle_filial_form,
+                'handle_filial_compra': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'handle_filial_compra']),
                 'data_ini_form': data_ini_form,
                 'data_fim_form': data_fim_form,
-                'val_pretencao_prox_compra': locale.currency(val_pretencao_prox_compra, grouping=True, symbol=False)
+                'val_pretencao_prox_compra': locale.currency(val_pretencao_prox_compra, grouping=True, symbol=False),
+                'atendente_ult_compra': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_usu_ult']
 
             }
             lista_evolucao_precos_tab.append(row)
