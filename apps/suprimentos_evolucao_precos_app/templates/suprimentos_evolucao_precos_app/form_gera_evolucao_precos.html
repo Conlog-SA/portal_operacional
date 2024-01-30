@@ -72,40 +72,67 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
-                     <label>
-                        Família
-                        <select class="selectpicker form-control" id="cb_familia_gera_evolucao_precos"
-                            name="cb_familia_gera_evolucao_precos"
-                            data-live-search="true" multiple data-selected-text-format="count > 1">
-                            <option value="0" selected="selected"> -- Todas as famílias -- </option>
-                            {% for familia in lista_familias %}
-                                <option value="{{ familia.handle }}">{{ familia.nome }}</option>
-                            {% endfor %}
-                        </select>
+                <div class="d-flex flex-column w-100 align-items-start" style="padding-right: 0.25rem;">
+                    <label for="cb_familia_gera_evolucao_precos">
+                        <button type='button' id="btn_marcar_familia_gera_evolucao_precos"
+                                name="btn_marcar_familia_gera_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_familia_gera_evolucao_precos"
+                                name="btn_desmarcar_familia_gera_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
                     </label>
+                    <select class="selectpicker form-control" id="cb_familia_gera_evolucao_precos"
+                        name="cb_familia_gera_evolucao_precos"
+                        data-live-search="true" multiple data-selected-text-format="count > 1">
+                        <option value="0" selected="selected"> -- Todas as famílias -- </option>
+                        {% for familia in lista_familias %}
+                            <option value="{{ familia.handle }}">{{ familia.nome }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
-                    <label>
-                        Item
-                        <select class="selectpicker form-control" id="cb_item_gera_evolucao_precos"
-                            name="cb_item_gera_evolucao_precos"
-                            data-live-search="true"
-                            title="Selecione o projeto">
-                            <option value="0" selected="selected"> -- Todos os itens -- </option>
-                            {% for item in lista_itens %}
-                                <option value="{{ item.handle }}">{{item.cod_ref }} - {{ item.nome }}</option>
-                            {% endfor %}
-                        </select>
+                <div class="d-flex flex-column w-100 align-items-start" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    <label for="cb_item_gera_evolucao_precos">
+                        <button type='button' id="btn_marcar_item_gera_evolucao_precos"
+                                name="btn_marcar_item_gera_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_item_gera_evolucao_precos"
+                                name="btn_desmarcar_item_gera_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
                     </label>
+                    <select class="selectpicker form-control" id="cb_item_gera_evolucao_precos"
+                        name="cb_item_gera_evolucao_precos"
+                        data-live-search="true"
+                        title="Selecione o projeto" multiple data-selected-text-format="count > 1">
+                        <option value="0" selected="selected"> -- Todos os itens -- </option>
+                        {% for item in lista_itens %}
+                            <option value="{{ item.handle }}">{{item.cod_ref }} - {{ item.nome }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
 
                 <div class="d-flex flex-column w-100"
                      style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
                     <button type="button" name="btn_abre_modal_pesq_por_num_req"
                             id="btn_abre_modal_pesq_por_num_req"
-                            class="btn btn-primary btn-rounded botaoPrincipal">
+                            class="btn btn-primary btn-rounded botaoPrincipal"
+                            style="margin-top: 0.9rem;">
                         <i class="fa-solid fa-magnifying-glass"></i>
                         Pesquisa por requisição
                     </button>
@@ -113,7 +140,8 @@
                 <div class="d-flex flex-column w-100" style="padding-left: 0.25rem; padding-top: 1.6rem;">
                     <button type="button" name="btn_gera_evolucao_precos"
                             id="btn_gera_evolucao_precos"
-                            class="btn btn-primary btn-rounded botaoPrincipal">
+                            class="btn btn-primary btn-rounded botaoPrincipal"
+                            style="margin-top: 0.9rem;">
                         <i class="fa-solid fa-filter"></i>
                         Gerar Dados
                     </button>

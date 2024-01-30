@@ -51,7 +51,7 @@ $(document).on('click', 'button', function(){
         var var_data_ini = $("#txt_data_ini_evolucao_precos").val();
         var var_data_fim = $("#txt_data_fim_evolucao_precos").val();
         var var_handle_familia = $("#cb_familia_gera_evolucao_precos").val().toString();
-        var var_cod_ref_item = $("#cb_item_gera_evolucao_precos").val();
+        var var_cod_ref_item = $("#cb_item_gera_evolucao_precos").val().toString();
         var var_num_requisicao = 0;
         var var_validacao_campos = 'nok';
         if ( nomeDoButton == 'btn_gera_evolucao_pela_req' ){
@@ -532,6 +532,20 @@ $(document).on('click', 'button', function(){
     else if ( nomeDoButton == 'btn_fecha_modal_gera_evolucao_precos_requisicao') {
         $("#modal_gera_evolucao_precos_requisicao").hide();
     }
+    else if (nomeDoButton == 'btn_desmarcar_familia_gera_evolucao_precos'){
+        $("#cb_familia_gera_evolucao_precos").selectpicker('deselectAll');
+    }
+    else if (nomeDoButton == 'btn_marcar_familia_gera_evolucao_precos'){
+        $("#cb_familia_gera_evolucao_precos").val('0');
+        $("#cb_familia_gera_evolucao_precos").selectpicker('refresh');
+    }
+    else if (nomeDoButton == 'btn_desmarcar_item_gera_evolucao_precos'){
+        $("#cb_item_gera_evolucao_precos").selectpicker('deselectAll');
+    }
+    else if (nomeDoButton == 'btn_marcar_item_gera_evolucao_precos'){
+        $("#cb_item_gera_evolucao_precos").val('0');
+        $("#cb_item_gera_evolucao_precos").selectpicker('refresh');
+    }
 
 
 });
@@ -590,9 +604,10 @@ $(document).on('change', '#cb_empresas_gera_evolucao_precos', function(){
 
 
 $(document).on('change', '#cb_familia_gera_evolucao_precos', function(){
-    var var_cod_familia_selecionada = $(this).val();
+    var var_cod_familia_selecionada = $(this).val().toString();
     var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val().toString();
-    $.ajax({
+    if (var_cod_familia_selecionada != '') {
+        $.ajax({
         type: 'GET',
         url:"/suprimentos_evolucao_precos_app/povoa_cd_itens_by_familia",
         data: {
@@ -618,6 +633,8 @@ $(document).on('change', '#cb_familia_gera_evolucao_precos', function(){
             });
         }
     });
+    }
+
 
 
 

@@ -179,10 +179,6 @@ class Form_Imp_Contratos_Conta_View(View):
 
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parcela['handle_parc']).first()
                         if obj_parcela == None:
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
                             val_corrigido = decimal.Decimal(0.00)
                             if parcela['valor_corrigido'] != None:
                                 val_corrigido = decimal.Decimal(parcela['valor_corrigido'])
