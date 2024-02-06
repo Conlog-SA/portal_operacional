@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 
-
+from apps.estrut_org_app.models import Filial
+from apps.home_app.views import Index_View
 from apps.usuario_app.models import Usuario, Usu_Menu
 
 
@@ -15,9 +16,21 @@ class Menu_View(View):
         sub_menu_usuario = Usu_Menu.objects.filter(cod_usu=obj_usuario_sessao, status_usu_menu='A',
                                                    cod_menu__pai_menu__gt=0).order_by('cod_menu__cod_menu')
 
+        lista_filiais = Filial.objects.filter(cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                              cod_reduzido__isnull=False)
+
         context = {
             'obj_usuario_sessao': obj_usuario_sessao,
             'menu_usuario': menu_usuario,
             'sub_menu_usuario': sub_menu_usuario,
+            'lista_filiais': lista_filiais
         }
         return render(request, 'menu_app/main_menu.html', context)
+
+
+
+
+class Form_Logout_View(View):
+    def get(self, request):
+        return redirect('index')
+

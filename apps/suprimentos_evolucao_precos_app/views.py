@@ -22,7 +22,8 @@ class Form_Gera_Evolucao_Precos_View(View):
     def get(self, request):
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(' AND handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
+            .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
+                              " AND nome not like '%SERVIÇO%' AND nome not like '%SERVICO%'")
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
         context = {
@@ -163,7 +164,8 @@ class Dash_Evolucao_Precos_View(View):
 
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(' AND handle not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92)')
+            .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
+                              " AND nome not like '%SERVIÇO%' AND nome not like '%SERVICO%'")
         context = {
             #'plot1': self.grafico_pizza_plotly(),
             'lista_familias': lista_familias,

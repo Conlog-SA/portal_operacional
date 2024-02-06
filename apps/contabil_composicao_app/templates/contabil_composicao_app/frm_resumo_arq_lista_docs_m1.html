@@ -1,0 +1,33 @@
+{% load static %}
+
+<div class="accordion" id="accordion_docs">
+  {% for arq in registros_tabela %}
+    <div class="accordion-item">
+      <h6 class="accordion-header" id="heading{{ arq.cod_arquivo__cod_arquivo }}">
+        <button id="bnt_arq_conta_{{ arq.cod_arquivo__cod_arquivo }}" name="bnt_arq_conta"
+                value="{{ arq.cod_conta__cod_conta }}_{{ arq.cod_arquivo__cod_arquivo }}"
+                class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                data-bs-target="#collapse{{ arq.cod_arquivo__cod_arquivo }}" aria-expanded="false"
+                aria-controls="collapse{{ arq.cod_arquivo__cod_arquivo }}" style="font-size:12px;">
+            <i class="fa-solid fa-bookmark" style="color: #f46424"></i>&nbsp;&nbsp;
+            <b>Competência:</b>&nbsp;{{ arq.cod_arquivo__data_competencia }}&nbsp;&nbsp;
+            <b>Arquivo:</b>&nbsp;{{ arq.cod_arquivo__nome_arqv_original }}&nbsp;&nbsp;
+            <b>Qtd.: Registros:</b>&nbsp;{{ arq.qtd_registros }}&nbsp;&nbsp;
+            <b>Val. Relatório(R$):</b>&nbsp;{{ arq.tt_val_rel }}&nbsp;&nbsp;
+            <b>Val. Razão(R$):</b>&nbsp;{{ arq.tt_val_razao }}&nbsp;&nbsp;
+            <b>Dif.(R$):</b>&nbsp;{{ arq.tt_dif }}&nbsp;&nbsp;
+            <b>Usuário:</b>&nbsp;{{ arq.cod_arquivo__cod_usu__login_usu }}&nbsp;&nbsp;
+            <b>Importado em:</b>&nbsp;{{ arq.cod_arquivo__data_imp }}
+        </button>
+      </h6>
+      <div id="collapse{{ arq.cod_arquivo__cod_arquivo }}" class="accordion-collapse collapse"
+           aria-labelledby="heading{{ arq.cod_arquivo__cod_arquivo }}" data-bs-parent="#accordion_docs">
+        <div class="accordion-body d-flex flex-column" style="padding-left: 3.75rem;"
+             id="div_docs_arq_competencia_{{ arq.cod_arquivo__cod_arquivo }}">
+
+
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>

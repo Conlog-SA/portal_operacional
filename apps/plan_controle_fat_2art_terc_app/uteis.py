@@ -5,7 +5,7 @@ from django.db.models import Sum
 from datetime import datetime
 
 from apps.plan_controle_fat_2art_terc_app.models import Registro2ArtTerceirosFinanceiro, BeneficiarioTerceiro, \
-    LancamentosRegistro2ArtTerceirosFinanceiro
+    LancamentosRegistro2ArtTerceirosFinanceiro, HistAcaoMapas2ArtTerceiros
 
 
 class Uteis():
@@ -88,6 +88,14 @@ class Uteis():
                     reg_ter.cod_pag_2art_terc_financ.num_doc_pagamento) + '- ' + reg_ter.cod_projeto.cod_serial_pag_terc
 
 
+            '''Retorna o último histórico da acao Ativa/Desativa mapa'''
+            motivo_acao_mapa = '(Última ação: '
+            obj_acao_ativa_desativa_mapa = (HistAcaoMapas2ArtTerceiros.objects
+                                            .filter(cod_reg_2art_terc_financ=reg_ter).last())
+            if obj_acao_ativa_desativa_mapa != None:
+                motivo_acao_mapa += obj_acao_ativa_desativa_mapa.obs_hist_acao_mapa_terc + ')'
+
+
             reg_tec_tab = Tab_Dados_Terc_Ultimo_2Art(
                 cod_idreg2arttercfinanc = reg_ter.cod_reg_2art_terc_financ,
                 data = datetime.strftime(reg_ter.data_2art_terc_financ ,'%d-%m-%y'),
@@ -120,7 +128,8 @@ class Uteis():
                 val_faturado_2art = round(float(reg_ter.cod_reg_2art.valorfaturado),2),
                 status_mapa = reg_ter.status_mapa_2art_terc_financ,
                 status_financeiro = reg_ter.status_financeiro_2art_terc_financ,
-                id_pagamento_serial = cod_serial_pagamento
+                id_pagamento_serial = cod_serial_pagamento,
+                motivo_ultima_acao_mapa=motivo_acao_mapa
             )
             lista_registros.append(reg_tec_tab.__dict__)
         return lista_registros
@@ -252,7 +261,7 @@ class Tab_Dados_Terc_Ultimo_2Art():
     def __init__(self, cod_idreg2arttercfinanc,  data, mapa, placa_reg_terc, tipo_entrega_reg_terc, nome_doc_beneficiorio, tipo_pessoa, perfil_veic_reg_terc, regiao_reg_terc, qtd_entr_reg_terc,
         tipo_imp_reg_terc, perc_imposto_reg_terc, val_frete_reg_terc,  val_calculado, diferenca, val_faturado_reg_terc, desconto, acrescimo, val_pagar, val_conlog,
         placa_reg_2art, tipo_entrega_2art, perfil_veic_2art, regiao_2art, qtd_entr_2art, tipo_imp_2art, perc_imposto_2art, val_frete_2art,val_faturado_2art, status_mapa, status_financeiro,
-        id_pagamento_serial):
+        id_pagamento_serial, motivo_ultima_acao_mapa):
 
         self.cod_idreg2arttercfinanc = cod_idreg2arttercfinanc
         self.data = data
@@ -286,6 +295,7 @@ class Tab_Dados_Terc_Ultimo_2Art():
         self.status_mapa = status_mapa
         self.status_financeiro = status_financeiro
         self.id_pagamento_serial = id_pagamento_serial
+        self.motivo_ultima_acao_mapa = motivo_ultima_acao_mapa
 
 
 class Tab_2Art_Agrupado_Beneficiario():

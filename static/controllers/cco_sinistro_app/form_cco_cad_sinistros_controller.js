@@ -1,212 +1,47 @@
-
-$(document).ready(function () {
-    $('#value_prejuizo_eqp').inputmask({
-        alias: 'numeric',
-        groupSeparator: '.',
-        autoGroup: true,
-        digits: 2,
-        radixPoint: ',',
-        allowMinus: false,
-        prefix: 'R$ ',
-        rightAlign: false,
-        unmaskAsNumber: true,
-        numericInput: true
-    });
+// using jQuery
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+var csrftoken = getCookie('csrftoken');
+function csrfSafeMethod(method) {
+    // these HTTP methods do not require CSRF protection
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+$.ajaxSetup({
+    beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+    }
 });
 
+
+/*
 // Botão de Cadastro de Cargas , posterior envio para a View
 $('#form_cadastro_sinistros_cargas').submit(function(event){
-    event.preventDefault();
-        // Coleta de dados cadastro de cargascb_tipo_frota_carga
-    empresaSelecionada = document.getElementById("cb_empresa_sin_carga").value
-    motoristaCargas = document.getElementById("txt_nome_motorista_carga").value
-    dt_nascimento_motorista_carga = document.getElementById("dt_nascimento_motorista_carga").value
-    tipoFrota = document.getElementById("cb_tipo_frota_carga").value//Seleção tipo de frota Agregado, Terceiro, Própria
-    placaCarreta = document.getElementById("txt_placa_carreta_carga").value
-    transportadorVeiculo = document.getElementById("txt_nome_transportador_dados_veiculo_carga").value
-    placaVeiculo = document.getElementById("txt_placa_veiculo_carga").value
-    projetoVeiculo = document.getElementById("cb_tipo_projeto_carga").value
-    tipoVeiculo = document.getElementById("cb_tipo_veic_carga").value//Seleção tipo de veiculo baú, Graneleiro,
-    placaCarreta = document.getElementById("txt_placa_carreta_carga").value
-    clienteCarga = document.getElementById("txt_nome_cliente_carga").value
-    numeroNotaCarga = document.getElementById("txt_numero_nota_carga").value
-    valorProdutosCarga = document.getElementById("num_valor_dos_produtos_carga").value
-    tipoProdutoCarga = document.getElementById("txt_tipo_mercadoria_carga").value
-    numeroSerieCarga = document.getElementById("txt_numero_serie_carga").value
-    dt_ocorrencia_sinistro_carga = document.getElementById("dt_ocorrencia_sinistro_carga").value
-    sel_estado_sinistro_carga = document.getElementById("sel_estado_sinistro_carga").value
-    localSinistro = document.getElementById("txt_local_sinistro_carga").value
-    valorSinistro = document.getElementById("num_valor_sinistro_carga").value
-    txt_cidade_sinistro_carga = document.getElementById("txt_cidade_sinistro_carga").value
-    timeSinistro = document.getElementById("hr_sinistro_carga").value
-    motivo_sinistro_carga = document.getElementById("cb_motivo_sinistro_carga").value
-    respostaSeguro = document.getElementById("txt_resposta_seguro_sinistro_carga").value
-    data_abertura_registro_sinistro = document.getElementById("dt_abertura_registro_sinistro_carga").value   //Abertura do registro de sinistros de cargas
-    data_fechamento_registro_sinistro = document.getElementById("dt_encerramento_registro_sinistro_carga").value  //Encerramento do registro de sinistros de cargas
-    seguradoraSinistro = document.getElementById("txt_seguradora_sinistro_carga").value
-    reguladoraSinistro = document.getElementById("txt_reguladora_sinistro_carga").value
-    feitoReembolso = document.getElementById("cb_feito_reembolso_sinistro_carga").value
-    valorReembolso = document.getElementById("number_remboolso_registro_sinistro").value
-    numeroProcesso = document.getElementById("txt_numero_dados_processo_sinistro_carga").value
-    dt_abertura_processo_sinistro_carga = document.getElementById("dt_abertura_processo_sinistro_carga").value
-    dt_fim_processo_sinistro_carga = document.getElementById("dt_fim_processo_sinistro_carga").value
-    statusProcesso = document.getElementById("cb_status_processo_carga").value
-    cod_cad_sinistro_carga = document.getElementById("btn_finalizar_cadastro_sinistro").value
-    txt_obs_cad_carga = document.getElementById("txt_observacoes_finais_sinistro_carga").value
 
-
-    // Envio dados para a View
-    $.ajax({
-        type: "POST",
-        // Envia os dados pelo metodo POST para a URL
-        url: "/cco_sinistro_app/cadastro_sinistros_cargas",
-        data: {
-            csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
-            empresaSelecionada : empresaSelecionada,
-            motoristaCargas : motoristaCargas,
-            dt_nascimento_motorista_carga : dt_nascimento_motorista_carga,
-            tipoFrota : tipoFrota,
-            transportadorVeiculo : transportadorVeiculo,
-            placaVeiculo : placaVeiculo,
-            projetoVeiculo : projetoVeiculo,
-            tipoVeiculo : tipoVeiculo,
-            placaCarreta : placaCarreta,
-            clienteCarga : clienteCarga,
-            numeroNotaCarga : numeroNotaCarga,
-            valorProdutosCarga : valorProdutosCarga,
-            tipoProdutoCarga : tipoProdutoCarga,
-            numeroSerieCarga : numeroSerieCarga,
-            dt_ocorrencia_sinistro_carga : dt_ocorrencia_sinistro_carga,
-            sel_estado_sinistro_carga : sel_estado_sinistro_carga,
-            localSinistro : localSinistro,
-            valorSinistro : valorSinistro,
-            txt_cidade_sinistro_carga : txt_cidade_sinistro_carga,
-            timeSinistro : timeSinistro,
-            motivo_sinistro_carga : motivo_sinistro_carga,
-            respostaSeguro : respostaSeguro,
-            data_abertura_registro_sinistro : data_abertura_registro_sinistro,
-            data_fechamento_registro_sinistro : data_fechamento_registro_sinistro,
-            seguradoraSinistro : seguradoraSinistro,
-            reguladoraSinistro : reguladoraSinistro,
-            feitoReembolso : feitoReembolso,
-            valorReembolso : valorReembolso,
-            numeroProcesso : numeroProcesso,
-            dt_abertura_processo_sinistro_carga : dt_abertura_processo_sinistro_carga,
-            dt_fim_processo_sinistro_carga : dt_fim_processo_sinistro_carga,
-            statusProcesso : statusProcesso,
-            txt_obs_cad_carga : txt_obs_cad_carga,
-            cod_cad_sinistro_carga : cod_cad_sinistro_carga
-        },
-        success: function(data) {
-            atualiza_cb_placa_pesq_sinistros_carga();
-            $.gritter.add({
-                title: 'Sucesso!',
-                text: "Lançamento registrado com sucesso!",
-                image: '/static/icons/sucess_icon.svg',
-                sticky: false,
-                time: '',
-            });
-        },
-        error: function(error) {
-            $.gritter.add({
-                title: 'Erro!',
-                text: "Por gentileza contate o adm.",
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
-            });
-        }
-    });
 
 });
+*/
+/*
 // Botão de Cadastro de equipamentos , posterior envio para a View
 $('#form_cadastro_eqp_veiculos').submit(function(event){
     event.preventDefault();
-        // Coleta de dados da form do cadastro de equipamentos e veiculos
-        nome_motorista_eqp = document.getElementById("txt_nome_motorista_carga_cad_eqp").value //Nome motorista
-        dt_nascimento_motorista_eqp = document.getElementById("dt_nascimento_motorista_eqp").value // Data Nascimento Motorista
-        cpf_motorista_eqp = document.getElementById("cpf_motorista_eqp").value // Cpf Motorista
-        projeto_eqp = document.getElementById("select_projeto_eqp").value //Projeto para cadastro
-        placa_cavalo_cad_eqp = document.getElementById("txt_placa_cavalo_cad_eqp").value//Placa do Cavalo
-        dt_ocorrencia_sinistro_carga_eqp = document.getElementById("dt_ocorrencia_sinistro_carga_eqp").value//Data ocorrencia sinistro Carga
-        motivo_sinistro_eqp = document.getElementById("cb_motivo_sinistro_carga_eqp").value //Motivo Do sinistro
-        acionado_seguro_eqp = document.getElementById("select_acionado_seg_eqp").value // Acionado Seguro, sim ou não
-        cidade_sinistro_eqp = document.getElementById("cidade_sinistro_eqp").value //Cidade que ocorreu o sinistro
-        estado_sinistro_eqp = document.getElementById("estado_sinistro_eqp").value //Estado que ocorreu o Sinistro
-        dt_comunicacao_seguradora_eqp = document.getElementById("dt_comunicacao_seguradora_eqp").value //Data de comunicação a seguradora
-        dt_comunicacao_cco_eqp = document.getElementById("dt_comunicacao_cco_eqp").value //data de comunicação ao CCO
-        responsavel_dano_eqp = document.getElementById("txt_responsavel_por_dano_eqp").value //Responsável pelo dano
-        desconto_colaborador_eqp = document.getElementById("cb_feito_desconto_colaborador_eqp").value //Desconto realizado ao colaborador
-        indenizado_eqp = document.getElementById("select_indenizado_eqp").value //foi Indenizado ou não
-        dano_empresa_eqp = document.getElementById("cb_houve_dano_aempresa_eqp").value //Houve danos a empresa sim ou não
-        valor_indenizado_eqp = document.getElementById("value_indenizado_eqp").value // Valor indenizado
-        valor_prejuizo_eqp = document.getElementById("value_prejuizo_eqp").value // Valor do prejuizo
-        responsavel_pag_indenizacao_dano_eqp = document.getElementById("txt_responsavel_pag_indenizacao_dano_eqp").value // Responsável pela indenização do dano
-        feito_reembolso_eqp = document.getElementById("txt_feito_reembolso_eqp_veic").value //Realizado Reembolso sim ou não
-        tipo_acionamento_eqp = document.getElementById("cb_tipo_acionamento_eqp").value //Tipo de acionamento realizado
-        numero_processo_eqp = document.getElementById("numero_processo_eqp").value //Numero do Processo
-        dt_inicio_dados_processo_eqp = document.getElementById("dt_inicio_dados_processo_eqp").value //Data de inicio do processo
-        dt_fim_processo_sinistro_carga_eqp = document.getElementById("dt_fim_processo_sinistro_carga_eqp").value //Data de fim do processo
-        observacoes_finais = document.getElementById("observacoes_finais_eqp").value //Observações Finais do Cadastro
-        status_processo_eqp = document.getElementById("status_processo_eqp").value
-        cod_cad_sinistro_eqp_veic = document.getElementById("btn_finalizar_cadastro_sinistro_cad_eqp_veic").value //Defino valor inicial como 0 ao Button
 
-    // Envio de dados para a view
-            $.ajax({
-            type: "POST",
-            // Envia os dados pelo metodo POST para a URL
-            url: "/cco_sinistro_app/cadastro_sinistros_eqp",
-            data: {
-                nome_motorista_eqp : nome_motorista_eqp,
-                projeto_eqp : projeto_eqp,
-                dt_nascimento_motorista_eqp : dt_nascimento_motorista_eqp,
-                cpf_motorista_eqp : cpf_motorista_eqp,
-                dt_ocorrencia_sinistro_carga_eqp : dt_ocorrencia_sinistro_carga_eqp,
-                motivo_sinistro_eqp : motivo_sinistro_eqp,
-                placa_cavalo_cad_eqp : placa_cavalo_cad_eqp,
-                acionado_seguro_eqp : acionado_seguro_eqp,
-                cidade_sinistro_eqp : cidade_sinistro_eqp,
-                estado_sinistro_eqp : estado_sinistro_eqp,
-                dt_comunicacao_seguradora_eqp : dt_comunicacao_seguradora_eqp,
-                dt_comunicacao_cco_eqp : dt_comunicacao_cco_eqp,
-                responsavel_dano_eqp : responsavel_dano_eqp,
-                desconto_colaborador_eqp : desconto_colaborador_eqp,
-                indenizado_eqp : indenizado_eqp,
-                dano_empresa_eqp : dano_empresa_eqp,
-                valor_indenizado_eqp : valor_indenizado_eqp,
-                valor_prejuizo_eqp : valor_prejuizo_eqp,
-                responsavel_pag_indenizacao_dano_eqp : responsavel_pag_indenizacao_dano_eqp,
-                feito_reembolso_eqp : feito_reembolso_eqp,
-                tipo_acionamento_eqp : tipo_acionamento_eqp,
-                numero_processo_eqp : numero_processo_eqp,
-                status_processo_eqp : status_processo_eqp,
-                dt_inicio_dados_processo_eqp : dt_inicio_dados_processo_eqp,
-                dt_fim_processo_sinistro_carga_eqp : dt_fim_processo_sinistro_carga_eqp,
-                observacoes_finais : observacoes_finais,
-                cod_cad_sinistro_eqp_veic : cod_cad_sinistro_eqp_veic
-            },
-
-            success: function(data) {
-                atualiza_cb_placa_pesq_sinistros_carga();
-                $.gritter.add({
-                    title: 'Sucesso!',
-                    text: "Lançamento registrado com sucesso!",
-                    image: '/static/icons/sucess_icon.svg',
-                    sticky: false,
-                    time: '',
-                });
-            },
-            error: function(error) {
-                $.gritter.add({
-                    title: 'Erro!',
-                    text: "Por gentileza contate o adm.",
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-        });
 });
+*/
 // Botão pesquisa de placa por competencia
 $('#frm_pesq_sinistros_cargas_por_comp').submit(function(event){
         event.preventDefault();
@@ -254,8 +89,7 @@ $(document).on('click','button', function(){
         $(window).scrollTop(0); // Rolando a página para o topo
         $("#cb_empresa_sin_carga").focus();
     }
-
-    if (let_nome_btn == "btn_criar_form_eqp"){
+    else if (let_nome_btn == "btn_criar_form_eqp"){
         document.getElementById("form_cadastro_eqp_veiculos").reset();
         $(window).scrollTop(0); // Rolando a página para o topo
         $("#txt_nome_motorista_carga_cad_eqp").focus();
@@ -416,6 +250,197 @@ $(document).on('click','button', function(){
                     $("#btn_finalizar_cadastro_sinistro_cad_eqp_veic").val(dados.dic_sinistro_form.cod_sinistro_eqp_veic);
                 }
 
+            },
+            error: function(error) {
+                $.gritter.add({
+                    title: 'Erro!',
+                    text: "Por gentileza contate o adm.",
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
+    else if ( let_nome_btn == 'btn_finalizar_cadastro_sinistro'){
+        event.preventDefault();
+    // Coleta de dados cadastro de cargascb_tipo_frota_carga
+    empresaSelecionada = document.getElementById("cb_empresa_sin_carga").value
+    motoristaCargas = document.getElementById("txt_nome_motorista_carga").value
+    dt_nascimento_motorista_carga = document.getElementById("dt_nascimento_motorista_carga").value
+    tipoFrota = document.getElementById("cb_tipo_frota_carga").value//Seleção tipo de frota Agregado, Terceiro, Própria
+    placaCarreta = document.getElementById("txt_placa_carreta_carga").value
+    transportadorVeiculo = document.getElementById("txt_nome_transportador_dados_veiculo_carga").value
+    placaVeiculo = document.getElementById("txt_placa_veiculo_carga").value
+    projetoVeiculo = document.getElementById("cb_tipo_projeto_carga").value
+    tipoVeiculo = document.getElementById("cb_tipo_veic_carga").value//Seleção tipo de veiculo baú, Graneleiro,
+    placaCarreta = document.getElementById("txt_placa_carreta_carga").value
+    clienteCarga = document.getElementById("txt_nome_cliente_carga").value
+    numeroNotaCarga = document.getElementById("txt_numero_nota_carga").value
+    valorProdutosCarga = document.getElementById("num_valor_dos_produtos_carga").value
+    tipoProdutoCarga = document.getElementById("txt_tipo_mercadoria_carga").value
+    numeroSerieCarga = document.getElementById("txt_numero_serie_carga").value
+    dt_ocorrencia_sinistro_carga = document.getElementById("dt_ocorrencia_sinistro_carga").value
+    sel_estado_sinistro_carga = document.getElementById("sel_estado_sinistro_carga").value
+    localSinistro = document.getElementById("txt_local_sinistro_carga").value
+    valorSinistro = document.getElementById("num_valor_sinistro_carga").value
+    txt_cidade_sinistro_carga = document.getElementById("txt_cidade_sinistro_carga").value
+    timeSinistro = document.getElementById("hr_sinistro_carga").value
+    motivo_sinistro_carga = document.getElementById("cb_motivo_sinistro_carga").value
+    respostaSeguro = document.getElementById("txt_resposta_seguro_sinistro_carga").value
+    data_abertura_registro_sinistro = document.getElementById("dt_abertura_registro_sinistro_carga").value   //Abertura do registro de sinistros de cargas
+    data_fechamento_registro_sinistro = document.getElementById("dt_encerramento_registro_sinistro_carga").value  //Encerramento do registro de sinistros de cargas
+    seguradoraSinistro = document.getElementById("txt_seguradora_sinistro_carga").value
+    reguladoraSinistro = document.getElementById("txt_reguladora_sinistro_carga").value
+    feitoReembolso = document.getElementById("cb_feito_reembolso_sinistro_carga").value
+    valorReembolso = document.getElementById("number_remboolso_registro_sinistro").value
+    numeroProcesso = document.getElementById("txt_numero_dados_processo_sinistro_carga").value
+    dt_abertura_processo_sinistro_carga = document.getElementById("dt_abertura_processo_sinistro_carga").value
+    dt_fim_processo_sinistro_carga = document.getElementById("dt_fim_processo_sinistro_carga").value
+    statusProcesso = document.getElementById("cb_status_processo_carga").value
+    cod_cad_sinistro_carga = document.getElementById("btn_finalizar_cadastro_sinistro").value
+    txt_obs_cad_carga = document.getElementById("txt_observacoes_finais_sinistro_carga").value
+
+
+    // Envio dados para a View
+    $.ajax({
+        type: "POST",
+        // Envia os dados pelo metodo POST para a URL
+        url: "/cco_sinistro_app/cadastro_sinistros_cargas",
+        data: {
+            csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+            empresaSelecionada : empresaSelecionada,
+            motoristaCargas : motoristaCargas,
+            dt_nascimento_motorista_carga : dt_nascimento_motorista_carga,
+            tipoFrota : tipoFrota,
+            transportadorVeiculo : transportadorVeiculo,
+            placaVeiculo : placaVeiculo,
+            projetoVeiculo : projetoVeiculo,
+            tipoVeiculo : tipoVeiculo,
+            placaCarreta : placaCarreta,
+            clienteCarga : clienteCarga,
+            numeroNotaCarga : numeroNotaCarga,
+            valorProdutosCarga : valorProdutosCarga,
+            tipoProdutoCarga : tipoProdutoCarga,
+            numeroSerieCarga : numeroSerieCarga,
+            dt_ocorrencia_sinistro_carga : dt_ocorrencia_sinistro_carga,
+            sel_estado_sinistro_carga : sel_estado_sinistro_carga,
+            localSinistro : localSinistro,
+            valorSinistro : valorSinistro,
+            txt_cidade_sinistro_carga : txt_cidade_sinistro_carga,
+            timeSinistro : timeSinistro,
+            motivo_sinistro_carga : motivo_sinistro_carga,
+            respostaSeguro : respostaSeguro,
+            data_abertura_registro_sinistro : data_abertura_registro_sinistro,
+            data_fechamento_registro_sinistro : data_fechamento_registro_sinistro,
+            seguradoraSinistro : seguradoraSinistro,
+            reguladoraSinistro : reguladoraSinistro,
+            feitoReembolso : feitoReembolso,
+            valorReembolso : valorReembolso,
+            numeroProcesso : numeroProcesso,
+            dt_abertura_processo_sinistro_carga : dt_abertura_processo_sinistro_carga,
+            dt_fim_processo_sinistro_carga : dt_fim_processo_sinistro_carga,
+            statusProcesso : statusProcesso,
+            txt_obs_cad_carga : txt_obs_cad_carga,
+            cod_cad_sinistro_carga : cod_cad_sinistro_carga
+        },
+        success: function(data) {
+            atualiza_cb_placa_pesq_sinistros_carga();
+            $.gritter.add({
+                title: 'Sucesso!',
+                text: "Lançamento registrado com sucesso!",
+                image: '/static/icons/sucess_icon.svg',
+                sticky: false,
+                time: '',
+            });
+        },
+        error: function(error) {
+            $.gritter.add({
+                title: 'Erro!',
+                text: "Por gentileza contate o adm.",
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+    }
+    else if ( let_nome_btn == 'btn_finalizar_cadastro_sinistro_cad_eqp_veic') {
+        // Coleta de dados da form do cadastro de equipamentos e veiculos
+        nome_motorista_eqp = document.getElementById("txt_nome_motorista_carga_cad_eqp").value //Nome motorista
+        dt_nascimento_motorista_eqp = document.getElementById("dt_nascimento_motorista_eqp").value // Data Nascimento Motorista
+        cpf_motorista_eqp = document.getElementById("cpf_motorista_eqp").value // Cpf Motorista
+        projeto_eqp = document.getElementById("select_projeto_eqp").value //Projeto para cadastro
+        placa_cavalo_cad_eqp = document.getElementById("txt_placa_cavalo_cad_eqp").value//Placa do Cavalo
+        dt_ocorrencia_sinistro_carga_eqp = document.getElementById("dt_ocorrencia_sinistro_carga_eqp").value//Data ocorrencia sinistro Carga
+        motivo_sinistro_eqp = document.getElementById("cb_motivo_sinistro_carga_eqp").value //Motivo Do sinistro
+        acionado_seguro_eqp = document.getElementById("select_acionado_seg_eqp").value // Acionado Seguro, sim ou não
+        cidade_sinistro_eqp = document.getElementById("cidade_sinistro_eqp").value //Cidade que ocorreu o sinistro
+        estado_sinistro_eqp = document.getElementById("estado_sinistro_eqp").value //Estado que ocorreu o Sinistro
+        dt_comunicacao_seguradora_eqp = document.getElementById("dt_comunicacao_seguradora_eqp").value //Data de comunicação a seguradora
+        dt_comunicacao_cco_eqp = document.getElementById("dt_comunicacao_cco_eqp").value //data de comunicação ao CCO
+        responsavel_dano_eqp = document.getElementById("txt_responsavel_por_dano_eqp").value //Responsável pelo dano
+        desconto_colaborador_eqp = document.getElementById("cb_feito_desconto_colaborador_eqp").value //Desconto realizado ao colaborador
+        indenizado_eqp = document.getElementById("select_indenizado_eqp").value //foi Indenizado ou não
+        dano_empresa_eqp = document.getElementById("cb_houve_dano_aempresa_eqp").value //Houve danos a empresa sim ou não
+        valor_indenizado_eqp = document.getElementById("value_indenizado_eqp").value // Valor indenizado
+        valor_prejuizo_eqp = document.getElementById("value_prejuizo_eqp").value // Valor do prejuizo
+        responsavel_pag_indenizacao_dano_eqp = document.getElementById("txt_responsavel_pag_indenizacao_dano_eqp").value // Responsável pela indenização do dano
+        feito_reembolso_eqp = document.getElementById("txt_feito_reembolso_eqp_veic").value //Realizado Reembolso sim ou não
+        tipo_acionamento_eqp = document.getElementById("cb_tipo_acionamento_eqp").value //Tipo de acionamento realizado
+        numero_processo_eqp = document.getElementById("numero_processo_eqp").value //Numero do Processo
+        dt_inicio_dados_processo_eqp = document.getElementById("dt_inicio_dados_processo_eqp").value //Data de inicio do processo
+        dt_fim_processo_sinistro_carga_eqp = document.getElementById("dt_fim_processo_sinistro_carga_eqp").value //Data de fim do processo
+        observacoes_finais = document.getElementById("observacoes_finais_eqp").value //Observações Finais do Cadastro
+        status_processo_eqp = document.getElementById("status_processo_eqp").value
+        cod_cad_sinistro_eqp_veic = document.getElementById("btn_finalizar_cadastro_sinistro_cad_eqp_veic").value //Defino valor inicial como 0 ao Button
+
+    // Envio de dados para a view
+            $.ajax({
+            type: "POST",
+            // Envia os dados pelo metodo POST para a URL
+            url: "/cco_sinistro_app/cadastro_sinistros_eqp",
+            data: {
+                nome_motorista_eqp : nome_motorista_eqp,
+                projeto_eqp : projeto_eqp,
+                dt_nascimento_motorista_eqp : dt_nascimento_motorista_eqp,
+                cpf_motorista_eqp : cpf_motorista_eqp,
+                dt_ocorrencia_sinistro_carga_eqp : dt_ocorrencia_sinistro_carga_eqp,
+                motivo_sinistro_eqp : motivo_sinistro_eqp,
+                placa_cavalo_cad_eqp : placa_cavalo_cad_eqp,
+                acionado_seguro_eqp : acionado_seguro_eqp,
+                cidade_sinistro_eqp : cidade_sinistro_eqp,
+                estado_sinistro_eqp : estado_sinistro_eqp,
+                dt_comunicacao_seguradora_eqp : dt_comunicacao_seguradora_eqp,
+                dt_comunicacao_cco_eqp : dt_comunicacao_cco_eqp,
+                responsavel_dano_eqp : responsavel_dano_eqp,
+                desconto_colaborador_eqp : desconto_colaborador_eqp,
+                indenizado_eqp : indenizado_eqp,
+                dano_empresa_eqp : dano_empresa_eqp,
+                valor_indenizado_eqp : valor_indenizado_eqp,
+                valor_prejuizo_eqp : valor_prejuizo_eqp,
+                responsavel_pag_indenizacao_dano_eqp : responsavel_pag_indenizacao_dano_eqp,
+                feito_reembolso_eqp : feito_reembolso_eqp,
+                tipo_acionamento_eqp : tipo_acionamento_eqp,
+                numero_processo_eqp : numero_processo_eqp,
+                status_processo_eqp : status_processo_eqp,
+                dt_inicio_dados_processo_eqp : dt_inicio_dados_processo_eqp,
+                dt_fim_processo_sinistro_carga_eqp : dt_fim_processo_sinistro_carga_eqp,
+                observacoes_finais : observacoes_finais,
+                cod_cad_sinistro_eqp_veic : cod_cad_sinistro_eqp_veic
+            },
+
+            success: function(data) {
+                atualiza_cb_placa_pesq_sinistros_carga();
+                $.gritter.add({
+                    title: 'Sucesso!',
+                    text: "Lançamento registrado com sucesso!",
+                    image: '/static/icons/sucess_icon.svg',
+                    sticky: false,
+                    time: '',
+                });
             },
             error: function(error) {
                 $.gritter.add({

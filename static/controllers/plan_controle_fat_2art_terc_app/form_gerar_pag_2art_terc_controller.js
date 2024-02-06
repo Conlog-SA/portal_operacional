@@ -1313,22 +1313,24 @@ function povoa_tab_mapas_terceitos_2art(){
                 if ( data.tab_mapas_terceiros[i].status_mapa == 'N' &&
                         data.tab_mapas_terceiros[i].status_financeiro == 'A') {
                     let_btn_ativa_desativa_mapa = `
-                        <button type='button' class='btn btn-rounded btn-space' title='Ativar'
+                        <button type='button' class='btn btn-rounded btn-space'
+                        title='Ativar'
                         id='btn_ativa_mapa_${i}' name='btn_ativa_mapa' value='${i}'>
                         <i class="fa-solid fa-location-dot" style="color: #f46424;"></i></button>
                     `;
                     let_img = `
-                        <i class="fa-solid fa-location-pin-lock" style="color: #f46424;" title="Desativado"></i>
+                        <i class="fa-solid fa-location-pin-lock" style="color: #f46424;" title="${data.tab_mapas_terceiros[i].motivo_ultima_acao_mapa}"></i>
                     `;
                 } else if ( data.tab_mapas_terceiros[i].status_mapa == 'S' &&
                         data.tab_mapas_terceiros[i].status_financeiro == 'A') {
                     let_btn_ativa_desativa_mapa = `
-                        <button type='button' class='btn btn-rounded btn-space' title='Desativar'
+                        <button type='button' class='btn btn-rounded btn-space'
+                        title='Desativar'
                         id='btn_desativa_mapa_${i}' name='btn_desativa_mapa' value='${i}'>
                         <i class="fa-solid fa-location-pin-lock" style="color: #f46424;"></i> </button>
                     `;
                     let_img = `
-                        <i class="fa-solid fa-location-dot fa-beat-fade" style="color: #f46424;" title="Ativo"></i>
+                        <i class="fa-solid fa-location-dot fa-beat-fade" style="color: #f46424;" title="${data.tab_mapas_terceiros[i].motivo_ultima_acao_mapa}"></i>
                     `;
                 }
 

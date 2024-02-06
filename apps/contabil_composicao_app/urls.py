@@ -134,6 +134,8 @@ urlpatterns = [
          name='Docs_Demais_Contas_M1_View'),
     path('exclui_doc_pac_demais_contas/<str:pk>', views.Docs_Demais_Contas_M1_View.as_view(),
          name='exclui_doc_pac_demais_contas'),
+    path('retorna_docs_conta_m1', views.Form_Docs_Conta_M1_View.as_view(),
+         name='retorna_docs_conta_m1'),
 
 ]
 

@@ -72,7 +72,7 @@ function atualiza_dados_conta_acao_cb_contas(){
     $("#div_visualizacao_anexo_conta").html("");
 }
 
-
+/*
 $(document).on('change', '#cb_pacote_conta', function(){
     let let_cod_conta = $("#btn_cadastra_nova_conta").val();
     let let_cod_pacote_conta = $(this).val();
@@ -164,7 +164,7 @@ $(document).on('change', '#cb_pacote_conta', function(){
       }
     });
 });
-
+*/
 
 $(document).on('click','button', function(){
 	let let_nome_btn = $(this).attr('name');
@@ -235,6 +235,14 @@ $(document).on('click','button', function(){
                 },
                 dataType: 'json',
                 success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+
                     $("#btn_cadastra_nova_conta").val(dados.cod_conta);
                     let let_new_label_btn_cadastro_conta = `
                         <i class="fa-solid fa-arrows-rotate"></i>Atualizar dados conta
@@ -255,14 +263,16 @@ $(document).on('click','button', function(){
                     $("#btn_anexa_doc_contrato").val(dados.cod_conta);
                     $("#btn_importa_contrato_pelo_num").val(dados.cod_conta);
 
+                    let let_btn_criar_nova_conta_manual = `
+                    <button type='button' name='btn_criar_nova_conta_manual'
+                        id='btn_criar_nova_conta_manual' class='mr-2 btn btn-primary btn-rounded cl_btn_cad_contas'>
+                        <i class="fa-solid fa-plus"></i>Limpar campos
+                        </button>
+                    `;
+                    $("#div_btn_criar_nova_conta_manual").html(let_btn_criar_nova_conta_manual);
 
-                    $.gritter.add({
-                        title: 'Atenção!',
-                        text: dados.msg,
-                        image: '/static/icons/triangle-exclamation-solid.svg',
-                        sticky: false,
-                        time: '',
-                    });
+
+
                     loader_frm_cad_contas.style.display = "none";
 
                 },
@@ -328,6 +338,7 @@ $(document).on('click','button', function(){
                 },
                 dataType: 'json',
                 success: function (dados) {
+                    atualiza_tab_contratos_conta(let_cod_conta);
                     $.gritter.add({
                         title: 'Atenção!',
                         text: dados.msg,
@@ -348,7 +359,8 @@ $(document).on('click','button', function(){
                     });
               }
             });
-        } else {
+        }
+        else {
             $.gritter.add({
                 title: 'Atenção!',
                 text: 'Confirme anteriormente o cadastro da conta!',
@@ -994,12 +1006,18 @@ $(document).on('click','button', function(){
         });
 
     }
+    else if (let_nome_btn == 'btn_abre_modal_exclui_arq_docs_m1') {
+        $("#btn_exclui_arq_conta_mod_1").val(let_val_btn);
+        $("#modal_exclui_arq_docs_m1").show();
+    }
+    else if (let_nome_btn == 'btn_fecha_modal_exclui_arq_docs_m1') {
+        $("#modal_exclui_arq_docs_m1").hide();
+    }
     else if (let_nome_btn == 'btn_exclui_arq_conta_mod_1') {
-        let let_cod_conta = $("#cb_contas").val();
-        let let_cod_arquivo_mais_cod_conta = let_val_btn + '_' + let_cod_conta;
+        let let_arq_conta_motivo = let_val_btn + '_' + $("#ta_justificativa_exclusao_arq_docs_m1").val();
         $.ajax({
             type: 'DELETE',
-            url: '/contabil_composicao_app/exclui_arquivo_conta_m_1/'+let_cod_arquivo_mais_cod_conta,
+            url: '/contabil_composicao_app/exclui_arquivo_conta_m_1/'+let_arq_conta_motivo,
             dataType: 'json',
             success: function(data){
                 $.gritter.add({
@@ -1011,6 +1029,7 @@ $(document).on('click','button', function(){
                 });
                 atualiza_doc_contas_modelo_1(data.cod_conta);
                 $("#div_visualizacao_anexo_conta").html("");
+                $("#modal_exclui_arq_docs_m1").hide();
             },
             error: function(request, status, error){
                 $.gritter.add({
@@ -1025,7 +1044,8 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == 'btn_gera_conciliacao_comp_benner_detalhado_aud') {
         gera_conciliacao_comp_benner_auditoria();
-    } else if (let_nome_btn == 'btn_importa_anexos') {
+    }
+    else if (let_nome_btn == 'btn_importa_anexos') {
         if(let_val_btn > 0) {
             let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
             let_loader_frm_cad_contas.style.display = "flex";
@@ -1188,6 +1208,541 @@ $(document).on('click','button', function(){
 
 
     }
+
+    else if (let_nome_btn == 'bnt_arq_conta') {
+        let loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        loader_frm_cad_contas.style.display = "flex";
+        //Povoa tabela
+        $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/retorna_docs_conta_m1',
+            data: {
+                'cod_conta'     :   let_val_btn.split('_')[0],
+                'cod_arq'       :   let_val_btn.split('_')[1]
+            },
+            success: function (dados) {
+                $("#div_docs_arq_competencia_"+let_val_btn.split('_')[1]).html(dados);
+
+            /*
+                let let_cod_pac = dados.cod_pacote;
+                let let_lista_docs = [];
+                let let_columns_tab = [];
+
+
+
+                else if(let_cod_pac=='4'){
+                    //Estoque
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_estoque"
+                                id="btn_abre_modal_edita_doc_pac_estoque_${reg.cod_pac_doc_estoque}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_estoque}"
+                                title="Editar Registro">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_exclui_doc_pac_estoque"
+                                id="btn_abre_modal_exclui_doc_pac_estoque_${reg.cod_pac_doc_estoque}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_estoque}"
+                                title="Excluir Registro">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.nome_almoxarifado,
+                            reg.cod_produto,
+                            reg.desc_produto,
+                            reg.qtd_prod,
+                            reg.custo_medio,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='5'){
+                    //Folha de pagamento
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_folha_pag"
+                                id="btn_abre_modal_edita_doc_pac_folha_pag_${reg.cod_pac_doc_folha_pag}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_folha_pag}"
+                                title="Editar Registro">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_exclui_doc_pac_folha_pag"
+                                id="btn_abre_modal_exclui_doc_pac_folha_pag_${reg.cod_pac_doc_folha_pag}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_folha_pag}"
+                                title="Excluir Registro">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.matricula,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.num_doc_contabil,
+                            reg.data_lancto,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='6'){
+                    //Contas compensação
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_compensacao"
+                                id="btn_abre_modal_edita_doc_pac_compensacao_${reg.cod_pac_doc_contas_compensacao}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_contas_compensacao}"
+                                title="Editar Registro">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_compensacao"
+                                id="btn_abre_modal_excluir_doc_pac_compensacao_${reg.cod_pac_doc_contas_compensacao}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_contas_compensacao}"
+                                title="Excluir Registro">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.cnpj,
+                            reg.nome_fornecedor,
+                            reg.num_doc,
+                            reg.num_doc_contabil,
+                            reg.data_emissao,
+                            reg.data_entrada,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='7'){
+                    //Tributos
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_tributos"
+                                id="btn_abre_modal_edita_doc_pac_tributos_${reg.cod_pac_doc_tributos}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_tributos}"
+                                title="Editar Registro">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_tributos"
+                                id="btn_abre_modal_excluir_doc_pac_tributos_${reg.cod_pac_doc_tributos}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_tributos}"
+                                title="Excluir Registro">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.num_doc_contabil,
+                            reg.nome_fornecedor,
+                            reg.data_emissao,
+                            reg.data_entrada,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='9'){
+                    //Financeiro disponibilidades
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_financ_disp"
+                                id="btn_abre_modal_edita_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_financ_disp}">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_financ_disp"
+                                id="btn_abre_modal_excluir_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_financ_disp}">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.data_lancto,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='10'){
+                    //Intercompany
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_intercompany"
+                                id="btn_abre_modal_edita_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_intercompany}">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_intercompany"
+                                id="btn_abre_modal_excluir_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_intercompany}">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.data_lancto,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='11'){
+                    //Imobilizado
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_imobilizado"
+                                id="btn_abre_modal_edita_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_imobilizado}">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_imobilizado"
+                                id="btn_abre_modal_excluir_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_imobilizado}">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.data_entrada,
+                            reg.cod_filial__desc_filial,
+                            reg.plaqueta,
+                            reg.desc_imobilizado,
+                            reg.val_aquisicao,
+                            reg.num_doc,
+                            reg.nome_fornecedor,
+                            reg.depreciacao_acum,
+                            reg.val_liq,
+                            reg.taxa_depreciacao,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='13'){
+                    //Consorcios ativo
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_consorc_atv"
+                                id="btn_abre_modal_edita_doc_pac_consorc_atv_${reg.cod_pac_doc_consorcio_ativo}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_consorcio_ativo}">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_consorcio_ativo"
+                                id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_${reg.cod_pac_doc_consorcio_ativo}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_consorcio_ativo}">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.data_lancto,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                else if(let_cod_pac=='14'){
+                    //Demais Contas
+                    dados.lista_docs.forEach( reg => {
+                        let let_btn_editar_arquivo = `
+                            <button type="button" name="btn_abre_modal_edita_doc_pac_demais_contas"
+                                id="btn_abre_modal_edita_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_outros}">
+                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        let let_btn_excluir_arquivo = `
+                            <button type="button" name="btn_abre_modal_excluir_doc_pac_demais_contas"
+                                id="btn_abre_modal_excluir_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
+                                class="btn btn-rounded btn-space"
+                                value="${reg.cod_pac_doc_outros}">
+                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                            </button>
+                        `;
+
+                        if ( reg.ativo == 'N') {
+                            let_btn_editar_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+
+                            let_btn_excluir_arquivo = `
+                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                            `;
+                        }
+
+                        let doc = [
+                            reg.data_entrada,
+                            reg.data_lancto,
+                            reg.cod_filial__desc_filial,
+                            reg.historico,
+                            reg.num_doc,
+                            reg.num_doc_contabil,
+                            reg.val_rel,
+                            reg.val_razao,
+                            reg.val_dif,
+                            reg.obs,
+                            let_btn_editar_arquivo,
+                            let_btn_excluir_arquivo
+                        ];
+                        let_lista_docs.push(doc);
+                    });
+
+                }
+                */
+
+                $(".display").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 7,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
+                    ],
+                    "language": {
+                        "decimal": ",",
+                        "thousands": ".",
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+
+                loader_frm_cad_contas.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                loader_frm_cad_contas.style.display = "none";
+                console.log(error);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+    }
+
 });
 
 $(document).on('change','input', function(){
@@ -1754,57 +2309,11 @@ $(document).on('change','input', function(){
         $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
         $("#div_tab_conciliacao_composicao_benner_aud").empty();
 
-        /*
-        let let_competencia = $("#dt_conciliacao_comp_benner").val()
-        let let_cod_modelo_conta = 0
-        if ( $("#rd_modelo_conta_conc_comp_benner_1").is("checked") == true ) {
-            let_cod_modelo_conta = 1;
-        } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is("checked") == true ) {
-            let_cod_modelo_conta = 2;
-        } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is("checked") == true ) {
-            let_cod_modelo_conta = 3;
-        }
-
-        $.ajax({
-            type: 'GET',
-            url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
-            cache: false,
-            data: {
-                'tipo_rel': 'A',
-                'cod_modelo_conta'   :   let_cod_modelo_conta,
-                'data_competencia' : let_competencia
-            },
-            dataType: 'json',
-            success: function (data) {
-                $("#cb_contas_conciliacao_comp_benner option").remove();
-                data.lista_contas.forEach(conta => {
-                    $("#cb_contas_conciliacao_comp_benner").append("<option value='"+
-                    conta.cod_conta__cod_conta+"'>"+conta.cod_conta__desc_conta+" - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
-                    " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
-
-                });
-                $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
-                $("#cb_contas_conciliacao_comp_benner").selectpicker('selectAll');
-
-            },
-            error: function (request, status, error) {
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-          }
-        });
-        */
-
-
-
     }
 
 
 });
+
 
 function atualiza_form_dados_conta(tipo_return, cod_conta) {
 
@@ -1898,6 +2407,7 @@ function atualiza_form_dados_conta(tipo_return, cod_conta) {
       }
     });
 }
+
 
 function atualiza_tab_contratos_conta(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
@@ -2181,32 +2691,6 @@ function atualiza_tab_contratos_conta(cod_conta){
 
                 `;
 
-                /*$("#tab_parcelas_contrato_" + ctr.handle_fn_doc).DataTable( {
-                    "bJQueryUI": true,
-                    "pageLength": 10,
-                    "destroy": true,
-                    "dom": 'Bfrtip',
-                    "buttons": ['excelHtml5',
-                                'pdfHtml5'
-                    ],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        }
-                    }
-                });*/
 
             });
             let_html_pagina += `
@@ -2256,6 +2740,7 @@ function atualiza_tab_contratos_conta(cod_conta){
     });
 
 }
+
 
 function atualiza_tabela_resp_conta(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
@@ -2350,6 +2835,7 @@ function atualiza_tabela_resp_conta(cod_conta){
 
 
 }
+
 
 function atualiza_tab_anexos_conta(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
@@ -2470,6 +2956,7 @@ function atualiza_tab_anexos_conta(cod_conta){
     });
 }
 
+
 function atualiza_tab_status_contrato_composicao(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
@@ -2577,6 +3064,7 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
     });
 
 }
+
 
 function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
@@ -2871,34 +3359,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 
 
                 $("#list_contratos_conta_anexo").selectpicker('refresh');
-                /*
-                $("#tab_parcelas_contrato_" + ctr.contrato.handle_fn_doc).DataTable( {
-                        "bJQueryUI": true,
-                        "pageLength": 10,
-                        "destroy": true,
-                        "dom": 'Bfrtip',
-                        "buttons": ['excelHtml5',
-                                    'pdfHtml5'
-                        ],
-                        "oLanguage": {
-                            "sProcessing":   "Processando...",
-                            "sLengthMenu":   "Mostrar _MENU_ registros",
-                            "sZeroRecords":  "Não foram encontrados resultados",
-                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                            "sInfoFiltered": "",
-                            "sInfoPostFix":  "",
-                            "sSearch":       "Pesquisar:",
-                            "sUrl":          "",
-                            "oPaginate": {
-                                "sFirst":    "Primeiro",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Proximo",
-                                "sLast":     "Último"
-                            }
-                        }
-                    });
-                    */
+
 
             });
             let_html_pagina += `
@@ -2953,6 +3414,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
     });
 }
 
+
 function limpa_campos_form_cad_contas(){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
@@ -3001,6 +3463,7 @@ function limpa_campos_form_cad_contas(){
 
 
 }
+
 
 function gera_conciliacao_comp_benner_detalhado(){
     let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
@@ -3330,6 +3793,7 @@ function gera_conciliacao_comp_benner_detalhado(){
           }
         });}
 
+
 function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
 
     if (let_cod_modelo_conta == 1) {
@@ -3529,7 +3993,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
                 </div>
 
                 <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                    <div class="d-flex flex-column w-100 cl_div_txt_val_nominal">
+                    <div class="d-flex flex-column w-100 cl_div_txt_val_nominal class_mask_campo_val">
                         <label>
                             Valor total nominal
                             <input type="text" class="form-control" id="txt_val_nominal">
@@ -3538,7 +4002,7 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
                     <div class="d-flex flex-column w-100 cl_div_txt_total_liquido">
                         <label>
                             Valor total líquido
-                            <input type="text" class="form-control" id="txt_total_liquido">
+                            <input type="text" class="form-control class_mask_campo_val" id="txt_total_liquido">
                         </label>
                     </div>
                     <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
@@ -3715,7 +4179,9 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
 
 }
 
+
 function atualiza_doc_contas_modelo_1(cod_conta){
+    $("#div_tab_doc_contas_modelo_1").html("");
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
     $.ajax({
@@ -3725,7 +4191,8 @@ function atualiza_doc_contas_modelo_1(cod_conta){
         },
         url: '/contabil_composicao_app/retorna_lista_docs_contas_modelo_1',
         success: function(dados) {
-
+            $("#div_tab_doc_contas_modelo_1").html(dados);
+            /*
             let let_lista_docs = [];
             dados.registros_tabela.forEach( reg => {
                 let let_btn_exclui_arquivo = `
@@ -3734,6 +4201,15 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                         class="btn btn-rounded btn-space"
                         value="${reg.cod_arquivo__cod_arquivo}">
                         <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                    </button>
+                `;
+
+                let let_btn_visualizar_docs = `
+                    <button type="button" name="btn_visualiza_docs_arq_conta_mod_1"
+                        id="btn_visualiza_docs_arq_conta_mod_1_${reg.cod_arquivo__cod_arquivo}"
+                        class="btn btn-rounded btn-space"
+                        value="${reg.cod_arquivo__cod_arquivo}">
+                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
                     </button>
                 `;
                 let let_dt_imp = reg.cod_arquivo__data_imp.split('-')[2] + '-' + reg.cod_arquivo__data_imp.split('-')[1] +
@@ -3751,7 +4227,8 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                     reg.cod_arquivo__cod_usu__login_usu,
                     reg.tt_val_rel,
                     reg.tt_val_razao,
-                    let_btn_exclui_arquivo
+                    let_btn_exclui_arquivo,
+                    let_btn_visualizar_docs
                 ];
                 let_lista_docs.push(reg);
             });
@@ -3776,7 +4253,8 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                     { title: "Usuário" },
                     { title: "Val. relatório(R$)" },
                     { title: "Val. razão(R$)" },
-                    { title: "Excluir" }
+                    { title: "Excluir" },
+                    { title: "Docs" }
                 ],
                 "columnDefs": [
                     {"className": "dt-center", "targets": [0,2,3]},
@@ -3809,6 +4287,7 @@ function atualiza_doc_contas_modelo_1(cod_conta){
                     }
                 }
             });
+            */
 
             let_loader_frm_cad_contas.style.display = "none";
         },

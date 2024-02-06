@@ -121,7 +121,7 @@ class ConexaoBancoBenner():
 
         return lista_contas_benner
 
-    def retorna_dados_contratos_conta(self, tipo_pesquisa, num_contrato, handle_conta_cp, handle_conta_lp):
+    def retorna_dados_contratos_conta(self, tipo_pesquisa, num_contrato, handle_conta_cp, handle_conta_lp, cod_empresa):
         '''Objeto a retornar'''
         lista_contratos_conta_benner = []
 
@@ -192,10 +192,11 @@ class ConexaoBancoBenner():
                AND	fn_parc.VALOR > 0
                AND	fn_doc.ABRANGENCIA <> 'R'
                AND	fn_lan.TIPO = '3'
-                AND 	fn_lan.ORIGEM = 2
+               AND 	fn_lan.ORIGEM = 2
                AND	((fn_doc.DATACANCELAMENTO IS NULL) OR(fn_doc.DATACANCELAMENTO > CONVERT(DATETIME,'20221231',103)))
                AND	(fn_parc.DATALIQUIDACAO > CONVERT(DATETIME,'20221231',103) OR fn_parc.DATALIQUIDACAO IS NULL)               
                AND 	fn_doc.DOCUMENTOCONTABIL NOT IN ('CPA-108413')
+               AND  fn_doc.EMPRESA = {cod_empresa}
                AND	(ct_con.CONTACONTABIL in ({handle_conta_cp}, {handle_conta_lp}) 
                 OR  fn_doc.CONTACONTABILESPECIAL in ({handle_conta_cp}, {handle_conta_lp})) 
                {param_num_contrato}
@@ -351,7 +352,7 @@ class ConexaoBancoBenner():
 
         return lista_parcelas_contrato_benner
 
-    def retorna_balancete_conta(self, handle_conta, data_ini, data_fim):
+    def retorna_balancete_conta(self, cod_empresa, handle_conta, data_ini, data_fim):
         '''Objeto a retornar'''
         val_balancete_benner = 0
 
@@ -368,7 +369,7 @@ class ConexaoBancoBenner():
              WHERE	TOTAIS.COMPETENCIA BETWEEN '{data_ini}' AND '{data_fim}' 
                AND	CONTA.HANDLE = {handle_conta} 
                AND	TOTAIS.TIPO IN ('A','N')
-               AND	TOTAIS.EMPRESA = 12 
+               AND	TOTAIS.EMPRESA = {cod_empresa} 
                AND	CONTA.INDNATUREZA  IN(1,2)
             '''
         )
@@ -562,8 +563,7 @@ class ConexaoBancoBenner():
             SELECT 	distinct	
                 handle,
                 nome
-            FROM PD_FAMILIASPRODUTOS (NOLOCK)
-           WHERE handle NOT IN (42)
+            FROM PD_FAMILIASPRODUTOS (NOLOCK) 
             {filtro_lista_handle_familias}
             '''
         )
@@ -703,6 +703,7 @@ class ConexaoBancoBenner():
              AND	compra.status = 4 /* status 4 : compra encerrada */
              AND    compra.filial in ({handle_filial})
              AND    prod_itens_compra.familia NOT IN (42)
+             AND    (familia_prod_itens_compra.nome not like '%SERVIÇO%' AND familia_prod_itens_compra.nome not like '%SERVICO%')
              /* AND	prod_itens_compra.codigoreferencia = '22183' */
              {param_familia}	
              {param_item}
@@ -843,7 +844,8 @@ class ConexaoBancoBenner():
                  ON	(tipo_compra.HANDLE = req_pai.K_TIPODECOMPRA) 
               WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
                 AND	compra.usuarioincluiu in ({handle_atendentes})  
-                AND prod_itens_compra.familia NOT IN (42)             
+                AND prod_itens_compra.familia NOT IN (42)
+                AND (familia_prod_itens_compra.nome not like '%SERVIÇO%' AND familia_prod_itens_compra.nome not like '%SERVICO%')              
                 AND	prod_itens_compra.tipo = 1
                 AND	compra.status = 4 /* status 4 : compra encerrada */
                 AND compra.filial = {handle_filial}

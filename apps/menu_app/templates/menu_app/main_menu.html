@@ -31,14 +31,31 @@
     </div>
 
     
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel"
+         style="width: 420.8px;">
 
-      <div class="offcanvas-header justify-content-between">
+      <div class="offcanvas-header justify-content-between" style="padding-top: 5px;padding-bottom: 5px">
         <div class="d-flex align-items-center">
-          <div class="d-flex flex-column">
+          <div class="flex-column">
             <img class="iconeEmpresaMenu" src="{% static 'icons/logo-laranja.png'%}" alt=""/>
-            <h5 class="offcanvas-title" id="offcanvasExampleLabel">Portal Operacional</h5>
+            <b>Portal Operacional</b><br/>
+            <span style="font-size: 0.8rem;margin-left: 0px;padding-left: 2.8rem;">
+              <b>Usuário - </b>{{obj_usuario_sessao.login_usu}}  <b>Perfil - </b>
+                {% if obj_usuario_sessao.perfil_usu == 'A' %}
+                  Adm
+                {% else %}
+                  Usuário
+                {% endif %}
+                (
+                {% if obj_usuario_sessao.corporativo == 'S' %}
+                  Corporativo
+                {% endif %}
+                )<br/>
+              <b style="margin-left: 2.8rem;">Filial - </b>{{obj_usuario_sessao.cod_filial.desc_filial}}  <br/>
+              <b style="margin-left: 2.8rem;">Empresa - </b>{{obj_usuario_sessao.cod_filial.cod_empresa.desc_empresa}}
+            </span>
           </div>
+          <!--
           <div class="d-flex flex-column" style="width: 100%; heigth: 100%;" >
             <div class="loader" id="loader_menu" style="width: 100%; heigth: 100%;">
               <div class="loader-inner">
@@ -53,10 +70,16 @@
               </div>
           </div>
           </div>
-
+    -->
         </div>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <form action="{% url 'logout' %}" method="GET" id="frm_logout">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-rounded btn-space"
+                  style="margin-top: 4.5rem;" title="Fazer Logout">
+            <i class="fa-solid fa-right-from-bracket" style="color: #f46424;"></i>
+          </button>
 
+        </form>
 
 
       </div>
@@ -64,11 +87,11 @@
 
 
 
-      
+      <!--
       <hr class="hrMenu">
+    -->
 
-
-      <div class="offcanvas-body">
+      <div class="offcanvas-body" style="padding-top: 5px;padding-bottom: 5px;">
         
         <div class="accordion" id="accordionExample">
 
@@ -108,6 +131,8 @@
     </div>
   </div>
 
+{% include 'contabil_composicao_app/modais_form_docs_m1.html' %}
+
   <main class="d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal" id="main_menu">
     <h1>Por favor, selecione a aplicação desejada no menu ao lado.</h1>
   </main>
@@ -141,13 +166,19 @@
           type="text/javascript">
   </script>
 
+  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_pac_m1_controller.js' %}"
+          type="text/javascript">
+  </script>
+
   <script src="{% static 'controllers/contabil_composicao_app/form_cad_contas_controller.js' %}"
           type="text/javascript">
   </script>
 
+<!--
   <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_m1_controller.js' %}"
           type="text/javascript">
   </script>
+  -->
 
   <script src="{% static 'controllers/contabil_operacoes_farol_ndd_app/form_notas_tratadas_controller.js' %}"
           type="text/javascript">
@@ -245,11 +276,6 @@
           type="text/javascript">
   </script>
 
-  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_pac_m1_controller.js' %}"
-          type="text/javascript">
-  </script>
-
-
   <script src="{% static 'controllers/contabil_composicao_app/form_vincula_resp_contas_controller.js' %}"
           type="text/javascript">
   </script>
@@ -258,7 +284,13 @@
         type="text/javascript">
   </script>
 
-  <script src="{% static 'controllers/cco_sinistro_app/form_cco_cad_sinistros_controller.js' %}"></script>
+  <script src="{% static 'controllers/cco_sinistro_app/form_cco_cad_sinistros_controller.js' %}"
+          type="text/javascript"></script>
+
+
+<script src="{% static 'controllers/cco_multas_app/cad_multas_controller.js' %}"
+          type="text/javascript"
+></script>
 
 
 

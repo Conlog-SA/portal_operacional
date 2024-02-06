@@ -50,7 +50,7 @@ class Responsaveis_Conta(models.Model):
 
 class Contrato(models.Model):
     cod_contrato = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    handle_fn_doc = models.IntegerField(blank=False, null=False)
+    handle_fn_doc = models.IntegerField(blank=True, null=True)
     num_contrato = models.CharField(max_length=45, blank=False, null=False)
     data_emissao_contrato = models.DateTimeField(blank=True, null=True)
     nome_fornecedor = models.CharField(max_length=150, blank=True, null=True)
@@ -78,6 +78,7 @@ class Anexos_Contrato(models.Model):
     ordem_anexo = models.IntegerField(null=False, blank=False)
     cod_contrato = models.ForeignKey(Contrato, models.DO_NOTHING, db_column='cod_contrato', null=True, blank=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True, blank=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
     class Meta:
         managed = True
         db_table = 'op_contabil_anexos_contrato'

@@ -34,6 +34,20 @@ $.ajaxSetup({
 $(document).ready(function(){
 
     $("#main_menu").html("");
+
+    $('#value_prejuizo_eqp').inputmask({
+        alias: 'numeric',
+        groupSeparator: '.',
+        autoGroup: true,
+        digits: 2,
+        radixPoint: ',',
+        allowMinus: false,
+        prefix: 'R$ ',
+        rightAlign: false,
+        unmaskAsNumber: true,
+        numericInput: true
+    });
+
 });
 
 $(document).on('click', 'a', function(){
@@ -42,8 +56,8 @@ $(document).on('click', 'a', function(){
 
 	if ( let_nomeA == "a_sub_menu") {
 	    $("#main_menu").empty();
-	    let loader_menu = document.getElementById("loader_menu");
-	    loader_menu.style.display = "flex";
+	    //let loader_menu = document.getElementById("loader_menu");
+	    //loader_menu.style.display = "flex";
 
 	    let let_url_menu = $("#hd_url_sub_menu_"+let_idA.split('_')[3]).val();
 	    $.ajax({
@@ -118,10 +132,10 @@ $(document).on('click', 'a', function(){
                         }
                     }
                     } );
-                    loader_menu.style.display = "none";
+                    //loader_menu.style.display = "none";
             },
             error: function (request, status, error) {
-                loader_menu.style.display = "none";
+                //loader_menu.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,

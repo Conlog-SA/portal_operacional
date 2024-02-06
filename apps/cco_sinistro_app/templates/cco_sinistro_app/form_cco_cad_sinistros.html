@@ -1,11 +1,11 @@
 {% load static %}
 
-{% block link_static_css %}
+
     <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
     <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
     <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
     <link rel="stylesheet" href="{% static 'css/cco_sinistro_app/cco_sinistro_app.css' %}" />
-{% endblock %}
+
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100" style="margin-right: 0px; width:100%;">
@@ -487,14 +487,6 @@
                                                name="dt_fim_processo_sinistro_carga">
                                     </label>
                                 </div>
-                                <div class="d-flex flex-column w-100 cl_div_data_fim_processo">
-                                    <label class="label-padrao">
-                                        Data de Fim do Processo
-                                        <input type="date" class="form-control"
-                                               id="dt_fim_processo_sinistro_carga"
-                                               name="dt_fim_processo_sinistro_carga">
-                                    </label>
-                                </div>
                             </div>
                             <div style="text-align:left; color: #f46424;">
                                 <i class="fa-solid fa-arrow-right-to-bracket"></i>
@@ -534,7 +526,7 @@
                             </div>
                             <div class="d-flex justify-content-between align-items-between flex-row-reverse">
                                 <div class="d-flex flex-column">
-                                    <button class="btn btn-primary btn-rounded button-primary" type='submit' id="btn_finalizar_cadastro_sinistro"
+                                    <button class="btn btn-primary btn-rounded button-primary" type='button' id="btn_finalizar_cadastro_sinistro"
                                             name="btn_finalizar_cadastro_sinistro"
                                             value="0">
                                         <i class="fa-regular fa-square-plus"></i>
@@ -915,7 +907,7 @@
                                 </div>
                                 <div class="col-lg-2 d-flex align-items-end">
                                     <div class="d-flex flex-column mt-7" style="margin-top:75px; margin-bottom:10px">
-                                        <button class="btn btn-primary btn-rounded button-primary" type="submit" id="btn_finalizar_cadastro_sinistro_cad_eqp_veic"
+                                        <button class="btn btn-primary btn-rounded button-primary" type="button" id="btn_finalizar_cadastro_sinistro_cad_eqp_veic"
                                                 name="btn_finalizar_cadastro_sinistro_cad_eqp_veic"
                                                 value="0"
                                                 style="margin-bottom:5px">

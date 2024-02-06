@@ -1196,7 +1196,7 @@ $(document).on('click','button', function(){
         $("#btn_confirma_exclusao_doc_pac_consorcios_ativos").val(let_val_btn);
         $("#modal_exclui_doc_pac_consorcios_ativos").show();
     }
-    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_imobilizado' ) {
+    else if ( let_nome_btn == 'btn_fecha_modal_exclui_doc_pac_consorcios_ativos' ) {
         $("#modal_exclui_doc_pac_consorcios_ativos").hide();
     }
     else if ( let_nome_btn == 'btn_confirma_exclusao_doc_pac_consorcios_ativos') {
@@ -1462,7 +1462,6 @@ function monta_tabela_imp_pac_m1(cod_pacote){
       }
     });
 
-
 }
 
 
@@ -1530,6 +1529,16 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                 let let_cod_pac = $("#cb_pacotes_imp_doc_pac_contas_m1").val();
                 let let_lista_docs = [];
                 let let_columns_tab = [];
+                let let_resumo_docs = ``;
+                dados.resumo_docs.forEach( resumo => {
+                    let_resumo_docs = `
+                        <b>Qtd.: Registros:</b>&nbsp;${resumo.qtd_registros}&nbsp;&nbsp;<b>Val. Relatório(R$):</b>&nbsp;${resumo.tt_val_rel}&nbsp;&nbsp;<b>Val. Razão(R$):</b>&nbsp;${resumo.tt_val_razao}&nbsp;&nbsp;<b>Dif.(R$):</b>&nbsp;${resumo.tt_dif}&nbsp;&nbsp;
+                    `;
+                });
+                $("#div_resumo_conta_comp").html(let_resumo_docs);
+
+
+                $("#div_campo_pesq_dados_pac_4").html();
 
 
                 if(let_cod_pac=='3'){
