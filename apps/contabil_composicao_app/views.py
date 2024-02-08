@@ -46,7 +46,10 @@ class Form_Imp_Cad_Conta_View(View):
                                               cod_reduzido__isnull=False)
 
         #diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
-        diretorio_arquivos_postados = os.path.join(BASE_DIR, 'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao')
+        nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            nome_pasta_empresa = 'Deep_Anexos_Pendentes'
+        diretorio_arquivos_postados = os.path.join(BASE_DIR, f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}')
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = len(lista_arquivos)
 
@@ -1729,8 +1732,9 @@ class Form_Anexos_Conta_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
+
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)
-        msg = self.anexa_arq_conta(obj_usuario_sessao.cod_filial.cod_empresa, obj_conta_pesq, cod_contrato_form,
+        msg = self.anexa_arq_conta(obj_usuario_sessao, obj_conta_pesq, cod_contrato_form,
                                    competencia_doc_form, file_form, file_form.name)
 
 
@@ -1743,49 +1747,63 @@ class Form_Anexos_Conta_View(View):
         return JsonResponse(data, safe=False)
 
 
-    def anexa_arq_conta(self, cod_empresa, obj_conta_pesq, cod_contrato_form, competencia_doc_form, file_form,
+    def anexa_arq_conta(self, obj_usuario, obj_conta_pesq, cod_contrato_form, competencia_doc_form, file_form,
                         desc_doc_form):
         msg = ''
         obj_contrato_pesq = None
         ordem_max = 0
         ultimo_anexo_conta = 0
         obj_anexo_conta_pesq = None
+        novo_nome_arq = ''
         if obj_conta_pesq.tipo_modelo == 3:
             obj_contrato_pesq = Contrato.objects.get(pk=cod_contrato_form)
 
             ordem_max = Anexos_Contrato.objects \
-                .filter(cod_contrato=obj_contrato_pesq) \
+                .filter(cod_contrato=obj_contrato_pesq, cod_contrato__cod_empresa=obj_usuario.cod_filial.cod_empresa) \
                 .aggregate(max_odem_anexo=Max('ordem_anexo'))
 
             obj_anexo_conta_pesq = Anexos_Contrato.objects.filter(cod_contrato=obj_contrato_pesq,
                                                                   data_competencia=datetime.strptime(
                                                                       competencia_doc_form + '-01', '%Y-%m-%d'),
-                                                                  cod_contrato__cod_empresa__cod_empresa=cod_empresa).first()
+                                                                  cod_contrato__cod_empresa=obj_usuario.cod_filial.cod_empresa).first()
+            if ordem_max['max_odem_anexo'] != None:
+                ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
+
+            novo_nome_arq = (str(obj_conta_pesq.cod_conta) + '_' + str(obj_contrato_pesq.num_contrato) + '_' +
+                             str(ultimo_anexo_conta) + '_' + competencia_doc_form.split('-')[1] + '_' +
+                             competencia_doc_form.split('-')[0] + '.pdf')
         else:
+
             ordem_max = Anexos_Contrato.objects \
-                .filter(cod_conta=obj_conta_pesq, cod_usu__cod_filial__cod_empresa__cod_empresa=cod_empresa) \
+                .filter(cod_conta=obj_conta_pesq, cod_usu__cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa) \
                 .aggregate(max_odem_anexo=Max('ordem_anexo'))
 
             obj_anexo_conta_pesq = (Anexos_Contrato.objects
                                     .filter(cod_conta=obj_conta_pesq,
                                             data_competencia=datetime.strptime(competencia_doc_form + '-01', '%Y-%m-%d'),
-                                            cod_usu__cod_filial__cod_empresa__cod_empresa=cod_empresa).first())
+                                            cod_usu__cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa).first())
 
-        if ordem_max['max_odem_anexo'] != None:
-            ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
+            if ordem_max['max_odem_anexo'] != None:
+                ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
+
+            novo_nome_arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
+                             str(ultimo_anexo_conta) + '_' + competencia_doc_form.split('-')[1] + '_' +
+                             competencia_doc_form.split('-')[0] + '.pdf')
 
         fs = FileSystemStorage()
         nome_arquivo = ''
         caminho_arq_importado = ''
+        anexo_emp = 'Conlog'
+        if obj_usuario.cod_filial.cod_empresa.cod_empresa == 17:
+            anexo_emp = 'Deep'
+
         if type(file_form) == str:
-            caminho_arq_importado = 'docs/contabil_composicao_app/anexos_conta/' + str(obj_conta_pesq.cod_conta) + '_' + \
-                                    str(ultimo_anexo_conta) + '_' + desc_doc_form
+            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + novo_nome_arq
             nome_arquivo = desc_doc_form
             shutil.move(file_form, 'media/'+caminho_arq_importado)
         else:
             nome_arquivo = file_form.name
-            caminho_arq_importado = 'docs/contabil_composicao_app/anexos_conta/' + str(obj_conta_pesq.cod_conta) + '_' + \
-                                    str(ultimo_anexo_conta) + '' + file_form.name.replace(' ', '_')
+            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + novo_nome_arq
             filename = fs.save(caminho_arq_importado, file_form)
             uploaded_file_url = fs.url(filename)
         msg = ''
@@ -1797,7 +1815,8 @@ class Form_Anexos_Conta_View(View):
                 caminho_anexo=caminho_arq_importado,
                 cod_contrato=obj_contrato_pesq,
                 cod_conta=obj_conta_pesq,
-                ordem_anexo=ultimo_anexo_conta
+                ordem_anexo=ultimo_anexo_conta,
+                cod_usu=obj_usuario
             ).save()
             msg = 'Doc anexado com sucesso !'
         else:
@@ -1807,6 +1826,7 @@ class Form_Anexos_Conta_View(View):
             obj_anexo_conta_pesq.desc_anexo = nome_arquivo
             obj_anexo_conta_pesq.caminho_anexo = caminho_arq_importado
             obj_anexo_conta_pesq.ordem_anexo = ultimo_anexo_conta
+            obj_anexo_conta_pesq.cod_usu=obj_usuario
             obj_anexo_conta_pesq.save()
             msg = 'Registro atualizado com sucesso!'
         return msg
@@ -3021,15 +3041,20 @@ class Form_Vincula_Resp_Contas_View(View):
 
 class Importa_Anexos_Contas_View(View):
     def post(self, request):
-        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
-        lista_arquivos = os.listdir(diretorio_arquivos_postados)
-
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            nome_pasta_empresa = 'Deep_Anexos_Pendentes'
+
+        diretorio_arquivos_postados = f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/{nome_pasta_empresa}/'
+        lista_arquivos = os.listdir(diretorio_arquivos_postados)
+        qtd_arquivos_postados = len(lista_arquivos)
 
         msg = ''
         for arq in lista_arquivos:
-            caminho_arq = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao/' + arq
+            #caminho_arq = f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/' + arq
+            caminho_arq = diretorio_arquivos_postados + arq
             cod_conta = arq.split('_')[0]
             cod_contrato = arq.split('_')[1]
             competencia_str = arq.split('_')[3].split('.')[0] + '-' + arq.split('_')[2]
@@ -3044,19 +3069,19 @@ class Importa_Anexos_Contas_View(View):
                                         cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).first())
                 cod_contrato_param = obj_contrato.cod_contrato
             obj_form_anexos_conta_view = Form_Anexos_Conta_View()
-            msg = obj_form_anexos_conta_view.anexa_arq_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
-                                                             obj_conta, cod_contrato_param, competencia_str,
-                                                             caminho_arq, arq)
+            msg = obj_form_anexos_conta_view.anexa_arq_conta(obj_usuario_sessao,obj_conta, cod_contrato_param,
+                                                             competencia_str,caminho_arq, arq)
             #os.remove(os.path.join(diretorio_arquivos_postados, arq))
 
-        diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
-        lista_arquivos = os.listdir(diretorio_arquivos_postados)
-        qtd_arquivos_postados = len(lista_arquivos)
+
+        lista_arquivos_depois_imp = os.listdir(diretorio_arquivos_postados)
+        qtd_arquivos_postados_depois_imp = len(lista_arquivos_depois_imp)
+
 
         data = dict()
         data = {
             'msg': msg,
-            'qtd_arquivos_postados': qtd_arquivos_postados
+            'qtd_arquivos_postados': qtd_arquivos_postados_depois_imp
         }
         return JsonResponse(data, safe=False)
 

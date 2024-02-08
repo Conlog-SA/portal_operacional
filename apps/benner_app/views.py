@@ -255,12 +255,12 @@ class ConexaoBancoBenner():
                     fn_parc.AP						AS	ap_parcela,
                     fn_parc.PARCELADIGITADA		    AS	ordem_parcela,
                     fn_parc.VALOR 					AS	val_conta,
-                    fn_mov.ABATIMENTO		        AS	val_abatimentos,
-                    fn_mov.ACRESCIMOS		        AS	val_acrescimos,
-                    fn_mov.MULTA				    AS	val_multas,
-                    fn_mov.JUROS				    AS	val_juros,
-                    fn_mov.DESCONTO				    AS	val_descontos,
-					fn_mov.VALORTOTAL		        AS	val_corrigido,
+                    sum(fn_mov.ABATIMENTO)	        AS	val_abatimentos,
+                    sum(fn_mov.ACRESCIMOS)	        AS	val_acrescimos,
+                    sum(fn_mov.MULTA)			    AS	val_multas,
+                    sum(fn_mov.JUROS)			    AS	val_juros,
+                    sum(fn_mov.DESCONTO)		    AS	val_descontos,
+					sum(fn_mov.VALORTOTAL)	        AS	val_corrigido,
 					gn_op.NOME				        AS	natureza,
                     CAST(fn_parc.VCTOPRORROGADO AS DATE)		
                                                     AS data_vencimento,
@@ -270,7 +270,13 @@ class ConexaoBancoBenner():
                     END 							AS	tipo_prazo,
                     CAST(fn_parc.DATALIQUIDACAO AS DATE)		
                                                     AS	data_liquidacao,
-                    MAX(fn_lan_principal.VALOR)		AS	val_fn_principal,
+                    (SELECT MAX(lan_principal.VALOR)
+                       FROM FN_LANCAMENTOS lan_principal
+                       LEFT JOIN FN_CONTAS con_principal
+                         ON (con_principal.HANDLE = lan_principal.CONTA)
+                      WHERE lan_principal.PARCELA = fn_parc.handle
+                        AND	lan_principal.TIPO = '3'
+                        AND lan_principal.ORIGEM = 2)	AS	val_fn_principal,
 			        (SELECT MIN(lan_taxas.VALOR)
                        FROM FN_LANCAMENTOS lan_taxas
                        LEFT JOIN FN_CONTAS con_taxas
@@ -295,11 +301,7 @@ class ConexaoBancoBenner():
               LEFT	JOIN FN_MOVIMENTACOES fn_mov (NOLOCK) 
                 ON	(fn_mov.PARCELA = fn_parc.HANDLE 
                 AND	fn_mov.tipomovimento = 1
-                AND	fn_mov.AUTORIZACAOPAGAMENTO IS NOT NULL)
-              LEFT	JOIN FN_LANCAMENTOS fn_lan_principal (NOLOCK) 
-                ON	(fn_lan_principal.PARCELA = fn_parc.HANDLE
-               AND	fn_lan_principal.TIPO = '3'
-               AND 	fn_lan_principal.ORIGEM = 2	)
+                AND	fn_mov.AUTORIZACAOPAGAMENTO IS NOT NULL)              
              WHERE	1 = 1
                AND	fn_doc.ENTRADASAIDA IN ('E','I')
                AND	fn_doc.TIPODEMOVIMENTO IN(1,2)
@@ -312,13 +314,7 @@ class ConexaoBancoBenner():
                     fn_parc.handle,
                     fn_parc.AP,
                     fn_parc.PARCELADIGITADA,
-                    fn_parc.VALOR,
-                    fn_mov.ABATIMENTO,
-                    fn_mov.ACRESCIMOS,
-                    fn_mov.MULTA,
-                    fn_mov.JUROS,
-                    fn_mov.DESCONTO,
-                    fn_mov.VALORTOTAL,
+                    fn_parc.VALOR,                   
                     gn_op.NOME,
                     fn_parc.VCTOPRORROGADO,
                     fn_parc.DATALIQUIDACAO
