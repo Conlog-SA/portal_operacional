@@ -949,10 +949,12 @@ class Form_Cad_Parcelas_Contrato_View(View):
             obj_parcela.save()
             msg = 'Pagamento efetivado com sucesso!'
         elif transacao_form == 'atualiza_dados':
+            val_conta_form = request.POST['val_conta']
             val_principal_form = request.POST['val_principal']
             val_taxas_form = request.POST['val_taxas']
             val_fundo_form = request.POST['val_fundo']
 
+            obj_parcela.val_conta = val_conta_form
             obj_parcela.val_principal = val_principal_form
             obj_parcela.val_taxas = val_taxas_form
             obj_parcela.val_fundo = val_fundo_form
@@ -2038,6 +2040,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
         doc = None
         if obj_pac_conta.cod_pacote_conta == 3:
             for index, row in df_conteudo_arqv.iterrows():
+                print(row['Data Lançto'])
                 data_venc = None
                 if row['Data Vencim.'] != '':
                     data_venc = row['Data Vencim.']

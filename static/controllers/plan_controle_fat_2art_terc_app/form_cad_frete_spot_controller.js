@@ -145,8 +145,6 @@ $(document).on('click','button', function(){
     else if (nomeDoButton == "btnCadFreteTerceiros") {
         $("#hiddenCodCadFreteSpot").val("");   
         $("#listProjetosCadFreteSpot").val($("#listProjetosPesqCadFreteTerc").val());
-        //var varDataInicioVigencia = $("#textFieldIniVigenciaCadFreteSpot").val();
-        //var varDataFimVigencia = $("#textFieldFimVigenciaCadFreteSpot").val();
         $("#listTipoPessoaCadFreteSpot").val("0");
         $("#listTipoEntrega").val("0");
         $("#listPerfilVeiculoCadFreteSpot").val("0");

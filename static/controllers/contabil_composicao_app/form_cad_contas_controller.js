@@ -2254,8 +2254,9 @@ $(document).on('change','input', function(){
         desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta);
 
     }
-    else if ( let_nome_inp == "txt_val_principal" || let_nome_inp == "txt_val_taxas" || let_nome_inp == "txt_val_fundo" ) {
+    else if ( let_nome_inp == "txt_val_principal" || let_nome_inp == "txt_val_taxas" || let_nome_inp == "txt_val_fundo" || let_nome_inp == 'txt_val_conta') {
         let let_handle_parcela = let_id_inp.split("_")[3];
+        let let_val_conta = parseFloat($("#txt_val_conta_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
         let let_val_principal = parseFloat($("#txt_val_principal_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
         let let_val_taxas = parseFloat($("#txt_val_taxas_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
         let let_val_fundo = parseFloat($("#txt_val_fundo_" + let_handle_parcela).val().replaceAll('.','').replaceAll(',','.'));
@@ -2270,12 +2271,14 @@ $(document).on('change','input', function(){
                 'handle_parcela'    :   let_handle_parcela,
                 'val_principal'     :   let_val_principal,
                 'val_taxas'         :   let_val_taxas,
-                'val_fundo'         :   let_val_fundo
+                'val_fundo'         :   let_val_fundo,
+                'val_conta'         :   let_val_conta
 
             },
             //dataType: 'json',
             success: function (dados) {
-                $("#td_val_total_" + let_handle_parcela).html(let_val_principal + let_val_taxas + let_val_fundo);
+                let let_val_tt = (let_val_principal + let_val_taxas + let_val_fundo).toFixed(2);
+                $("#td_val_total_" + let_handle_parcela).html(let_val_tt);
                 //atualiza_tab_contratos_conta(dados.cod_conta);
                 $.gritter.add({
                     title: 'Atenção!',
@@ -2648,7 +2651,7 @@ function atualiza_tab_contratos_conta(cod_conta){
                                                         ${parc.ap_parcela}
                                                     </td>
                                                     <td>
-                                                        ${parc.valor_conta}
+                                                        <input type="text" `+ let_readonly +` id="txt_val_conta_${parc.handle_parc}" name="txt_val_conta" value="${parc.valor_conta}" style="width: 87.2px;text-align:right;">
                                                     </td>
                                                     <td>
                                                         <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}" name="txt_val_principal" value="${parc.valor_principal}" style="width: 87.2px;text-align:right;">
@@ -3313,7 +3316,9 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
                                         ${parc.ap_parcela}
                                     </td>
                                     <td>
-                                        ${parc.valor_conta}
+                                        <input type="text" `+ let_readonly +` id="txt_val_conta_${parc.handle_parc}"
+                                        name="txt_val_conta" value="${parc.valor_conta}"
+                                        style="width: 87.2px;text-align:right;">
                                     </td>
                                     <td>
                                         <input type="text" `+ let_readonly +` id="txt_val_principal_${parc.handle_parc}"
@@ -3708,7 +3713,8 @@ function gera_conciliacao_comp_benner_detalhado(){
                                         <button type='button' name='btn_confirma_status_composicao'
                                             id='btn_confirma_status_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}'
                                             class='btn btn-rounded btn-space cl_btn_conf_status_comp'
-                                            value='${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}' title='${data.lista_contas_conciliacao[i][3]}-${data.lista_contas_conciliacao[i][10]}'>
+                                            value='${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}'
+                                            title='${data.lista_contas_conciliacao[i][3]}-${data.lista_contas_conciliacao[i][10]}'>
                                             <i class="fa-solid fa-check" style="color: #ffffff;"></i>
                                         </button>
                                     </div>
@@ -3718,15 +3724,21 @@ function gera_conciliacao_comp_benner_detalhado(){
                         `;
 
                         let_reg = [
-                            /* 0 - cod_estrutura */let_img_btn_status + ' ' + data.lista_contas_conciliacao[i][2],
+                            /* 0 - cod_estrutura */let_img_btn_status + '&nbsp;&nbsp;&nbsp;&nbsp;' + data.lista_contas_conciliacao[i][2],
                             /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
                             /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
                             /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5],
                             /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
                             /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
-                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] + `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
-                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+ `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
-                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden" id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}" readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
+                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] +
+                                `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
+                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+
+                                `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
+                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden"
+                                id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
                             /* 9 */let_btn_status,
                             /* 10 */let_btn_detalhes_conta,
                             /* 11 */let_btn_visualiza_doc
@@ -3752,6 +3764,9 @@ function gera_conciliacao_comp_benner_detalhado(){
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
                     ],
                     "data":let_lista_dados,
                     "oLanguage": {
