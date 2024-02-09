@@ -2040,12 +2040,16 @@ class Form_Imp_Arq_Contas_M1_View(View):
         doc = None
         if obj_pac_conta.cod_pacote_conta == 3:
             for index, row in df_conteudo_arqv.iterrows():
-                print(row['Data Lançto'])
+                data_lancto = None
+                if row['Data Lançto'] != '':
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
+
                 data_venc = None
                 if row['Data Vencim.'] != '':
-                    data_venc = row['Data Vencim.']
+                    data_venc = datetime.strptime(row['Data Vencim.'], '%d/%m/%Y')
+
                 doc = Docs_Pac_Contas_Pagar_Receber_M1 (
-                    data_lancto=row['Data Lançto'],
+                    data_lancto= data_lancto,
                     cnpj = row['CNPJ'],
                     nome_fornecedor = row['Nome Fornecedor'],
                     num_doc = row['Nº Documento'],
@@ -2082,7 +2086,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_lancto = None
                 if row['Data Lançto'] != '':
-                    data_lancto = row['Data Lançto']
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Folha_Pag_M1(
                     data_lancto=data_lancto,
@@ -2103,11 +2107,11 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_emissao = None
                 if row['Data Emissão'] != '':
-                    data_emissao = row['Data Emissão']
+                    data_emissao = datetime.strptime(row['Data Emissão'], '%d/%m/%Y')
 
                 data_entrada = None
                 if row['Data Entrada'] != '':
-                    data_entrada = row['Data Entrada']
+                    data_entrada = datetime.strptime(row['Data Entrada'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Contas_Compensacao_M1(
                     data_emissao = data_emissao,
@@ -2130,11 +2134,11 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_entr = None
                 if row['Data Entrada'] != '':
-                    data_entr = row['Data Entrada']
+                    data_entr = datetime.strptime(row['Data Entrada'], '%d/%m/%Y')
 
                 data_emissao = None
                 if row['Data Emissão'] != '':
-                    data_emissao = row['Data Emissão']
+                    data_emissao = datetime.strptime(row['Data Emissão'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Tributos_M1(
                     data_emissao=data_emissao,
@@ -2156,7 +2160,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_lancto = None
                 if row['Data Lançto'] != '':
-                    data_lancto = row['Data Lançto']
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Finac_Disponib_M1(
                     num_doc = row['Nº Documento'],
@@ -2175,7 +2179,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_lancto = None
                 if row['Data Lançto'] != '':
-                    data_lancto = row['Data Lançto']
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Intercompany_M1(
                     num_doc=row['Nº Documento'],
@@ -2194,7 +2198,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_entrada = None
                 if row['Data Entrada'] != '':
-                    data_entrada = row['Data Entrada']
+                    data_entrada = datetime.strptime(row['Data Entrada'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Imobilizado_M1(
                     data_entrada=data_entrada,
@@ -2219,7 +2223,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_lancto = None
                 if row['Data Lançto'] != '':
-                    data_lancto = row['Data Lançto']
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
 
                 doc = Docs_Pac_Consorcio_Ativo_M1(
                     historico = row['Histórico'],
@@ -2238,11 +2242,11 @@ class Form_Imp_Arq_Contas_M1_View(View):
             for index, row in df_conteudo_arqv.iterrows():
                 data_lancto = None
                 if row['Data Lançto'] != '':
-                    data_lancto = row['Data Lançto']
+                    data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
 
                 data_entrada = None
                 if row['Data Entrada'] != '':
-                    data_entrada = row['Data Entrada']
+                    data_entrada = datetime.strptime(row['Data Entrada'], '%d/%m/%Y')
 
                 doc = Docs_Demais_Contas_M1(
                     data_lancto = data_lancto,

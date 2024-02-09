@@ -294,7 +294,7 @@ class Docs_Pac_Tributos_M1(models.Model):
     cod_pac_doc_tributos = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_emissao = models.DateField(null=True, blank=True)
     data_entrada = models.DateField(null=True, blank=True)
-    nome_fornecedor = models.CharField(max_length=70, null=True, blank=True)
+    nome_fornecedor = models.CharField(max_length=150, null=True, blank=True)
     num_doc = models.CharField(max_length=25, null=True, blank=True)
     num_doc_contabil = models.CharField(max_length=25, null=True, blank=True)
     val_rel = models.DecimalField(max_digits=12, decimal_places=4)
