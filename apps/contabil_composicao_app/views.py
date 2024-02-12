@@ -1,4 +1,5 @@
 import os
+import random
 
 import decimal
 import shutil
@@ -588,11 +589,12 @@ class Form_Cad_Contrato_View(View):
                 primeiro_dia_mes = data_ini.replace(day=int(dia_util_form))
                 #print(str(i) + ' - ' + str(primeiro_dia_mes.strftime('%Y-%m-%d')))  # Exibe a data formatada
                 tipo_prazo = 'CP'
+                handle_parc_random = ''.join(str(random.randint(1,9))  for _ in range(6))
                 if parc > int(qtd_parcelas_form) / 2:
                     tipo_prazo = 'LP'
                 obj_parcela = Parcela_Contrato(
-                    handle_parcela = parc + 1,
-                    ap_parcela = parc + 1,
+                    handle_parcela = handle_parc_random, #parc + 1,
+                    ap_parcela = handle_parc_random, #parc + 1,
                     ordem_parcela = str(parc + 1) + '/' + str(qtd_parcelas_form),
                     val_conta = valor_parcela,
                     val_corrigido = None,
@@ -959,7 +961,7 @@ class Form_Cad_Parcelas_Contrato_View(View):
             obj_parcela.val_taxas = val_taxas_form
             obj_parcela.val_fundo = val_fundo_form
             obj_parcela.val_corrigido = float(val_principal_form) + float(val_taxas_form)
-            obj_parcela.save()
+            obj_parcela.save(update_fields=['val_conta', 'val_principal', 'val_taxas', 'val_fundo', 'val_corrigido'])
             msg = 'Dados atualizados com sucesso!'
 
         data = dict()
@@ -1013,7 +1015,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             obj_conta = Conta.objects.get(pk=cod_contrato_form)
             obj_status_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
                 cod_conta=obj_conta, data_competencia=competencia_date, tipo_prazo=tipo_prazo_form,
-                cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+                cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
             ).first()
         else:
             obj_contrato = Contrato.objects.get(pk=cod_contrato_form)

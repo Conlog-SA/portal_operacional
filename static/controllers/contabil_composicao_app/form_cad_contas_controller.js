@@ -571,8 +571,7 @@ $(document).on('click','button', function(){
                         }
 
                         let_reg = [
-                            /* 0 */let_img,
-                            /* 1 cod_reduzido */ data.lista_contas_conciliacao[i][6],
+                            /* 1 cod_reduzido */ let_img + `&nbsp;&nbsp;&nbsp;&nbsp;` + data.lista_contas_conciliacao[i][6],
                             /* 2 desc conta */data.lista_contas_conciliacao[i][1],
                             /* 3 val comp */data.lista_contas_conciliacao[i][2],
                             /* 4 val bal */data.lista_contas_conciliacao[i][3],
@@ -607,21 +606,20 @@ $(document).on('click','button', function(){
                         }
 
                         let_reg = [
-                            /* 0 */let_img,
-                            /* 1 - desc_conta */ data.lista_contas_conciliacao[i][1],
-                            /* 2 - num_contrato */ data.lista_contas_conciliacao[i][2],
-                            /* 3 - doc_contabil */ data.lista_contas_conciliacao[i][3],
-                            /* 4 - val_comp_cp */ data.lista_contas_conciliacao[i][4],
-                            /* 5 - val_balancete_cp */ data.lista_contas_conciliacao[i][5],
-                            /* 6 - val_dif_comp_balanc_cp */ data.lista_contas_conciliacao[i][6],
-                            /* 7 - val_comp_lp */ data.lista_contas_conciliacao[i][7],
-                            /* 8 - val_balancete_lp */ data.lista_contas_conciliacao[i][8],
-                            /* 9 - val_dif_comp_bal_lp */ data.lista_contas_conciliacao[i][9],
-                            /* 10 - val_tt_comp */ data.lista_contas_conciliacao[i][10],
-                            /* 11 - val_tt_balan */ data.lista_contas_conciliacao[i][11],
-                            /* 12 - val_dif_tt_comp_bal */ data.lista_contas_conciliacao[i][12],
-                            /* 13 */let_btn_detalhes_conta,
-                            /* 14 */let_btn_visualiza_doc
+                            /* 0 - desc_conta */let_img + `&nbsp;&nbsp;&nbsp;&nbsp;` + data.lista_contas_conciliacao[i][1],
+                            /* 1 - num_contrato */ data.lista_contas_conciliacao[i][2],
+                            /* 1 - doc_contabil */ data.lista_contas_conciliacao[i][3],
+                            /* 3 - val_comp_cp */ data.lista_contas_conciliacao[i][4],
+                            /* 4 - val_balancete_cp */ data.lista_contas_conciliacao[i][5],
+                            /* 5 - val_dif_comp_balanc_cp */ data.lista_contas_conciliacao[i][6],
+                            /* 6 - val_comp_lp */ data.lista_contas_conciliacao[i][7],
+                            /* 7 - val_balancete_lp */ data.lista_contas_conciliacao[i][8],
+                            /* 8 - val_dif_comp_bal_lp */ data.lista_contas_conciliacao[i][9],
+                            /* 9 - val_tt_comp */ data.lista_contas_conciliacao[i][10],
+                            /* 10 - val_tt_balan */ data.lista_contas_conciliacao[i][11],
+                            /* 11 - val_dif_tt_comp_bal */ data.lista_contas_conciliacao[i][12],
+                            /* 12 */let_btn_detalhes_conta,
+                            /* 13 */let_btn_visualiza_doc
                         ];
                         let_lista_dados.push(let_reg);
 
@@ -646,6 +644,9 @@ $(document).on('click','button', function(){
                         'copyHtml5'
                     ],
                     "data": let_lista_dados,
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
+                    ],
                     "oLanguage": {
                         "sProcessing":   "Processando...",
                         "sLengthMenu":   "Mostrar _MENU_ registros",
@@ -1825,7 +1826,6 @@ $(document).on('change','input', function(){
             if (let_id_inp == "rd_modelo_conta_conc_comp_benner_1") {
                 let_cod_modelo_conta = 1;
                 let_colunas_tabela = [
-                    '',
                     'Cód. reduzido',
                     'Conta',
                     'Comp',
@@ -1838,7 +1838,6 @@ $(document).on('change','input', function(){
             else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_2") {
                 let_cod_modelo_conta = 2;
                 let_colunas_tabela = [
-                    '',
                     'Conta',
                     'Doc Cont',
                     'Comp',
@@ -1851,7 +1850,6 @@ $(document).on('change','input', function(){
             else if (let_id_inp == "rd_modelo_conta_conc_comp_benner_3") {
                 let_cod_modelo_conta = 3;
                 let_colunas_tabela = [
-                    '',
                     'Conta',
                     'Contrato',
                     'Doc Cont',
@@ -1900,6 +1898,9 @@ $(document).on('change','input', function(){
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
                     ],
                     "oLanguage": {
                         "sProcessing":   "Processando...",
@@ -4008,10 +4009,10 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
                 </div>
 
                 <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                    <div class="d-flex flex-column w-100 cl_div_txt_val_nominal class_mask_campo_val">
+                    <div class="d-flex flex-column w-100 cl_div_txt_val_nominal">
                         <label>
                             Valor total nominal
-                            <input type="text" class="form-control" id="txt_val_nominal">
+                            <input type="text" class="form-control class_mask_campo_val" id="txt_val_nominal">
                         </label>
                     </div>
                     <div class="d-flex flex-column w-100 cl_div_txt_total_liquido">
