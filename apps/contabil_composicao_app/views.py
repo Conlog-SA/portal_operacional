@@ -584,14 +584,20 @@ class Form_Cad_Contrato_View(View):
             valor_parcela = float(val_liquido_form.replace('.', '').replace(',','.')) / int(qtd_parcelas_form)
             data_ini = datetime(int(data_primeira_parcela_form.split('-')[0]), int(data_primeira_parcela_form.split('-')[1]),
                                 int(data_primeira_parcela_form.split('-')[2]))
-
+            num_parc = 0
             for parc in range(int(qtd_parcelas_form)):
                 primeiro_dia_mes = data_ini.replace(day=int(dia_util_form))
                 #print(str(i) + ' - ' + str(primeiro_dia_mes.strftime('%Y-%m-%d')))  # Exibe a data formatada
-                tipo_prazo = 'CP'
                 handle_parc_random = ''.join(str(random.randint(1,9))  for _ in range(6))
-                if parc > int(qtd_parcelas_form) / 2:
+                num_parc += 1
+                tipo_prazo = ''
+                if num_parc <= 12:
+                    tipo_prazo = 'CP'
+                else:
                     tipo_prazo = 'LP'
+                '''tipo_prazo = 'CP'
+                if parc > int(qtd_parcelas_form) / 2:
+                    tipo_prazo = 'LP'''
                 obj_parcela = Parcela_Contrato(
                     handle_parcela = handle_parc_random, #parc + 1,
                     ap_parcela = handle_parc_random, #parc + 1,
