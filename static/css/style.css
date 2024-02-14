@@ -80,22 +80,21 @@
 .cl_div_tabela_principal_pagina{
     font-size:10px;
     background-color: var(--cor_bg_cinza_escuro) !important;
-    padding-left:1.5rem;
-    padding-right:1.5rem;
-    padding-top: 1.5rem;
-    padding-bottom: 1.5rem;
-    border-radius: 0rem 0rem 0.5rem 0rem;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-radius: 0.3rem 0.3rem 0.3rem 0.3rem;
 }
 
 .cl_tab_principal_pagina{
     background-color: var(--cor_bg_cinza_escuro);
     color: white;
-    border-radius: 0.5rem;
     font-size: 0.77rem;
-    padding:1rem;
+    padding:0.5rem;
     margin-right: 0rem !important;
-    height: 70%;
-    width: 95%;
+    /*height: 70%;
+    width: 95%;*/
   }
 
 
@@ -162,6 +161,8 @@ table, tr, td, .dataTables_info, .dataTables_filter{
     font-size: 0.77rem;
     color: white;
 }
+
+
 
 table{
     white-space: nowrap;

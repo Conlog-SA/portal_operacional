@@ -107,6 +107,9 @@ $(document).on('click', 'a', function(){
                     "buttons": [
                         'copyHtml5'
                     ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
+                    ],
                     "oLanguage": {
                         "sProcessing":   "Processando...",
                         "sLengthMenu":   "Mostrar _MENU_ registros",

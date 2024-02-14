@@ -36,20 +36,40 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                 </div>
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                    {% if obj_usuario_sessao.corporativo == 'S' %}
                     <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                             name="btn_abrir_modal_atualiza_contratos_benner"
                             class="btn btn-primary btn-rounded botaoPrincipal" >
                         <i class="fa-solid fa-repeat"></i>
                         Atualiza contratos Benner
                     </button>
+                    {% endif %}
+                    {% if obj_usuario_sessao.corporativo == 'N' %}
+                    <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
+                            name="btn_abrir_modal_atualiza_contratos_benner"
+                            class="btn btn-primary btn-rounded botaoPrincipal" disabled>
+                        <i class="fa-solid fa-repeat"></i>
+                        Atualiza contratos Benner
+                    </button>
+                    {% endif %}
                 </div>
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                    {% if obj_usuario_sessao.corporativo == 'S' %}
                     <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
                             class="btn btn-primary btn-rounded botaoPrincipal" value="{{ qtd_arquivos_postados }}"
                             title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
                         <i class="fa-solid fa-file-import"></i>
                         Importar anexos
                     </button>
+                    {% endif %}
+                    {% if obj_usuario_sessao.corporativo == 'N' %}
+                    <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
+                            class="btn btn-primary btn-rounded botaoPrincipal" value="{{ qtd_arquivos_postados }}"
+                            title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
+                        <i class="fa-solid fa-file-import"></i>
+                        Importar anexos
+                    </button>
+                    {% endif %}
                 </div>
             </div>
 
@@ -144,12 +164,14 @@
                             <i class="fa-solid fa-paperclip" style="color: #f46424;"></i>
                             Anexos
                         </button>
+                        {% if obj_usuario_sessao.corporativo == 'S' %}
                         <button class="nav-link" id="a_tab_status_comp" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_status_comp" type="button" role="tab"
                                 aria-controls="div_tab_status_comp" aria-selected="false">
                             <i class="fa-solid fa-signal" style="color: #f46424;"></i>
                             Status Composição
                         </button>
+                        {% endif %}
                     </div>
                 </nav>
 
@@ -253,6 +275,7 @@
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
                                 <div class="d-flex flex-column w-100 cl_div_chk_status_comp">
+                                    {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <label class="col-form-label text-white text-left cursor-pointer"
                                            for="chk_status_comp">Status Composição</label>
                                     <div class="container">
@@ -263,6 +286,7 @@
                                             <span class="slider"></span>
                                         </label>
                                     </div>
+                                    {% endif %}
                                 </div>
 
                                 <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
@@ -275,13 +299,24 @@
                                 </div>
 
                                 <div class="d-flex flex-column w-100 cl_div_btn_cadastra_nova_conta">
-                                    <button type='button' id="btn_cadastra_nova_conta"
-                                            name="btn_cadastra_nova_conta"
-                                            class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
-                                            value="0">
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Criar conta</span>
-                                    </button>
+                                    {% if obj_usuario_sessao.corporativo == 'S' %}
+                                        <button type='button' id="btn_cadastra_nova_conta"
+                                                name="btn_cadastra_nova_conta"
+                                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                                value="0">
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Criar conta</span>
+                                        </button>
+                                    {% endif %}
+                                    {% if obj_usuario_sessao.corporativo == 'N' %}
+                                        <button type='button' id="btn_cadastra_nova_conta"
+                                                name="btn_cadastra_nova_conta"
+                                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                                value="0" disabled>
+                                            <i class="fa-solid fa-plus"></i>
+                                            <span>Criar conta</span>
+                                        </button>
+                                    {% endif %}
                                 </div>
                             </div>
 
@@ -379,6 +414,7 @@
 
                                 <div class="d-flex flex-column w-100 cl_div_btn_associar_responsaveis_conta">
                                     <input type="hidden" id="hd_tipo_transacao_resp" value="C">
+                                    {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_associar_responsaveis_conta"
                                             name="btn_associar_responsaveis_conta"
                                             class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
@@ -386,6 +422,16 @@
                                         <i class="fa-solid fa-plus"></i>
                                         <span>Associar responsáveis</span>
                                     </button>
+                                    {% endif %}
+                                    {% if obj_usuario_sessao.corporativo == 'N' %}
+                                    <button type='button' id="btn_associar_responsaveis_conta"
+                                            name="btn_associar_responsaveis_conta"
+                                            class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                            value="0" disabled>
+                                        <i class="fa-solid fa-plus"></i>
+                                        <span>Associar responsáveis</span>
+                                    </button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </form>
@@ -447,6 +493,7 @@
                                 </div>
 
                                 <div class="d-flex flex-column w-100 cl_div_btn_anexa_doc_contrato">
+                                    {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
                                         name="btn_anexa_doc_contrato"
                                         class="mr-1 btn btn-primary btn-rounded cl_btn_anexa_doc_contrato"
@@ -454,6 +501,16 @@
                                         <i class="fa-solid fa-paperclip"></i>
                                         <span>Anexar</span>
                                     </button>
+                                    {% endif %}
+                                    {% if obj_usuario_sessao.corporativo == 'N' %}
+                                    <button type='button' id="btn_anexa_doc_contrato"
+                                        name="btn_anexa_doc_contrato"
+                                        class="mr-1 btn btn-primary btn-rounded cl_btn_anexa_doc_contrato"
+                                        value="0" disabled>
+                                        <i class="fa-solid fa-paperclip"></i>
+                                        <span>Anexar</span>
+                                    </button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </form>
@@ -497,7 +554,7 @@
                         </div>
 
                     </div>
-
+                    {% if obj_usuario_sessao.corporativo == 'S' %}
                     <div class="tab-pane" id="div_tab_status_comp" role="tabpanel" aria-labelledby="a_tab_status_comp">
 
                         <div class="form-group cl_div_tab_status_contrato_comp w-100">
@@ -527,6 +584,7 @@
                         </div>
 
                     </div>
+                    {% endif %}
 
                 </div>
             </div>

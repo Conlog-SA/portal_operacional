@@ -366,7 +366,7 @@ class ConexaoBancoBenner():
                AND	CONTA.HANDLE = {handle_conta} 
                AND	TOTAIS.TIPO IN ('A','N')
                AND	TOTAIS.EMPRESA = {cod_empresa} 
-               AND	CONTA.INDNATUREZA  IN(1,2)
+               AND	CONTA.INDNATUREZA  IN(1,2,3)
             '''
         )
         cursor.execute(sql_balancete_benner)

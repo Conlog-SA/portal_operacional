@@ -1,0 +1,86 @@
+<!-- Modal detalhes contas composição -->
+<div id="modal_detalhes_contas_composicao" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 1400px; width: 1400px; height: 610px; border-radius: 10px;
+        margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
+        <div class="modal-content" style="height: 680px;">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1400px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Detalhes da conta</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="btn_fecha_modal_detalhes_contas_composicao"
+                                id="btn_fecha_modal_detalhes_contas_composicao"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="frm_detalhes_contas_composicao" name="frm_lista_docs_pac_contas_m1"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+
+                    <div class="d-flex justify-content-between align-items-between w-100" >
+                        <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                            <input type="text" class="form-control" readonly id="txt_desc_conta_dth_comp">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
+                        <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                            <label for="txt_desc_pacote_conta_dth_comp" style="color: #000000;">Pacote</label>
+                            <input type="text" class="form-control" readonly id="txt_desc_pacote_conta_dth_comp">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                            <label for="txt_resp_comp_conta_dth_comp" style="color: #000000;">Responsável composição</label>
+                            <input type="text" class="form-control" readonly id="txt_resp_comp_conta_dth_comp">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                             <label for="txt_resp_val_conta_dth_comp" style="color: #000000;">Responsável validação</label>
+                            <input type="text" class="form-control" readonly id="txt_resp_val_conta_dth_comp">
+                        </div>
+
+                        <div class="d-flex flex-column align-items-stretch w-100"
+                             style="margin-left: 0.25rem;margin-top: 0.125rem;">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_contas"
+                         style="margin-bottom: 1rem;">
+                        <div class="loader" id="loader_frm_cad_contas">
+                            <div class="loader-inner">
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                                <div class="loader-block"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="div_info_detalhes_conta" class="form-group  cl_div_tabela_principal_pagina w-100"
+                         style="padding-top: 5px;padding-left: 5px;padding-right: 5px;padding-bottom: 5px;">
+
+
+                    </div>
+
+
+                </form>
+
+
+            </div>
+        </div>
+    </div>
+</div>

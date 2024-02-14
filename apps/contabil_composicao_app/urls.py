@@ -12,6 +12,8 @@ urlpatterns = [
          name='retorna_dados_conta_cadastrada'),
     path('retorna_dados_contrato_conta_cadastrada', views.Form_Cad_Contrato_View.as_view(),
          name='retorna_dados_contrato_conta_cadastrada'),
+    path('acessa_frm_cad_contratos', views.Form_Cad_Contrato_View.as_view(),
+         name='acessa_frm_cad_contratos'),
     path('retorna_dados_contrato_benner_conta', views.Form_Imp_Contratos_Conta_View.as_view(),
          name='retorna_dados_contrato_benner_conta'),
     path('cria_atualiza_conta', views.Form_Cad_Conta_View.as_view(),
@@ -26,6 +28,8 @@ urlpatterns = [
          name='atualiza_status_contrato_sincroniza_benner'),
     path('atualiza_dados_parcela', views.Form_Cad_Parcelas_Contrato_View.as_view(),
          name='atualiza_dados_parcela'),
+    path('estornar_parc_ctr_contas_m3/<str:pk>/', views.Form_Cad_Parcelas_Contrato_View.as_view(),
+         name='estornar_parc_ctr_contas_m3'),
     path('acessa_form_conciliacao_composicao_benner_resumo', views.Form_Conciliacao_Comp_Benner_Resumo_View.as_view(),
          name='acessa_form_conciliacao_composicao_benner_resumo'),
     path('acessa_form_conciliacao_composicao_benner_detalhado', views.Form_Conciliacao_Comp_Benner_Detalhado_View.as_view(),
@@ -136,6 +140,8 @@ urlpatterns = [
          name='exclui_doc_pac_demais_contas'),
     path('retorna_docs_conta_m1', views.Form_Docs_Conta_M1_View.as_view(),
          name='retorna_docs_conta_m1'),
+    path('acessa_frm_detalhes_conta_composicao', views.Form_Detalhes_Conta_Composicao_View.as_view(),
+         name='acessa_frm_detalhes_conta_composicao')
 
 ]
 
