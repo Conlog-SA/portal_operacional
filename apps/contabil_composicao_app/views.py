@@ -1005,7 +1005,7 @@ class Form_Cad_Parcelas_Contrato_View(View):
                 else:
                     tipo_prazo = 'LP'
                 parc.tipo_prazo = tipo_prazo
-                parc.save(update=['tipo_prazo'])
+                parc.save(update_fields=['tipo_prazo'])
 
         elif transacao_form == 'atualiza_dados':
             val_conta_form = request.POST['val_conta']
@@ -1710,6 +1710,8 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                 ultimo_dia_data_competencia_mais_12_meses_date]) \
                 .aggregate(sum_principal=Sum('val_principal'))
 
+
+
             val_parcelas_atrasadas = Parcela_Contrato.objects \
                 .filter(cod_contrato=contrato,  #val_pago=0
                         data_vencimento__lte=data_competencia_mais_um) \
@@ -1749,14 +1751,18 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         elif tipo_prazo == 'LP':
             cod_red = conta.cod_red_conta_contabil_lp
             cod_estrutura = conta.cod_estrut_lp
-            val_composicao_ano_dic = (Parcela_Contrato.objects \
+            '''val_composicao_ano_dic = (Parcela_Contrato.objects \
                 .filter(cod_contrato=contrato, data_vencimento__gte=ultimo_dia_data_competencia_mais_12_meses_date)
                                       .exclude(tipo_prazo='PG') \
+                .aggregate(sum_principal=Sum('val_principal')))'''
+            val_composicao_ano_dic = (Parcela_Contrato.objects \
+                .filter(cod_contrato=contrato, data_vencimento__gt=ultimo_dia_data_competencia_mais_12_meses_date)
+                                      .exclude(tipo_prazo='PG') \
                 .aggregate(sum_principal=Sum('val_principal')))
+
             val_composicao_ano = 0
             if val_composicao_ano_dic['sum_principal'] != None:
                 val_composicao_ano = val_composicao_ano_dic['sum_principal']
-
 
 
             val_composicao = val_composicao_ano
