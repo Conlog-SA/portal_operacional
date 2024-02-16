@@ -588,7 +588,14 @@ class Form_Cad_Contrato_View(View):
                                 int(data_primeira_parcela_form.split('-')[2]))
             num_parc = 0
             for parc in range(int(qtd_parcelas_form)):
-                primeiro_dia_mes = data_ini.replace(day=int(dia_util_form))
+                primeiro_dia_mes = None
+                if int(dia_util_form) in (29, 30, 31):
+                    ultimo_dia_mes = calendar.monthrange(int(data_ini.year), int(data_ini.month))[1]
+                    primeiro_dia_mes = data_ini.replace(day=int(ultimo_dia_mes))
+                else:
+                    primeiro_dia_mes = data_ini.replace(day=int(dia_util_form))
+
+
                 #print(str(i) + ' - ' + str(primeiro_dia_mes.strftime('%Y-%m-%d')))  # Exibe a data formatada
                 handle_parc_random = ''.join(str(random.randint(1,9))  for _ in range(6))
                 num_parc += 1
@@ -600,6 +607,7 @@ class Form_Cad_Contrato_View(View):
                 '''tipo_prazo = 'CP'
                 if parc > int(qtd_parcelas_form) / 2:
                     tipo_prazo = 'LP'''
+
                 obj_parcela = Parcela_Contrato(
                     handle_parcela = handle_parc_random, #parc + 1,
                     ap_parcela = handle_parc_random, #parc + 1,
@@ -622,7 +630,12 @@ class Form_Cad_Contrato_View(View):
                 if data_ini.month == 12:
                     data_ini = data_ini.replace(year=data_ini.year + 1, month=1)
                 else:
-                    data_ini = data_ini.replace(month=data_ini.month + 1)
+                    if int(dia_util_form) in (29, 30, 31):
+                        ultimo_dia_mes = calendar.monthrange(int(data_ini.year), int(data_ini.month + 1))[1]
+                        data_ini = data_ini.replace(day=ultimo_dia_mes,month=data_ini.month + 1)
+                    else:
+                        data_ini = data_ini.replace(month=data_ini.month + 1)
+
             msg = 'Contrato associado com sucesso. Parcelas criadas com sucesso !!!'
             data = {
                 'msg': msg
