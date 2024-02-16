@@ -983,7 +983,7 @@ class Form_Cad_Parcelas_Contrato_View(View):
             num_parc = 0
             lista_parcelas = (Parcela_Contrato.objects.filter(cod_contrato=obj_parcela.cod_contrato,
                                                               tipo_prazo__in=['CP', 'LP'])
-                              .order_by('cod_parcela'))
+                              .order_by('cod_parcela_contrato'))
             for parc in lista_parcelas:
                 num_parc += 1
                 tipo_prazo = ''
@@ -1882,7 +1882,10 @@ class Form_Anexos_Conta_View(View):
             anexo_emp = 'Deep'
 
         if type(file_form) == str:
-            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + novo_nome_arq
+            arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
+                             competencia_doc_form.split('-')[1] + '_' +
+                             competencia_doc_form.split('-')[0] + '.pdf')
+            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + arq
             nome_arquivo = desc_doc_form
             shutil.move(file_form, 'media/'+caminho_arq_importado)
         else:
@@ -3186,7 +3189,9 @@ class Importa_Anexos_Contas_View(View):
         if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
             nome_pasta_empresa = 'Deep_Anexos_Pendentes'
 
-        diretorio_arquivos_postados = f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/{nome_pasta_empresa}/'
+        #diretorio_arquivos_postados = f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}'
+                                      #f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/{nome_pasta_empresa}/'
+        diretorio_arquivos_postados = os.path.join(BASE_DIR, f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = len(lista_arquivos)
 
@@ -4477,20 +4482,20 @@ class Form_Detalhes_Conta_Composicao_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         obj_conta = Conta.objects.get(pk=cod_conta_frm)
-        data_competencia = competencia_frm + '-01'
+        data_competencia_str = competencia_frm + '-01'
+        data_competencia_date = datetime.strptime(data_competencia_str, '%Y-%m-%d')
+
 
         data_hora_atual = datetime.now()
         data_hora_atual_h_m_y = data_hora_atual.strftime('%Y-%m-%d')
 
-        lista_resp_conta = Responsaveis_Conta.objects.filter(cod_conta=obj_conta,cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+        '''resp_conta = (Responsaveis_Conta.objects.filter(cod_conta=obj_conta,cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                            .extra(where=[ " ('" + data_competencia + "' BETWEEN data_ini_atividade AND  data_fim_atividade) OR ( '" + data_competencia + "' >= data_ini_atividade AND data_fim_atividade is null) "]).first())'''
 
-        '''for resp in lista_resp_conta:
-            if resp.data_fim_atividade == None:
-                resp.data_fim_atividade = data_hora_atual_h_m_y'''
+        resp_conta = (Responsaveis_Conta.objects.filter(
+            ((Q(data_ini_atividade__lte=data_competencia_date) & Q(data_fim_atividade__gte=data_competencia_date)) | (Q(data_ini_atividade__lte=data_competencia_date) & Q(data_fim_atividade__isnull=True))),
+            cod_conta=obj_conta,cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).first())
 
-
-
-        resp_conta = lista_resp_conta.extra(where=[ " '" + data_competencia + "' BETWEEN data_ini_atividade AND  data_fim_atividade OR ( '" + data_competencia + "' >= data_ini_atividade AND data_fim_atividade is null) "]).first()
         resp_composicao = 'Não informado'
         resp_validacao = 'Não informado'
         if resp_conta != None:

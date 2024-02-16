@@ -40,8 +40,8 @@ class Responsaveis_Conta(models.Model):
     cod_resp_conta = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     resp_composicao = models.CharField(max_length=60, blank=True, null=True)
     resp_validacao = models.CharField(max_length=60, blank=True, null=True)
-    data_ini_atividade = models.DateTimeField(blank=True, null=True)
-    data_fim_atividade = models.DateTimeField(blank=True, null=True)
+    data_ini_atividade = models.DateField(blank=True, null=True)
+    data_fim_atividade = models.DateField(blank=True, null=True)
     cod_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='cod_empresa', null=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta')
     class Meta:

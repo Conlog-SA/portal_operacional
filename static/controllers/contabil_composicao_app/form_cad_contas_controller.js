@@ -3186,7 +3186,7 @@ function gera_conciliacao_comp_benner_detalhado(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": false, //770px "100vh"
+                    "scrollY": '770px', //770px "100vh"
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": false,
