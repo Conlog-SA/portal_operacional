@@ -190,6 +190,20 @@ function atualiza_tab_resp_contas(){
             dados.dic_lista_contas_resp.forEach(reg => {
                 let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
 
+                let let_desc_conta = ''
+                if(reg.cod_conta__tipo_modelo == 1) {
+                    let_desc_conta = reg.cod_conta__cod_conta+ " - " +
+                        reg.cod_conta__desc_conta+" - Cód. red. CP - "+
+                        reg.cod_conta__cod_red_conta_contabil_cp;
+
+
+                } else if(reg.cod_conta__tipo_modelo == 3) {
+                    let_desc_conta = reg.cod_conta__cod_conta+ " - " +
+                        reg.cod_conta__desc_conta+" - Cód. red. CP - "+
+                        reg.cod_conta__cod_red_conta_contabil_cp+
+                        " Cód. red. LP - "+reg.cod_conta__cod_red_conta_contabil_lp;
+                }
+
                 let let_input_data_fim = `
                     <input type="date" id="dt_data_fim_resp_conta_${reg.cod_resp_conta}"
                            name="dt_data_fim_resp_conta"
@@ -207,7 +221,7 @@ function atualiza_tab_resp_contas(){
                 let row = [
                     let_img,
                     reg.cod_conta__cod_pacote_conta__desc_pacote_conta,
-                    reg.cod_conta__desc_conta,
+                    let_desc_conta,
                     reg.resp_composicao,
                     reg.resp_validacao,
                     reg.data_ini_atividade,
@@ -224,6 +238,10 @@ function atualiza_tab_resp_contas(){
                 "searching": false,
                 "paging": true,
                 "data":let_lista_reg,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
                 "columns": [
                     { title: "" },
                     { title: "Pacote" },
@@ -349,6 +367,10 @@ function atualiza_contas_x_resp_vinculadas(){
                 "searching": false,
                 "paging": true,
                 "data":let_lista_reg,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
                 "columns": [
                     { title: "" },
                     { title: "Conta" },

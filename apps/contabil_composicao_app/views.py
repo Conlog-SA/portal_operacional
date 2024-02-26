@@ -4696,9 +4696,12 @@ class Form_Contas_Resp_View(View):
         for nome_usu in lista_cod_usuarios.split(','):
             lista_contas_resp = (Responsaveis_Conta.objects
                                  .filter( (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)),
-                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                          cod_conta__status_comp='A' )
                                  .values('cod_resp_conta', 'cod_conta__cod_pacote_conta__desc_pacote_conta',
-                                         'cod_conta__desc_conta',
+                                         'cod_conta__desc_conta', 'cod_conta__cod_conta',
+                                         'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp',
+                                         'cod_conta__tipo_modelo',
                                          'resp_composicao', 'resp_validacao', 'data_ini_atividade',
                                          'data_fim_atividade'))
             for reg in lista_contas_resp:
@@ -4748,7 +4751,7 @@ class Form_Vincula_Contas_Resp_View(View):
         obj_pacote = Pacote_Conta.objects.get(pk=cod_pacote_frm)
         if tipo_transacao_frm == 'retorna_lista_contas':
             lista_contas_pac = list(Conta.objects
-                                    .filter(cod_pacote_conta=obj_pacote)
+                                    .filter(cod_pacote_conta=obj_pacote, status_comp='A')
                                     .values('tipo_modelo', 'cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
         elif tipo_transacao_frm == 'retorna_dados_contas_resp':
@@ -4757,7 +4760,7 @@ class Form_Vincula_Contas_Resp_View(View):
 
 
             lista_resp_contas = list(Responsaveis_Conta.objects
-                                 .filter(cod_conta__cod_pacote_conta=obj_pacote,
+                                 .filter(cod_conta__cod_pacote_conta=obj_pacote, cod_conta__status_comp='A',
                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                  .values('cod_resp_conta', 'resp_composicao', 'resp_validacao', 'data_ini_atividade',
                                          'data_fim_atividade', 'cod_conta__cod_conta', 'cod_conta__tipo_modelo',
