@@ -4702,7 +4702,8 @@ class Form_Contas_Resp_View(View):
                                          'resp_composicao', 'resp_validacao', 'data_ini_atividade',
                                          'data_fim_atividade'))
             for reg in lista_contas_resp:
-                reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
+                if reg['data_ini_atividade'] != None:
+                    reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
                 if reg['data_fim_atividade'] != None:
                     reg['data_fim_atividade'] = datetime.strftime(reg['data_fim_atividade'], '%Y-%m-%d')
                 dic_lista_contas_resp.append(reg)
@@ -4763,9 +4764,8 @@ class Form_Vincula_Contas_Resp_View(View):
                                          'cod_conta__desc_conta', 'cod_conta__cod_red_conta_contabil_cp',
                                          'cod_conta__cod_red_conta_contabil_lp'))
             for reg in lista_resp_contas:
-                reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
-
-
+                if reg['data_ini_atividade'] != None:
+                    reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
 
         data = dict()
         data = {
