@@ -54,6 +54,10 @@ class Form_Imp_Cad_Conta_View(View):
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = len(lista_arquivos)
 
+        lista_usuarios_contabil = (Usuario.objects
+                                   .filter(sala='CON',
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
         contexto = {
             'lista_contas': lista_contas,
             'lista_filiais': lista_filiais,
@@ -61,7 +65,8 @@ class Form_Imp_Cad_Conta_View(View):
             'lista_usuarios_contabil': lista_usuarios_contabil,
             'desc_menu': 'Cadastro de contas composição',
             'qtd_arquivos_postados': qtd_arquivos_postados,
-            'obj_usuario_sessao': obj_usuario_sessao
+            'obj_usuario_sessao': obj_usuario_sessao,
+            'lista_usuarios_contabil': lista_usuarios_contabil
 
         }
         return render(request, 'contabil_composicao_app/form_cad_contas.html', contexto)
@@ -963,6 +968,34 @@ class Form_Associa_Resp_Conta_View(View):
 
             cod_conta = obj_resp_conta.cod_conta.cod_conta
             msg = 'Dados atualizados com sucesso!'
+        elif tipo_transacao_form == 'L':
+            lista_cod_contas_frm = request.POST['lista_cod_contas']
+            nome_resp_comp_frm = request.POST['nome_resp_comp']
+            nome_resp_val_frm = request.POST['nome_resp_val']
+            ini_atv_frm = request.POST['ini_atv']
+            fim_atv_frm = request.POST['fim_atv']
+
+            for cod_conta in lista_cod_contas_frm.split(','):
+                obj_conta = Conta.objects.get(pk=cod_conta)
+                data_ini_atv = None
+                if ini_atv_frm != '':
+                    data_ini_atv = ini_atv_frm
+
+                data_fim_atv = None
+                if fim_atv_frm != '':
+                    data_fim_atv = fim_atv_frm
+
+                obj_resp_conta = Responsaveis_Conta(
+                    resp_composicao=nome_resp_comp_frm,
+                    resp_validacao=nome_resp_val_frm,
+                    data_ini_atividade=data_ini_atv,
+                    data_fim_atividade=data_fim_atv,
+                    cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                    cod_conta=obj_conta
+                )
+                obj_resp_conta.save()
+            msg = 'Responsaveis associados com sucesso!'
+
         data = dict()
         data = {
             'msg': msg,
@@ -1161,12 +1194,48 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
-        lista_contas = None
+        lista_contas = []
         lista_contas_para_atualizar_benner = None
         if tipo_rel in ('R', 'D', 'C'):
-            lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
-                                .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
-                                        'cod_red_conta_contabil_lp'))
+            if tipo_rel == 'C':
+                nome_resp_frm = request.GET['nome_resp']
+                if nome_resp_frm != '':
+                    lista_resp_contas = (Responsaveis_Conta.objects
+                                    .filter((Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
+                                            cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                    .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                            'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
+                    for reg in lista_resp_contas:
+                        conta = {
+                            'cod_conta': reg['cod_conta__cod_conta'],
+                            'desc_conta': reg['cod_conta__desc_conta'],
+                            'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
+                            'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
+                        }
+                        lista_contas.append(conta)
+                    '''for nome in nome_resp_frm.split(','):
+                        lista_resp_contas = (Responsaveis_Conta.objects
+                                        .filter((Q(resp_composicao__in=nome) | Q(resp_validacao__in=nome)),
+                                                cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                        .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                                'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
+                        for reg in lista_resp_contas:
+                            conta = {
+                                'cod_conta': reg['cod_conta__cod_conta'],
+                                'desc_conta': reg['cod_conta__desc_conta'],
+                                'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
+                                'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
+                            }
+                            lista_contas.append(conta)'''
+                else:
+                    lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                                        .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
+                                                'cod_red_conta_contabil_lp'))
+
+            else:
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                                    .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
+                                            'cod_red_conta_contabil_lp'))
 
             lista_contas_para_atualizar_benner = list(Contrato.objects
                                                   .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form,
@@ -1187,6 +1256,43 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                                 .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp')
                                 .distinct())
+        elif tipo_rel == 'P':
+            nome_resp_frm = request.GET['nome_resp']
+            if nome_resp_frm != '':
+                lista_resp_contas = (Responsaveis_Conta.objects
+                                     .filter(
+                    (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                             'cod_conta__cod_red_conta_contabil_cp',
+                                             'cod_conta__cod_red_conta_contabil_lp'))
+                for reg in lista_resp_contas:
+                    conta = {
+                        'cod_conta': reg['cod_conta__cod_conta'],
+                        'desc_conta': reg['cod_conta__desc_conta'],
+                        'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
+                        'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
+                    }
+                    lista_contas.append(conta)
+            else:
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                                    .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
+                                            'cod_red_conta_contabil_lp'))
+                '''for nome in nome_resp_frm.split(','):
+                    lista_resp_contas = (Responsaveis_Conta.objects
+                                    .filter((Q(resp_composicao=nome) | Q(resp_validacao=nome)),
+                                            cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                    .values('cod_conta__cod_conta', 'cod_conta__desc_conta', 'cod_conta__cod_red_conta_contabil_cp',
+                                            'cod_conta__cod_red_conta_contabil_lp'))
+                    for reg in lista_resp_contas:
+                        conta = {
+                            'cod_conta': reg['cod_conta__cod_conta'],
+                            'desc_conta': reg['cod_conta__desc_conta'],
+                            'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
+                            'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
+                        }
+                        lista_contas.append(conta)'''
+
 
         lista_pacotes_conta = list(Pacote_Conta.objects.filter(cod_modelo=cod_tipo_modelo_form)
                                    .values('cod_pacote_conta', 'desc_pacote_conta'))
@@ -1710,6 +1816,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                 ultimo_dia_data_competencia_mais_12_meses_date]) \
                 .aggregate(sum_principal=Sum('val_principal'))
 
+            print(data_competencia_mais_um)
+            print(ultimo_dia_data_competencia_mais_12_meses_date)
+            parcelas = Parcela_Contrato.objects \
+                .filter(cod_contrato=contrato,
+                        data_vencimento__range=[data_competencia_mais_um,
+                                                ultimo_dia_data_competencia_mais_12_meses_date])
 
 
             val_parcelas_atrasadas = Parcela_Contrato.objects \
@@ -1717,6 +1829,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         data_vencimento__lte=data_competencia_mais_um) \
                 .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
                 .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'))
+
+            val_parc_atrasadas = Parcela_Contrato.objects \
+                .filter(cod_contrato=contrato,  # val_pago=0
+                        data_vencimento__lte=data_competencia_mais_um) \
+                .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
+
+            for parc in val_parc_atrasadas:
+                print(parc.ordem_parcela)
 
             val_composicao_ano = 0
             if val_composicao_ano_dic['sum_principal'] != None:
@@ -1900,16 +2020,27 @@ class Form_Anexos_Conta_View(View):
         if obj_usuario.cod_filial.cod_empresa.cod_empresa == 17:
             anexo_emp = 'Deep'
 
+        if obj_anexo_conta_pesq != None:
+            arquivo_anterior_a_deletar = str(obj_anexo_conta_pesq.caminho_anexo).replace('/', '\\')
+            os.remove(arquivo_anterior_a_deletar)
+
         if type(file_form) == str:
             arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
-                             competencia_doc_form.split('-')[1] + '_' +
-                             competencia_doc_form.split('-')[0] + '.pdf')
-            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + arq
+                   competencia_doc_form.split('-')[1] + '_' +
+                   competencia_doc_form.split('-')[0] + '.pdf')
+
+            caminho_arq_importado = os.path.join(BASE_DIR,
+                                                 f'media\\docs\\contabil_composicao_app\\anexos_conta\\{anexo_emp}\\' + arq)
+            # caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + arq
+
             nome_arquivo = desc_doc_form
-            shutil.move(file_form, 'media/'+caminho_arq_importado)
+            shutil.move(file_form, caminho_arq_importado)  # shutil.move(file_form, '/'+caminho_arq_importado)
         else:
             nome_arquivo = file_form.name
-            caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + novo_nome_arq
+            caminho_arq_importado = os.path.join(BASE_DIR,
+                                                 f'media\\docs\\contabil_composicao_app\\anexos_conta\\{anexo_emp}\\' + novo_nome_arq)
+
+            # caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + novo_nome_arq
             filename = fs.save(caminho_arq_importado, file_form)
             uploaded_file_url = fs.url(filename)
         msg = ''
@@ -1926,8 +2057,8 @@ class Form_Anexos_Conta_View(View):
             ).save()
             msg = 'Doc anexado com sucesso !'
         else:
-            arquivo_anterior_a_deletar = os.path.join(BASE_DIR, 'media\\' + str(obj_anexo_conta_pesq.caminho_anexo).replace('/', '\\'))
-            os.remove(arquivo_anterior_a_deletar)
+            #arquivo_anterior_a_deletar = os.path.join(BASE_DIR, 'media\\' + str(obj_anexo_conta_pesq.caminho_anexo).replace('/', '\\'))
+            #os.remove(arquivo_anterior_a_deletar)
 
             obj_anexo_conta_pesq.desc_anexo = nome_arquivo
             obj_anexo_conta_pesq.caminho_anexo = caminho_arq_importado
@@ -1976,7 +2107,7 @@ class Form_Anexos_Conta_View(View):
             cod_conta = obj_anexo_conta.cod_conta.cod_conta
         else:
             cod_conta = obj_contrato.cod_conta.cod_conta
-        caminho_completo = os.path.join(BASE_DIR,'media\\' + str(obj_anexo_conta.caminho_anexo).replace('/', '\\'))
+        caminho_completo = str(obj_anexo_conta.caminho_anexo).replace('/', '\\')
         os.remove(caminho_completo)
         obj_anexo_conta.delete()
         data = dict()
@@ -3193,10 +3324,18 @@ class Form_Composicao_Auditoria_View(View):
 
 class Form_Vincula_Resp_Contas_View(View):
     def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
         lista_pacotes = Pacote_Conta.objects.all()
 
+        lista_usuarios_contabil = (Usuario.objects
+                                   .filter(sala='CON',
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
         contexto = {
-            'lista_pacotes': lista_pacotes
+            'lista_pacotes': lista_pacotes,
+            'lista_usuarios_contabil': lista_usuarios_contabil
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
 
@@ -4541,6 +4680,99 @@ class Form_Detalhes_Conta_Composicao_View(View):
         }
         return JsonResponse(data, safe=False)
 
+
+class Form_Contas_Resp_View(View):
+    def get_object(self, pk):
+        try:
+            return Responsaveis_Conta.objects.get(pk=pk)
+        except Responsaveis_Conta.DoesNotExists:
+            return Http404
+
+    def get(self, request):
+        lista_cod_usuarios = request.GET['lista_cod_usuario']
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        dic_lista_contas_resp = []
+        for nome_usu in lista_cod_usuarios.split(','):
+            lista_contas_resp = (Responsaveis_Conta.objects
+                                 .filter( (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)),
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                 .values('cod_resp_conta', 'cod_conta__cod_pacote_conta__desc_pacote_conta',
+                                         'cod_conta__desc_conta',
+                                         'resp_composicao', 'resp_validacao', 'data_ini_atividade',
+                                         'data_fim_atividade'))
+            for reg in lista_contas_resp:
+                reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
+                if reg['data_fim_atividade'] != None:
+                    reg['data_fim_atividade'] = datetime.strftime(reg['data_fim_atividade'], '%Y-%m-%d')
+                dic_lista_contas_resp.append(reg)
+        data = dict()
+        data = {
+            'dic_lista_contas_resp': dic_lista_contas_resp
+        }
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        cod_resp_conta_frm = request.POST['cod_resp_conta']
+        data_fim_frm = request.POST['data_fim']
+
+        obj_resp_conta = Responsaveis_Conta.objects.get(pk=cod_resp_conta_frm)
+        obj_resp_conta.data_fim_atividade = data_fim_frm
+        obj_resp_conta.save()
+        msg = 'Registro alterado com sucesso !!'
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+    def delete(self, request, pk):
+        obj_doc = self.get_object(pk)
+        obj_doc.delete()
+        msg = 'Registro excluído com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Form_Vincula_Contas_Resp_View(View):
+    def get(self, request):
+        cod_pacote_frm = request.GET['cod_pacote']
+        tipo_transacao_frm = request.GET['tipo_transacao']
+
+        lista_resp_contas = []
+        lista_contas_pac = []
+        obj_pacote = Pacote_Conta.objects.get(pk=cod_pacote_frm)
+        if tipo_transacao_frm == 'retorna_lista_contas':
+            lista_contas_pac = list(Conta.objects
+                                    .filter(cod_pacote_conta=obj_pacote)
+                                    .values('tipo_modelo', 'cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
+                                            'cod_red_conta_contabil_lp'))
+        elif tipo_transacao_frm == 'retorna_dados_contas_resp':
+            cod_usuario_sessao = request.session['cod_usuario_logado']
+            obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+
+            lista_resp_contas = list(Responsaveis_Conta.objects
+                                 .filter(cod_conta__cod_pacote_conta=obj_pacote,
+                                         cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                 .values('cod_resp_conta', 'resp_composicao', 'resp_validacao', 'data_ini_atividade',
+                                         'data_fim_atividade', 'cod_conta__cod_conta', 'cod_conta__tipo_modelo',
+                                         'cod_conta__desc_conta', 'cod_conta__cod_red_conta_contabil_cp',
+                                         'cod_conta__cod_red_conta_contabil_lp'))
+            for reg in lista_resp_contas:
+                reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
+
+
+
+        data = dict()
+        data = {
+            'lista_resp_contas' :   lista_resp_contas,
+            'lista_contas_pac'  : lista_contas_pac
+        }
+        return JsonResponse(data, safe=False)
 
 
 

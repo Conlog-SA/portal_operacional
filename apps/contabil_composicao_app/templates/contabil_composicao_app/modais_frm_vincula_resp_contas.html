@@ -1,0 +1,54 @@
+
+
+<!-- Modal exclui resp contas -->
+<div id="modal_exclui_reg_resp_conta" role="dialog" class="modal" style="z-index: 999999;">
+  <div class="modal-dialog" style="border-radius: 10px;margin-left: 10%;">
+    <div class="modal-content" style="border-radius: 10px;">
+      <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+
+          <div class="row" style="margin-left: 0px;margin-right: 0px;width: 1320px;margin-top: 35px;" >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-trash-can fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style="color:#ffffff; font-size:15px">Excluir registro</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" name="btn_fecha_modal_exclui_reg_resp_conta"
+                          id="btn_fecha_modal_exclui_reg_resp_conta" class="btn btn-sm btn-rounded btn_fecha_modal">
+                    <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+                  </div>
+          </div>
+      </div>
+      <div class="modal-body">
+          <form name="frm_exclusao_reg_resp_conta" id="frm_exclusao_reg_resp_conta"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+              <div class="d-flex justify-content-between align-items-between w-100" >
+                  <div class="d-flex flex-column justify-content-between align-items-center w-100"
+                       style="color:#000000;">
+                    <p><b>Tem certeza que deseja excluir o registro ?</b></p>
+                  </div>
+              </div>
+
+              <div class="mt-3 d-flex justify-content-between align-items-start w-100 mb-2" >
+                  <div class="d-flex flex-column w-100">
+                                </div>
+                  <div class="d-flex flex-column w-100">
+                                </div>
+                  <div class="d-flex flex-column w-100">
+                      <button type="button" name="btn_confirma_exclusao_reg_resp_conta"
+                              id="btn_confirma_exclusao_reg_resp_conta"
+                              class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-check"></i>
+                          Excluir
+                      </button>
+                  </div>
+          </div>
+          </form>
+
+      </div>
+    </div>
+  </div>
+</div>

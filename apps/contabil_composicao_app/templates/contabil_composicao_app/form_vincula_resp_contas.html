@@ -12,145 +12,283 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-code-fork fa-2xl" alt="Conciliação Composição x Benner(Resumo)" style="color: #f46424;"></i>
+            <i class="fa-solid fa-link fa-2xl" alt="Conciliação Composição x Benner(Resumo)" style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Vincula Responsável Conta</h1>
         </div>
         <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
     </div>
 
-
     <div class="containerApp">
+        <div class="form-group cl_div_cad_contas_comp w-100" >
+            <div class="col-md-12 w-100 h-100">
 
-        <form id="frm_conciliacao_com_benner" name="frm_conciliacao_com_benner"
-              class="d-flex flex-column align-items-center justify-content-between cl_frm_conciliacao_com_benner"
-              method="POST">
-            <input type="hidden" id="hd_tipo_rel" value="R">
-            <div class="d-flex justify-content-between align-items-between w-100">
-                <hr class="hr_title">
-            </div>
-            <div class="d-flex justify-content-between align-items-between w-100 mb-5">
-
-                <div class="d-flex flex-column w-100">
-                    <label>
-                        Pacotes
-                    </label>
-                    <select class="selectpicker form-control" id="cb_pac_vinc_resp"
-                            name="cb_pac_vinc_resp"
-                            style="color: #999999; font-size: 20px; height: 54.65px"
-                            data-live-search="true"
-                            title="Selecione o modelo das contas">
-                        {% for pac in lista_pacotes %}
-                            <option value="{{pac.cod_pacote_conta}}"> {{pac.desc_pacote_conta}}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="d-flex flex-column w-100 align-items-start">
-                    <label>
-                        <button type='button' id="btn_marcar_contas_comp_benner"
-                                name="btn_marcar_contas_comp_benner"
-                                class="btn btn-rounded btn-space"
-                                title="Selecionar todos os projetos"
-                                style="width: 50px;">
-                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                <nav>
+                    <div class="nav nav-tabs" id="myTab" role="tablist">
+                        <button class="nav-link active" id="a_tab_contas_responsaveis" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_contas_responsaveis" type="button" role="tab"
+                                aria-controls="div_tab_contas_responsaveis" aria-selected="true">
+                            <i class="fa-solid fa-file-invoice-dollar" style="color: #f46424;"></i>
+                            Contas por Responsável
                         </button>
-                        <button type='button' id="btn_desmarcar_contas_comp_benner"
-                                name="btn_desmarcar_contas_comp_benner"
-                                class="btn btn-rounded btn-space"
-                                title="Limpar seleção"
-                                style="width: 50px;">
-                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        <button class="nav-link" id="a_tab_vincular_contas_resp" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_vincular_contas_resp" type="button" role="tab"
+                                aria-controls="div_tab_vincular_contas_resp" aria-selected="false">
+                            <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                            Vincular Resp. Pacotes/Contas
                         </button>
-                    </label>
-                    <select class="selectpicker form-control" id="cb_contas_vinc_resp"
-                            name="cb_contas_vinc_resp"
-                            multiple data-selected-text-format="count > 0"
-                            style="color: #999999; font-size: 20px; height: 54.65px"
-                            data-live-search="true"
-                            title="Selecione o modelo das contas">
-
-                    </select>
-
-                </div>
-
-                <div class="d-flex flex-column w-100">
-                    <label>
-                        Resp. Composição
-                    </label>
-                    <select class="selectpicker form-control" id="cb_resp_comp_vinc_resp"
-                            name="cb_resp_comp_vinc_resp"
-                            style="color: #999999; font-size: 20px; height: 54.65px"
-                            data-live-search="true"
-                            title="Selecione o modelo das contas">
-
-                    </select>
-
-                </div>
-
-                <div class="d-flex flex-column w-100">
-                    <label>
-                        Resp. Validação
-                    </label>
-                    <select class="selectpicker form-control" id="cb_resp_valid_vinc_resp"
-                            name="cb_resp_valid_vinc_resp"
-                            style="color: #999999; font-size: 20px; height: 54.65px"
-                            data-live-search="true"
-                            title="Selecione o modelo das contas">
-
-                    </select>
-                </div>
-
-                <div class="d-flex flex-column w-100">
-                    <button type='button' id="btn_vinc_resp"
-                            name="btn_vinc_resp"
-                            class="mr-2 btn btn-primary btn-rounded" >
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <span>Gerar</span>
-                    </button>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-between w-100">
-                <div class="loader" id="loader_vincula_resp">
-                    <div class="loader-inner">
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
                     </div>
+                </nav>
+
+
+                <div class="tab-content" style="border-radius:0 0 10px 10px;">
+                    <!-- Tab Contas por Responsável-->
+                    <div class="tab-pane active" id="div_tab_contas_responsaveis" name="div_tab_contas_responsaveis"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_contas_responsaveis">
+                        <form id="frm_contas_responsaveis" name="frm_contas_responsaveis"
+                              class="d-flex flex-column align-items-start">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4"
+                                 style="margin-top: 1rem;">
+                                <div class="d-flex flex-column w-100">
+                                    <div class="loader" id="loader_frm_contas_responsaveis">
+                                    <div class="loader-inner">
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                </div>
+                                <div class="d-flex flex-column w-100">
+
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex w-100 mb-3">
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label for="cb_responsaveis_contas">Reponsáveis</label>
+                                    <select class="selectpicker form-control cl_cb_contas" id="cb_responsaveis_contas"
+                                            name="cb_responsaveis_contas"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            multiple data-selected-text-format="count > 0"
+                                            data-live-search="true" title="Selecione um responsável das contas">
+                                        {% for usu in lista_usuarios_contabil %}
+                                            <option value="{{usu.nome_usu}}">
+                                                Contas de : {{ usu.nome_usu }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+
+                                </div>
+                                <div class="d-flex flex-column w-100">
+
+                                </div>
+                            </div>
+
+                            <div class="form-group cl_div_tabela_principal_pagina w-100">
+                                <table id="tab_resp_vinculados"
+                                       class="display wrap w-100 cl_tab_principal_pagina">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Pacote</th>
+                                            <th scope="col">Conta</th>
+                                            <th scope="col">Res. composição</th>
+                                            <th scope="col">Resp. validação</th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Excluir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <!-- Vincular Resp. Pacotes/Contas-->
+                    <div class="tab-pane" id="div_tab_vincular_contas_resp" name="div_tab_vincular_contas_resp"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_vincular_contas_resp">
+                        <form id="frm_vincular_contas_resp" name="frm_vincular_contas_resp"
+                              class="d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4"
+                                 style="margin-top: 1rem;">
+                                <div class="d-flex flex-column w-100">
+                                    <div class="loader" id="loader_frm_vincular_contas_resp">
+                                    <div class="loader-inner">
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                        <div class="loader-block"></div>
+                                    </div>
+                                </div>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                </div>
+                                <div class="d-flex flex-column w-100">
+
+                                </div>
+                            </div>
+                            <div class="mt-3 d-flex w-100 mb-2">
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-right: 0.25rem;margin-top: 1.25rem;">
+                                    <label for="sl_pacs_vincula_resp">Pacotes</label>
+                                    <select class="selectpicker form-control cl_cb_contas" id="sl_pacs_vincula_resp"
+                                            name="sl_pacs_vincula_resp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Selecione um pacote">
+                                        {% for pac in lista_pacotes %}
+                                            <option value="{{pac.cod_pacote_conta}}">
+                                                {{ pac.desc_pacote_conta }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                                    <label for="sl_contas_vincula_resp">
+                                        Contas
+                                        <button type='button' id="btn_marcar_contas_vincula_resp"
+                                                name="btn_marcar_contas_vincula_resp"
+                                                class="btn btn-rounded btn-space"
+                                                title="Selecionar todos os projetos"
+                                                style="width: 50px;">
+                                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                                        </button>
+                                        <button type='button' id="btn_desmarcar_contas_vincula_resp"
+                                                name="btn_desmarcar_contas_vincula_resp"
+                                                class="btn btn-rounded btn-space"
+                                                title="Limpar seleção"
+                                                style="width: 50px;">
+                                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                                        </button>
+
+                                    </label>
+                                    <select class="selectpicker form-control cl_cb_contas" id="sl_contas_vincula_resp"
+                                            name="sl_contas_vincula_resp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            multiple data-selected-text-format="count > 0"
+                                            data-live-search="true" title="Selecione as contas">
+
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mt-3 d-flex w-100 mb-4">
+                                <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;">
+                                    <label for="sl_resp_comp_contas_vincula_resp">Responsável composição</label>
+                                    <select class="selectpicker form-control cl_cb_contas" id="sl_resp_comp_contas_vincula_resp"
+                                            name="sl_resp_comp_contas_vincula_resp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Responsável composição">
+                                        {% for usu in lista_usuarios_contabil %}
+                                            <option value="{{usu.nome_usu}}">
+                                                Contas de : {{ usu.nome_usu }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                    <label for="sl_resp_val_contas_vincula_resp">Responsável validação</label>
+                                    <select class="selectpicker form-control cl_cb_contas"
+                                            id="sl_resp_val_contas_vincula_resp"
+                                            name="sl_resp_val_contas_vincula_resp"
+                                            style="color: #999999; font-size: 20px; height: 54.65px"
+                                            data-live-search="true" title="Responsável validação">
+                                        {% for usu in lista_usuarios_contabil %}
+                                            <option value="{{usu.nome_usu}}">
+                                                Contas de : {{ usu.nome_usu }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                    <label for="dt_ini_contas_vincula_resp">Início atividade</label>
+                                    <input type="date" id="dt_ini_contas_vincula_resp" name="dt_ini_contas_vincula_resp"
+                                           class="form-control">
+                                </div>
+                                <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                                    <label for="dt_fim_contas_vincula_resp">Fim atividade</label>
+                                    <input type="date" id="dt_fim_contas_vincula_resp" name="dt_fim_contas_vincula_resp"
+                                           class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-4">
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    <button type='button' id="btn_associa_contas_resp_frm_vincula_conta_resp"
+                                            name="btn_associa_contas_resp_frm_vincula_conta_resp"
+                                            class="btn btn-primary btn-rounded botaoPrincipal" >
+                                        <i class="fa-solid fa-link"></i>
+                                        <span>Vincula</span>
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <div class="form-group cl_div_tabela_principal_pagina w-100">
+                                <table id="tab_contas_x_resp_vinculadas"
+                                       class="display wrap w-100 cl_tab_principal_pagina">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Conta</th>
+                                            <th scope="col">Res. composição</th>
+                                            <th scope="col">Resp. validação</th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Excluir</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+                            </div>
+
+                        </form>
+
+                    </div>
+
                 </div>
+
+
             </div>
-
-        </form>
-
-        <div class="form-group cl_div_tabela_principal_pagina w-100">
-            <table id="tab_resp_vinculados"
-                   class="display wrap w-100 cl_tab_principal_pagina">
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Empresa</th>
-                        <th scope="col">Res. composição</th>
-                        <th scope="col">Resp. validação</th>
-                        <th scope="col">Início</th>
-                        <th scope="col">Fim</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                </tbody>
-
-            </table>
         </div>
-
     </div>
-
 </div>
 
 
 
-
-<!-- <script src="{% static 'libs/bootstrap_4/js/bootstrap.min.js' %}"></script> -->
+{% include 'contabil_composicao_app/modais_frm_vincula_resp_contas.html' %}

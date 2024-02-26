@@ -1296,8 +1296,6 @@ $(document).on('click','button', function(){
           }
         });
 
-
-
     }
 
     else if (let_nome_btn == 'bnt_arq_conta') {
@@ -1413,6 +1411,11 @@ $(document).on('click','button', function(){
                 });
             }
         });
+    }else if (let_nome_btn == 'btn_desmarcar_resp_contas'){
+        $("#cb_responsaveis_contas").selectpicker('deselectAll');
+    }
+    else if (let_nome_btn == 'btn_marcar_resp_contas'){
+        $("#cb_responsaveis_contas").selectpicker('selectAll');
     }
 
 });
@@ -1862,8 +1865,9 @@ $(document).on('change','input', function(){
             cache: false,
             data: {
                 'tipo_rel': let_tipo_rel,
-                'cod_modelo_conta'   :   let_cod_modelo_conta,
-                'data_competencia' : let_competencia
+                'cod_modelo_conta'  :   let_cod_modelo_conta,
+                'data_competencia'  :   let_competencia,
+                'nome_resp'         :   ''
             },
             dataType: 'json',
             success: function (data) {
@@ -3237,7 +3241,55 @@ function gera_conciliacao_comp_benner_detalhado(){
                     time: '',
                 });
           }
-        });}
+        });
+}
+
+
+$(document).on('change', '#cb_responsaveis_contas', function(){
+    let let_radio1 = $("#rd_modelo_conta_1").prop('checked');
+    let let_radio2 = $("#rd_modelo_conta_2").prop('checked');
+    let let_radio3 = $("#rd_modelo_conta_3").prop('checked');
+    let let_cod_modelo_conta = 0;
+    if ( let_radio1 == true ){
+        let_cod_modelo_conta = 1;
+    } else if ( let_radio2 == true ){
+        let_cod_modelo_conta = 2;
+    } else if ( let_radio3 == true ){
+        let_cod_modelo_conta = 3;
+    }
+
+    $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
+        data: {
+            'tipo_rel'           :  'P',
+            'cod_modelo_conta'   :  let_cod_modelo_conta,
+            'nome_resp'          :  $("#cb_responsaveis_contas").val().toString()
+
+        },
+        dataType: 'json',
+        success: function (data) {
+            $("#cb_contas option").remove();
+            data.lista_contas.forEach(conta => {
+                $("#cb_contas").append("<option value='"+
+                conta.cod_conta+"'>"+conta.cod_conta+" - "+conta.desc_conta+" - Cód. red. CP - "+conta.cod_red_conta_contabil_cp+
+                " Cód. red. LP - "+conta.cod_red_conta_contabil_lp+"</option>");
+
+            });
+            $("#cb_contas").selectpicker('refresh');
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+});
 
 
 function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
@@ -3424,8 +3476,10 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
         type: 'GET',
         url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
         data: {
-            'tipo_rel'           :   'C',
-            'cod_modelo_conta'   :   let_cod_modelo_conta
+            'tipo_rel'           :  'C',
+            'cod_modelo_conta'   :  let_cod_modelo_conta,
+            'nome_resp'          :  $("#cb_responsaveis_contas").val().toString()
+
         },
         dataType: 'json',
         success: function (data) {
