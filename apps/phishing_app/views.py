@@ -19,7 +19,7 @@ class Phishing(View):
         usuario = request.POST['usuario']
         senha = request.POST['senha']
         email = request.POST['email']
-        data = datetime.now() - timedelta(hours=3)
+        data = datetime.now()
 
         objeto = models.Phishing(
             usuario=usuario,
@@ -37,12 +37,14 @@ class Phishing_Enviados(View):
     @csrf_exempt
     def get(self, request):
         usuario = request.GET['email'].split('@')[0]
-        data_envio = datetime.now() - timedelta(hours=3)
+        status = request.GET['status']
+        data_envio = datetime.now()
 
         objeto = models.Phishing_Enviados(
                     usuario=usuario,
-                    data_envio=data_envio
+                    data_envio=data_envio,
+                    status=status
                 )
         objeto.save()
 
-        return JsonResponse('deu bom', safe=False)
+        return JsonResponse('Ok', safe=False)

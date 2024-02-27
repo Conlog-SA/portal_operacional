@@ -21,12 +21,17 @@
             <div class="col-md-12 w-100 h-100">
                 <form id="form_new_check_list" name="form_nem_check_list" style="padding-left:1rem">
                     <div style="display:flex;justify-content:right;margin-right:1rem;margin-bottom:0.5rem;margin-top:0.25rem">
+                        <div style="width:11rem;margin-right:15px">
+                            <select class="selectpicker form-control" data-live-search="true" id="tipo_check"
+                                    name="tipo_check" title="Selecione um tipo" required>
+                                {% for cod, tipo in lista_tipos.items %}
+                                    <option value="{{cod}}">{{tipo}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
                         <div style="width:30rem">
                             <select class="selectpicker form-control" data-live-search="true" name="modelos_existentes"
                                     id="modelos_existentes" name="modelos_existentes" title="Selecione um check existente" required>
-                                {% for ch in lista_checks %}
-                                    <option value="{{ch.cod_check}}">{{ch.desc_check}}</option>
-                                {% endfor %}
                             </select>
                         </div>
                     </div>
@@ -57,8 +62,8 @@
                                            <input type="text" class="form-control" id="descricao_new_check">
                                         </div>
                                         <div class="form-group col-sm-3">
-                                           <label for="versao_new_check">Versão</label>
-                                           <input type="text" class="form-control" id="versao_new_check">
+                                           <label for="inicio_new_check_date">Inicio em:</label>
+                                           <input type="date" class="form-control" id="inicio_new_check_date">
                                         </div>
                                         <div class="form-group col-sm-3">
                                            <label for="desativar_new_check_date">Desativar em:</label>
@@ -76,7 +81,11 @@
                                           <label for="periodicidade_new_check">Periodicidade</label>
                                           <input type="text" class="form-control" id="periodicidade_new_check">
                                         </div>
-                                        <div class="form-group col-sm-12 w-15 d-flex justify-content-end" style="margin-top:10px">
+                                        <div class="form-group col-sm-3">
+                                           <label for="versao_new_check">Versão</label>
+                                           <input type="text" class="form-control" id="versao_new_check">
+                                        </div>
+                                        <div class="form-group col-sm-9 w-15 d-flex justify-content-end" style="margin-top:10px">
                                             <button type="button" class="btn btn-primary btn-form" id="btn_reset_check"
                                              name="btn_reset_check" style="margin-top:10px" hidden>
                                              <i class="fa-solid fa-arrow-left"></i>
@@ -127,8 +136,8 @@
                                             <select class="selectpicker form-control"
                                             id="select_tipo_resposta" name="select_tipo_resposta"
                                             placeholder="Tipo de Resposta" disabled>
-                                               <option value="1">OK</option>
-                                               <option value="2">Não OK</option>
+                                               <option value="1">OK/NOK</option>
+                                               <option value="2">Texto</option>
                                             </select>
                                         </div>
                                         <div class="form-group col-sm-4">
@@ -136,15 +145,27 @@
                                             <input type="text" class="form-control" id="input_ordem_check" disabled>
                                         </div>
                                         <div class="form-group col-sm-4">
+                                            <label for="inicio_item_date">Inicio em:</label>
+                                            <input type="date" class="form-control" id="inicio_item_date" disabled>
+                                        </div>
+                                        <div class="form-group col-sm-4">
                                             <label for="desativar_item_date">Desativar em:</label>
                                             <input type="date" class="form-control" id="desativar_item_date" disabled>
                                         </div>
                                         <div class="form-group col-sm-2 check-box">
                                             <div class="label">
-                                                <label for="obs_imagem_check_box"> Campo Imagem e OBS</label>
+                                                <label id="label_imagem_obs" for="obs_imagem_check_box"> Campos Imagem e OBS?</label>
                                             </div>
                                             <div class="container">
                                                 <input type="checkbox" class="checkbox" role="switch" name="obs_imagem_check_box" id="obs_imagem_check_box" disabled>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-2 check-box">
+                                            <div class="label">
+                                                <label for="resposta_obrigatoria_check_box"> Item obrigatório?</label>
+                                            </div>
+                                            <div class="container">
+                                                <input type="checkbox" class="checkbox" role="switch" name="resposta_obrigatoria_check_box" id="resposta_obrigatoria_check_box" disabled>
                                             </div>
                                         </div>
                                         <div class="form-group col-sm-12 w-15 d-flex justify-content-end" style="margin-top:10px; margin-botton:10px;">
@@ -166,7 +187,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div style="display:flex;justify-content:center;margin-right:1rem">
                                     <ul id="sortable" class="sortable">
                                     </ul>
                                 </div>

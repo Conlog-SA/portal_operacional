@@ -15,6 +15,7 @@ class Phishing_Enviados(models.Model):
     cod_envio_email = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     usuario = models.CharField(max_length=50, blank=True, null=True)
     data_envio = models.DateTimeField(blank=True, null=True)
+    status = models.CharField(max_length=1, blank=True, null=True)
 
     class Meta:
         managed = True

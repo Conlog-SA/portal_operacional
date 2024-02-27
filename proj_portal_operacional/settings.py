@@ -76,7 +76,8 @@ INSTALLED_APPS = [
     'apps.cco_multas_app',
     'apps.safety_checks_aplicados_app',
     'apps.safety_gab_op_emp_app',
-    'apps.phishing_app'
+    'apps.phishing_app',
+    'apps.safety_relatos_app'
 ]
 
 MIDDLEWARE = [

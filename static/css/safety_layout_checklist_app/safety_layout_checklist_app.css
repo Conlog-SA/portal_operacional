@@ -7,7 +7,6 @@ label[for="liberado_filiais"] {
     text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
 }
 
-
 .divider {
     border-bottom: 1px solid #ffffff; /* Adicione a cor e largura desejadas para a linha */
     margin-top: 10px;
@@ -28,20 +27,27 @@ label{
 }
 
 .sortable{
-    width:30%;
-    padding:0px;
-    margin-left:200px;
+    width:100%;
+    padding-inline-start: 0px;
 }
 
 .agrupador_li_sortable{
-    width: fit-content;
+    display:flex;
+    justify-content:left;
+    padding:5px 5px 5px 15px;
+    border-color:white;
+    margin-top:25px;
+    background-color:rgb(242,101,34);
+    font-size:1.2rem;
 }
 
 .item_li_sortable{
-    margin-left:40px;
-    width: fit-content;
-    border-style:ridge;
-    border-color:white;
+    border-style:groove;
+    border-color:rgba(255, 255, 255, 0.3);
     display:flex;
     flex-direction:column;
+    align-items:flex-start;
+    padding:1px 3px 1px 5rem;
+    margin-bottom:2px;
+    font-size:1.1rem;
 }

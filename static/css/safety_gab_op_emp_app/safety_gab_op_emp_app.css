@@ -3,22 +3,6 @@
     color: white; /* Cor do texto, por exemplo, branco */
 }
 
-label[for="liberado_filiais"] {
-    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
-}
-
-
-.divider {
-    border-bottom: 1px solid #ffffff; /* Adicione a cor e largura desejadas para a linha */
-    margin-top: 10px;
-  }
-
-.btn-cadastro{
-    background-color: #ef7814 !important;
-    border-color: #ef7814 !important;
-
-}
-
 label{
     text-align: left !important;
 }
@@ -27,21 +11,35 @@ label{
     width: 95%;
 }
 
-.sortable{
-    width:30%;
-    padding:0px;
-    margin-left:200px;
+.ok-button-check{
+    transition: all 0.3s ease;
 }
 
-.agrupador_li_sortable{
-    width: fit-content;
+.nok-button-check{
+    transition: all 0.3s ease;
 }
 
-.item_li_sortable{
-    margin-left:40px;
-    width: fit-content;
-    border-style:ridge;
-    border-color:white;
-    display:flex;
-    flex-direction:column;
+.ok-button-check.selected{
+    background-color:green;
+}
+
+.nok-button-check.selected{
+    background-color:red;
+}
+
+@media screen and (max-width: 768px) {
+    .responsive-font {
+        font-size: 0.8rem;
+    }
+    .filter-option-inner-inner {
+        font-size: 0.8rem;
+    }
+    .responsive-div {
+        display:flex;
+        flex-direction:column
+    }
+
+    .responsive-w-100 {
+        width:100% !important
+    }
 }

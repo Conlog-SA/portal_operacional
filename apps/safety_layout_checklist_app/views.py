@@ -13,11 +13,23 @@ from apps.usuario_app.models import Usuario
 
 class Form_Seguranca_Check(View):
     def get(self, request):
-        lista_checks = Layout_Check.objects.all()
+        lista_tipos = {'1': 'Empilhadeiras'}
         contexto = {
-            'lista_checks': lista_checks
+            'lista_tipos': lista_tipos
         }
         return render(request,'safety_layout_checklist_app/form_cad_layout_checklist.html', contexto)
+
+class Lista_Check(View):
+    def get(self, request):
+        cod_tipo = request.GET['cod_tipo']
+        lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
+        lista_checks_dict = []
+        for check in lista_checks:
+            lista_checks_dict.append({'cod_check': check.cod_check, 'desc_check': check.desc_check})
+        data = {
+            'lista_checks': lista_checks_dict
+        }
+        return JsonResponse(data)
 
 class Form_Cadastro_Check(View):
     def get(self, request):
@@ -27,6 +39,7 @@ class Form_Cadastro_Check(View):
             'check_selecionado': {
                 'desc_check': check_selecionado.desc_check,
                 'versao': check_selecionado.versao,
+                'data_inicio': check_selecionado.data_inicio,
                 'data_desativacao': check_selecionado.data_desativacao,
                 'periodicidade': check_selecionado.periodicidade,
                 'medida_periodicidade': check_selecionado.medida_periodicidade,
@@ -38,20 +51,24 @@ class Form_Cadastro_Check(View):
         cod_check = request.POST['cod_check']
         desc_check = request.POST['desc_check']
         versao = request.POST['versao']
+        data_inicio = request.POST['data_inicio']
         data_desativacao = request.POST['data_desativacao']
         medida_periodicidade = request.POST['medida_periodicidade']
         periodicidade = request.POST['periodicidade']
         cod_usuario_sessao = request.session['cod_usuario_logado']
+        tipo = request.POST['tipo']
 
         if cod_check == '':
             obj_check = Layout_Check(
                 desc_check=desc_check,
                 versao=versao,
+                data_inicio=data_inicio,
                 data_desativacao=data_desativacao,
                 medida_periodicidade=medida_periodicidade,
                 periodicidade=periodicidade,
                 cod_usu=Usuario.objects.get(cod_usu=cod_usuario_sessao),
-                data_inclusao=datetime.now()
+                data_inclusao=datetime.now(),
+                tipo_check=tipo
             )
             novo_check = True
             mensagem = 'Inserção realizada com sucesso!'
@@ -61,6 +78,8 @@ class Form_Cadastro_Check(View):
                 obj_check.desc_check = desc_check
             if obj_check.versao != versao:
                 obj_check.versao = versao
+            if obj_check.data_inicio != data_inicio:
+                obj_check.data_inicio = data_inicio
             if obj_check.data_desativacao != data_desativacao:
                 obj_check.data_desativacao = data_desativacao
             if obj_check.medida_periodicidade != medida_periodicidade:
@@ -140,7 +159,7 @@ class Form_Filial_Check(View):
 
         for filial in lista_filiais_add:
             obj_filial_check = Libera_Filial_Check(
-                cod_check=cod_check,
+                cod_check=Layout_Check.objects.get(cod_check=cod_check),
                 cod_filial=filial
             )
             obj_filial_check.save()
@@ -178,8 +197,10 @@ class Form_Item_Check(View):
                                        'tipo_resposta': item.tipo_resposta,
                                        'data_inclusao': item.data_inclusao,
                                        'cod_usuario': item.cod_usuario,
+                                       'data_inicio': item.data_inicio,
                                        'data_desativacao': item.data_desativacao,
                                        'campo_obs_img': item.campo_obs_img,
+                                       'obrigatorio': item.obrigatorio,
                                        'ordem_item': item.ordem_item,
                                        'tipo_item': item.tipo_item,
                                        })
@@ -220,8 +241,10 @@ class Form_Item_Check(View):
         elif flag_arrastar_sortable == '0':
             desc_item = request.POST['desc_item']
             tipo_item = request.POST['tipo_item']
+            data_inicio = request.POST['inicio_item']
             data_desativar = request.POST['desativar_item']
             imagem_obs = request.POST['imagem_obs']
+            resposta_obrigatoria = request.POST['resposta_obrigatoria']
             tipo_resposta = request.POST['tipo_resposta']
             cod_usuario_sessao = request.session['cod_usuario_logado']
             if cod_item_check == '':
@@ -230,8 +253,10 @@ class Form_Item_Check(View):
                     tipo_resposta=tipo_resposta,
                     data_inclusao=datetime.now(),
                     cod_usuario=cod_usuario_sessao,
+                    data_inicio=data_inicio,
                     data_desativacao=data_desativar,
                     campo_obs_img=imagem_obs,
+                    obrigatorio=resposta_obrigatoria,
                     ordem_item=ordem_item,
                     tipo_item=tipo_item,
                     cod_check=Layout_Check.objects.get(cod_check=cod_check)
@@ -246,10 +271,14 @@ class Form_Item_Check(View):
                     obj_item_check.tipo_item = tipo_item
                 if obj_item_check.ordem_item != ordem_item:
                     obj_item_check.ordem_item = ordem_item
+                if obj_item_check.data_inicio != data_inicio:
+                    obj_item_check.data_inicio = data_inicio
                 if obj_item_check.data_desativacao != data_desativar:
                     obj_item_check.data_desativacao = data_desativar
                 if obj_item_check.campo_obs_img != imagem_obs:
                     obj_item_check.campo_obs_img = imagem_obs
+                if obj_item_check.obrigatorio != resposta_obrigatoria:
+                    obj_item_check.obrigatorio = resposta_obrigatoria
                 if obj_item_check.tipo_resposta != tipo_resposta:
                     obj_item_check.tipo_resposta = tipo_resposta
                 novo_check = False
@@ -276,8 +305,10 @@ class Sortable_View(View):
                 'tipo_resposta': item_selecionado.tipo_resposta,
                 'data_inclusao': item_selecionado.data_inclusao,
                 'cod_usuario': item_selecionado.cod_usuario,
+                'data_inicio': item_selecionado.data_inicio,
                 'data_desativacao': item_selecionado.data_desativacao,
                 'campo_obs_img': item_selecionado.campo_obs_img,
+                'obrigatorio': item_selecionado.obrigatorio,
                 'ordem_item': item_selecionado.ordem_item,
                 'tipo_item': item_selecionado.tipo_item
             }
