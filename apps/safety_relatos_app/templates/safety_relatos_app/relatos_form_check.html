@@ -2,42 +2,39 @@
 
 <div class="form-group form_div_check w-100" >
     <div class="col-md-12 w-100 h-100">
-        <form id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+        <form id="form_preenche_check" name="form_preenche_check">
                     <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
                         <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
                                 <div class="row" style="text-align:left;">
                                     <div class="row">
-                                        <div class="d-flex justify-content-center align-items-between mt-3 w-100">
-                                            <i style="color:#ef7814;padding-bottom:25px;responsive-font"></i>Itens observados
-                                        </div>
-                                        <div class="d-flex justify-content-between align-items-between w-100">
-                                            <hr class="hr_title">
+                                        <div class="d-flex align-items-between mt-3 w-100" style="padding-right:20px;justify-content:right">
+                                            <p style="display:flex;justify-content:right;padding:right:0.5rem;responsive-font;font-size:20px;margin-bottom:-10px">Check nº{{cod_check_aplicado}}</p>
                                         </div>
                                     </div>
                                     {% for item in lista_itens %}
                                         <div style="width:100%;display:flex;justify-content:center">
                                             {% if item.tipo_item == 2 %}
-                                                <b class="responsive-font" style="width:90%;display:flex;justify-content:center;margin-bottom:0px;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34)">{{item.desc_check}}</b>
+                                                <b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{{item.desc_check}}</b>
                                             {% endif %}
                                             {% if item.tipo_item == 1 %}
                                                 {% if item.tipo_resposta == 1 %}
                                                     {% if item.campo_obs_img == 0 %}
-                                                        <div style="width:90%;border-style:groove;border-color:rgba(255, 255, 255, 0.7)">
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                             <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
                                                             <input type="hidden" class="identifier" value="{{item.ordem_item}}">
-                                                            <div style="display:flex;justify-content:center">
-                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post" type="button" style="padding:7px">OK</button>
-                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post" type="button" style="padding:7px">NOK</button>
+                                                            <div style="display:flex;justify-content:center;padding:4px">
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post" type="button" style="padding:7px;border-width:1px;border-radius:5px;">OK</button>
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post" type="button" style="padding:7px;border-width:1px;border-radius:5px;">NOK</button>
                                                             </div>
                                                         </div>
                                                     {% endif %}
                                                     {% if item.campo_obs_img == 1 %}
-                                                        <div style="width:90%;border-style:groove;border-color:rgba(255, 255, 255, 0.7)">
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                             <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
                                                             <input type="hidden" class="identifier" value="{{item.ordem_item}}">
-                                                            <div style="display:flex;justify-content:center">
-                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post" type="button" style="padding:7px">OK</button>
-                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post" type="button" style="padding:7px">NOK</button>
+                                                            <div style="display:flex;justify-content:center;">
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post" type="button" style="padding:7px;border-width:1px;border-radius:5px;">OK</button>
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post" type="button" style="padding:7px;border-width:1px;border-radius:5px;">NOK</button>
                                                             </div>
                                                             <div class="responsive-div" style="display:flex;justify-content:flex-start;margin:1rem 0.5rem 1rem 0.5rem">
                                                                 <textarea name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font responsive-w-100 textarea-check-post" style="width:60%;height:6rem;margin-right:1.2rem"></textarea>
@@ -51,7 +48,16 @@
                                                 {% endif %}
                                                 {% if item.tipo_resposta == 2 %}
                                                     {% if item.campo_obs_img == 0 %}
-                                                        <div style="width:90%;border-style:groove;border-color:rgba(255, 255, 255, 0.7)">
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                            <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
+                                                            <input type="hidden" class="identifier" value="{{item.ordem_item}}">
+                                                            <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                                                <textarea name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font responsive-w-100 textarea-check-post" style="width:60%;height:6rem;margin-right:1.2rem"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if item.campo_obs_img == 1 %}
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                             <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
                                                             <input type="hidden" class="identifier" value="{{item.ordem_item}}">
                                                             <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">

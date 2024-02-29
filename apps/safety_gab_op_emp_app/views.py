@@ -54,13 +54,13 @@ class Form_Gerar_Gab_Emp(View):
 
         colaborador_envio = Colaborador.objects.filter(pk=cod_usuario_sessao).first()
         if colaborador_envio == None:
-            operador = Colaborador(
+            colaborador_envio = Colaborador(
                 nome_colaborador=usuario.nome_usu,
                 cod_filial=cod_filial_usuario_sessao,
                 filial_informada_terceiro=cod_filial_informado,
                 operador_informado_terceiro=usuario_informado
             )
-        operador.save()
+            colaborador_envio.save()
 
         data_atual = datetime.now()
         check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=usuario.cod_filial,
@@ -74,7 +74,7 @@ class Form_Gerar_Gab_Emp(View):
 
         check_aplicado = Check_Aplicado(
             cod_filial=cod_filial_usuario_sessao,
-            cod_colaborador=operador,
+            cod_colaborador=colaborador_envio,
             data_registro=data_atual,
             cod_layout_check=check_ativo.cod_check
         )
@@ -135,6 +135,7 @@ class Item_Check_Aplicado(View):
         tipo_resposta = request.POST['tipo_input']
         cod_item_check = request.POST['cod_item_check']
         cod_check_aplicado = request.POST['cod_check_aplicado']
+        msg = ''
 
         if tipo_resposta == 'button':
             resposta = request.POST['resposta']
@@ -151,6 +152,7 @@ class Item_Check_Aplicado(View):
             else:
                 item_existente.resp_item = resposta
                 item_existente.save()
+            msg = 'Resposta salva com sucesso!'
 
         if tipo_resposta == 'text':
             resposta = request.POST['resposta']
@@ -168,6 +170,7 @@ class Item_Check_Aplicado(View):
             else:
                 item_existente.comentario = resposta
                 item_existente.save()
+            msg = 'Resposta salva com sucesso!'
 
         if tipo_resposta == 'image':
             file_form = request.FILES['file']
@@ -175,7 +178,6 @@ class Item_Check_Aplicado(View):
             msg = self.salva_imagem_anexo(file_form, file_form.name, cod_item_check, cod_check_aplicado)
 
         return HttpResponse(msg)
-
 
     def salva_imagem_anexo(self, file_form, desc_doc_form, cod_item_check, cod_check_aplicado):
         item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
@@ -186,9 +188,7 @@ class Item_Check_Aplicado(View):
                 cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
             )
             item_existente.save()
-            novo_nome_arq = str(item_existente.cod_item_fotos_texto_itens_checks_aplicados)
-        else:
-            novo_nome_arq = str(item_existente.cod_item_fotos_texto_itens_checks_aplicados)
+        elif item_existente.caminho_imagem != None:
             arquivo_anterior_a_deletar = str(item_existente.caminho_imagem).replace('/', '\\')
             os.remove(arquivo_anterior_a_deletar)
 

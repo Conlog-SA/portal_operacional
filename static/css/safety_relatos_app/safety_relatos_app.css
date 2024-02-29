@@ -1,0 +1,45 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label{
+    text-align: left !important;
+}
+
+.w-95{
+    width: 95%;
+}
+
+.ok-button-check{
+    transition: all 0.3s ease;
+}
+
+.nok-button-check{
+    transition: all 0.3s ease;
+}
+
+.ok-button-check.selected{
+    background-color:green;
+}
+
+.nok-button-check.selected{
+    background-color:red;
+}
+
+@media screen and (max-width: 768px) {
+    .responsive-font {
+        font-size: 0.8rem;
+    }
+    .filter-option-inner-inner {
+        font-size: 0.8rem;
+    }
+    .responsive-div {
+        display:flex;
+        flex-direction:column
+    }
+
+    .responsive-w-100 {
+        width:100% !important
+    }
+}

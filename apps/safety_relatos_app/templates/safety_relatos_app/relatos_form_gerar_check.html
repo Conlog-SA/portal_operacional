@@ -4,19 +4,19 @@
     <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
     <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
     <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/safety_gab_op_emp_app/safety_gab_op_emp_app.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/safety_relatos_app/safety_relatos_app.css' %}" />
 
 {% endblock %}
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-95" style="margin-right: 0px; width:100%;">
    <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;">
        <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-truck-fast" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
-           <h1 class="titlePadraoMenu" style="margin-left:0px;">Safety</h1>
+            <i class="fa-solid fa-file-signature" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
+           <h1 class="titlePadraoMenu" style="margin-left:0px;">Relatos</h1>
        </div>
        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
    </div>
-    <div id="div_corpo_gab_op_emp" class="containerApp w-95">
+    <div id="div_corpo_relatos" class="containerApp w-95">
         <div class="form-group form_div_check w-100" >
             <div class="col-md-12 w-100 h-100">
                 <form id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
@@ -25,46 +25,46 @@
                                 <div class="row" style="text-align:left;">
                                     <div style="padding:15px;padding-right:30px;padding-left:30px">
                                         <div class="form-group">
-                                           <label for="unidade"> Unidade </label>
-                                           <input type="text" class="form-control responsive-font" id="unidade" name="unidade" disabled value="{{cod_filial_operador}}">
+                                           <label for="unidade"> Unidade: </label>
+                                           <input type="text" class="form-control responsive-font" id="unidade" name="unidade" disabled value="{{cod_filial_usuario}}">
                                         </div>
                                         <div class="form-group">
-                                           <label for="tipo_relato">Tipo de Operador</label>
-                                           <select class="selectpicker form-control responsive-font" id="tipo_relato" name="tipo_relato">
+                                           <label for="tipo_relato">Tipo de Relato:</label>
+                                           <select class="selectpicker form-control responsive-font" id="tipo_relato" name="tipo_relato" placeholder="Escolha o tipo">
                                                <option value="1">Ato inseguro</option>
                                                <option value="2">Condição insegura</option>
                                                <option value="3">Abordagem positiva</option>
                                            </select>
                                         </div>
                                         <div class="form-group">
-                                           <label class="responsive-font" for="situacao_envolvido">Operador:</label>
-                                           <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido">
+                                           <label class="responsive-font" for="situacao_envolvido">Situação do envolvido:</label>
+                                           <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" placeholder="Escolha a situação">
                                                <option value="1">Funcionario Conlog</option>
                                                <option value="2">Funcionario Ambev</option>
                                                <option value="3">Freteiro</option>
                                                <option value="4">Terceiros</option>
-                                           </select>                                        </div>
+                                           </select>
+                                        </div>
                                         <div class="form-group">
-                                           <label for="nome_relatado">Documento (CPF):</label>
+                                           <label for="nome_relatado">Nome do relatado:</label>
                                            <input type="text" class="form-control responsive-font" id="nome_relatado" name="nome_relatado">
                                         </div>
                                         <div class="form-group">
-                                           <label for="local_relato">Nome do relatado</label>
+                                           <label for="local_relato">Local do relato:</label>
                                            <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato">
                                         </div>
                                         <div class="form-group">
                                            <label for="atividade_relato">Atividade sendo realizada:</label>
-                                           <select class="selectpicker form-control responsive-font" id="atividade_relato" name="atividade_relato" placeholder="Escolha o modelo de empilhadeira" required>
+                                            <input type="text" class="form-control responsive-font" id="atividade_relato" name="atividade_relato">                                           </select>
                                            </select>
                                         </div>
                                         <div class="form-group">
-                                           <label for="descricao_relato">Descrição da situação:</label>
-                                           <select class="selectpicker form-control responsive-font" id="descricao_relato" name="descricao_relato" placeholder="Escolha o modelo de empilhadeira" required>
-                                           </select>
+                                            <label for="descricao_situacao">Descrição da situação:</label>
+                                            <input type="text" class="form-control responsive-font" id="descricao_situacao" name="descricao_situacao">                                           </select>
                                         </div>
                                     </div>
                                     <div style="justify-content:flex-end;display:flex;padding-right:4rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
-                                        <button class="create-check" type="button" style="padding;border-radius:3px">Gerar check</button>
+                                        <button class="create-check-relatos" type="button" style="padding;border-radius:3px">Gerar check</button>
                                     </div>
                                 </div>
                         </div>

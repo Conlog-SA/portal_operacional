@@ -13,7 +13,7 @@ from apps.usuario_app.models import Usuario
 
 class Form_Seguranca_Check(View):
     def get(self, request):
-        lista_tipos = {'1': 'Empilhadeiras'}
+        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos'}
         contexto = {
             'lista_tipos': lista_tipos
         }
