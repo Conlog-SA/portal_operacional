@@ -81,7 +81,6 @@ class Form_Gerar_Gab_Emp(View):
 
         check_aplicado.save()
 
-        check_ativo = Libera_Filial_Check.objects.get(cod_check=check_aplicado.cod_layout_check.cod_check)
         lista_itens = Item_Check.objects.filter(cod_check__cod_check=check_ativo.cod_check.cod_check,
                                                 data_desativacao__gte=date(data_atual.year, data_atual.month,
                                                                            data_atual.day),
