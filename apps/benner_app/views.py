@@ -349,6 +349,9 @@ class ConexaoBancoBenner():
         return lista_parcelas_contrato_benner
 
     def retorna_balancete_conta(self, cod_empresa, handle_conta, data_ini, data_fim):
+        '''A data inicial é setada aki 01/01/2023 até fizerem o processo de abertura do balence para 2024 segundo o Talison Brisola'''
+        if cod_empresa == 12:
+            data_ini = '2023-01-01'
         '''Objeto a retornar'''
         val_balancete_benner = 0
 
@@ -1030,7 +1033,7 @@ class ConexaoBancoBenner():
                     ON (ma.proprietario = gn_p.handle)
                     WHERE gn_p.ehfornecedor = 'S'
                     AND gn_p.ehtransportador = 'S'
-                    AND ma.origem = 2
+                    /* AND ma.origem = 2 */
                     AND ma.projeto = ''' + str(handle_projeto) +
                 '''
                     GROUP BY 	gn_p.handle,

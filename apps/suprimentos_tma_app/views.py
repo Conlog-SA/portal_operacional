@@ -194,21 +194,24 @@ class Requisicao_Atendida_View(View):
                         obj_req_atendida_busca.cod_dia_calendario.data_prevista_req_plan) + ' 23:59'
                     data_time_atendida_prevista_datetime = datetime.strptime(data_time_atendida_prevista_str,
                                                                              '%Y-%m-%d %H:%M')
-                    prazo_atendida_dias_previsto = 20
+                    #prazo_atendida_dias_previsto = 20
+                    prazo_atendida_dias_previsto = obj_req_atendida_busca.cod_dia_calendario.qtd_dias_data_prevista_req_plan
                 elif req.status_ordem == 'E':
                     # req.data_atendida_prevista = obj_req_atendida_busca.cod_dia_calendario.data_prevista_req_e
                     data_time_atendida_prevista_str = str(
                         obj_req_atendida_busca.cod_dia_calendario.data_prevista_req_e) + ' 23:59'
                     data_time_atendida_prevista_datetime = datetime.strptime(data_time_atendida_prevista_str,
                                                                              '%Y-%m-%d %H:%M')
-                    prazo_atendida_dias_previsto = 2
+                    #prazo_atendida_dias_previsto = 2
+                    prazo_atendida_dias_previsto = obj_req_atendida_busca.cod_dia_calendario.qtd_dias_data_prevista_req_e
                 elif req.status_ordem == 'NE':
                     # req.data_atendida_prevista = obj_req_atendida_busca.cod_dia_calendario.data_prevista_req_ne
                     data_time_atendida_prevista_str = str(
                         obj_req_atendida_busca.cod_dia_calendario.data_prevista_req_ne) + ' 23:59'
                     data_time_atendida_prevista_datetime = datetime.strptime(data_time_atendida_prevista_str,
                                                                              '%Y-%m-%d %H:%M')
-                    prazo_atendida_dias_previsto = 4
+                    #prazo_atendida_dias_previsto = 4
+                    prazo_atendida_dias_previsto = obj_req_atendida_busca.cod_dia_calendario.qtd_dias_data_prevista_req_ne
                 req.data_atendida_prevista = data_time_atendida_prevista_datetime
 
                 obj_req_atendida_busca.status_ordem = req.status_ordem

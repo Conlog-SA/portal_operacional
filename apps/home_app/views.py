@@ -43,7 +43,7 @@ class Index_View(View):
             metodo_verifica_existe_cad_usu = Usuario_View().verifica_usu_existe(usu_form)
             usu_existe = metodo_verifica_existe_cad_usu[0]
             obj_usuario = metodo_verifica_existe_cad_usu[1]
-            '''Atualiza o stats do usuário conforme o AD'''
+            '''Atualiza o status do usuário conforme o AD'''
             if obj_usuario != None:
                 obj_usuario.status_usu = obj_usu_ad['status']
                 obj_usuario.save()
