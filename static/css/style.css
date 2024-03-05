@@ -199,3 +199,15 @@ table{
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
 }
+
+
+.nav-link {
+    color: #f46424 !important;
+    --bs-nav-link-hover-color: #ffffff !important;
+}
+
+
+.form-check-input:checked {
+    background-color: #f46424 !important;
+    border-color: #f46424 !important;
+}
