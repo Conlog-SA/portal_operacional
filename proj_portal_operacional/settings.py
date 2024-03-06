@@ -77,7 +77,8 @@ INSTALLED_APPS = [
     'apps.safety_checks_aplicados_app',
     'apps.safety_gab_op_emp_app',
     'apps.phishing_app',
-    'apps.safety_relatos_app'
+    'apps.safety_relatos_app',
+    'apps.ndd_web_app',
 ]
 
 MIDDLEWARE = [

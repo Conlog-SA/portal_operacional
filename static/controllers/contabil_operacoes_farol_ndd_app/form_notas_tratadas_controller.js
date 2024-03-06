@@ -88,8 +88,14 @@ $(document).on('change', 'input', function(){
     var valInput = $(this).attr('value');
 
     if ( nomeDoInput == 'txt_pesq_chave_nota') {
+        let let_tipo_doc = 0;
+        if ( $("#rd_cte").is(':checked') == true){
+            let_tipo_doc = 'cte';
+        } else if ( $("#rd_nota").is(':checked') == true){
+            let_tipo_doc = 'nota';
+        }
         var var_chave_nota = $(this).val();
-        povoa_tab_notas_pesq_proc_nfe('0', null, null, var_chave_nota);
+        povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, '0', null, null, var_chave_nota);
     }
 });
 
@@ -99,10 +105,16 @@ $(document).on('click','button', function(){
     var valButton = $(this).attr('value');
 
     if ( nomeDoButton == 'btn_pesq_nota') {
-        var var_num_nota = $("#txt_pesq_numero_nota").val();
-        var var_data_ini = $("#txt_data_ini_emissao_nota").val();
-        var var_data_fim = $("#txt_data_fim_emissao_nota").val();
-        povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim, 0);
+        let let_tipo_doc = 0;
+        if ( $("#rd_cte").is(':checked') == true){
+            let_tipo_doc = 'cte';
+        } else if ( $("#rd_nota").is(':checked') == true){
+            let_tipo_doc = 'nota';
+        }
+        let let_num_nota = $("#txt_pesq_numero_nota").val();
+        let let_data_ini = $("#txt_data_ini_emissao_nota").val();
+        let let_data_fim = $("#txt_data_fim_emissao_nota").val();
+        povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, let_num_nota, let_data_ini, let_data_fim, 0);
     }
     else if ( nomeDoButton == 'btn_add_excecao' ) {
         var var_desc_operacao_excecao = $("#cb_operacoes").val().toString();
@@ -234,10 +246,16 @@ $(document).on('click','button', function(){
 
                 $("#txt_area_justificativa_nota_tratada").val();
                 $("#modal_add_justificativa_nota_tratada").hide();
-                var var_num_nota = $("#txt_pesq_numero_nota").val();
-                var var_data_ini = $("#txt_data_ini_emissao_nota").val();
-                var var_data_fim = $("#txt_data_fim_emissao_nota").val();
-                povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim, 0);
+                let let_tipo_doc = 0;
+                if ( $("#rd_cte").is(':checked') == true){
+                    let_tipo_doc = 'cte';
+                } else if ( $("#rd_nota").is(':checked') == true){
+                    let_tipo_doc = 'nota';
+                }
+                let let_num_nota = $("#txt_pesq_numero_nota").val();
+                let let_data_ini = $("#txt_data_ini_emissao_nota").val();
+                let let_data_fim = $("#txt_data_fim_emissao_nota").val();
+                povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, let_num_nota, let_data_ini, let_data_fim, 0);
             },
             error: function(request, status, error){
                 $.gritter.add({
@@ -276,10 +294,17 @@ $(document).on('click','button', function(){
                 });
 
                 $("#modal_confirma_exclusao_justificativa").hide();
-                var var_num_nota = $("#txt_pesq_numero_nota").val();
-                var var_data_ini = $("#txt_data_ini_emissao_nota").val();
-                var var_data_fim = $("#txt_data_fim_emissao_nota").val();
-                povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim, 0);
+
+                let let_tipo_doc = 0;
+                if ( $("#rd_cte").is(':checked') == true){
+                    let_tipo_doc = 'cte';
+                } else if ( $("#rd_nota").is(':checked') == true){
+                    let_tipo_doc = 'nota';
+                }
+                let let_num_nota = $("#txt_pesq_numero_nota").val();
+                let let_data_ini = $("#txt_data_ini_emissao_nota").val();
+                let let_data_fim = $("#txt_data_fim_emissao_nota").val();
+                povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, let_num_nota, let_data_ini, let_data_fim, 0);
             },
             error: function(request, status, error){
                 $.gritter.add({
@@ -306,17 +331,18 @@ function atualiza_cd_operacoes(lista_operacoes){
 
 }
 
-function povoa_tab_notas_pesq_proc_nfe(var_num_nota, var_data_ini, var_data_fim, var_chave_nota){
+function povoa_tab_notas_pesq_proc_nfe(tipo_doc, num_nota, data_ini, data_fim, chave_nota){
     let let_loader_frm_op_ndd = document.getElementById("loader_frm_op_ndd");
     let_loader_frm_op_ndd.style.display = "flex";
     $.ajax({
         type: 'GET',
         url: '/contabil_operacoes_farol_ndd_app/pesc_nota_proc_nfe',
         data: {
-            'num_nota'      :   var_num_nota,
-            'data_ini'      :   var_data_ini,
-            'data_fim'      :   var_data_fim,
-            'chave_nota'    :   var_chave_nota
+            'tipo_doc'      :   tipo_doc,
+            'num_nota'      :   num_nota,
+            'data_ini'      :   data_ini,
+            'data_fim'      :   data_fim,
+            'chave_nota'    :   chave_nota
         },
         dataType: 'json',
         success: function (data) {

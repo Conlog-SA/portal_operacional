@@ -6,6 +6,7 @@ from django.views import View
 
 from apps.benner_app.views import ConexaoBancoBenner
 from apps.contabil_operacoes_farol_ndd_app.models import Notas_Tratadas, Excecoes_Natureza_Operacao
+from apps.ndd_web_app.views import ConexaoBancoNddWeb
 from apps.usuario_app.models import Usuario
 
 
@@ -40,31 +41,41 @@ class Form_Registra_Notas_Tratadas_View(View):
 
 class Registra_Notas_Tratadas_View(View):
     def get(self, request):
+        tipo_doc_form = request.GET['tipo_doc']
         num_nota_form = request.GET['num_nota']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
         chave_nota_form = request.GET['chave_nota']
         lista_notas_validadas = []
-        if num_nota_form != '0':
-            lista_notas = ConexaoBancoBenner()\
-                .retorna_dados_nota_proc_nfe(num_nota_form, data_ini_form, data_fim_form, 0)
-        else:
-            lista_notas = ConexaoBancoBenner().retorna_dados_nota_proc_nfe(0, None, None, chave_nota_form)
-        for nota in lista_notas:
-            nota_tratada = Notas_Tratadas.objects.filter(chave_nota=nota['chave_nota']).first()
-            nota['tratada'] = 'N'
-            if nota_tratada != None:
-                nota['tratada'] = 'S'
-                nota['justificativa'] = nota_tratada.justificativa
-                nota['cod_nota_tratada'] = nota_tratada.cod_nota_tratada
-            lista_notas_validadas.append(nota)
-
-
+        if tipo_doc_form == 'nota':
+            if num_nota_form != '0':
+                lista_notas = ConexaoBancoBenner()\
+                    .retorna_dados_nota_proc_nfe(num_nota_form, data_ini_form, data_fim_form, 0)
+            else:
+                lista_notas = ConexaoBancoBenner().retorna_dados_nota_proc_nfe(0, None, None, chave_nota_form)
+            for nota in lista_notas:
+                nota_tratada = Notas_Tratadas.objects.filter(chave_nota=nota['chave_nota']).first()
+                nota['tratada'] = 'N'
+                if nota_tratada != None:
+                    nota['tratada'] = 'S'
+                    nota['justificativa'] = nota_tratada.justificativa
+                    nota['cod_nota_tratada'] = nota_tratada.cod_nota_tratada
+                lista_notas_validadas.append(nota)
+        elif tipo_doc_form == 'cte':
+            lista_ctes = ConexaoBancoNddWeb().retorna_ctes(num_nota_form, data_ini_form, data_fim_form, chave_nota_form)
+            for cte in lista_ctes:
+                cte_tratada = Notas_Tratadas.objects.filter(chave_nota=cte['chave_nota']).first()
+                cte['tratada'] = 'N'
+                if cte_tratada != None:
+                    cte['tratada'] = 'S'
+                    cte['justificativa'] = cte_tratada.justificativa
+                    cte['cod_nota_tratada'] = cte_tratada.cod_nota_tratada
+                lista_notas_validadas.append(cte)
 
         dados = dict()
         dados = {
             'lista_notas_validadas': lista_notas_validadas,
-            'msg': 'Foi localizado, ' + str(len(lista_notas))
+            'msg': 'Foi localizado, ' + str(len(lista_notas_validadas))
         }
         return JsonResponse(dados, safe=False)
 

@@ -1,3 +1,4 @@
+import json
 import os
 import random
 
@@ -1118,67 +1119,71 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
     def post(self, request):
-        cod_contrato_form = request.POST['cod_contrato']
-        tipo_prazo_form = request.POST['tipo_prazo']
-        cod_status_form = request.POST['cod_status']
-        obs_status_form = request.POST['obs_status']
-        competencia_form = request.POST['competencia']
-        val_composicao_form = request.POST['val_composicao']
-        val_balancete_form = request.POST['val_balancete']
-        val_diferenca_form = request.POST['val_diferenca']
+        dados_json_ajax = json.loads(request.body)
+        lista_registros_contas = dados_json_ajax['let_lista_registros_json']
 
-        competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
-        data_hora_atual = datetime.now()
-        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+        for reg in lista_registros_contas:
+            cod_contrato_form = reg['cod_contrato']
+            tipo_prazo_form = reg['tipo_prazo']
+            cod_status_form = reg['cod_status']
+            obs_status_form = reg['obs_status']
+            competencia_form = reg['competencia']
+            val_composicao_form = reg['val_composicao']
+            val_balancete_form = reg['val_balancete']
+            val_diferenca_form = reg['val_diferenca']
 
-        cod_usuario_sessao = request.session['cod_usuario_logado']
-        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+            competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
+            data_hora_atual = datetime.now()
+            data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
 
-        obj_status_competencia = None
-        obj_contrato = None
-        obj_conta = None
-        if tipo_prazo_form == 'm1':
-            obj_conta = Conta.objects.get(pk=cod_contrato_form)
-            obj_status_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
-                cod_conta=obj_conta, data_competencia=competencia_date, tipo_prazo=tipo_prazo_form,
-                cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
-            ).first()
-        else:
-            obj_contrato = Contrato.objects.get(pk=cod_contrato_form)
-            obj_conta = obj_contrato.cod_conta
-            obj_status_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
-                cod_contrato=obj_contrato, data_competencia=competencia_date, tipo_prazo=tipo_prazo_form,
-                cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
-            ).first()
+            cod_usuario_sessao = request.session['cod_usuario_logado']
+            obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
-        val_comp_dec = decimal.Decimal(val_composicao_form)
-        val_bal_dec = decimal.Decimal(val_balancete_form)
-        val_dif_dec  = decimal.Decimal(val_diferenca_form)
+            obj_status_competencia = None
+            obj_contrato = None
+            obj_conta = None
+            if tipo_prazo_form == 'm1':
+                obj_conta = Conta.objects.get(pk=cod_contrato_form)
+                obj_status_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
+                    cod_conta=obj_conta, data_competencia=competencia_date, tipo_prazo=tipo_prazo_form,
+                    cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+                ).first()
+            else:
+                obj_contrato = Contrato.objects.get(pk=cod_contrato_form)
+                obj_conta = obj_contrato.cod_conta
+                obj_status_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
+                    cod_contrato=obj_contrato, data_competencia=competencia_date, tipo_prazo=tipo_prazo_form,
+                    cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+                ).first()
+
+            val_comp_dec = decimal.Decimal(val_composicao_form)
+            val_bal_dec = decimal.Decimal(val_balancete_form)
+            val_dif_dec  = decimal.Decimal(val_diferenca_form)
 
 
-        if obj_status_competencia != None:
-            obj_status_competencia.status = cod_status_form
-            obj_status_competencia.data_lan_auditoria = data_hora_atual
-            obj_status_competencia.data_competencia = competencia_date
-            obj_status_competencia.obs_status = obs_status_form.strip()
-            obj_status_competencia.val_composicao = val_comp_dec
-            obj_status_competencia.val_balancete = val_bal_dec
-            obj_status_competencia.val_diferenca = val_dif_dec
-            obj_status_competencia.cod_usu = obj_usuario_sessao
-            obj_status_competencia.save()
-        else:
-            obj_status_competencia = Auditoria_Status_Composicao_Competencia(
-                status = cod_status_form,
-                tipo_prazo = tipo_prazo_form,
-                data_competencia = competencia_date,
-                val_composicao = val_comp_dec,
-                val_balancete = val_bal_dec ,
-                val_diferenca = val_dif_dec,
-                obs_status = obs_status_form.strip(),
-                cod_usu = obj_usuario_sessao,
-                cod_contrato = obj_contrato,
-                cod_conta= obj_conta
-            ).save()
+            if obj_status_competencia != None:
+                obj_status_competencia.status = cod_status_form
+                obj_status_competencia.data_lan_auditoria = data_hora_atual
+                obj_status_competencia.data_competencia = competencia_date
+                obj_status_competencia.obs_status = obs_status_form.strip()
+                obj_status_competencia.val_composicao = val_comp_dec
+                obj_status_competencia.val_balancete = val_bal_dec
+                obj_status_competencia.val_diferenca = val_dif_dec
+                obj_status_competencia.cod_usu = obj_usuario_sessao
+                obj_status_competencia.save()
+            else:
+                obj_status_competencia = Auditoria_Status_Composicao_Competencia(
+                    status = cod_status_form,
+                    tipo_prazo = tipo_prazo_form,
+                    data_competencia = competencia_date,
+                    val_composicao = val_comp_dec,
+                    val_balancete = val_bal_dec ,
+                    val_diferenca = val_dif_dec,
+                    obs_status = obs_status_form.strip(),
+                    cod_usu = obj_usuario_sessao,
+                    cod_contrato = obj_contrato,
+                    cod_conta= obj_conta
+                ).save()
 
         data = dict()
         data = {

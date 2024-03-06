@@ -31,7 +31,7 @@
                 <div class="d-flex flex-column w-100">
                     <fieldset>
                         <legend style="font-size: 1.05rem;">Modelo</legend>
-                        <div class="form-check-inline">
+                        <div class="form-check-inline" style="font-size: 1.25rem;">
                             <label class="form-check-label">
                                 <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
                                    id="rd_modelo_conta_conc_comp_benner_1">
@@ -39,7 +39,7 @@
                             </label>
                         </div>
 
-                        <div class="form-check-inline">
+                        <div class="form-check-inline" style="font-size: 1.25rem;">
                             <label class="form-check-label">
                                 <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
                                    id="rd_modelo_conta_conc_comp_benner_2">
@@ -47,7 +47,7 @@
                             </label>
                         </div>
 
-                        <div class="form-check-inline">
+                        <div class="form-check-inline" style="font-size: 1.25rem;">
                             <label class="form-check-label">
                                 <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
                                    id="rd_modelo_conta_conc_comp_benner_3">
@@ -134,6 +134,52 @@
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span>Gerar</span>
                     </button>
+                </div>
+            </div>
+
+            <div class="d-flex align-items-start w-100">
+                *Pesquise e selecione as contas a baixo para registro em lote.
+            </div>
+
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex w-100"
+                         style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1); padding: 0.5rem;">
+
+                        <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                            <div class="d-flex flex-column w-100 align-items-start" style="padding: 0.25rem;">
+                                <label for="sl_status_conciliacao_lote_contas" style="font-size: 10px">Status composição</label>
+                                <select class="form-select form-select-sm" id="sl_status_conciliacao_lote_contas"
+                                        name="sl_status_conciliacao_lote_contas">
+                                        <option value="0">Selecione o status</option>
+                                        <option value="1">OK</option>
+                                        <option value="2">Com diferença</option>
+                                        <option value="3">Falta analisar</option>
+                                        <option value="4">Falta compor</option>
+                                </select>
+                            </div>
+                            <div class="d-flex flex-column w-100 align-items-start" style="padding: 0.25rem;">
+                                <label for="ta_obs_status_conciliacao_lote_contas" style="font-size: 10px">Justificativa</label>
+                                <input type="text" class="form-control" id="ta_obs_status_conciliacao_lote_contas"
+                                        style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
+                                        name="ta_obs_status_conciliacao_lote_contas"
+                                        autocomplete="off" placeholder="Observação" rows="3">
+                            </div>
+                            <div class="d-flex flex-column w-100" style="padding: 0.25rem; margin-top: 0.9rem;">
+                                <button type='button' id="btn_confirma_status_lote_contas"
+                                        name="btn_confirma_status_lote_contas"
+                                        class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
+                                        style="font-size: 10px">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <span>Confirmar Status</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
                 </div>
             </div>
 

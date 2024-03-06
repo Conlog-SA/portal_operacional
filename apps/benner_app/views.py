@@ -1212,7 +1212,7 @@ class ConexaoBancoBenner():
                   FROM	K_Conlog_ProcNFe nota
                   LEFT	JOIN FILIAIS fil
                     ON	((REPLACE(REPLACE(REPLACE(fil.CGC,'.',''),'-',''),'/','')) = nota.dest_cnpj)            
-                 WHERE	nota.dhEmi BETWEEN '{data_ini}'	AND	'{data_fim}'
+                 WHERE	CAST(nota.dhEmi AS DATE) BETWEEN '{data_ini}'	AND	'{data_fim}'
                         {param_num_nota}
 
                 '''

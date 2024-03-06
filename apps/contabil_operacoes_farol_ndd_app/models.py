@@ -18,6 +18,7 @@ class Notas_Tratadas(models.Model):
     nome_fornec = models.CharField(max_length=60, null=True, blank=False)
     justificativa = models.CharField(max_length=300, null=False, blank=False)
     data_registro = models.DateField(auto_now_add=True)
+    tipo_doc = models.CharField(max_length=1, null=True, blank=True, default='N')
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=False, blank=False)
     class Meta():
         managed = True

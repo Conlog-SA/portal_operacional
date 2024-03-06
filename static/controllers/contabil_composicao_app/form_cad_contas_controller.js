@@ -1010,20 +1010,27 @@ $(document).on('click','button', function(){
         let let_val_balancete = $("#txt_val_balancete_"+let_tipo_prazo+'_'+let_cod_contrato).val().replaceAll('.','').replaceAll(',','.');
         let let_val_diferenca = $("#txt_val_diferenca_"+let_tipo_prazo+'_'+let_cod_contrato).val().replaceAll('.','').replaceAll(',','.');
 
+        let let_lista_registros = [];
+        let let_reg = {
+            'cod_contrato'  :   let_cod_contrato,
+            'tipo_prazo'    :   let_tipo_prazo,
+            'cod_status'    :   let_cod_status,
+            'obs_status'    :   let_obs_status,
+            'competencia'   :   let_competencia,
+            'val_composicao':   let_val_composicao,
+            'val_balancete' :   let_val_balancete,
+            'val_diferenca' :   let_val_diferenca
+        };
+        let_lista_registros.push(let_reg);
+
         let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+        let_loader_gera_comp_det.style.display = "flex";
         $.ajax({
             type: 'POST',
             url: '/contabil_composicao_app/registra_status_composicao_conta',
-            data: {
-                'cod_contrato': let_cod_contrato,
-                'tipo_prazo': let_tipo_prazo,
-                'cod_status': let_cod_status,
-                'obs_status': let_obs_status,
-                'competencia': let_competencia,
-                'val_composicao' : let_val_composicao,
-                'val_balancete' : let_val_balancete,
-                'val_diferenca' : let_val_diferenca
-            },
+            data: JSON.stringify({
+                let_lista_registros_json : let_lista_registros,
+            }),
             dataType: 'json',
             success: function (dados) {
                 //gera_conciliacao_comp_benner_detalhado();
@@ -1417,6 +1424,62 @@ $(document).on('click','button', function(){
     else if (let_nome_btn == 'btn_marcar_resp_contas'){
         $("#cb_responsaveis_contas").selectpicker('selectAll');
     }
+    else if (let_nome_btn == 'btn_confirma_status_lote_contas'){
+        let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+        let let_lista_contas = [];
+        let_cheks_selecionados.forEach(function(checkbox) {
+
+            let let_conta = {
+                'cod_contrato'      :   checkbox.value.split('_')[1],
+                'tipo_prazo'        :   checkbox.value.split('_')[0],
+                'cod_status'        :   $("#sl_status_conciliacao_lote_contas").val(),
+                'obs_status'        :   $("#ta_obs_status_conciliacao_lote_contas").val(),
+                'competencia'       :   $("#dt_conciliacao_comp_benner").val(),
+                'val_composicao'    :   $("#txt_val_composicao_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                'val_balancete'     :   $("#txt_val_balancete_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                'val_diferenca'     :   $("#txt_val_diferenca_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.')
+            };
+            let_lista_contas.push(let_conta);
+        });
+        let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+        let_loader_gera_comp_det.style.display = "flex";
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/registra_status_composicao_conta',
+            data: JSON.stringify({
+                let_lista_registros_json : let_lista_contas,
+            }),
+            dataType: 'json',
+            success: function (dados) {
+                //gera_conciliacao_comp_benner_detalhado();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let_loader_gera_comp_det.style.display = "none";
+            },
+            error: function (request, status, error) {
+                let_loader_gera_comp_det.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+
+
+
+
+
+
+    }
 
 });
 
@@ -1619,13 +1682,15 @@ $(document).on('change','input', function(){
                 let_cod_modelo_conta = 1;
 
                 let_colunas_tabela_detalhado = [
+                    'Ação',
+                    'Status',
                     'Estrutura',
                     'Cód red',
                     'Conta',
                     'Composição',
                     'Balancete',
                     'Diferenca',
-                    'Status',
+                    /*'Status',*/
                     'Detalhes',
                     'Documento'
                 ];
@@ -1650,6 +1715,8 @@ $(document).on('change','input', function(){
                 let_cod_modelo_conta = 3;
 
                 let_colunas_tabela_detalhado = [
+                    'Ação',
+                    'Status',
                     'Estrutura',
                     'Cód red',
                     'Conta',
@@ -1659,7 +1726,7 @@ $(document).on('change','input', function(){
                     'Composição',
                     'Balancete',
                     'Diferenca',
-                    'Status',
+                    /*'Status',*/
                     'Detalhes',
                     'Documento'
                 ];
@@ -2978,6 +3045,11 @@ function gera_conciliacao_comp_benner_detalhado(){
                             option_4 = 'selected="selected"';
                             let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
                         }
+
+                        let let_input_check = `
+                            <input type="checkbox" id="ck_conta_comp_det_${data.lista_contas_conciliacao[i][0]}"
+                                name="ck_conta_comp_det" value="m1_${data.lista_contas_conciliacao[i][0]}">
+                        `;
                         let let_btn_detalhes_conta = `
                             <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
                                     name="btn_detalhes_conta"
@@ -3000,7 +3072,7 @@ function gera_conciliacao_comp_benner_detalhado(){
                                 </button>
                             `;
                         }
-
+                        /*
                         let_btn_status = `
                             <div class="btn-group dropleft" >
                               <button type="button" class="btn btn-rounded btn-space"
@@ -3049,21 +3121,30 @@ function gera_conciliacao_comp_benner_detalhado(){
                               </div>
                             </div>
                         `;
+                        */
 
                         let_reg = [
-                            /* 0 - cod_estrutura */let_img_btn_status + ' ' + data.lista_contas_conciliacao[i][2],
-                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
-                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
-                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
-                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
-                            /* 8 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
-                            /* 9 */let_btn_status,
-                            /* 10 */let_btn_detalhes_conta,
-                            /* 11 */let_btn_visualiza_doc
+                            /* 0 */ let_input_check,
+                            /* 1 */ let_img_btn_status,
+                            /* 2 - cod_estrutura */ data.lista_contas_conciliacao[i][2],
+                            /* 3 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 4 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 5 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
+                            /* 6 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
+                            /* 7 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
+                            /* 8 let_btn_status, */
+                            /* 9 */let_btn_detalhes_conta,
+                            /* 10 */let_btn_visualiza_doc
                         ];
                         let_lista_dados.push(let_reg);
                     }
                     else if( cod_modelo_selecionado == 3 ) {
+                        let let_input_check = `
+                            <input type="checkbox"
+                                   id="ck_conta_comp_det_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
+                                   name="ck_conta_comp_det"
+                                   value="${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}">
+                        `;
 
                         if(data.lista_contas_conciliacao[i][11] == 0) { //cod_status_auditoria_comp
                             option_0 = `selected="selected"`;
@@ -3108,7 +3189,7 @@ function gera_conciliacao_comp_benner_detalhado(){
                                 </button>
                             `;
                         }
-
+                        /*
                         let_btn_status = `
                             <div class="btn-group dropleft" >
                               <button type="button" class="btn btn-rounded btn-space"
@@ -3158,26 +3239,29 @@ function gera_conciliacao_comp_benner_detalhado(){
                               </div>
                             </div>
                         `;
+                        */
 
                         let_reg = [
-                            /* 0 - cod_estrutura */let_img_btn_status + '&nbsp;&nbsp;&nbsp;&nbsp;' + data.lista_contas_conciliacao[i][2],
-                            /* 1 - cod_red */ data.lista_contas_conciliacao[i][1],
-                            /* 2 - desc_conta */ data.lista_contas_conciliacao[i][3],
-                            /* 3 - num_contrato */ data.lista_contas_conciliacao[i][5] ,
-                            /* 4 - doc_contabil */ data.lista_contas_conciliacao[i][6],
-                            /* 5 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
-                            /* 6 - val_comp */ data.lista_contas_conciliacao[i][7] +
+                            /* 0 */ let_input_check,
+                            /* 1 */ let_img_btn_status,
+                            /* 2 - cod_estrutura */ data.lista_contas_conciliacao[i][2],
+                            /* 3 - cod_red */ data.lista_contas_conciliacao[i][1],
+                            /* 4 - desc_conta */ data.lista_contas_conciliacao[i][3],
+                            /* 5 - num_contrato */ data.lista_contas_conciliacao[i][5] ,
+                            /* 6 - doc_contabil */ data.lista_contas_conciliacao[i][6],
+                            /* 7 - tipo_prazo */ data.lista_contas_conciliacao[i][10],
+                            /* 8 - val_comp */ data.lista_contas_conciliacao[i][7] +
                                 `<input type="hidden" id="txt_val_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
                                 readonly value="${data.lista_contas_conciliacao[i][7]}" style="text-align: right;"/>`,
-                            /* 7 - val_balancete */ data.lista_contas_conciliacao[i][8]+
+                            /* 9 - val_balancete */ data.lista_contas_conciliacao[i][8]+
                                 `<input type="hidden" id="txt_val_balancete_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
                                 readonly value="${data.lista_contas_conciliacao[i][8]}" style="text-align: right;"/>`,
-                            /* 8 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden"
+                            /* 10 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden"
                                 id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
                                 readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
-                            /* 9 */let_btn_status,
-                            /* 10 */let_btn_detalhes_conta,
-                            /* 11 */let_btn_visualiza_doc
+                            /* 11 let_btn_status, */
+                            /* 12 */let_btn_detalhes_conta,
+                            /* 13 */let_btn_visualiza_doc
                         ];
                         let_lista_dados.push(let_reg);
                     }
