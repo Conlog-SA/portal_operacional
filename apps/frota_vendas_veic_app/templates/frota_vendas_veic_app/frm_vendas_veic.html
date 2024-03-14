@@ -1,0 +1,145 @@
+{% load static %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/faturamento_terceiros_app/faturamento_terceiros.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-truck-front fa-2xl" alt="Importar 2artd" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Venda Veículos</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+
+    <div class="containerApp">
+        <form id="frm_veic_venda" name="frm_veic_venda"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex flex-column align-items-start w-100">
+                    <label for="sl_tab_preco_veic">Tabela de preço</label>
+                    <select class="selectpicker form-control" id="sl_tab_preco_veic"
+                            name="sl_tab_preco_veic"
+                            data-live-search="true"
+                            title="Selecione tabela de preços">
+                        {% for tab in lista_tab %}
+                            <option value="{{ tab.cod_tab_precos }}">{{tab.desc_tabela }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex align-items-start w-100">
+                    &nbsp;&nbsp;
+                </div>
+
+                <div class="d-flex align-items-start w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
+                <div class="d-flex align-items-end w-100">
+                    <div class="loader" id="loader_frm_vendas_veic">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100 cl_div_btn_pesq_mapas_terceiros">
+                    &nbsp;&nbsp;
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </form>
+        <!-- cl_div_tab_mapas_terceitos_2art -->
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-5">
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+            <!--  fatTerceiros__tabelaMapas -->
+            <table id="tab_veic_vendas"  class="display wrap w-100 cl_tab_principal_pagina" >
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">Placa</th>
+                        <th scope="col">Renavam</th>
+                        <th scope="col">Tipo</th>
+                        <th scope="col">Eixo</th>
+                        <th scope="col">Marca Benner</th>
+                        <th scope="col">Modelo Benner</th>
+                        <th scope="col">Ano</th>
+                        <th scope="col">Tipo Tab.</th>
+                        <th scope="col">Marca Tab.</th>
+                        <th scope="col">Modelo Tab</th>
+                        <th scope="col">Cód. Fipe</th>
+                        <th scope="col">Filial</th>
+                        <th scope="col">Status Benner</th>
+                        <th scope="col">NF venda</th>
+                        <th scope="col">Data venda</th>
+                        <th scope="col">R$ venda</th>
+                        <th scope="col">Período Pesq.</th>
+                        <th scope="col">R$ Fipe</th>
+                        <th scope="col">Atualizado em</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+
+            </table>
+
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+

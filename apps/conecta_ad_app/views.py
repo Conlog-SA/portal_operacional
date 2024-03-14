@@ -9,7 +9,7 @@ import json
 class Conexao_AD:
     ip_server = '172.16.40.2'
     user_adm = 'administrador'
-    senha_adm = 'rLmjqt@0004!'
+    senha_adm = 'dEvsnrqF@1689!'
     def __init__(self):
         server = Server(f'LDAP://{self.ip_server}', use_ssl=True)
         self.__conn = Connection(server, user=f'conlog\\{self.user_adm}', password=self.senha_adm, authentication=SIMPLE)

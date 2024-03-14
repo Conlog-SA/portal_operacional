@@ -1212,7 +1212,7 @@ $(document).on('click','button', function(){
             },
             dataType: 'json',
             success: function (dados) {
-                let let_lista_reg_table = []
+                let let_lista_reg_table = [];
                 dados.lista_parcelas_atualizados.forEach( parc => {
                     let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
                     let reg = [

@@ -75,14 +75,12 @@ class Form_Gerar_Pag_2Art_View(View):
             obj_cad_frete_terc = None
             if obj_cad_placa_terc is not None:
                 obj_reg_2art_ter_financ.cod_cad_placa_terc = obj_cad_placa_terc
-                obj_cad_frete_terc = CadFreteSpot.objects.filter(cod_projeto=obj_reg_2art_ter_financ.cod_projeto,
+                obj_cad_frete_terc = (CadFreteSpot.objects.filter(cod_projeto=obj_reg_2art_ter_financ.cod_projeto,
                                                                  tipo_perfil_veiculo=obj_reg_2art_ter_financ.cod_reg_2art.nomespot,
                                                                  cod_regiao=obj_reg_2art_ter_financ.regiaospot_2art_terc_financ,
-                                                                 tipo_entrega=obj_reg_2art_ter_financ.entrega_2art_terc_financ,
-                                                                 tipo_pessoa=obj_cad_placa_terc.cod_benef_terc.tipo_pessoa_benef_terc, ) \
-                    .extra(where=[
-                    "'" + str(
-                        obj_reg_2art_ter_financ.data_2art_terc_financ) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                                                                 tipo_entrega=obj_reg_2art_ter_financ.entrega_2art_terc_financ, )
+                                      .extra(where=["'" + str(obj_reg_2art_ter_financ.data_2art_terc_financ) +
+                                                    "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
                 if obj_cad_frete_terc is not None:
                     obj_reg_2art_ter_financ.cod_cad_frete_spot = obj_cad_frete_terc
                 else:
@@ -262,14 +260,12 @@ class Btn_Form_Gerar_Pag_2Art_View(View):
                 obj_cad_frete_terc = None
                 if obj_cad_placa_terc is not None:
                     reg.cod_cad_placa_terc = obj_cad_placa_terc
-                    obj_cad_frete_terc = CadFreteSpot.objects.filter(cod_projeto=reg.cod_projeto,
+                    obj_cad_frete_terc = (CadFreteSpot.objects.filter(cod_projeto=reg.cod_projeto,
                                                                      tipo_perfil_veiculo=reg.nomespot_2art_terc_financ,
                                                                      cod_regiao=reg.regiaospot_2art_terc_financ,
-                                                                     tipo_entrega=reg.entrega_2art_terc_financ,
-                                                                     tipo_pessoa=obj_cad_placa_terc.cod_benef_terc.tipo_pessoa_benef_terc, ) \
-                        .extra(where=[
-                        "'" + str(
-                            reg.data_2art_terc_financ) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                                                                     tipo_entrega=reg.entrega_2art_terc_financ, )
+                                          .extra(where=["'" + str(reg.data_2art_terc_financ) +
+                                                        "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
                     if obj_cad_frete_terc is not None:
                         reg.cod_cad_frete_spot = obj_cad_frete_terc
                 reg.save()
@@ -291,15 +287,13 @@ class Btn_Form_Gerar_Pag_2Art_View(View):
             for reg in lista_mapas_filial_periodo:
                 obj_cad_frete_terc = None
                 if reg.cod_cad_placa_terc is not None:
-                    obj_cad_frete_terc = CadFreteSpot.objects\
+                    obj_cad_frete_terc = (CadFreteSpot.objects\
                         .filter(cod_projeto=reg.cod_projeto,
                                 tipo_perfil_veiculo=reg.nomespot_2art_terc_financ,
                                 cod_regiao=reg.regiaospot_2art_terc_financ,
-                                tipo_entrega=reg.entrega_2art_terc_financ,
-                                tipo_pessoa=reg.cod_cad_placa_terc.cod_benef_terc.tipo_pessoa_benef_terc, ) \
-                        .extra(where=[
-                        "'" + str(
-                            reg.data_2art_terc_financ) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                                tipo_entrega=reg.entrega_2art_terc_financ,)
+                        .extra(where=["'" + str(reg.data_2art_terc_financ) +
+                                      "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
                     if obj_cad_frete_terc is not None:
                         reg.cod_cad_frete_spot = obj_cad_frete_terc
                 reg.save()
@@ -1091,18 +1085,16 @@ class Form_Replica_Cad_Frete_2Art_Terc_View(View):
                                                                data_fim_vigencia=data_vigencia_origem_fim)
         count_reg_replicados = 0
         for reg in registros_cad_frete_terc:
-            verifica_reg_cadastrado = CadFreteSpot.objects.filter(cod_projeto=reg.cod_projeto,
+            verifica_reg_cadastrado = (CadFreteSpot.objects.filter(cod_projeto=reg.cod_projeto,
                                                                   tipo_entrega=reg.tipo_entrega,
                                                                   tipo_perfil_veiculo=reg.tipo_perfil_veiculo,
                                                                   cod_regiao=reg.cod_regiao,
                                                                   qtd_min=reg.qtd_min,
-                                                                  qtd_max=reg.qtd_max,
-                                                                  tipo_pessoa=reg.tipo_pessoa) \
-                .extra(
-                where=[
-                    " '" + str(data_ini_vigencia_YYYY_MM_DD) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia OR " +
-                    " '" + str(
-                        data_fim_vigencia_YYYY_MM_DD) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                                                                  qtd_max=reg.qtd_max)
+                                       .extra(where=[" '" + str(data_ini_vigencia_YYYY_MM_DD) +
+                                                     "' BETWEEN data_ini_vigencia AND data_fim_vigencia OR " +
+                                                     " '" + str(data_fim_vigencia_YYYY_MM_DD) +
+                                                     "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
             if verifica_reg_cadastrado == None:
                 reg_cad_frete = CadFreteSpot(
                     cod_projeto=projeto,

@@ -1466,6 +1466,10 @@ function monta_tabela_imp_pac_m1(cod_pacote){
 
 
 function atualiza_comp_contas_form_imp_docs_pac_m1(cod_pacote){
+    $("#txt_val_rel").val("0,00");
+    $("#txt_val_balancete").val("0,00");
+    $("#txt_val_dif").val("0,00");
+    $("#div_resumo_conta_comp").html("");
     let let_loader_frm_imp_arq_pac_m1 = document.getElementById("loader_frm_imp_arq_pac_m1");
     let_loader_frm_imp_arq_pac_m1.style.display = "flex";
     $.ajax({
@@ -1532,10 +1536,31 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                 let let_resumo_docs = ``;
                 dados.resumo_docs.forEach( resumo => {
                     let_resumo_docs = `
-                        <b>Qtd.: Registros:</b>&nbsp;${resumo.qtd_registros}&nbsp;&nbsp;<b>Val. Relatório(R$):</b>&nbsp;${resumo.tt_val_rel}&nbsp;&nbsp;<b>Val. Razão(R$):</b>&nbsp;${resumo.tt_val_razao}&nbsp;&nbsp;<b>Dif.(R$):</b>&nbsp;${resumo.tt_dif}&nbsp;&nbsp;
+                        <label for="txt_val_rel">R$ Rel.
+                        <input class="form-control" id="txt_val_rel" style="text-align: right;margin" value="${resumo.tt_val_rel}" readonly/>
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="txt_val_balancete">R$ Balancete
+                        <input class="form-control" id="txt_val_balancete" style="text-align: right;" value="${resumo.val_balancete}" readonly/>
+                        </label>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                        <label for="txt_val_dif">R$ Dif.
+                        <input class="form-control" id="txt_val_dif" style="text-align: right;" value="${resumo.val_dif_comp_bal}" readonly/>
+                        </label>
+
                     `;
                 });
                 $("#div_resumo_conta_comp").html(let_resumo_docs);
+
+                /*
+                <b>Qtd.: Registros:</b>&nbsp;<span style="font-size: 20px;">${resumo.qtd_registros}</span>
+                        &nbsp;&nbsp;<b>Val. Relatório(R$):</b>&nbsp;<span style="font-size: 20px;">${resumo.tt_val_rel}
+                        </span>&nbsp;&nbsp;<b>Val. Razão(R$):</b>&nbsp;<span style="font-size: 20px;">
+                        ${resumo.tt_val_razao}</span>&nbsp;&nbsp;<b>Dif.(R$):</b>&nbsp;<span style="font-size: 20px;">
+                        ${resumo.tt_dif}</span>&nbsp;&nbsp;<b>Balancete(R$):</b>&nbsp;<span style="font-size: 20px;">
+                        ${resumo.val_balancete}</span>&nbsp;&nbsp;<b>Dif. Comp. x Bal.(R$):</b>&nbsp;
+                        <span style="font-size: 20px;">${resumo.val_dif_comp_bal}</span>
+                        */
 
 
                 $("#div_campo_pesq_dados_pac_4").html();
