@@ -1323,11 +1323,11 @@ $(document).on('click','button', function(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": "770px",
+                    "scrollY": false,//"770px",
                     "scrollX": true,
                     "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 7,
+                    "paging": false,
+                    //"pageLength": 7,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
@@ -3275,7 +3275,7 @@ function gera_conciliacao_comp_benner_detalhado(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": '770px', //770px "100vh"
+                    "scrollY": false, //770px "100vh"
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": false,
