@@ -6,6 +6,7 @@ import decimal
 import shutil
 import traceback
 
+from _decimal import getcontext, Context
 from django.db.models import Q, Count
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -2471,19 +2472,61 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     else:
                         data_entrada = row['Data Entrada']
 
+                decimal_places = 2
+                context = decimal.Context(prec=12)
+
+                val_depreciacao_acum = 0.00
+                if row['Depreciação Acumulada'] != None:
+                    val_depreciacao_acum = decimal.Decimal(row['Depreciação Acumulada'])
+                    val_depreciacao_acum = val_depreciacao_acum.quantize(decimal.Decimal(1).scaleb(-decimal_places),
+                                                                         context=context)
+
+                val_rel = 0.00
+                if row['Valor Relatório'] != None:
+                    val_rel = decimal.Decimal(row['Valor Relatório'])
+                    val_rel = val_rel.quantize(decimal.Decimal(1).scaleb(-decimal_places),
+                                                                         context=context)
+
+                val_razao = 0.00
+                if row['Valor Razão'] != None:
+                    val_razao = decimal.Decimal(row['Valor Razão'])
+                    val_razao = val_razao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=Context(prec=12))
+
+                val_aquisicao = 0.00
+                if row['Valor aquisição'] != None:
+                    val_aquisicao = decimal.Decimal(row['Valor aquisição'])
+                    val_aquisicao = val_aquisicao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+                val_liq = 0.00
+                if row['Valor Liquido'] != None:
+                    val_liq = decimal.Decimal(row['Valor Liquido'])
+                    val_liq = val_liq.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+                taxa_depreciacao = 0.00
+                if row['Taxa Depreciação'] != None:
+                    taxa_depreciacao = decimal.Decimal(row['Taxa Depreciação'])
+                    taxa_depreciacao = taxa_depreciacao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+
+
+                val_dif = 0.00
+                if row['Diferença'] != None:
+                    val_dif = decimal.Decimal(row['Diferença'])
+                    val_dif = val_dif.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
                 doc = Docs_Pac_Imobilizado_M1(
                     data_entrada=data_entrada,
                     plaqueta = row['Plaqueta'],
                     desc_imobilizado = row['Descrição Imobilizado'],
-                    val_aquisicao = row['Valor aquisição'],
+                    val_aquisicao = val_aquisicao,
                     num_doc = row['Nº Documento'],
                     nome_fornecedor = row['Nome Fornecedor'],
-                    depreciacao_acum = row['Depreciação Acumulada'],
-                    val_liq = row['Valor Liquido'],
-                    taxa_depreciacao = row['Taxa Depreciação'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
+                    depreciacao_acum = val_depreciacao_acum,
+                    val_liq = val_liq,
+                    taxa_depreciacao = taxa_depreciacao,
+                    val_rel = val_rel,
+                    val_razao = val_razao,
+                    val_dif = val_dif,
                     obs = row['Observação'],
                     cod_conta=Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
@@ -2551,14 +2594,13 @@ class Form_Imp_Arq_Contas_M1_View(View):
             msg = f'Erro ao importar arquivo. Contate o desenvolvedor. Erro: {erro}!'
             print(traceback_str)'''
 
-
-
-
         dados = dict()
         dados = {
             'msg': msg
         }
         return JsonResponse(dados, safe=False)
+
+
 
 class Form_Pesq_Arq_Contas_M1_View(View):
     def get(self, request):
