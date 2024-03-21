@@ -5,7 +5,8 @@ from django.shortcuts import render
 from django.views import View
 
 from apps.benner_app.views import ConexaoBancoBenner
-from apps.frota_vendas_veic_app.models import Tabela_Preco_Veic, Veiculo_Venda, Veiculo_Venda_Tab
+from apps.frota_vendas_veic_app.models import Tabela_Preco_Veic, Veiculo_Venda, Veiculo_Venda_Tab, Marca_Tabela_Fipe, \
+    Modelo_Tabela_Fipe
 
 
 # Create your views here.
@@ -19,10 +20,11 @@ class Form_Venda_Veic_View(View):
 
     def post(self, request):
         cod_tab_frm = request.POST['cod_tab']
+        mostra_veic_vendidos_frm = request.POST['mostra_veic_vendidos']
         data_hora_atual = datetime.now()
         obj_tab = Tabela_Preco_Veic.objects.get(pk=cod_tab_frm)
         lista_veic_vendas = []
-        lista_veic_vendas_benner = ConexaoBancoBenner().retorna_veiculos_proj_vendas()
+        lista_veic_vendas_benner = ConexaoBancoBenner().retorna_veiculos_proj_vendas(mostra_veic_vendidos_frm)
         for veic_benner in lista_veic_vendas_benner:
             obj_veic = Veiculo_Venda.objects.filter(handle_veic=veic_benner['handle_veic']).first()
             if obj_veic == None:
@@ -66,14 +68,16 @@ class Form_Venda_Veic_View(View):
                     cod_veic = obj_veic
                 )
                 obj_veic_venda_tab.save()
+
+
             locale.setlocale(locale.LC_MONETARY, 'pt-BR')
             val_venda = 0.00
             if obj_veic.val_venda != None:
-                val_venda = obj_veic.val_venda
+                val_venda = locale.currency(round(obj_veic.val_venda, 2), grouping=True, symbol=None)
 
             val_fipe = 0.00
             if obj_veic_venda_tab.val_comp != None:
-                val_fipe = obj_veic_venda_tab.val_comp
+                val_fipe = locale.currency(round(obj_veic_venda_tab.val_comp, 2), grouping=True, symbol=None)
 
             data_venda = ''
             if obj_veic.data_venda != None:
@@ -83,9 +87,7 @@ class Form_Venda_Veic_View(View):
             if obj_veic_venda_tab.competencia != None:
                 competencia = datetime.strftime(obj_veic_venda_tab.competencia, '%m-%Y')
 
-            data_hora_atualizacao = ''
-            if obj_veic_venda_tab.data_hora_atualizacao != None:
-                data_hora_atualizacao = datetime.strftime(data_hora_atual, '%Y-%m-%d %H:%m')
+
 
             veic_vendas = {
                 'placa': obj_veic.placa,
@@ -99,19 +101,41 @@ class Form_Venda_Veic_View(View):
                 'status_benner': obj_veic.status_ativo_benner,
                 'nf_venda': obj_veic.num_nf_venda,
                 'data_venda': data_venda,
-                'val_venda': locale.currency(val_venda, grouping=True, symbol=None),
+                'val_venda': val_venda,
                 'tipo_veic_tab': obj_veic_venda_tab.tipo_veic,
                 'marca_tab': obj_veic_venda_tab.marca,
                 'modelo_tab': obj_veic_venda_tab.modelo,
                 'codigo_veic_tab': obj_veic_venda_tab.codigo_veic_tab,
                 'periodo_pesq': competencia,
-                'val_fipe': locale.currency(val_fipe, grouping=True, symbol=None),
-                'atualizado_em': data_hora_atualizacao
+                'val_fipe': val_fipe
             }
             lista_veic_vendas.append((veic_vendas))
+
+
+        dic_marcas = []
+        lista_marcas = Marca_Tabela_Fipe.objects.all()
+        for marca in lista_marcas:
+            lista_modelos = Modelo_Tabela_Fipe.objects.filter(cod_marca_tab_fipe=marca)
+            dic_modelos = []
+            for modelo in lista_modelos:
+                mod = {
+                    'cod_modelo': modelo.cod_modelo_tab_fipe,
+                    'desc_modelo': modelo.desc_modelo,
+                    'cod_marca': modelo.cod_marca_tab_fipe.cod_marca_tab_fipe
+                }
+                dic_modelos.append(mod)
+            m = {
+                'cod_marca': marca.cod_marca_tab_fipe,
+                'desc_marca': marca.desc_marca,
+                'lista_modelos': dic_modelos
+            }
+            dic_marcas.append(m)
+
+
         data = dict()
         data = {
-            'lista_veic_vendas': lista_veic_vendas
+            'lista_veic_vendas': lista_veic_vendas,
+            'dic_marcas': dic_marcas
         }
         return JsonResponse(data, safe=False)
 

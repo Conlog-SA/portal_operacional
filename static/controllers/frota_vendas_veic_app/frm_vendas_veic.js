@@ -29,13 +29,33 @@ $.ajaxSetup({
 
 
 $(document).on('change', '#sl_tab_preco_veic', function(){
+    let let_cod_tab = $(this).val();
+    let let_mostra_veic_vendidos = 'N';
+    if($("#chk_veic_vendidos").prop('checked') == true){
+        let_mostra_veic_vendidos = 'S';
+    }
+    atualiza_tab_veic(let_cod_tab, let_mostra_veic_vendidos);
+});
+
+$(document).on('change', '#chk_veic_vendidos', function(){
+    let let_cod_tab = $("#sl_tab_preco_veic").val();
+    let let_mostra_veic_vendidos = 'N';
+    if($(this).prop('checked') == true){
+        let_mostra_veic_vendidos = 'S';
+    }
+    atualiza_tab_veic(let_cod_tab, let_mostra_veic_vendidos);
+});
+
+
+function atualiza_tab_veic(cod_tab, mostra_veic_vendidos){
     let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
     let_loader_frm_vendas_veic.style.display = "flex";
     $.ajax({
         type: 'POST',
         url: '/frota_vendas_veic_app/retorna_placas_benner_vincula_a_tabela_selecionada',
         data: {
-            'cod_tab'         :   $(this).val()
+            'cod_tab'               :   cod_tab,
+            'mostra_veic_vendidos'  :   mostra_veic_vendidos
         },
         dataType: 'json',
         success: function (dados) {
@@ -64,8 +84,7 @@ $(document).on('change', '#sl_tab_preco_veic', function(){
                     veic.data_venda,
                     veic.val_venda,
                     veic.periodo_pesq,
-                    veic.val_fipe,
-                    veic.atualizado_em
+                    veic.val_fipe
                 ];
                 let_lista_veic.push(let_veic);
 
@@ -103,8 +122,7 @@ $(document).on('change', '#sl_tab_preco_veic', function(){
                     { title: "Data venda" },
                     { title: "R$ venda" },
                     { title: "Período Pesq." },
-                    { title: "R$ Fipe" },
-                    { title: "Atualizado em" }
+                    { title: "R$ Fipe" }
                 ],
                 /*"columnDefs": [
                     {"className": "dt-center", "targets": [0,1,3,12,21,22,23,24,25,26,27]},
@@ -151,4 +169,4 @@ $(document).on('change', '#sl_tab_preco_veic', function(){
       }
     });
 
-});
+}

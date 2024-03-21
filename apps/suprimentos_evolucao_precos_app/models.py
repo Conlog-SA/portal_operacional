@@ -19,3 +19,12 @@ class Compra_Auditada(models.Model):
 
 
 
+class Justificativa_Compra(models.Model):
+    cod_justificativa_compra = models.AutoField(primary_key=True, editable=False, auto_created=True)
+    justificativa = models.CharField(max_length=300, null=True, blank=True)
+    eh_ativa = models.CharField(max_length=1, null=False, blank=False, default='S')
+    data_cad = models.DateField(auto_now_add=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)
+    class Meta():
+        managed=True
+        db_table = 'op_suprimentos_evolucao_preco_justificativas'

@@ -57,7 +57,6 @@ class Veiculo_Venda_Tab(models.Model):
     modelo = models.CharField(max_length=80, blank=True, null=True)
     ano = models.IntegerField(blank=True, null=True)
     codigo_veic_tab = models.CharField(max_length=10, blank=True, null=True)
-    data_hora_atualizacao = models.DateTimeField(null=True, blank=True, auto_now_add=True),
     competencia = models.DateField(null=True, blank=True)
     val_comp = models.DecimalField(max_digits=16, decimal_places=6, blank=True, null=True)
     cod_tab_precos = models.ForeignKey(Tabela_Preco_Veic, models.DO_NOTHING, db_column='cod_tab_precos')

@@ -39,6 +39,7 @@ urlpatterns = [
     path('phishing_app/', include('apps.phishing_app.urls')),
     path('safety_relatos_app/', include('apps.safety_relatos_app.urls')),
     path('frota_vendas_veic_app/', include('apps.frota_vendas_veic_app.urls')),
+    path('dre_app/', include('apps.dre_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

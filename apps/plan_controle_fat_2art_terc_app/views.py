@@ -657,10 +657,10 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
         return JsonResponse(data, safe=False)
 
     def post(self, request):
-        cod_registro_cad_placa_terc = request.GET.get('cod_registro_cad_placa_terc', None)
+        cod_registro_cad_placa_terc = request.POST['cod_registro_cad_placa_terc']
         qtd_mapas_vinculados = Registro2ArtTerceirosFinanceiro.objects.filter(
             cod_cad_placa_terc__cod_cad_placa_terc=cod_registro_cad_placa_terc,
-            cod_pag_2art_terc_financ__isnull=False).count()
+            cod_pag_2art_terc_financ__isnull=True).count()
 
         indica_exclusao = 'S'
         if qtd_mapas_vinculados > 0:

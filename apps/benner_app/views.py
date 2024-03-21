@@ -1493,12 +1493,18 @@ class ConexaoBancoBenner():
 
         return lista_parcelas_contrato_benner
 
-    def retorna_veiculos_proj_vendas(self):
+    def retorna_veiculos_proj_vendas(self, mostra_veic_vendidos):
         '''Objeto a retornar'''
         lista_veiculos_venda = []
 
         '''Processamento'''
         cursor = self.__conn.cursor()
+        param_mostra_veic_vendidos = ''
+        if mostra_veic_vendidos == 'N':
+            param_mostra_veic_vendidos = (" AND (veic.K_DATADEVENDA is Null AND veic.k_valordevenda is Null AND "
+                                          " (veic.k_numnf = '' OR veic.k_numnf is Null) AND (comprador.NOME = '' OR comprador.NOME is Null))")
+
+
         sql_veic_venda = (
             f'''
             SELECT	veic.HANDLE			AS	handle_veic,
@@ -1539,7 +1545,8 @@ class ConexaoBancoBenner():
               LEFT 	JOIN GN_PESSOAS comprador (NOLOCK)
                 ON	(comprador.HANDLE = veic.k_comprador)
              WHERE	veic.PROJETO = 128
-               AND  veic.EMPRESA  = 12;
+               AND  veic.EMPRESA  = 12
+               {param_mostra_veic_vendidos};
              '''
         )
         cursor.execute(sql_veic_venda)
