@@ -1100,11 +1100,22 @@ class Form_Cad_Parcelas_Contrato_View(View):
 
 class Form_Conciliacao_Comp_Benner_Resumo_View(View):
     def get(self, request):
-        #lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_usuarios_contabil = (Usuario.objects
+                                   .filter(sala='CON',
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
+
+        lista_pacotes = Pacote_Conta.objects.all()
+
         contexto = {
             'lista_contas_modelo_1': lista_contas_modelo_1,
-            'desc_menu': 'Conciliação Composição x Benner Resumido'
+            'desc_menu': 'Conciliação Composição x Benner Resumido',
+            'lista_usuarios_contabil': lista_usuarios_contabil,
+            'lista_pacotes': lista_pacotes
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner.html', contexto)
 
@@ -1232,7 +1243,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
                                         .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                                 'cod_red_conta_contabil_lp'))
-            elif tipo_rel == 'D':
+            elif tipo_rel in ('D', 'R'):
                 nome_resp_frm = request.GET['nome_resp']
                 lista_pacotes = request.GET['lista_pacotes']
 

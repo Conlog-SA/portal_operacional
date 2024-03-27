@@ -1944,7 +1944,7 @@ $(document).on('change','input', function(){
         }
         else {
             let let_data = '';
-            if (let_tipo_rel == 'D'){
+            if (let_tipo_rel == 'D' || let_tipo_rel == 'R'){
                 let_data = {
                     'tipo_rel': let_tipo_rel,
                     'cod_modelo_conta'  :   let_cod_modelo_conta,
