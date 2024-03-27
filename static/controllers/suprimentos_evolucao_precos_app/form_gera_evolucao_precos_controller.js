@@ -546,6 +546,64 @@ $(document).on('click', 'button', function(){
         $("#cb_item_gera_evolucao_precos").val('0');
         $("#cb_item_gera_evolucao_precos").selectpicker('refresh');
     }
+    else if (nomeDoButton == 'btn_abre_modal_justifica_preco'){
+        $("#btn_confirma_just_item_compra").val(valButton);
+        $("#ta_justificativa_item_compra").val($(this).prop('title'));
+        $("#modal_justificativas_itens_compras_sup_evolucao_precos").show();
+    }
+    else if (nomeDoButton == 'btn_fecha_modal_justificativas_itens_compras_sup_evolucao_precos'){
+        $("#modal_justificativas_itens_compras_sup_evolucao_precos").hide();
+    }
+    else if (nomeDoButton == 'btn_confirma_just_item_compra') {
+        let let_handle_item_compra = valButton;
+        let let_justificativa = $("#ta_justificativa_item_compra").val();
+        if ( let_justificativa != ''){
+            let let_loader_evolucao_preco = document.getElementById("loader_evolucao_preco");
+            let_loader_evolucao_preco.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url:"/suprimentos_evolucao_precos_app/salva_justificativa_item_compra",
+                data: {
+                    'handle_item_compra': let_handle_item_compra,
+                    'justificativa': let_justificativa
+                },
+                dataType: 'json',
+                success: function(data){
+                     $("#modal_justificativas_itens_compras_sup_evolucao_precos").hide();
+                     $.gritter.add({
+                        title: 'Atenção!',
+                        text: data.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    $("#btn_abre_modal_justifica_preco_"+let_handle_item_compra).prop('title', let_justificativa);
+
+                    let_loader_evolucao_preco.style.display = "none";
+
+                },
+                error: function (request, status, error) {
+                    let_loader_evolucao_preco.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Justifique a compra.',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+        }
+    }
 
 
 });
@@ -723,9 +781,26 @@ function format(compras_item) {
     });
     var_tr_cab.append(var_th_tp_compra);
 
+    var var_th_tp_justificativa = $("<th/>");
+    var_th_tp_justificativa.html("Justificar");
+    var_th_tp_justificativa.attr({
+        style: 'background: #FFE4B5; color:#000000;'
+    });
+    var_tr_cab.append(var_th_tp_justificativa);
+
+
+
     var_thead.append(var_tr_cab);
     var_table.append(var_thead);
     compras_item.forEach( compra => {
+        let let_btn_abre_modal_justificativa = `
+            <button type='button' name='btn_abre_modal_justifica_preco'
+                id='btn_abre_modal_justifica_preco_${compra.handle_itens_compra}'
+                class='btn btn-rounded btn-space'
+                value='${compra.handle_itens_compra}' title='${compra.justificativa_item_compra_registrada}'>
+                <i class="fa-solid fa-comment-dots fa-2xl" style="color: #f46424;"></i>
+            </button>
+        `;
         var var_tr = $("<tr/>");
 
         var var_td_img = $("<td/>");
@@ -795,6 +870,13 @@ function format(compras_item) {
         });
         var_td_tipo_compra_req.html(compra.tipo_compra_req);
         var_tr.append(var_td_tipo_compra_req);
+
+        var var_td_btn_abre_modal_justifica = $("<td/>");
+        var_td_btn_abre_modal_justifica.attr({
+            style: 'background: #FFE4B5; color:#000000;'
+        });
+        var_td_btn_abre_modal_justifica.html(let_btn_abre_modal_justificativa);
+        var_tr.append(var_td_btn_abre_modal_justifica);
 
         var_table.append(var_tr);
 

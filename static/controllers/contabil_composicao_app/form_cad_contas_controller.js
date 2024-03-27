@@ -1472,13 +1472,29 @@ $(document).on('click','button', function(){
                 });
           }
         });
+    }
+
+    else if (let_nome_btn == 'btn_marcar_resp_contas_comp_detalhado'){
+        $("#cb_resp_contas_comp_detalhado").selectpicker('selectAll');
+
+        fn_limpar_comp_contas_comp_detalhado();
+
+    } else if (let_nome_btn == 'btn_desmarcar_resp_contas_comp_detalhado'){
+        $("#cb_resp_contas_comp_detalhado").selectpicker('deselectAll');
+        fn_limpar_comp_contas_comp_detalhado();
+
+        $("#cb_pac_contas_comp_detalhado option").remove();
+        $("#cb_pac_contas_comp_detalhado").selectpicker('refresh');
+    }
 
 
+    else if (let_nome_btn == 'btn_marcar_pac_contas_comp_detalhado'){
+        $("#cb_pac_contas_comp_detalhado").selectpicker('selectAll');
+        fn_limpar_comp_contas_comp_detalhado();
 
-
-
-
-
+    } else if (let_nome_btn == 'btn_desmarcar_pac_contas_comp_detalhado'){
+        $("#cb_pac_contas_comp_detalhado").selectpicker('deselectAll');
+        fn_limpar_comp_contas_comp_detalhado();
     }
 
 });
@@ -1925,17 +1941,31 @@ $(document).on('change','input', function(){
             $("#rd_modelo_conta_conc_comp_benner_2").attr('checked', false);
             $("#rd_modelo_conta_conc_comp_benner_3").attr('checked', false);
 
-        } else {
+        }
+        else {
+            let let_data = '';
+            if (let_tipo_rel == 'D'){
+                let_data = {
+                    'tipo_rel': let_tipo_rel,
+                    'cod_modelo_conta'  :   let_cod_modelo_conta,
+                    'data_competencia'  :   '',
+                    'nome_resp'         :   $("#cb_resp_contas_comp_detalhado").val().toString(),
+                    'lista_pacotes'     :   $("#cb_pac_contas_comp_detalhado").val().toString()
+                }
+            } else {
+                let_data = {
+                    'tipo_rel': let_tipo_rel,
+                    'cod_modelo_conta'  :   let_cod_modelo_conta,
+                    'data_competencia'  :   let_competencia,
+                    'nome_resp'         :   ''
+                }
+
+            }
             $.ajax({
             type: 'GET',
             url: '/contabil_composicao_app/povoa_cb_contas_conciliacao_comp_benner',
             cache: false,
-            data: {
-                'tipo_rel': let_tipo_rel,
-                'cod_modelo_conta'  :   let_cod_modelo_conta,
-                'data_competencia'  :   let_competencia,
-                'nome_resp'         :   ''
-            },
+            data: let_data,
             dataType: 'json',
             success: function (data) {
                 $("#cb_contas_conciliacao_comp_benner option").remove();
@@ -3327,6 +3357,58 @@ function gera_conciliacao_comp_benner_detalhado(){
                 });
           }
         });
+}
+
+
+$(document).on('change', '#cb_resp_contas_comp_detalhado', function(){
+    let let_lista_nomes_resp = $(this).val().toString();
+    if (let_lista_nomes_resp != ''){
+        $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/povoa_cb_pac_contas_comp_detalhado',
+        data: {
+            'lista_nome_resp'           :  $(this).val().toString()
+        },
+        dataType: 'json',
+        success: function (data) {
+            $("#cb_pac_contas_comp_detalhado option").remove();
+            data.lista_pacote.forEach(pac => {
+                $("#cb_pac_contas_comp_detalhado").append("<option value='"+
+                pac.cod_conta__cod_pacote_conta__cod_pacote_conta+"'>"+
+                pac.cod_conta__cod_pacote_conta__desc_pacote_conta+"</option>");
+
+            });
+            $("#cb_pac_contas_comp_detalhado").selectpicker('refresh');
+            $("#cb_pac_contas_comp_detalhado").selectpicker('selectAll');
+
+            fn_limpar_comp_contas_comp_detalhado();
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+    }
+
+});
+
+
+$(document).on('change', '#cb_pac_contas_comp_detalhado', function(){
+    fn_limpar_comp_contas_comp_detalhado();
+});
+
+function fn_limpar_comp_contas_comp_detalhado(){
+    $("#rd_modelo_conta_conc_comp_benner_1").prop('checked', false);
+    $("#rd_modelo_conta_conc_comp_benner_2").prop('checked', false);
+    $("#rd_modelo_conta_conc_comp_benner_3").prop('checked', false);
+
+    $("#cb_contas_conciliacao_comp_benner option").remove();
+    $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
 }
 
 

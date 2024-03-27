@@ -14,6 +14,7 @@ class Tabela_Preco_Veic(models.Model):
 class Marca_Tabela_Fipe(models.Model):
     cod_marca_tab_fipe = models.IntegerField(primary_key=True, blank=False, null=False)
     desc_marca = models.CharField(max_length=15, blank=False, null=False)
+    cod_tab_precos = models.ForeignKey(Tabela_Preco_Veic, models.DO_NOTHING, db_column='cod_tab_precos', null=True, blank=True)
     class Meta:
         managed = True
         db_table = 'op_frota_marca_tab_fipe'
@@ -53,14 +54,14 @@ class Veiculo_Venda(models.Model):
 class Veiculo_Venda_Tab(models.Model):
     cod_veic_venda_tab = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     tipo_veic = models.CharField(max_length=80, blank=True, null=True)
-    marca = models.CharField(max_length=15, blank=True, null=True)
-    modelo = models.CharField(max_length=80, blank=True, null=True)
     ano = models.IntegerField(blank=True, null=True)
     codigo_veic_tab = models.CharField(max_length=10, blank=True, null=True)
     competencia = models.DateField(null=True, blank=True)
     val_comp = models.DecimalField(max_digits=16, decimal_places=6, blank=True, null=True)
     cod_tab_precos = models.ForeignKey(Tabela_Preco_Veic, models.DO_NOTHING, db_column='cod_tab_precos')
     cod_veic = models.ForeignKey(Veiculo_Venda, models.DO_NOTHING, db_column='cod_veic')
+    cod_modelo_tab_fipe = models.ForeignKey(Modelo_Tabela_Fipe, models.DO_NOTHING, db_column='cod_modelo_tab_fipe',
+                                            null=True, blank=True)
     class Meta:
         managed = True
         db_table = 'op_frota_veic_venda_tab'

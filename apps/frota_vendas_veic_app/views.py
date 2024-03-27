@@ -54,20 +54,25 @@ class Form_Venda_Veic_View(View):
                 obj_veic.nome_cliente = veic_benner['nome_comprador']
                 obj_veic.save()
 
+            cod_marca = None
+            cod_modelo = None
             obj_veic_venda_tab = Veiculo_Venda_Tab.objects.filter(cod_veic=obj_veic, cod_tab_precos=obj_tab).first()
             if obj_veic_venda_tab == None:
                 obj_veic_venda_tab = Veiculo_Venda_Tab(
                     tipo_veic = '',
-                    marca = '',
-                    modelo = '',
                     ano = None,
                     codigo_veic_tab = None,
                     competencia = None,
                     val_comp = 0.00,
                     cod_tab_precos = obj_tab,
-                    cod_veic = obj_veic
+                    cod_veic = obj_veic,
+                    cod_modelo_tab_fipe = None
                 )
                 obj_veic_venda_tab.save()
+            else:
+                if obj_veic_venda_tab.cod_modelo_tab_fipe != None:
+                    cod_marca = obj_veic_venda_tab.cod_modelo_tab_fipe.cod_marca_tab_fipe.cod_marca_tab_fipe
+                    cod_modelo = obj_veic_venda_tab.cod_modelo_tab_fipe.cod_modelo_tab_fipe
 
 
             locale.setlocale(locale.LC_MONETARY, 'pt-BR')
@@ -103,11 +108,12 @@ class Form_Venda_Veic_View(View):
                 'data_venda': data_venda,
                 'val_venda': val_venda,
                 'tipo_veic_tab': obj_veic_venda_tab.tipo_veic,
-                'marca_tab': obj_veic_venda_tab.marca,
-                'modelo_tab': obj_veic_venda_tab.modelo,
+                'marca_tab': cod_marca,
+                'modelo_tab': cod_modelo,
                 'codigo_veic_tab': obj_veic_venda_tab.codigo_veic_tab,
                 'periodo_pesq': competencia,
-                'val_fipe': val_fipe
+                'val_fipe': val_fipe,
+                'cod_veic_venda_tab': obj_veic_venda_tab.cod_veic_venda_tab
             }
             lista_veic_vendas.append((veic_vendas))
 

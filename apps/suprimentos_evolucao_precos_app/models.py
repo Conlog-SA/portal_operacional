@@ -24,6 +24,7 @@ class Justificativa_Compra(models.Model):
     justificativa = models.CharField(max_length=300, null=True, blank=True)
     eh_ativa = models.CharField(max_length=1, null=False, blank=False, default='S')
     data_cad = models.DateField(auto_now_add=True)
+    handle_itens_compra = models.IntegerField()
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)
     class Meta():
         managed=True
