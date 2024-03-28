@@ -1,3 +1,7 @@
+{
+let html_old = null
+}
+
 $(document).on('click','button', function(){
 	var nomeDoButton = $(this).attr('name');
     var idDoButton = $(this).attr('id');
@@ -64,6 +68,8 @@ $(document).on('click','button', function(){
 
         $('#descricao_new_check').val('');
         $('#versao_new_check').val('');
+        $('#inicio_new_check_date').val('')
+        $('#inicio_new_check_date').prop('disabled',false);
         $('#desativar_new_check_date').val('');
         $('#medida_periodicidade_new_check').val('');
         $('#medida_periodicidade_new_check').selectpicker('refresh')
@@ -237,26 +243,10 @@ $(document).on('change','.selectpicker',function(){
     let nome_select = $(this).attr('name');
 
     if (nome_select == "tipo_check") {
-        let cod_tipo = $(this).val();
+        $('#filial_check_aplicado').val('');
+        $('#filial_check_aplicado').selectpicker('refresh');
 
-        $.ajax({
-            type: 'GET',
-            url: '/safety_layout_checklist_app/lista_check',
-            data: {
-                'cod_tipo'   :   cod_tipo
-            },
-            dataType: 'json',
-            success: function (dados) {
-                console.log(dados)
-                $('#modelos_existentes option').remove();
-                dados.lista_checks.forEach(check => {
-                    $("#modelos_existentes").append("<option selected='false' value='"+
-                    check.cod_check+"'>"+check.desc_check+"</option>");
-                    $('#modelos_existentes').val('');
-                    $('#modelos_existentes').selectpicker('refresh');
-                });
-            }
-        })
+        $('#tab_frm_checks_aplicados').clear();
     }
 
     if (nome_select == "modelos_existentes") {
@@ -298,41 +288,48 @@ $(document).on('change','.selectpicker',function(){
                 }
 
                 let dt_inicio = data_inicio.getFullYear()+"-"+(month)+"-"+(day);
+                if (dados.check_selecionado.flag_aplicado == 1) {
+                    $("#sortable").addClass('disabled')
+                }
+                else if (dados.check_selecionado.flag_aplicado == 0) {
+                    $("#sortable").removeClass('disabled')
+                }
+                //if (!($("#sortable").hasClass('disabled'))) {
                 $("#sortable").sortable({
+                        stop: function(event, ui) {
+                            let valItemCheck = $(ui.item).val();
+                            let valOrdemItem;
 
-                    stop: function(event, ui) {
-                        let valItemCheck = $(ui.item).val();
-                        let valOrdemItem;
+                            $.map($(this).find('li'), function(el) {
+                                if ($(el).val() == valItemCheck) {
+                                    valOrdemItem = $(el).index()+1;
+                                }
+                            });
 
-                        $.map($(this).find('li'), function(el) {
-                            if ($(el).val() == valItemCheck) {
-                                valOrdemItem = $(el).index()+1;
-                            }
-                        });
+                            $.ajax({
+                                type:"POST",
+                                url: '/safety_layout_checklist_app/registra_item',
+                                dataType: 'json',
+                                data: {
+                                    'cod_item_check':   valItemCheck,
+                                    'cod_check': cod_check,
+                                    'ordem': valOrdemItem,
+                                    'flag_arrastar_sortable': 1
+                                 },
+                                success: function (data) {
+                                    Popular_Itens(cod_check);
+                                    $('#sortable').sortable('refresh');
+                                },
+                                error: function (request, status, error) {
 
-                        $.ajax({
-                            type:"POST",
-                            url: '/safety_layout_checklist_app/registra_item',
-                            dataType: 'json',
-                            data: {
-                                'cod_item_check':   valItemCheck,
-                                'cod_check': cod_check,
-                                'ordem': valOrdemItem,
-                                'flag_arrastar_sortable': 1
-                             },
-                            success: function (data) {
-                                Popular_Itens(cod_check);
-                                $('#sortable').sortable('refresh');
-                            },
-                            error: function (request, status, error) {
-
-                            }
-                        });
-                    }
+                                }
+                            });
+                        }
                 });
-
                 $("#sortable").sortable();
-
+                if ($("#sortable").hasClass('disabled')) {
+                    $("#sortable").sortable("destroy")
+                }
                 $('#descricao_new_check').val(dados.check_selecionado.desc_check);
                 $('#versao_new_check').val(dados.check_selecionado.versao);
                 $('#desativar_new_check_date').val(dt_desativacao);
@@ -369,6 +366,36 @@ $(document).on('change','.selectpicker',function(){
                 $('#btn_new_item').text('Criar Item');
                 $('#btn_new_item').prepend('<i class="fa-solid fa-file-circle-plus" style="margin-right:5px"></i>')
                 $('#btn_new_item').val('');
+
+                if (dados.check_selecionado.flag_aplicado == 1) {
+                    $('#inicio_new_check_date').prop('disabled',true);
+                    $('#descricao_item_check').prop('disabled',true);
+                    $('#select_tipo_item').prop('disabled',true);
+                    $('#select_tipo_item').selectpicker('refresh')
+                    $('#select_tipo_resposta').prop('disabled',true);
+                    $('#select_tipo_resposta').selectpicker('refresh');
+                    $('#input_ordem_check').prop('disabled',true);
+                    $('#inicio_item_date').prop('disabled',true);
+                    $('#desativar_item_date').prop('disabled',true);
+                    $('#obs_imagem_check_box').prop('disabled',true);
+                    $('#resposta_obrigatoria_check_box').prop('disabled',true);
+                    $('#btn_new_item').prop('disabled',true);
+                }
+                else if (dados.check_selecionado.flag_aplicado == 0) {
+                    $('#inicio_new_check_date').prop('disabled',false);
+                    $('#descricao_item_check').prop('disabled',false);
+                    $('#select_tipo_item').prop('disabled',false);
+                    $('#select_tipo_item').selectpicker('refresh')
+                    $('#select_tipo_resposta').prop('disabled',false);
+                    $('#select_tipo_resposta').selectpicker('refresh');
+                    $('#input_ordem_check').prop('disabled',false);
+                    $('#inicio_item_date').prop('disabled',false);
+                    $('#desativar_item_date').prop('disabled',false);
+                    $('#obs_imagem_check_box').prop('disabled',false);
+                    $('#resposta_obrigatoria_check_box').prop('disabled',false);
+                    $('#btn_new_item').prop('disabled',false);
+                }
+
 
                 $.ajax({
                     type: 'GET',
@@ -448,6 +475,179 @@ $(document).on('change','.selectpicker',function(){
     }
 });
 
+$(document).on('change','select.filial-check-aplicado' , function(event){
+    let cod_filial =  $(this).val();
+    let tipo_check = $("#tipo_check").val();
+
+    let data_ini = new Date($('#dt_periodo_check_ini').val());
+    let day = data_ini.getUTCDate();
+    let month = data_ini.getUTCMonth()+1;
+    let year = data_ini.getUTCFullYear();
+	let let_data_ini = [year, month, day].join('-')
+
+    let data_fim = new Date($('#dt_periodo_check_fim').val());
+    let day_final = data_fim.getUTCDate();
+    let month_final = data_fim.getUTCMonth()+1;
+    let year_final = data_fim.getUTCFullYear();
+    let let_data_fim = [year_final, month_final, day_final].join('-')
+
+    let erro = ""
+    if (tipo_check == '')
+        erro += "|Preencha o tipo do check!"
+    if (cod_filial == '')
+        erro += "|Preencha o código da filial!"
+    if (isNaN(day) || isNaN(month) || isNaN(year))
+        erro += "|Preencha corretamente a data de inicio!"
+    if (isNaN(day_final) || isNaN(month_final) || isNaN(year_final))
+        erro += "|Preencha corretamente a data final!"
+    console.log(erro)
+    if (erro == "") {
+
+        $.ajax({
+        type: 'GET',
+        url: '/safety_checks_aplicados_app/check_aplicado',
+        data: {
+            'cod_filial_check_aplicado'   :   cod_filial,
+            'tipo_check_aplicado'   :   tipo_check,
+            'inicio_periodo_check_aplicado'  :   let_data_ini,
+            'fim_periodo_check_aplicado'  :   let_data_fim,
+        },
+        dataType: 'json',
+        success: function (dados) {
+
+            let lista_checks_aplicados = [];
+                dados.forEach(reg => {
+                    let let_checks_aplicados = [
+                        reg.cod_checks_aplicados,
+                        reg.desc_check,
+                        reg.nome_colaborador,
+                        reg.data_registro,
+                        reg.qtd_total,
+                        reg.qtd_ok,
+                        reg.qtd_nok,
+                        reg.qtd_nao_respondidos,
+                        reg.pdf
+                    ]
+                    lista_checks_aplicados.push(let_checks_aplicados)
+                });
+                $('#tab_frm_checks_aplicados').DataTable({
+                "bJQueryUI": true,
+                "pageLength": 10,
+                "destroy": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5',
+                ],
+                "data":lista_checks_aplicados,
+                    "columns": [
+                            { title: "Codigo" },
+                            { title: "Descrição" },
+                            { title: "Nome" },
+                            { title: "Data registro" },
+                            { title: "Qtd. Itens" },
+                            { title: "Qtd. OK" },
+                            { title: "Qtd. NOK" },
+                            { title: "Qtd. s/ resposta" },
+                            { title: "PDF" },
+                        ],
+                //    "columnDefs": [
+                //    //{
+                //    //    "orderable": false, "targets": [5, 6, 7]
+                //    //},
+                //    {
+                //    "targets": 0,
+                //    "mRender": function(lista_tma_ti, type)
+                //        {
+                //        console.log(type)
+                //        if (type !== 'display')
+                //        {
+                //            return lista_tma_ti;
+                //        }
+//
+                //            return '<i class="fas fa-dot-circle" ' + lista_tma_ti + '></i>';
+                //        }
+                //    }
+                //],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+	            });
+            }
+        });
+    }
+    else {
+        let split_erro_str = erro.split('|')
+        split_erro_str.forEach((str) => {
+            if (str != "") {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: str,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+});
+
+$(document).on('click','.check-preenchido-element' , function(){
+    let let_cod_check_aplicado = $(this).text().split(' - ')[0]
+    console.log(let_cod_check_aplicado)
+
+     $.ajax({
+	        type: 'GET',
+	        data: {
+                'cod_check_aplicado'   :   let_cod_check_aplicado,
+            },
+            dataType : "html",
+	        url: '/safety_checks_aplicados_app/itens_check_aplicado',
+	        success: function(response) {
+                //var file = new Blob([response], {type: 'application/pdf'});
+                //console.log(file.size, file.type)
+                //var fileURL = URL.createObjectURL(file);
+                //console.log(fileURL)
+                //window.open(fileURL, '_blank');
+                html_old = $('#lista_checks_aplicados').html()
+                $('#lista_checks_aplicados').html(response)
+            }
+    });
+});
+
+$(document).on('click','.a_tab_check_criados',function(){
+    $('#modelos_existentes button').prop('disabled',true);
+});
+
+$(document).on('click','.a_tab_new_check',function(){
+    $('#modelos_existentes button').prop('disabled',false);
+});
+
+$(document).on('click','.arrow-go-back' , function(){
+    $('#lista_checks_aplicados').html(html_old)
+});
+
+
 function Popular_Itens(cod_check) {
     if (cod_check == '') {
         $("#sortable li").remove();
@@ -479,7 +679,10 @@ function Popular_Itens(cod_check) {
                         item.cod_item_check+"'><b>"+item.desc_check+"</b></li>");
                     }
                 });
-                $('#sortable').sortable('refresh');
+                if (!$('#sortable').hasClass('disabled')) {
+                    $('#sortable').sortable('refresh');
+                }
+
             }
         });
     }

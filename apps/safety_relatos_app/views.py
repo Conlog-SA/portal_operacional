@@ -1,50 +1,74 @@
 from datetime import datetime, date
 
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
+from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Colaborador, Check_Aplicado
-from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Item_Check
+from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 
 
 class Form_Gerar_Relatos_Check(View):
+    @csrf_exempt
     def get(self, request):
-        cod_usuario_sessao = request.session['cod_usuario_logado']
-        usuario = Usuario.objects.get(cod_usu=cod_usuario_sessao)
-        nome_usuario = usuario.nome_usu
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
+        nome_colaborador = colaborador.nome_colaborador
+        filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+
+        str_options_select_unidade = ''
+        if colaborador.perfil_usu == 'G':
+            filiais = Filial.objects.all()
+            for filial in filiais:
+                str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
+        elif colaborador.perfil_usu == 'U':
+            str_options_select_unidade += f'<option value="{filial_usuario.cod_filial}">{filial_usuario.desc_filial}</option>'
+
+        str_options_select_processo = ''
+        #if filial_usuario.cod_empresa.cod_empresa == 12:
+        processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1)
+        for processo in processos:
+            str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
 
         context = {
-            'cod_usuario': nome_usuario,
-            'cod_filial_usuario': usuario.cod_filial.desc_filial,
+            'cod_usuario': nome_colaborador,
+            'cod_filial_usuario': filial_usuario.desc_filial,
+            'options_select_unidade': str_options_select_unidade,
+            'options_select_processo': str_options_select_processo
         }
         return render(request, 'safety_relatos_app/relatos_form_gerar_check.html', context)
 
+    @csrf_exempt
     def post(self, request):
-        unidade_relato = request.POST['unidade_relato']
         tipo_relato = request.POST['tipo_relato']
         situacao_envolvido = request.POST['situacao_envolvido']
         nome_relatado = request.POST['nome_relatado']
         local_relato = request.POST['local_relato']
         atividade_relato = request.POST['atividade_relato']
+        processo_relato = request.POST['processo_relato']
         descricao_relato = request.POST['situacao_relato']
-        cod_usuario_sessao = request.session['cod_usuario_logado']
+        unidade_relato = request.POST['unidade_relato']
+        colaborador = None
+        if situacao_envolvido == '1':
+            colaborador = Colaborador.objects.get(pk=int(nome_relatado))
 
-        usuario = Usuario.objects.get(cod_usu=cod_usuario_sessao)
-        colaborador_envio = Colaborador.objects.filter(pk=cod_usuario_sessao).first()
-        cod_filial_usuario_sessao = usuario.cod_filial.cod_filial
-        if colaborador_envio == None:
-            colaborador_envio = Colaborador(
-                nome_colaborador=usuario.nome_usu,
-                cod_filial=cod_filial_usuario_sessao
-                #filial_informada_terceiro=cod_filial_informado,
-                #operador_informado_terceiro=usuario_informado
+        elif situacao_envolvido == '2' or situacao_envolvido == '3' or situacao_envolvido == '4':
+
+            colaborador = Colaborador(
+                nome_colaborador=nome_relatado,
+                cod_filial=unidade_relato,
             )
-            colaborador_envio.save()
+            colaborador.save()
+
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2, cod_filial=usuario.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2, cod_filial=colaborador_envio.cod_filial,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),
@@ -54,8 +78,9 @@ class Form_Gerar_Relatos_Check(View):
             '-cod_check__data_desativacao').first()
 
         check_aplicado = Check_Aplicado(
-            cod_filial=cod_filial_usuario_sessao,
-            cod_colaborador=colaborador_envio,
+            cod_filial=unidade_relato,
+            cod_colaborador_aplicante=colaborador_envio,
+            cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
             cod_layout_check=check_ativo.cod_check
         )
@@ -76,8 +101,8 @@ class Form_Gerar_Relatos_Check(View):
         check_cabecalho = Relato(
             cod_tipo_relato=tipo_relato,
             situacao_envolvido=situacao_envolvido,
-            nome_relatado=nome_relatado,
             local_relato=local_relato,
+            processo_relato=processo_relato,
             atividade_relato=atividade_relato,
             descricao_relato=descricao_relato
         )
@@ -88,3 +113,20 @@ class Form_Gerar_Relatos_Check(View):
             'cod_check_aplicado': check_aplicado.cod_checks_aplicados
         }
         return render(request, 'safety_relatos_app/relatos_form_check.html', context)
+
+class Lista_Atividades(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_processo = request.GET['cod_processo']
+
+        lista_atividades = Itens_Componentes.objects.filter(cod_pai=cod_processo)
+        dict_atividades_options = []
+        for atividade in lista_atividades:
+            dict_atividades_options.append({'cod_atividade': atividade.cod_componente, 'desc_atividade': atividade.desc_componente}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
+
+        #return HttpResponse(str_operadores_options)
+
+        data = {
+            'lista_atividades': dict_atividades_options
+        }
+        return JsonResponse(data)

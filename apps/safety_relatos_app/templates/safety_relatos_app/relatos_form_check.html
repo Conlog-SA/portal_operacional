@@ -5,14 +5,14 @@
         <form id="form_preenche_check" name="form_preenche_check">
                     <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
                         <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
-                                <div class="row" style="text-align:left;">
-                                    <div class="row">
-                                        <div class="d-flex align-items-between mt-3 w-100" style="padding-right:20px;justify-content:right">
-                                            <p style="display:flex;justify-content:right;padding:right:0.5rem;responsive-font;font-size:20px;margin-bottom:-10px">Check nº{{cod_check_aplicado}}</p>
+                                <div style="text-align:left;">
+                                    <div>
+                                        <div class="d-flex align-items-between" style="padding-right:20px;justify-content:right;background-color:rgba(33,37,41,0.7)">
+                                            <p style="display:flex;justify-content:right;padding:right:0.5rem;responsive-font;font-size:20px;margin-bottom:0px">Check nº{{cod_check_aplicado}}</p>
                                         </div>
                                     </div>
                                     {% for item in lista_itens %}
-                                        <div style="width:100%;display:flex;justify-content:center">
+                                        <div class="background-check-preenchido" style="width:100%;display:flex;justify-content:center">
                                             {% if item.tipo_item == 2 %}
                                                 <b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{{item.desc_check}}</b>
                                             {% endif %}
@@ -74,6 +74,21 @@
                                         </div>
                                     {% endfor %}
                                 </div>
+                                <div class="background-check-preenchido" style="display:flex;justify-content:flex-end;padding-top:2rem;padding-bottom:2rem;margin-bottom:1rem;padding-right:2rem;">
+                                    <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                        <div style="display:flex;flex-direction:column">
+                                            <i class="fa-solid fa-thumbs-up" style="color:#f46424;font-size:32px"></i>
+                                            <b style="color:white;font-size:17px">Finalizar</b>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div style="height:1rem;"></div>
                         </div>
-        </div>
+                    </div>
+        </form>
     </div>
+</div>
+
+  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}"
+          type="text/javascript">
+  </script>

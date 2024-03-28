@@ -1,5 +1,6 @@
 import os
 import shutil
+import sys
 from datetime import datetime, date
 
 from django.core.files.storage import FileSystemStorage
@@ -9,7 +10,10 @@ from django.shortcuts import render, redirect
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
+from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Colaborador, Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado
 from apps.safety_gab_op_emp_app.models import Modelo_Emp, Tipo_Operacao_Emp, Gabarito_Operacional_Emp
@@ -20,50 +24,61 @@ from proj_portal_operacional.settings import BASE_DIR
 
 # Create your views here.
 class Form_Gerar_Gab_Emp(View):
+    @csrf_exempt
     def get(self, request):
-        cod_usuario_sessao = request.session['cod_usuario_logado']
-        usuario = Usuario.objects.get(cod_usu=cod_usuario_sessao)
-        nome_usuario = usuario.nome_usu
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
+        nome_colaborador = colaborador.nome_colaborador
 
         lista_modelos_emp = Modelo_Emp.objects.all()
         lista_modelos_emp_dict = []
         for modelo in lista_modelos_emp:
             lista_modelos_emp_dict.append({'cod_modelo_emp': modelo.cod_modelo_emp, 'desc_emp': modelo.desc_emp})
-        lista_tipos_operacao = Tipo_Operacao_Emp.objects.all()
+        filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
+        str_options_select_unidade = ''
+        if colaborador.perfil_usu == 'G':
+            filiais = Filial.objects.all()
+            for filial in filiais:
+                str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
+        elif colaborador.perfil_usu == 'U':
+            str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
+
         context = {
-            'cod_operador': nome_usuario,
-            'cod_filial_operador': usuario.cod_filial.desc_filial,
-            'lista_modelos_emp': lista_modelos_emp_dict
+            'nome_operador': nome_colaborador,
+            'cod_filial_operador': filial_colaborador.cod_filial,
+            'lista_modelos_emp': lista_modelos_emp_dict,
+            'options_select': str_options_select_unidade,
         }
         return render(request, 'safety_gab_op_emp_app/gab_op_emp_form_gerar_check.html', context)
 
+    @csrf_exempt
     def post(self, request):
         tipo_colaborador = request.POST['tipo_operador']
-        cod_filial_informado = ''
-        usuario_informado = ''
-        if tipo_colaborador == 2:
-            usuario_informado = request.POST['nome_operador']
-            cod_filial_informado = request.POST['unidade_operador']
+        filial_colaborador = request.POST['unidade_operador']
+        usuario_informado = request.POST['nome_operador']
+        colaborador = None
+        if tipo_colaborador == '1':
+            colaborador = Colaborador.objects.get(pk=int(usuario_informado))
 
-        cod_usuario_sessao = request.session['cod_usuario_logado']
-        usuario = Usuario.objects.get(cod_usu=cod_usuario_sessao)
-        cod_filial_usuario_sessao = usuario.cod_filial.cod_filial
-        documento_operador = request.POST['documento_operador']
+        elif tipo_colaborador == '2':
+            documento_usuario_informado = request.POST['documento_operador']
+
+            colaborador = Colaborador(
+                nome_colaborador=usuario_informado,
+                cpf=documento_usuario_informado,
+                cod_filial=filial_colaborador,
+            )
+            colaborador.save()
+
         cod_modelo_empilhadeira = request.POST['modelo_empilhadeira']
         cod_tipo_operacao = request.POST['tipo_operacao']
 
-        colaborador_envio = Colaborador.objects.filter(pk=cod_usuario_sessao).first()
-        if colaborador_envio == None:
-            colaborador_envio = Colaborador(
-                nome_colaborador=usuario.nome_usu,
-                cod_filial=cod_filial_usuario_sessao,
-                filial_informada_terceiro=cod_filial_informado,
-                operador_informado_terceiro=usuario_informado
-            )
-            colaborador_envio.save()
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
+        cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=usuario.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=colaborador_envio.cod_filial,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),
@@ -74,7 +89,8 @@ class Form_Gerar_Gab_Emp(View):
 
         check_aplicado = Check_Aplicado(
             cod_filial=cod_filial_usuario_sessao,
-            cod_colaborador=colaborador_envio,
+            cod_colaborador_aplicante=colaborador_envio,
+            cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
             cod_layout_check=check_ativo.cod_check
         )
@@ -106,6 +122,7 @@ class Form_Gerar_Gab_Emp(View):
         return render(request, 'safety_gab_op_emp_app/gab_op_emp_form_check.html', context)
 
 class Colaborador_Portal(View):
+    @csrf_exempt
     def get(self, request):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(cod_usu=cod_usuario_sessao)
@@ -118,6 +135,7 @@ class Colaborador_Portal(View):
         return JsonResponse(data)
 
 class Tipos_Operacao(View):
+    @csrf_exempt
     def get(self, request):
         modelo_emp = request.GET['cod_empilhadeira']
         lista_modelo_operacao_models = Tipo_Operacao_Emp.objects.filter(modelo_emp=modelo_emp)
@@ -130,6 +148,7 @@ class Tipos_Operacao(View):
         return JsonResponse(data)
 
 class Item_Check_Aplicado(View):
+    @csrf_exempt
     def post(self, request):
         tipo_resposta = request.POST['tipo_input']
         cod_item_check = request.POST['cod_item_check']
@@ -178,6 +197,7 @@ class Item_Check_Aplicado(View):
 
         return HttpResponse(msg)
 
+    @csrf_exempt
     def salva_imagem_anexo(self, file_form, desc_doc_form, cod_item_check, cod_check_aplicado):
         item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
             cod_item_check=cod_item_check, cod_checks_aplicados=cod_check_aplicado).first()

@@ -18,7 +18,7 @@ class Layout_Check(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'op_safety_layout_check'
+        db_table = 'op_safe_layout_check'
 
 class Item_Check(models.Model):
     cod_item_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -36,7 +36,7 @@ class Item_Check(models.Model):
                                          null=True)
     class Meta:
         managed = True
-        db_table = 'op_safety_item_check'
+        db_table = 'op_safe_item_check'
 
 class Libera_Filial_Check(models.Model):
     cod_libera_filial = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -48,5 +48,16 @@ class Libera_Filial_Check(models.Model):
 
     class Meta:
         managed = True
-        db_table = 'op_safety_check_libera_filial'
+        db_table = 'op_safe_check_libera_filial'
 
+class Itens_Componentes(models.Model):
+    cod_componente = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    tipo_check = models.IntegerField(blank=False, null=False)
+    campo_check = models.IntegerField(blank=False, null=False)
+    cod_pai = models.IntegerField(blank=False, null=False)
+    desc_componente = models.CharField(max_length=80, blank=False, null=False)
+    cod_empresa = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'op_safe_itens_componentes_forms'

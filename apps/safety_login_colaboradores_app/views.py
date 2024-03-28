@@ -1,0 +1,85 @@
+from datetime import datetime
+
+from django.http import JsonResponse, HttpResponse
+from django.shortcuts import render, redirect
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+
+from apps.estrut_org_app.models import Filial
+from apps.safety_login_colaboradores_app.models import Colaborador
+from apps.usuario_app.models import Usu_Menu
+
+
+class Login_Colaborador(View):
+    @csrf_exempt
+    def get(self, request):
+        return render(request, 'safety_login_colaboradores_app/form_safe_login.html')
+
+    @csrf_exempt
+    def post(self, request):
+        if 'cod_colaborador' in request.session:
+            return redirect('safe_main_menu')
+        cpf_colaborador = request.POST['cpf_colaborador']
+        data_nasc_colab = request.POST['data_nasc_colaborador']
+        data_nasc_array = data_nasc_colab.split('-')
+        data_nasc_colab = datetime(int(data_nasc_array[0]), int(data_nasc_array[1]), int(data_nasc_array[2]))
+
+        colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab)
+        if colaboradores.first() != None and colaboradores.count() == 1:
+            request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
+        else:
+            request.session['msg_erro'] = 'Colaborador não encontrado.'
+
+        return redirect('safe_main_menu')
+class Menu_Safe(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador = Colaborador.objects.get(pk=cod_colaborador)
+        primeiro_nome_colaborador = colaborador.nome_colaborador.split(' ')[0].upper()
+        desc_filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial).desc_filial
+        context = {
+            'nome_colaborador': primeiro_nome_colaborador,
+            'desc_filial_colaborador': desc_filial_colaborador
+        }
+        return render(request, 'safety_login_colaboradores_app/safe_main_menu.html', context)
+
+    @csrf_exempt
+    def post(self, request):
+        tipo_check = request.POST['tipo_check']
+
+        url = ''
+        if tipo_check == '0':
+            url = 'empilhadeira_check'
+        if tipo_check == '1':
+            url = 'relatos_check'
+        if tipo_check == '999':
+            url = 'safe_login_colab'
+        return redirect(url)
+
+class Lista_Colaboradores(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_unidade = request.GET['cod_unidade']
+
+        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='U') |
+                            Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
+        dict_colaboradores_options = []
+        for colaborador in lista_colaboradores:
+            dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
+
+        #return HttpResponse(str_operadores_options)
+
+        data = {
+            'lista_colaboradores': dict_colaboradores_options
+        }
+        return JsonResponse(data)
+
+class Documento_Colaborador(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_colaborador = request.GET['cod_colaborador']
+
+        colaborador = Colaborador.objects.get(pk=cod_colaborador)
+
+        return HttpResponse(colaborador.cpf)

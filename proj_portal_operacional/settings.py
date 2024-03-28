@@ -79,6 +79,8 @@ INSTALLED_APPS = [
     'apps.phishing_app',
     'apps.safety_relatos_app',
     'apps.ndd_web_app',
+    'apps.gente_gestao_rateio_unimed_app',
+    'apps.safety_login_colaboradores_app',
 ]
 
 MIDDLEWARE = [

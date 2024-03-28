@@ -16,17 +16,21 @@
        </div>
        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
    </div>
-    <div id="div_corpo_relatos" class="containerApp w-95">
-        <div class="form-group form_div_check w-100" >
+    <div id="div_corpo_relatos" class="containerApp w-95 h-100" style="border-radius:0rem 0rem 0.5rem 0.5rem;margin-bottom:1rem">
+        <div class="form-group form_div_check w-100 h-100" >
             <div class="col-md-12 w-100 h-100">
-                <form id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
-                    <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
-                        <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
-                                <div class="row" style="text-align:left;">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px">
+                        <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
                                     <div style="padding:15px;padding-right:30px;padding-left:30px">
                                         <div class="form-group">
                                            <label for="unidade"> Unidade: </label>
-                                           <input type="text" class="form-control responsive-font" id="unidade" name="unidade" disabled value="{{cod_filial_usuario}}">
+                                            <select type="text" class="selectpicker form-control responsive-font" id="unidade" name="unidade" placeholder="Selecione a unidade">
+                                                {% autoescape off %}
+                                                    {{options_select_unidade}}
+                                                {% endautoescape %}
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                            <label for="tipo_relato">Tipo de Relato:</label>
@@ -38,33 +42,57 @@
                                         </div>
                                         <div class="form-group">
                                            <label class="responsive-font" for="situacao_envolvido">Situação do envolvido:</label>
-                                           <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" placeholder="Escolha a situação">
-                                               <option value="1">Funcionario Conlog</option>
+                                           <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" placeholder="Escolha a situação" disabled>
+                                               <option value="1">Funcionario Conlog/Deep</option>
                                                <option value="2">Funcionario Ambev</option>
                                                <option value="3">Freteiro</option>
                                                <option value="4">Terceiros</option>
                                            </select>
                                         </div>
-                                        <div class="form-group">
-                                           <label for="nome_relatado">Nome do relatado:</label>
-                                           <input type="text" class="form-control responsive-font" id="nome_relatado" name="nome_relatado">
+                                        <div id="div_relatado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do relatado:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_relatado" name="nome_relatado" value="{{nome_operador}}" placeholder="Selecione o operador" disabled>
+                                            </select>
+                                        </div>
+                                        <div id="div_relatado_terceiro" class="form-group hidden-div">
+                                            <label class="responsive-font" for="nome_relatado_terceiro">Nome do relatado:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro">
                                         </div>
                                         <div class="form-group">
                                            <label for="local_relato">Local do relato:</label>
                                            <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato">
                                         </div>
                                         <div class="form-group">
+                                            <label for="processo_relato">Processo:</label>
+                                            <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" placeholder="Selecione o processo">
+                                                {% autoescape off %}
+                                                    {{options_select_processo}}
+                                                {% endautoescape %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                            <label for="atividade_relato">Atividade sendo realizada:</label>
-                                            <input type="text" class="form-control responsive-font" id="atividade_relato" name="atividade_relato">                                           </select>
-                                           </select>
+                                            <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled>
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                             <label for="descricao_situacao">Descrição da situação:</label>
-                                            <input type="text" class="form-control responsive-font" id="descricao_situacao" name="descricao_situacao">                                           </select>
+                                            <textarea class="form-control responsive-font" id="descricao_situacao" name="descricao_situacao"></textarea>
                                         </div>
                                     </div>
-                                    <div style="justify-content:flex-end;display:flex;padding-right:4rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
-                                        <button class="create-check-relatos" type="button" style="padding;border-radius:3px">Gerar check</button>
+                                    <div class="w-100" style="justify-content:space-between;display:flex;padding-right:2rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
+                                        <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-arrow-left" style="color:#f46424;font-size:32px"></i>
+                                                <b style="color:white;font-size:17px">Voltar</b>
+                                            </div>
+                                        </button>
+                                        <button class="create-check-relatos" type="button" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-circle-plus" style="font-size:32px; margin-left:0px;color:#f46424;"></i>
+                                                <b style="color:white;font-size:17px">Gerar check</b>
+                                            </div>
+                                        </button>
                                     </div>
                                 </div>
                         </div>

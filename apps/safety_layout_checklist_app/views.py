@@ -3,8 +3,11 @@ from datetime import datetime
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_checks_aplicados_app.models import Check_Aplicado
+from apps.safety_gab_op_emp_app.views import Item_Check_Aplicado
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check
 from apps.usuario_app.models import Usuario
 
@@ -12,14 +15,23 @@ from apps.usuario_app.models import Usuario
 # Create your views here.
 
 class Form_Seguranca_Check(View):
+    @csrf_exempt
     def get(self, request):
         lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos'}
+        lista_filiais = Filial.objects.all()
+        #lista_filiais_dict = []
+
+        '''for filial in lista_filiais:
+            lista_filiais_dict.append({filial.cod_filial, filial.desc_filial})
+        print(lista_filiais_dict)'''
         contexto = {
-            'lista_tipos': lista_tipos
+            'lista_tipos': lista_tipos,
+            'lista_filiais' : lista_filiais
         }
         return render(request,'safety_layout_checklist_app/form_cad_layout_checklist.html', contexto)
 
 class Lista_Check(View):
+    @csrf_exempt
     def get(self, request):
         cod_tipo = request.GET['cod_tipo']
         lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
@@ -32,9 +44,17 @@ class Lista_Check(View):
         return JsonResponse(data)
 
 class Form_Cadastro_Check(View):
+    @csrf_exempt
     def get(self, request):
         cod_check = request.GET['cod_check']
         check_selecionado = Layout_Check.objects.get(pk=cod_check)
+        verifica_check_aplicado_existente = Check_Aplicado.objects.filter(cod_layout_check=check_selecionado).first()
+        flag_aplicado = None
+        if verifica_check_aplicado_existente == None:
+            flag_aplicado = False
+        else:
+            flag_aplicado = True
+
         data = {
             'check_selecionado': {
                 'desc_check': check_selecionado.desc_check,
@@ -43,10 +63,11 @@ class Form_Cadastro_Check(View):
                 'data_desativacao': check_selecionado.data_desativacao,
                 'periodicidade': check_selecionado.periodicidade,
                 'medida_periodicidade': check_selecionado.medida_periodicidade,
+                'flag_aplicado': flag_aplicado
             }
         }
         return JsonResponse(data)
-
+    @csrf_exempt
     def post(self, request):
         cod_check = request.POST['cod_check']
         desc_check = request.POST['desc_check']
@@ -98,6 +119,7 @@ class Form_Cadastro_Check(View):
         return JsonResponse(data, safe=False)
 
 class Form_Filial_Check(View):
+    @csrf_exempt
     def get(self, request):
         cod_check = request.GET['cod_check']
         lista_filiais_check = []
@@ -127,7 +149,7 @@ class Form_Filial_Check(View):
             },
 
         return JsonResponse(data, safe=False)
-
+    @csrf_exempt
     def post(self, request):
         cod_check = request.POST['cod_check']
         filiais_check_form = request.POST['filiais_check'][2:-2]
@@ -186,6 +208,7 @@ class Form_Filial_Check(View):
         return JsonResponse(data, safe=False)
 
 class Form_Item_Check(View):
+    @csrf_exempt
     def get(self, request):
         cod_check = request.GET['cod_check']
         lista_itens = Item_Check.objects.filter(cod_check=cod_check)
@@ -215,6 +238,7 @@ class Form_Item_Check(View):
         }
         return JsonResponse(data)
 
+    @csrf_exempt
     def post(self, request):
         cod_item_check = request.POST['cod_item_check']
         cod_check = request.POST['cod_check']
@@ -295,6 +319,7 @@ class Form_Item_Check(View):
         return JsonResponse(data, safe=False)
 
 class Sortable_View(View):
+    @csrf_exempt
     def get(self, request):
         cod_item = request.GET['cod_item_check']
         item_selecionado = Item_Check.objects.get(pk=cod_item) #a
@@ -317,6 +342,7 @@ class Sortable_View(View):
 
 
 class Comportamentos_Sortable():
+    @csrf_exempt
     def ordena_itens(self, item_check_inserido, lista_itens_check, flag_incrementa_elementos_sortable):
         for item in lista_itens_check:
             if int(item_check_inserido.ordem_item) == int(item.ordem_item) and int(item_check_inserido.cod_item_check) != int(item.cod_item_check):
@@ -326,7 +352,7 @@ class Comportamentos_Sortable():
                     item.ordem_item = item.ordem_item - 1
                 item.save() #a
                 Comportamentos_Sortable().ordena_itens(item, lista_itens_check, flag_incrementa_elementos_sortable)
-
+    @csrf_exempt
     def define_indices_itens_check(self, cod_check):
         lista_itens_check = Item_Check.objects.filter(cod_check=cod_check).order_by('ordem_item')
         i = 1
