@@ -149,7 +149,9 @@ urlpatterns = [
     path('retorna_docs_conta_m1', views.Form_Docs_Conta_M1_View.as_view(),
          name='retorna_docs_conta_m1'),
     path('acessa_frm_detalhes_conta_composicao', views.Form_Detalhes_Conta_Composicao_View.as_view(),
-         name='acessa_frm_detalhes_conta_composicao')
+         name='acessa_frm_detalhes_conta_composicao'),
+    path('povoa_cb_pac_contas_comp_detalhado', views.Comp_Pac_Contas_Comp_Detalhado_View.as_view(),
+         name='povoa_cb_pac_contas_comp_detalhado'),
 
 ]
 

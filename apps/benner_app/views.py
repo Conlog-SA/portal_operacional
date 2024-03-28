@@ -350,8 +350,8 @@ class ConexaoBancoBenner():
 
     def retorna_balancete_conta(self, cod_empresa, handle_conta, data_ini, data_fim):
         '''A data inicial é setada aki 01/01/2023 até fizerem o processo de abertura do balence para 2024 segundo o Talison Brisola'''
-        if cod_empresa == 12:
-            data_ini = '2023-01-01'
+        '''if cod_empresa == 12:
+            data_ini = '2023-01-01'''
         '''Objeto a retornar'''
         val_balancete_benner = 0
 
@@ -1022,26 +1022,26 @@ class ConexaoBancoBenner():
         sql_beneficiarios = (
                 '''
                     SELECT DISTINCT
-                        gn_p.handle,
-                        gn_p.nome,
-                        gn_p.tipo,
-                        gn_p.inativo,
-                        gn_p.CGCCPF,
-                        COUNT(ma.codigo)	AS	qtd_placa
-                    FROM gn_pessoas gn_p
-                    RIGHT JOIN ma_recursos ma
-                    ON (ma.proprietario = gn_p.handle)
-                    WHERE gn_p.ehfornecedor = 'S'
-                    AND gn_p.ehtransportador = 'S'
-                    /* AND ma.origem = 2 */
-                    AND ma.projeto = ''' + str(handle_projeto) +
-                '''
-                    GROUP BY 	gn_p.handle,
-                        gn_p.nome,
-                        gn_p.tipo,
-                        gn_p.inativo,
-                        gn_p.CGCCPF
-                    ORDER BY 2;
+                            gn_p.handle,
+                            gn_p.nome,
+                            gn_p.tipo,
+                            gn_p.inativo,
+                            gn_p.CGCCPF,
+                            COUNT(ma.codigo)	AS	qtd_placa
+                        FROM gn_pessoas gn_p
+                        RIGHT JOIN ma_recursos ma
+                        ON (ma.proprietario = gn_p.handle)
+                        WHERE gn_p.ehfornecedor = 'S'
+                        AND gn_p.ehtransportador = 'S'
+                        /* AND ma.origem = 2 */
+                        AND ma.projeto = ''' + str(handle_projeto) +
+                    '''
+                        GROUP BY 	gn_p.handle,
+                            gn_p.nome,
+                            gn_p.tipo,
+                            gn_p.inativo,
+                            gn_p.CGCCPF
+                        ORDER BY 2;
                 '''
         )
         cursor.execute(sql_beneficiarios)
@@ -1492,3 +1492,94 @@ class ConexaoBancoBenner():
         self.__conn.close()
 
         return lista_parcelas_contrato_benner
+
+    def retorna_veiculos_proj_vendas(self, mostra_veic_vendidos):
+        '''Objeto a retornar'''
+        lista_veiculos_venda = []
+
+        '''Processamento'''
+        cursor = self.__conn.cursor()
+        param_mostra_veic_vendidos = ''
+        if mostra_veic_vendidos == 'N':
+            param_mostra_veic_vendidos = (" AND (veic.K_DATADEVENDA is Null AND veic.k_valordevenda is Null AND "
+                                          " (veic.k_numnf = '' OR veic.k_numnf is Null) AND (comprador.NOME = '' OR comprador.NOME is Null))")
+
+
+        sql_veic_venda = (
+            f'''
+            SELECT	veic.HANDLE			AS	handle_veic,
+                    veic.PLACANUMERO	AS	placa_veic,
+                    veic.TIPOVEICULO	AS	handle_tipo_veic,
+                    tipo_veic.NOME 		AS	desc_tipo_veic,
+                    veic.MARCA 			AS	handle_marca_veic,
+                    marca.NOME 			AS	desc_marca_veic,
+                    veic.MODELOVEICULO 	AS	handle_modelo_veic,
+                    modelos.NOME 		AS	desc_modelo_veic,
+                    YEAR(veic.ANO) 		AS	ano_veic,
+                    veic.RENAVAM 		AS	renavam_veic,
+                    veic.ESTADOCOMPRA 	AS	handle_estado_compra_veic,
+                    uf.SIGLA  			AS	estado_compra_veic,
+                    veic.FILIALMANUTENCAO 
+                                        AS	handle_filial_veic,
+                    fil.NOME 			AS	nome_filial_veic,
+                    veic.K_EIXO 		AS	eixo_veic,
+                    veic.ATIVO 			AS	status_ativo_veic,
+                    CAST(veic.K_DATADEVENDA AS DATE)
+                                        AS	data_venda_veic,
+                    veic.k_valordevenda
+                                        AS	val_venda_veic,
+                    veic.k_numnf		AS	num_nf_veic,
+                    veic.k_comprador	AS	handle_comprador_veic,		
+		            comprador.NOME		AS	nome_comprador_veic
+              FROM	MA_RECURSOS veic (NOLOCK)
+              LEFT	JOIN MF_VEICULOTIPOS tipo_veic (NOLOCK)
+                ON	(tipo_veic.HANDLE = veic.TIPOVEICULO)
+              LEFT 	JOIN MF_PARTEMARCAS marca (NOLOCK) 
+                ON	(marca.HANDLE = veic.MARCA)
+              LEFT 	JOIN MF_VEICULOMODELOS modelos (NOLOCK)
+                ON	(modelos.HANDLE = veic.MODELOVEICULO)
+              LEFT 	JOIN ESTADOS uf (NOLOCK)
+                ON	(uf.HANDLE = veic.ESTADOCOMPRA)
+              LEFT 	JOIN FILIAIS fil (NOLOCK)
+                ON	(fil.HANDLE = veic.FILIALMANUTENCAO)
+              LEFT 	JOIN GN_PESSOAS comprador (NOLOCK)
+                ON	(comprador.HANDLE = veic.k_comprador)
+             WHERE	veic.PROJETO = 128
+               AND  veic.EMPRESA  = 12
+               {param_mostra_veic_vendidos};
+             '''
+        )
+        cursor.execute(sql_veic_venda)
+        registros_cursor = cursor.fetchall()
+        for row in registros_cursor:
+            placa = {
+                'handle_veic': row.handle_veic,
+                'placa_veic': row.placa_veic,
+                'handle_tipo_veic': row.handle_tipo_veic,
+                'desc_tipo_veic': row.desc_tipo_veic,
+                'handle_marca_veic': row.handle_marca_veic,
+                'desc_marca_veic': row.desc_marca_veic,
+                'handle_modelo_veic': row.handle_modelo_veic,
+                'desc_modelo_veic': row.desc_modelo_veic,
+                'ano_veic': row.ano_veic,
+                'renavam_veic': row.renavam_veic,
+                'handle_estado_compra_veic': row.handle_estado_compra_veic,
+                'estado_compra_veic': row.estado_compra_veic,
+                'handle_filial_veic': row.handle_filial_veic,
+                'nome_filial_veic': row.nome_filial_veic,
+                'eixo_veic': row.eixo_veic,
+                'status_ativo_veic': row.status_ativo_veic,
+                'data_venda_veic': row.data_venda_veic,
+                'val_venda_veic': row.val_venda_veic,
+                'num_nf_veic': row.num_nf_veic,
+                'handle_comprador': row.handle_comprador_veic,
+                'nome_comprador': row.nome_comprador_veic
+            }
+            lista_veiculos_venda.append(placa)
+
+        '''Fecha componentes'''
+        cursor.close()
+        self.__conn.close()
+
+        return lista_veiculos_venda
+

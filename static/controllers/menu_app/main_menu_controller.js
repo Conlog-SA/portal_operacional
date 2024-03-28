@@ -97,7 +97,7 @@ $(document).on('click', 'a', function(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": "50vh", //770px
+                    "scrollY": false, //"50vh" 770px
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": false,

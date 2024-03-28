@@ -20,4 +20,6 @@ urlpatterns = [
          name='acessa_dash'),
     path('gera_dash_evolucao_precos', views.Gera_Dash_Evolucao_Precos_View.as_view(),
          name='gera_dash_evolucao_precos'),
+    path('salva_justificativa_item_compra', views.Form_Gera_Evolucao_Precos_View.as_view(),
+         name='salva_justificativa_item_compra'),
 ]

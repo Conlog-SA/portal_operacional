@@ -114,40 +114,62 @@ $(document).on('click','button', function(){
         let let_num_nota = $("#txt_pesq_numero_nota").val();
         let let_data_ini = $("#txt_data_ini_emissao_nota").val();
         let let_data_fim = $("#txt_data_fim_emissao_nota").val();
-        povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, let_num_nota, let_data_ini, let_data_fim, 0);
+        if ( (let_num_nota == '' && (let_data_ini == '' || let_data_fim == '')) || (let_data_ini == '' && let_data_fim == '')){
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Numero da nota ou período de pesquisa não informados!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        } else {
+            povoa_tab_notas_pesq_proc_nfe(let_tipo_doc, let_num_nota, let_data_ini, let_data_fim, 0);
+        }
+
     }
     else if ( nomeDoButton == 'btn_add_excecao' ) {
         var var_desc_operacao_excecao = $("#cb_operacoes").val().toString();
-        $.ajax({
-        type: 'POST',
-        url: '/contabil_operacoes_farol_ndd_app/add_excecao_operacao',
-        data: {
-            'desc_operacao_excecao' :   var_desc_operacao_excecao
-        },
-        dataType: 'json',
-        success: function (data) {
+        if(var_desc_operacao_excecao == ''){
             $.gritter.add({
                 title: 'Atenção!',
-                text: data.msg,
+                text: 'Nenhuma natureza selecionada!',
                 image: '/static/icons/triangle-exclamation-solid.svg',
                 sticky: false,
                 time: '',
             });
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_operacoes_farol_ndd_app/add_excecao_operacao',
+                data: {
+                    'desc_operacao_excecao' :   var_desc_operacao_excecao
+                },
+                dataType: 'json',
+                success: function (data) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: data.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
 
-            povoa_tab_excecoes_operacoes();
-            $("#cb_operacoes").selectpicker('val', '');
-            atualiza_cd_operacoes(data.lista_benner_sem_excecao);
-        },
-        error: function (request, status, error) {
-            $.gritter.add({
-                title: 'Atenção!',
-                text: error,
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
+                    povoa_tab_excecoes_operacoes();
+                    $("#cb_operacoes").selectpicker('val', '');
+                    atualiza_cd_operacoes(data.lista_benner_sem_excecao);
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
             });
-      }
-    });
+        }
+
     }
     else if ( nomeDoButton == 'btn_abre_model_excluir_excecao') {
         $("#btn_excluir_excecao_operacao").val(valButton);

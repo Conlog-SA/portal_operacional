@@ -40,39 +40,104 @@
               class="d-flex flex-column align-items-center justify-content-between cl_frm_conciliacao_com_benner"
               method="POST">
             <input type="hidden" id="hd_tipo_rel" value="R">
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex flex-column w-100 align-items-start" style="margin-right: 0.25rem;padding-right:0.25rem;">
+                    <label for="cb_resp_contas_comp_detalhado">
+                        Responsáveis contas
+                        <button type='button' id="btn_marcar_resp_contas_comp_detalhado"
+                                name="btn_marcar_resp_contas_comp_detalhado"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os responsáveis"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_resp_contas_comp_detalhado"
+                                name="btn_desmarcar_resp_contas_comp_detalhado"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
+                    </label>
+                    <select class="selectpicker form-control cl_cb_contas" id="cb_resp_contas_comp_detalhado"
+                            name="cb_resp_contas_comp_detalhado"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            multiple data-selected-text-format="count > 0"
+                            data-live-search="true" title="Selecione um responsável das contas">
+                        {% for usu in lista_usuarios_contabil %}
+                            <option value="{{usu.nome_usu}}" selected>
+                                Contas de : {{ usu.nome_usu }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-flex flex-column w-100 align-items-start" style="padding-right:0.25rem;margin-right: 0.25rem;">
+                    <label for="cb_pac_contas_comp_detalhado">
+                        Pacotes
+                        <button type='button' id="btn_marcar_pac_contas_comp_detalhado"
+                                name="btn_marcar_pac_contas_comp_detalhado"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os responsáveis"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_pac_contas_comp_detalhado"
+                                name="btn_desmarcar_pac_contas_comp_detalhado"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
+                    </label>
+                    <select class="selectpicker form-control cl_cb_contas" id="cb_pac_contas_comp_detalhado"
+                            name="cb_pac_contas_comp_detalhado"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            multiple data-selected-text-format="count > 0"
+                            data-live-search="true" title="Selecione um responsável das contas">
+                        {% for pac in lista_pacotes %}
+                            <option value="{{pac.cod_pacote_conta}}" selected>
+                                {{ pac.desc_pacote_conta }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="d-flex flex-column w-100 align-items-between">
+                    <fieldset>
+                    <legend style="font-size: 1.05rem;">Modelo</legend>
+                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                        <label class="form-check-label">
+                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                               id="rd_modelo_conta_conc_comp_benner_1">
+                            Modelo 1
+                        </label>
+                    </div>
+
+                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                        <label class="form-check-label">
+                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                               id="rd_modelo_conta_conc_comp_benner_2">
+                            Modelo 2
+                        </label>
+                    </div>
+
+                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                        <label class="form-check-label">
+                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                               id="rd_modelo_conta_conc_comp_benner_3">
+                            Modelo 3
+                        </label>
+                    </div>
+                </fieldset>
+                </div>
+            </div>
+
             <div class="d-flex justify-content-between align-items-between w-100">
                 <hr class="hr_title">
             </div>
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
 
-                <div class="d-flex flex-column w-100 ">
-                    <fieldset>
-                        <legend style="font-size: 1.05rem;">Modelo</legend>
-                        <div class="form-check-inline" style="font-size: 1.25rem;">
-                            <label class="form-check-label">
-                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                   id="rd_modelo_conta_conc_comp_benner_1">
-                                Modelo 1
-                            </label>
-                        </div>
-
-                        <div class="form-check-inline" style="font-size: 1.25rem;">
-                            <label class="form-check-label">
-                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                   id="rd_modelo_conta_conc_comp_benner_2">
-                                Modelo 2
-                            </label>
-                        </div>
-
-                        <div class="form-check-inline" style="font-size: 1.25rem;">
-                            <label class="form-check-label">
-                                <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                   id="rd_modelo_conta_conc_comp_benner_3">
-                                Modelo 3
-                            </label>
-                        </div>
-                    </fieldset>
-                </div>
                 <div class="d-flex flex-column w-100 align-items-start">
                     <label>
                         <button type='button' id="btn_marcar_contas_comp_benner"

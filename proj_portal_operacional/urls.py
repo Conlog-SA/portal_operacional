@@ -38,7 +38,12 @@ urlpatterns = [
     path('safety_gab_op_emp_app/', include('apps.safety_gab_op_emp_app.urls')),
     path('phishing_app/', include('apps.phishing_app.urls')),
     path('safety_relatos_app/', include('apps.safety_relatos_app.urls')),
+<<<<<<< HEAD
     path('safety_login_colaboradores_app/', include('apps.safety_login_colaboradores_app.urls')),
+=======
+    path('frota_vendas_veic_app/', include('apps.frota_vendas_veic_app.urls')),
+    path('dre_app/', include('apps.dre_app.urls')),
+>>>>>>> 1e626a41d08c4194e40742f3d62563a270b625bf
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

@@ -1,6 +1,6 @@
 $(document).on('change','.selectpicker',function(){
     let nome_select = $(this).attr('name');
-    console.log(nome_select)
+
     if (nome_select == "tipo_operador") {
         let cod_resposta = $(this).val();
         if (cod_resposta == 1) {

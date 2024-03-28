@@ -6,6 +6,7 @@ import decimal
 import shutil
 import traceback
 
+from _decimal import getcontext, Context
 from django.db.models import Q, Count
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
@@ -602,7 +603,6 @@ class Form_Cad_Contrato_View(View):
                     primeiro_dia_mes = data_ini.replace(day=int(dia_util_form))
 
 
-                #print(str(i) + ' - ' + str(primeiro_dia_mes.strftime('%Y-%m-%d')))  # Exibe a data formatada
                 handle_parc_random = ''.join(str(random.randint(1,9))  for _ in range(6))
                 num_parc += 1
                 tipo_prazo = ''
@@ -1100,21 +1100,42 @@ class Form_Cad_Parcelas_Contrato_View(View):
 
 class Form_Conciliacao_Comp_Benner_Resumo_View(View):
     def get(self, request):
-        #lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_usuarios_contabil = (Usuario.objects
+                                   .filter(sala='CON',
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
+
+        lista_pacotes = Pacote_Conta.objects.all()
+
         contexto = {
             'lista_contas_modelo_1': lista_contas_modelo_1,
-            'desc_menu': 'Conciliação Composição x Benner Resumido'
+            'desc_menu': 'Conciliação Composição x Benner Resumido',
+            'lista_usuarios_contabil': lista_usuarios_contabil,
+            'lista_pacotes': lista_pacotes
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner.html', contexto)
 
 class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
     def get(self, request):
-        #lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_usuarios_contabil = (Usuario.objects
+                                   .filter(sala='CON',
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
+
+        lista_pacotes = Pacote_Conta.objects.all()
         contexto = {
             'lista_contas_modelo_1': lista_contas_modelo_1,
-            'desc_menu': 'Conciliação Composição x Benner Detalhado'
+            'desc_menu': 'Conciliação Composição x Benner Detalhado',
+            'lista_usuarios_contabil': lista_usuarios_contabil,
+            'lista_pacotes': lista_pacotes
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
@@ -1218,25 +1239,30 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                             'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
                         }
                         lista_contas.append(conta)
-                    '''for nome in nome_resp_frm.split(','):
-                        lista_resp_contas = (Responsaveis_Conta.objects
-                                        .filter((Q(resp_composicao__in=nome) | Q(resp_validacao__in=nome)),
-                                                cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
-                                        .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
-                                                'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
-                        for reg in lista_resp_contas:
-                            conta = {
-                                'cod_conta': reg['cod_conta__cod_conta'],
-                                'desc_conta': reg['cod_conta__desc_conta'],
-                                'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
-                                'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
-                            }
-                            lista_contas.append(conta)'''
                 else:
                     lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
                                         .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                                 'cod_red_conta_contabil_lp'))
+            elif tipo_rel in ('D', 'R'):
+                nome_resp_frm = request.GET['nome_resp']
+                lista_pacotes = request.GET['lista_pacotes']
 
+                lista_resp_contas = (Responsaveis_Conta.objects
+                                     .filter(
+                    (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
+                    cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_pacotes.split(','))
+                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
+                                             'cod_conta__cod_red_conta_contabil_cp',
+                                             'cod_conta__cod_red_conta_contabil_lp'))
+                for reg in lista_resp_contas:
+                    conta = {
+                        'cod_conta': reg['cod_conta__cod_conta'],
+                        'desc_conta': reg['cod_conta__desc_conta'],
+                        'cod_red_conta_contabil_cp': reg['cod_conta__cod_red_conta_contabil_cp'],
+                        'cod_red_conta_contabil_lp': reg['cod_conta__cod_red_conta_contabil_lp']
+                    }
+                    lista_contas.append(conta)
             else:
                 lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
                                     .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
@@ -1821,8 +1847,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                 ultimo_dia_data_competencia_mais_12_meses_date]) \
                 .aggregate(sum_principal=Sum('val_principal'))
 
-            print(data_competencia_mais_um)
-            print(ultimo_dia_data_competencia_mais_12_meses_date)
+
             parcelas = Parcela_Contrato.objects \
                 .filter(cod_contrato=contrato,
                         data_vencimento__range=[data_competencia_mais_um,
@@ -1840,8 +1865,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         data_vencimento__lte=data_competencia_mais_um) \
                 .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
 
-            for parc in val_parc_atrasadas:
-                print(parc.ordem_parcela)
+
 
             val_composicao_ano = 0
             if val_composicao_ano_dic['sum_principal'] != None:
@@ -2231,7 +2255,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
         uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_imp)
         df_conteudo_arqv = pd.read_excel(uploaded_file_url)
         df_conteudo_arqv.fillna('', inplace=True)
-        #print(df_conteudo_arqv)
+
         obj_arqv_pesq = (Arquivo_Docs_Pac_Contas_Modelo_1.objects
                          .filter(
             nome_arqv_original = str(arquivo_form.name),
@@ -2307,7 +2331,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2324,7 +2348,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2348,7 +2372,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2381,7 +2405,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
                     historico = row['Histórico'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2413,7 +2437,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_dif=row['Diferença'],
                     obs=row['Observação'],
                     historico=row['Histórico'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta=Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                      cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo=obj_arqv
@@ -2435,7 +2459,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_dif = row['Diferença'],
                     historico = row['Histórico'],
                     obs = row['Observação'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta=Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                      cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo=obj_arqv
@@ -2457,7 +2481,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_dif=row['Diferença'],
                     historico=row['Histórico'],
                     obs=row['Observação'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta=Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                      cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo=obj_arqv
@@ -2471,21 +2495,63 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     else:
                         data_entrada = row['Data Entrada']
 
+                decimal_places = 2
+                context = decimal.Context(prec=12)
+
+                val_depreciacao_acum = 0.00
+                if row['Depreciação Acumulada'] != None:
+                    val_depreciacao_acum = decimal.Decimal(row['Depreciação Acumulada'])
+                    val_depreciacao_acum = val_depreciacao_acum.quantize(decimal.Decimal(1).scaleb(-decimal_places),
+                                                                         context=context)
+
+                val_rel = 0.00
+                if row['Valor Relatório'] != None:
+                    val_rel = decimal.Decimal(row['Valor Relatório'])
+                    val_rel = val_rel.quantize(decimal.Decimal(1).scaleb(-decimal_places),
+                                                                         context=context)
+
+                val_razao = 0.00
+                if row['Valor Razão'] != None:
+                    val_razao = decimal.Decimal(row['Valor Razão'])
+                    val_razao = val_razao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=Context(prec=12))
+
+                val_aquisicao = 0.00
+                if row['Valor aquisição'] != None:
+                    val_aquisicao = decimal.Decimal(row['Valor aquisição'])
+                    val_aquisicao = val_aquisicao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+                val_liq = 0.00
+                if row['Valor Liquido'] != None:
+                    val_liq = decimal.Decimal(row['Valor Liquido'])
+                    val_liq = val_liq.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+                taxa_depreciacao = 0.00
+                if row['Taxa Depreciação'] != None:
+                    taxa_depreciacao = decimal.Decimal(row['Taxa Depreciação'])
+                    taxa_depreciacao = taxa_depreciacao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
+
+
+                val_dif = 0.00
+                if row['Diferença'] != None:
+                    val_dif = decimal.Decimal(row['Diferença'])
+                    val_dif = val_dif.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
+
                 doc = Docs_Pac_Imobilizado_M1(
                     data_entrada=data_entrada,
                     plaqueta = row['Plaqueta'],
                     desc_imobilizado = row['Descrição Imobilizado'],
-                    val_aquisicao = row['Valor aquisição'],
+                    val_aquisicao = val_aquisicao,
                     num_doc = row['Nº Documento'],
                     nome_fornecedor = row['Nome Fornecedor'],
-                    depreciacao_acum = row['Depreciação Acumulada'],
-                    val_liq = row['Valor Liquido'],
-                    taxa_depreciacao = row['Taxa Depreciação'],
-                    val_rel = row['Valor Relatório'],
-                    val_razao = row['Valor Razão'],
-                    val_dif = row['Diferença'],
+                    depreciacao_acum = val_depreciacao_acum,
+                    val_liq = val_liq,
+                    taxa_depreciacao = taxa_depreciacao,
+                    val_rel = val_rel,
+                    val_razao = val_razao,
+                    val_dif = val_dif,
                     obs = row['Observação'],
-                    cod_conta=Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta=Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial=Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                      cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo=obj_arqv
@@ -2507,7 +2573,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_razao = row['Valor Razão'],
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2538,7 +2604,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
                     val_dif = row['Diferença'],
                     obs = row['Observação'],
                     historico = row['Histórico'],
-                    cod_conta = Conta.objects.get(pk=row['Cód. Conta']),
+                    cod_conta = Conta.objects.filter(Q(cod_red_conta_contabil_cp = row['Cód. Conta'])).first(),
                     cod_filial = Filial.objects.filter(cod_reduzido=row['Nº Filial(Cód. Reduzido)'],
                                                        cod_empresa=obj_usu.cod_filial.cod_empresa).first(),
                     cod_arquivo = obj_arqv
@@ -2551,14 +2617,13 @@ class Form_Imp_Arq_Contas_M1_View(View):
             msg = f'Erro ao importar arquivo. Contate o desenvolvedor. Erro: {erro}!'
             print(traceback_str)'''
 
-
-
-
         dados = dict()
         dados = {
             'msg': msg
         }
         return JsonResponse(dados, safe=False)
+
+
 
 class Form_Pesq_Arq_Contas_M1_View(View):
     def get(self, request):
@@ -2656,6 +2721,19 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        '''Calcula valor do balancete da conta'''
+        ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_form.split('-')[0]),
+                                                      int(competencia_form.split('-')[1]))[1]
+        ultimo_dia_mes_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]),
+                                       ultimo_dia_mes_calendar)
+        primeiro_dia_ano = datetime(int(competencia_form.split('-')[0]), 1, 1)
+
+        val_balancete = ConexaoBancoBenner() \
+            .retorna_balancete_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
+                                     obj_conta.handle_conta_contabil_cp,
+                                     primeiro_dia_ano,
+                                     ultimo_dia_mes_date)
 
         lista_docs = None
         resumo_docs = None
@@ -2948,15 +3026,21 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
 
         if len(resumo_docs) > 0:
             for reg in resumo_docs:
+                reg['val_balancete'] = locale.currency(round(float(val_balancete), 2), grouping=True,
+                                                            symbol=None)
+                val_composicao = 0
                 '''Configura campos data e valores'''
                 if reg['tt_val_rel'] != None:
                     if type(reg['tt_val_rel']) == str:
+                        val_composicao = float(reg['tt_val_rel'].replace('.', '').replace(',', '.'))
                         reg['tt_val_rel'] = locale.currency(
                             round(float(reg['tt_val_rel'].replace('.', '').replace(',', '.')), 2), grouping=True,
                             symbol=None)
                     else:
+                        val_composicao = float(reg['tt_val_rel'])
                         reg['tt_val_rel'] = locale.currency(round(float(reg['tt_val_rel']), 2), grouping=True,
                                                             symbol=None)
+
                 if reg['tt_val_razao'] != None:
                     if type(reg['tt_val_razao']) == str:
                         reg['tt_val_razao'] = locale.currency(
@@ -2972,6 +3056,13 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                             symbol=None)
                     else:
                         reg['tt_dif'] = locale.currency(round(float(reg['tt_dif']), 2), grouping=True,
+                                                        symbol=None)
+                val_dif_comp_bal = 0
+                if val_balancete < 0:
+                    val_dif_comp_bal = val_composicao + val_balancete
+                else:
+                    val_dif_comp_bal = val_composicao - val_balancete
+                reg['val_dif_comp_bal'] = locale.currency(round(float(val_dif_comp_bal), 2), grouping=True,
                                                         symbol=None)
 
 
@@ -3362,10 +3453,13 @@ class Importa_Anexos_Contas_View(View):
         for arq in lista_arquivos:
             #caminho_arq = f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/' + arq
             caminho_arq = diretorio_arquivos_postados + arq
-            cod_conta = arq.split('_')[0]
+            #cod_conta = arq.split('_')[0]
+            cod_red_conta_contabil = arq.split('_')[0]
             cod_contrato = arq.split('_')[1]
             competencia_str = arq.split('_')[3].split('.')[0] + '-' + arq.split('_')[2]
-            obj_conta = Conta.objects.get(pk=cod_conta)
+            #obj_conta = Conta.objects.get(pk=cod_conta)
+            obj_conta = Conta.objects.filter(
+                (Q(cod_red_conta_contabil_cp=cod_red_conta_contabil) | Q(cod_red_conta_contabil_lp=cod_red_conta_contabil))).first()
             obj_contrato = None
             cod_contrato_param = ''
             if obj_conta.tipo_modelo == 1:
@@ -4783,5 +4877,16 @@ class Form_Vincula_Contas_Resp_View(View):
         return JsonResponse(data, safe=False)
 
 
+class Comp_Pac_Contas_Comp_Detalhado_View(View):
+    def get(self, request):
+        lista_nome_resp_frm = request.GET['lista_nome_resp']
 
+        lista_pacote = list(Responsaveis_Conta.objects.filter(
+            Q(resp_composicao__in=lista_nome_resp_frm.split(',')) | Q(resp_validacao__in=lista_nome_resp_frm.split(','))
+        ).values('cod_conta__cod_pacote_conta__cod_pacote_conta', 'cod_conta__cod_pacote_conta__desc_pacote_conta').distinct())
+        data = dict()
+        data = {
+            'lista_pacote': lista_pacote
+        }
+        return JsonResponse(data, safe=False)
 

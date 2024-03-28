@@ -14,8 +14,7 @@ from querystring_parser import parser
 
 from apps.benner_app.views import ConexaoBancoBenner
 from apps.usuario_app.models import Usuario
-from apps.suprimentos_evolucao_precos_app.models import Compra_Auditada
-
+from apps.suprimentos_evolucao_precos_app.models import Compra_Auditada, Justificativa_Compra
 
 
 class Form_Gera_Evolucao_Precos_View(View):
@@ -35,6 +34,45 @@ class Form_Gera_Evolucao_Precos_View(View):
             'id_menu_pai': 45
         }
         return render(request, 'suprimentos_evolucao_precos_app/form_gera_evolucao_precos.html',context)
+
+
+    def post(self, request):
+        handle_item_compra_frm = request.POST['handle_item_compra']
+        justificativa_frm = request.POST['justificativa']
+
+        id_usu_session = request.session['cod_usuario_logado']
+        usu_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
+        msg = ''
+        obj_justificativa = Justificativa_Compra.objects.filter(handle_itens_compra=handle_item_compra_frm).first()
+        if obj_justificativa == None:
+            obj_justificativa = Justificativa_Compra(
+                justificativa = justificativa_frm,
+                eh_ativa = 'S',
+                handle_itens_compra = handle_item_compra_frm,
+                cod_usu = usu_logado
+            )
+            obj_justificativa.save()
+            msg = 'Compra justificada'
+        else:
+            data_hora_atual = datetime.now()
+            data_atual_yyyy_mm_dd = data_hora_atual.strftime('%Y-%m-%d')
+
+            obj_justificativa.justificativa = justificativa_frm
+            obj_justificativa.data_cad = data_atual_yyyy_mm_dd
+            obj_justificativa.cod_usu = usu_logado
+            obj_justificativa.save()
+            msg = 'Justificativa atualizada'
+
+        data = dict()
+        data = {
+            'msg' : msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+
+
+
 
 
 class Comp_Filiais_Evolucao_Precos_View(View):
@@ -74,6 +112,12 @@ class Form_Compras_Item_Filial_View(View):
                 dat_req = datetime.strftime(reg.data_req, '%d-%m-%Y')
                 tip_compra_req = reg.desc_tipo_compra_req
 
+            justificativa_item_compra_registrada = 'Não justificado'
+            obj_justificativa = Justificativa_Compra.objects.filter(handle_itens_compra=reg.handle_itens_compra,
+                                                                    eh_ativa='S').last()
+            if obj_justificativa != None:
+                justificativa_item_compra_registrada = obj_justificativa.justificativa
+
             compra = {
                 'handle_filial': reg.handle_filial_compra,
                 'cod_ref_prod': reg.cod_ref_prod,
@@ -96,7 +140,8 @@ class Form_Compras_Item_Filial_View(View):
                 'status_req': reg.status_req,
                 'tipo_compra_req': tip_compra_req,
                 'handle_itens_compra': reg.handle_itens_compra,
-                'handle_produto': reg.handle_produto
+                'handle_produto': reg.handle_produto,
+                'justificativa_item_compra_registrada': justificativa_item_compra_registrada
             }
             compras_item.append(compra)
         data = dict()
