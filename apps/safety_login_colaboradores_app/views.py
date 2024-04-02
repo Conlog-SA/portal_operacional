@@ -13,11 +13,12 @@ from apps.usuario_app.models import Usu_Menu
 class Login_Colaborador(View):
     @csrf_exempt
     def get(self, request):
-        return render(request, 'safety_login_colaboradores_app/form_safe_login.html')
+        return render(request, 'safety_login_colaboradores_app/safe_base_container.html')
 
     @csrf_exempt
     def post(self, request):
-        if 'cod_colaborador' in request.session:
+        flag_voltar = request.POST.get('flag_voltar', '0')
+        if '1' in flag_voltar:
             return redirect('safe_main_menu')
         cpf_colaborador = request.POST['cpf_colaborador']
         data_nasc_colab = request.POST['data_nasc_colaborador']
@@ -27,10 +28,11 @@ class Login_Colaborador(View):
         colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab)
         if colaboradores.first() != None and colaboradores.count() == 1:
             request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
+            return redirect('safe_main_menu')
         else:
-            request.session['msg_erro'] = 'Colaborador não encontrado.'
+            msg_erro = 'Colaborador não existente/cadastrado.'
+        return HttpResponse(msg_erro, status=401)
 
-        return redirect('safe_main_menu')
 class Menu_Safe(View):
     @csrf_exempt
     def get(self, request):
@@ -46,15 +48,15 @@ class Menu_Safe(View):
 
     @csrf_exempt
     def post(self, request):
-        tipo_check = request.POST['tipo_check']
+        tipo_check = request.POST.get('tipo_check', '')
 
         url = ''
-        if tipo_check == '0':
-            url = 'empilhadeira_check'
-        if tipo_check == '1':
-            url = 'relatos_check'
         if tipo_check == '999':
-            url = 'safe_login_colab'
+            return render(request, 'safety_login_colaboradores_app/form_safe_login.html')
+        elif tipo_check == '0':
+            url = 'empilhadeira_check'
+        elif tipo_check == '1':
+            url = 'relatos_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):
@@ -62,11 +64,17 @@ class Lista_Colaboradores(View):
     def get(self, request):
         cod_unidade = request.GET['cod_unidade']
 
-        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='U') |
-                            Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
+        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='U'))
+        #                       | Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
         dict_colaboradores_options = []
         for colaborador in lista_colaboradores:
             dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
+
+        #if not dict_colaboradores_options:
+        #    data = {
+        #        'error_message': 'Não foram encontrados colaboradores para a unidade selecionada!'
+        #    }
+        #    return JsonResponse(data, status=404)
 
         #return HttpResponse(str_operadores_options)
 

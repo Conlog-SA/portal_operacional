@@ -27,18 +27,31 @@ $(document).on('change','.selectpicker',function(){
                 },
                 dataType: 'json',
                 success: function (dados) {
-                    console.log(dados)
+                    console.log(dados);
                     $('#nome_relatado option').remove();
                     dados.lista_colaboradores.forEach(operacao => {
                         $("#nome_relatado").append("<option value='"+
                         operacao.cod_colaborador+"'>"+operacao.nome_colaborador+"</option>");
                     });
+                    if ($('#nome_relatado option').length == 0) {
+                        $('#situacao_envolvido').val("4");
+                        $('#situacao_envolvido').selectpicker('refresh');
+                        $('#situacao_envolvido').trigger('change');
 
-                    $('#nome_relatado').prop('disabled',false);
-                    $('#div_relatado').removeClass('hidden-div');
-                    $('#nome_relatado').selectpicker('refresh');
-                    $('#div_relatado_terceiro').addClass('hidden-div');
-                    $('#nome_relatado_terceiro').val('');
+                        $.gritter.add({
+                            title: 'Erro!',
+                            text: 'Não foram encontrados colaboradores para a unidade selecionada!',
+                            image: '/static/icons/triangle-exclamation-solid.svg',
+                            sticky: false,
+                            time: '',
+                        });
+                    } else {
+                        $('#nome_relatado').prop('disabled',false);
+                        $('#div_relatado').removeClass('hidden-div');
+                        $('#nome_relatado').selectpicker('refresh');
+                        $('#div_relatado_terceiro').addClass('hidden-div');
+                        $('#nome_relatado_terceiro').val('');
+                    };
                 }
             });
         }
@@ -84,7 +97,7 @@ $(document).on('click','.create-check-relatos' , function(){
     let let_processo_relato = $('#processo_relato').val();
     let let_descricao_situacao = $('#descricao_situacao').val();
     let let_nome_relatado = "";
-    console.log(let_situacao_envolvido);
+
     if (let_situacao_envolvido == '1') {
         let_nome_relatado = $('#nome_relatado').val();
         console.log('entrou no 1');
@@ -93,25 +106,61 @@ $(document).on('click','.create-check-relatos' , function(){
         let_nome_relatado = $('#nome_relatado_terceiro').val();
         console.log('entrou no 2');
     }
-    console.log(let_nome_relatado);
-    $.ajax({
-        type: 'POST',
-        url: '/safety_relatos_app/relatos_check',
-        data: {
-            'unidade_relato'   :   let_unidade_relato,
-            'tipo_relato'   :   let_tipo_relato,
-            'situacao_envolvido'   :   let_situacao_envolvido,
-            'nome_relatado'   :   let_nome_relatado,
-            'local_relato'   :   let_local_relato,
-            'processo_relato' : let_processo_relato,
-            'atividade_relato' : let_atividade_relato,
-            'situacao_relato' : let_descricao_situacao
-        },
-        success: function (dados) {
-            $("#div_corpo_relatos").html(dados);
-            $("#div_corpo_relatos").css('background-color', 'rgba(0,0,0,0)')
-        }
-    });
+
+    msg_erro = '';
+    if (let_unidade_relato == '') {
+        msg_erro += 'Selecione uma filial!<br>';
+    }
+    if (let_tipo_relato == '') {
+        msg_erro += 'Selecione um tipo de relato!<br>';
+    }
+    if (let_situacao_envolvido == '' || let_situacao_envolvido == null) {
+        msg_erro += 'Informe a situação do relatado!<br>';
+    }
+    if (let_nome_relatado == '' || let_nome_relatado == null) {
+        msg_erro += 'Informe o nome do relatado!<br>';
+    }
+    if (let_local_relato == '') {
+        msg_erro += 'Informe o local do relato!<br>';
+    }
+    if (let_processo_relato == '' || let_processo_relato == null) {
+        msg_erro += 'Informe o processo do relato!<br>';
+    }
+    if (let_atividade_relato == '' || let_atividade_relato == null) {
+        msg_erro += 'Informe a atividade do relato!<br>';
+    }
+    if (let_descricao_situacao.length <= 299) {
+        msg_erro += 'Descreva a situação (min. 300 caracteres)';
+    }
+    console.log(msg_erro);
+    if (msg_erro == '') {
+        $.ajax({
+            type: 'POST',
+            url: '/safety_relatos_app/relatos_check',
+            data: {
+                'unidade_relato'   :   let_unidade_relato,
+                'tipo_relato'   :   let_tipo_relato,
+                'situacao_envolvido'   :   let_situacao_envolvido,
+                'nome_relatado'   :   let_nome_relatado,
+                'local_relato'   :   let_local_relato,
+                'processo_relato' : let_processo_relato,
+                'atividade_relato' : let_atividade_relato,
+                'situacao_relato' : let_descricao_situacao
+            },
+            success: function (dados) {
+                $("#div_corpo_relatos").html(dados);
+                $("#div_corpo_relatos").css('background-color', 'rgba(0,0,0,0)')
+            }
+        });
+    } else {
+        $.gritter.add({
+            title: 'Erro!',
+            text: msg_erro,
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+    }
 });
 
 

@@ -23,7 +23,7 @@ class Layout_Check(models.Model):
 class Item_Check(models.Model):
     cod_item_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     desc_check = models.CharField(max_length=300, blank=False, null=False)
-    tipo_resposta = models.IntegerField(blank=False, null=False)
+    tipo_resposta = models.IntegerField(blank=True, null=True)
     data_inclusao = models.DateTimeField(blank=True, null=True)
     cod_usuario = models.IntegerField(blank=False, null=False)
     data_inicio = models.DateTimeField(blank=True, null=True)

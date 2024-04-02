@@ -17,49 +17,87 @@ $(document).on('click','button', function(){
         let valPeriodicidade = $("#periodicidade_new_check").val();
         let valTipo = $("#tipo_check").val();
 
-        $.ajax({
-            type:"POST",
-            url: '/safety_layout_checklist_app/registra_check',
-            dataType: 'json',
-            data: {
-                'cod_check'      :   valPickerCheckExistente,
-                'desc_check'     :   valDescricao,
-                'versao'         :   valVersao,
-                'data_inicio'     :   valInicio,
-                'data_desativacao'     :   valDesativar,
-                'medida_periodicidade'         :   valMedidaPeriodicidade,
-                'periodicidade'         :   valPeriodicidade,
-                'tipo' :    valTipo
-             },
-            success: function (data) {
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: data.msg,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-                if (data.novo_check == true) {
-                    $("#modelos_existentes").append("<option selected='true' value='"+
-                            data.cod_check+"'>"+data.desc_check+"</option>");
-                    $("#modelos_existentes").val(data.cod_check);
+        msg_erro = '';
+        if (valDescricao == '') {
+            msg_erro += 'Informe uma descrição para o check!<br>';
+        }
+        valInicioDate = new Date(valInicio);
+        if (isNaN(valInicioDate.getDay()) || isNaN(valInicioDate.getMonth()) || isNaN(valInicioDate.getFullYear())) {
+            msg_erro += 'Data de inicio inválida!<br>';
+        }
+        valDesativarDate = new Date(valDesativar);
+        if (isNaN(valDesativarDate.getDay()) || isNaN(valDesativarDate.getMonth()) || isNaN(valDesativarDate.getFullYear())) {
+            msg_erro += 'Data final inválida!<br>';
+        }
+        if (valMedidaPeriodicidade == '' || valMedidaPeriodicidade == null) {
+            msg_erro += 'Informe uma medida para a periodicidade!<br>';
+        }
+        if (valPeriodicidade == '') {
+            msg_erro += 'Informe um valor para a periodicidade!<br>';
+        } else if (isNaN(valPeriodicidade)) {
+            msg_erro += 'A periodicidade deve ser um número!<br>';
+        }
+
+        if (valVersao == '') {
+            msg_erro += 'Informe uma versão para o check!<br>';
+        } else if (isNaN(valVersao)) {
+            msg_erro += 'A versão deve ser um número!<br>'
+        }
+        if (msg_erro == '') {
+            $.ajax({
+                type:"POST",
+                url: '/safety_layout_checklist_app/registra_check',
+                dataType: 'json',
+                data: {
+                    'cod_check'      :   valPickerCheckExistente,
+                    'desc_check'     :   valDescricao,
+                    'versao'         :   valVersao,
+                    'data_inicio'     :   valInicio,
+                    'data_desativacao'     :   valDesativar,
+                    'medida_periodicidade'         :   valMedidaPeriodicidade,
+                    'periodicidade'         :   valPeriodicidade,
+                    'tipo' :    valTipo
+                 },
+                success: function (data) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: data.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    if (data.novo_check == true) {
+                        $("#modelos_existentes").append("<option selected='true' value='"+
+                                data.cod_check+"'>"+data.desc_check+"</option>");
+                        $("#modelos_existentes").val(data.cod_check);
+                    }
+                    else {
+                        $("#modelos_existentes").find(":selected").text(data.desc_check)
+                    }
+                    $('#modelos_existentes').selectpicker('refresh');
+                    $("#modelos_existentes").trigger("change");
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
                 }
-                else {
-                    $("#modelos_existentes").find(":selected").text(data.desc_check)
-                }
-                $('#modelos_existentes').selectpicker('refresh');
-                $("#modelos_existentes").trigger("change");
-            },
-            error: function (request, status, error) {
-			    $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-        });
+            });
+        }
+        else {
+            $.gritter.add({
+                title: 'Erro!',
+                text: msg_erro,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
     }
 
     else if ( nomeDoButton == 'btn_reset_check' ) {
@@ -215,9 +253,37 @@ $(document).on('click','.ui-sortable-handle', function(){
                 $('#descricao_item_check').val(dados.item_selecionado.desc_check);
                 $('#select_tipo_item').val(dados.item_selecionado.tipo_item);
                 $('#select_tipo_item').selectpicker('refresh');
-                $('#select_tipo_resposta').val(dados.item_selecionado.tipo_resposta);
-                $('#select_tipo_resposta').selectpicker('refresh');
-                $("#select_tipo_resposta").trigger("change");
+                if (dados.item_selecionado.tipo_item == 1) {
+                    $('#select_tipo_resposta').prop('disabled',false);
+                    $('#select_tipo_resposta').val(dados.item_selecionado.tipo_resposta);
+                    $('#select_tipo_resposta').selectpicker('refresh');
+                    $("#select_tipo_resposta").trigger("change");
+
+                    $('#obs_imagem_check_box').prop('disabled',false);
+                    $('#resposta_obrigatoria_check_box').prop('disabled',false);
+
+                    let CheckTrueOrFalse = false;
+                    if (dados.item_selecionado.campo_obs_img == 1) {
+                        CheckTrueOrFalse = true;
+                    }
+                    $('#obs_imagem_check_box').prop('checked', CheckTrueOrFalse);
+                    let CheckTrueOrFalseObg = false;
+                    if (dados.item_selecionado.obrigatorio == 1) {
+                        CheckTrueOrFalseObg = true;
+                    }
+                    $('#resposta_obrigatoria_check_box').prop('checked', CheckTrueOrFalseObg);
+                }
+                else if (dados.item_selecionado.tipo_item == 2) {
+                    $('#select_tipo_resposta').prop('disabled',true);
+                    $('#select_tipo_resposta').val('');
+                    $('#select_tipo_resposta').selectpicker('refresh');
+
+                    $('#obs_imagem_check_box').prop('disabled',true);
+                    $('#obs_imagem_check_box').prop('checked', false);
+                    $('#resposta_obrigatoria_check_box').prop('disabled',true);
+                    $('#resposta_obrigatoria_check_box').prop('checked', false);
+                }
+
                 $('#input_ordem_check').val(dados.item_selecionado.ordem_item);
                 $('#desativar_item_date').val(desativar);
                 $('#inicio_item_date').val(inicio);
@@ -225,16 +291,6 @@ $(document).on('click','.ui-sortable-handle', function(){
                 $('#btn_new_item').text("Editar Item");
                 $('#btn_new_item').prepend('<i class="fa-solid fa-file-circle-plus" style="margin-right:5px"></i>');
                 $('#btn_reset_item').attr("hidden",false);
-                let CheckTrueOrFalse = false;
-                if (dados.item_selecionado.campo_obs_img == 1) {
-                    CheckTrueOrFalse = true;
-                }
-                $('#obs_imagem_check_box').prop('checked', CheckTrueOrFalse);
-                let CheckTrueOrFalseObg = false;
-                if (dados.item_selecionado.obrigatorio == 1) {
-                    CheckTrueOrFalseObg = true;
-                }
-                $('#resposta_obrigatoria_check_box').prop('checked', CheckTrueOrFalseObg);
             }
     });
 });
@@ -246,7 +302,29 @@ $(document).on('change','.selectpicker',function(){
         $('#filial_check_aplicado').val('');
         $('#filial_check_aplicado').selectpicker('refresh');
 
-        $('#tab_frm_checks_aplicados').clear();
+        $('#tab_frm_checks_aplicados').empty();
+
+
+        let cod_tipo = $(this).val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/safety_layout_checklist_app/lista_check',
+            data: {
+                'cod_tipo'   :   cod_tipo
+            },
+            dataType: 'json',
+            success: function (dados) {
+                console.log(dados)
+                $('#modelos_existentes option').remove();
+                dados.lista_checks.forEach(check => {
+                    $("#modelos_existentes").append("<option selected='false' value='"+
+                    check.cod_check+"'>"+check.desc_check+"</option>");
+                    $('#modelos_existentes').val('');
+                    $('#modelos_existentes').selectpicker('refresh');
+                });
+            }
+        })
     }
 
     if (nome_select == "modelos_existentes") {
@@ -464,6 +542,30 @@ $(document).on('change','.selectpicker',function(){
         });
     }
 
+    if (nome_select == "select_tipo_item") {
+        let tipo_resposta = $(this).val();
+        if (tipo_resposta == 1) {
+            $('#select_tipo_resposta').prop('disabled',false);
+            $('#select_tipo_resposta').selectpicker('refresh');
+            $("#select_tipo_resposta").trigger("change");
+
+            $('#obs_imagem_check_box').prop('disabled',false);
+            $('#resposta_obrigatoria_check_box').prop('disabled',false);
+
+            $('#label_imagem_obs').text('Campos Imagem e OBS?');
+        }
+        else if (tipo_resposta == 2) {
+            $('#select_tipo_resposta').prop('disabled',true);
+            $('#select_tipo_resposta').val('');
+            $('#select_tipo_resposta').selectpicker('refresh');
+
+            $('#obs_imagem_check_box').prop('disabled',true);
+            $('#obs_imagem_check_box').prop('checked', false);
+            $('#resposta_obrigatoria_check_box').prop('disabled',true);
+            $('#resposta_obrigatoria_check_box').prop('checked', false);
+            $('#label_imagem_obs').text('Campo Imagem?');
+        }
+    }
     if (nome_select == "select_tipo_resposta") {
         let tipo_resposta = $(this).val();
         if (tipo_resposta == 1) {
@@ -520,7 +622,8 @@ $(document).on('change','select.filial-check-aplicado' , function(event){
                     let let_checks_aplicados = [
                         reg.cod_checks_aplicados,
                         reg.desc_check,
-                        reg.nome_colaborador,
+                        reg.nome_colaborador_aplicante,
+                        reg.nome_colaborador_avaliado,
                         reg.data_registro,
                         reg.qtd_total,
                         reg.qtd_ok,
@@ -542,7 +645,8 @@ $(document).on('change','select.filial-check-aplicado' , function(event){
                     "columns": [
                             { title: "Codigo" },
                             { title: "Descrição" },
-                            { title: "Nome" },
+                            { title: "Avaliador" },
+                            { title: "Avaliado" },
                             { title: "Data registro" },
                             { title: "Qtd. Itens" },
                             { title: "Qtd. OK" },

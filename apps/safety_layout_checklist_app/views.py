@@ -269,7 +269,10 @@ class Form_Item_Check(View):
             data_desativar = request.POST['desativar_item']
             imagem_obs = request.POST['imagem_obs']
             resposta_obrigatoria = request.POST['resposta_obrigatoria']
-            tipo_resposta = request.POST['tipo_resposta']
+            if request.POST['tipo_resposta'] == '' and tipo_item == '2':
+                tipo_resposta = None
+            else:
+                tipo_resposta = request.POST['tipo_resposta']
             cod_usuario_sessao = request.session['cod_usuario_logado']
             if cod_item_check == '':
                 obj_item_check = Item_Check(
@@ -285,7 +288,6 @@ class Form_Item_Check(View):
                     tipo_item=tipo_item,
                     cod_check=Layout_Check.objects.get(cod_check=cod_check)
                 )
-                novo_check = True
                 mensagem = 'Inserção de Item feita com sucesso!'
             else:
                 obj_item_check = Item_Check.objects.get(pk=cod_item_check)
@@ -305,7 +307,6 @@ class Form_Item_Check(View):
                     obj_item_check.obrigatorio = resposta_obrigatoria
                 if obj_item_check.tipo_resposta != tipo_resposta:
                     obj_item_check.tipo_resposta = tipo_resposta
-                novo_check = False
                 mensagem = 'Edição de Item feita com sucesso!'
 
         lista_item_check = Item_Check.objects.filter(cod_check=cod_check)

@@ -4,12 +4,26 @@ $(document).on('change','.selectpicker',function(){
     if (nome_select == "tipo_operador") {
         let cod_resposta = $(this).val();
         if (cod_resposta == 1) {
-            $('#div_operador').removeClass('hidden-div');
-            $('#div_operador_terceiro').addClass('hidden-div');
-            $('#nome_operador_terceiro').val('');
+            if ($('#nome_operador option').length == 1) {
+                $('#tipo_operador').val("2");
+                $('#tipo_operador').selectpicker('refresh');
+                $('#tipo_operador').trigger('change');
 
-            $('#documento_operador').val('');
-            $('#documento_operador').prop('disabled',true);
+                $.gritter.add({
+                    title: 'Erro!',
+                    text: 'Não foram encontrados colaboradores para a unidade selecionada!',
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            } else {
+                $('#div_operador').removeClass('hidden-div');
+                $('#div_operador_terceiro').addClass('hidden-div');
+                $('#nome_operador_terceiro').val('');
+
+                $('#documento_operador').val('');
+                $('#documento_operador').prop('disabled',true);
+            }
         }
         if (cod_resposta == 2) {
             $('#div_operador').addClass('hidden-div');
@@ -60,6 +74,7 @@ $(document).on('change','.selectpicker',function(){
 
                     $('#nome_operador').prop('disabled',false);
                     $('#nome_operador').selectpicker('refresh');
+                    $('#tipo_operador').trigger('change');
                 }
             });
     }
@@ -94,29 +109,71 @@ $(document).on('click','.create-check' , function(){
     let let_doc_operador = $('#documento_operador').val();
     let let_model_empilhadeira = $('#modelo_empilhadeira').val();
     let let_tp_operacao = $('#tipo_operacao').val();
-    console.log(let_nome_operador);
-    $.ajax({
-        type: 'POST',
-        url: '/safety_gab_op_emp_app/empilhadeira_check',
-        data: {
-            'unidade_operador'   :   let_unidade_operador,
-            'tipo_operador'   :   let_tp_operador,
-            'nome_operador'   :   let_nome_operador,
-            'documento_operador'   :   let_doc_operador,
-            'modelo_empilhadeira'   :   let_model_empilhadeira,
-            'tipo_operacao'   :   let_tp_operacao
-        },
-        success: function (dados) {
-            $("#div_corpo_gab_op_emp").html(dados);
-            $("#div_corpo_gab_op_emp").css('background-color', 'rgba(0,0,0,0)')
-        }
-    });
+
+    msg_erro = '';
+    if (let_unidade_operador == '') {
+        msg_erro += 'Selecione uma filial!<br>';
+    }
+    if (let_tp_operador == '') {
+        msg_erro += 'Selecione um tipo para o operador!<br>';
+    }
+    if (let_nome_operador == '' || let_nome_operador == null) {
+        msg_erro += 'Informe o nome do operador!<br>';
+    }
+
+    if (let_doc_operador == '') {
+        msg_erro += 'Informe o CPF do operador!';
+    }
+    else if (let_doc_operador.length != 11) {
+        msg_erro += 'CPF Inválido, deve ter 11 digitos!';
+    }
+    else if (isNaN(let_doc_operador)) {
+        msg_erro += 'CPF Inválido, apenas números!';
+    }
+
+    if (let_model_empilhadeira == '') {
+        msg_erro += '|';
+    }
+    if (let_tp_operacao == '') {
+        msg_erro += '|';
+    }
+    if (msg_erro == '') {
+        $.ajax({
+            type: 'POST',
+            url: '/safety_gab_op_emp_app/empilhadeira_check',
+            data: {
+                'unidade_operador'   :   let_unidade_operador,
+                'tipo_operador'   :   let_tp_operador,
+                'nome_operador'   :   let_nome_operador,
+                'documento_operador'   :   let_doc_operador,
+                'modelo_empilhadeira'   :   let_model_empilhadeira,
+                'tipo_operacao'   :   let_tp_operacao
+            },
+            success: function (dados) {
+                $("#div_corpo_gab_op_emp").html(dados);
+                $("#div_corpo_gab_op_emp").css('background-color', 'rgba(0,0,0,0)')
+            }
+        });
+    }
+    else {
+        $.gritter.add({
+            title: 'Erro!',
+            text: msg_erro,
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+
+    }
 });
 
 $(document).on('click','.btn-voltar-menu-safety' , function(){
     $.ajax({
         type: 'POST',
         url: '/safety_login_colaboradores_app/safe_login_colab',
+        data: {
+                    'flag_voltar'      :   1,
+                 },
         success: function (dados) {
             $('#main_container_safety').html(dados);
             $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
