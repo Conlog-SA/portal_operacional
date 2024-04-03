@@ -79,13 +79,10 @@ INSTALLED_APPS = [
     'apps.phishing_app',
     'apps.safety_relatos_app',
     'apps.ndd_web_app',
-<<<<<<< HEAD
     'apps.gente_gestao_rateio_unimed_app',
     'apps.safety_login_colaboradores_app',
-=======
     'apps.frota_vendas_veic_app',
     'apps.dre_app'
->>>>>>> 1e626a41d08c4194e40742f3d62563a270b625bf
 ]
 
 MIDDLEWARE = [

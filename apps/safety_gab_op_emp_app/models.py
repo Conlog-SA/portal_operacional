@@ -9,8 +9,9 @@ class Empilhadeira(models.Model):
     desc_placa = models.CharField(max_length=100, blank=False, null=False)
     ano_placa = models.CharField(max_length=40, blank=False, null=False)
     modelo_placa = models.CharField(max_length=40, blank=False, null=False)
-    filial_manutencao = models.ForeignKey(Filial, models.DO_NOTHING, db_column='filial_manutencao', blank=False,
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', blank=False,
                                          null=False)
+
 
     class Meta:
         managed = True

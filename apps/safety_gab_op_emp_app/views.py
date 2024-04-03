@@ -38,10 +38,18 @@ class Form_Gerar_Gab_Emp(View):
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
             print(filial_colaborador.cod_filial)
-            filiais = Filial.objects.filter(cod_empresa=filial_colaborador.cod_empresa)
-            filiais = filiais.exclude(desc_filial__contains="AMBEV")
-            for filial in filiais:
-                str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
+            lista_empilhadeiras = Empilhadeira.objects.all()
+            lista_empilhadeiras = lista_empilhadeiras.exclude(cod_filial__desc_filial__contains="AMBEV")
+            lista_filiais = lista_empilhadeiras.values('cod_filial__cod_filial', 'cod_filial__desc_filial').distinct()
+            str_options_select_unidade = ''
+            for filial in lista_filiais:
+                str_options_select_unidade += f'<option value="{str(filial["cod_filial__cod_filial"])}">{str(filial["cod_filial__desc_filial"])}</option>'
+
+            '''filiais = Filial.objects.filter(cod_empresa=filial_colaborador.cod_empresa)
+            filiais_com_empilhadeiras = filiais.filter(pk__in=related_filial_pks)
+            filiais_com_empilhadeiras = filiais_com_empilhadeiras.exclude(desc_filial__contains="AMBEV")
+            for filial in filiais_com_empilhadeiras:
+                str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'''
         elif colaborador.perfil_usu == 'U':
             str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
 
@@ -139,7 +147,7 @@ class Empilhadeiras_Filial(View):
     def get(self, request):
         unidade = request.GET['cod_unidade']
         filial_selecionada = Filial.objects.get(pk=unidade)
-        lista_empilhadeiras = Empilhadeira.objects.filter(filial_manutencao=filial_selecionada.handle_benner)
+        lista_empilhadeiras = Empilhadeira.objects.filter(cod_filial=filial_selecionada.cod_filial)
         dict_empilhadeiras = []
         for emp in lista_empilhadeiras:
             dict_empilhadeiras.append({'cod_emp': emp.cod_emp, 'placa': emp.placa})
