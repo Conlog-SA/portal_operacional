@@ -22,7 +22,7 @@ class Form_Gerar_Relatos_Check(View):
 
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
-            filiais = Filial.objects.all()
+            filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa)
             for filial in filiais:
                 str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
         elif colaborador.perfil_usu == 'U':
@@ -66,9 +66,10 @@ class Form_Gerar_Relatos_Check(View):
 
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
+        filial = Filial.objects.get(pk=unidade_relato)
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2, cod_filial=colaborador_envio.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2, cod_filial=filial,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),

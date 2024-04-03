@@ -3,7 +3,20 @@ $(document).on('change','.selectpicker',function(){
 
     if (nome_select == "tipo_operador") {
         let cod_resposta = $(this).val();
-        if (cod_resposta == 1) {
+        let let_unidade = $('#unidade_operador').val();
+        console.log(let_unidade)
+        if (let_unidade == "") {
+            $('#tipo_operador').val('');
+            $('#tipo_operador').selectpicker('refresh');
+            $.gritter.add({
+                title: 'Erro!',
+                text: 'Selecione uma filial!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+        else if (cod_resposta == 1) {
             if ($('#nome_operador option').length == 1) {
                 $('#tipo_operador').val("2");
                 $('#tipo_operador').selectpicker('refresh');
@@ -25,7 +38,7 @@ $(document).on('change','.selectpicker',function(){
                 $('#documento_operador').prop('disabled',true);
             }
         }
-        if (cod_resposta == 2) {
+        else if (cod_resposta == 2) {
             $('#div_operador').addClass('hidden-div');
             $('#div_operador_terceiro').removeClass('hidden-div');
             $('#nome_operador').val('');
@@ -57,26 +70,62 @@ $(document).on('change','.selectpicker',function(){
     }
     if (nome_select == "unidade_operador") {
         let cod_unidade = $(this).val();
-            $.ajax({
-                type: 'GET',
-                url: '/safety_login_colaboradores_app/lista_colaboradores',
-                data: {
-                    'cod_unidade'   :   cod_unidade,
-                },
-                dataType: 'json',
-                success: function (dados) {
-                    console.log(dados)
-                    $('#nome_operador option').remove();
-                    dados.lista_colaboradores.forEach(operacao => {
-                        $("#nome_operador").append("<option value='"+
-                        operacao.cod_colaborador+"'>"+operacao.nome_colaborador+"</option>");
+        $.ajax({
+            type: 'GET',
+            url: '/safety_gab_op_emp_app/empilhadeiras_filial',
+            data: {
+                'cod_unidade'   :   cod_unidade,
+            },
+            dataType: 'json',
+            success: function (dados) {
+                if (dados.lista_empilhadeiras.length > 0) {
+                    $('#placa_empilhadeira').prop('disabled',false);
+                    $('#placa_empilhadeira option').remove();
+                    dados.lista_empilhadeiras.forEach(emp => {
+                        $("#placa_empilhadeira").append("<option value='"+
+                        emp.cod_emp+"'>"+emp.placa+"</option>");
                     });
+                    $('#placa_empilhadeira').selectpicker('refresh');
 
-                    $('#nome_operador').prop('disabled',false);
-                    $('#nome_operador').selectpicker('refresh');
-                    $('#tipo_operador').trigger('change');
+                    $.ajax({
+                        type: 'GET',
+                        url: '/safety_login_colaboradores_app/lista_colaboradores',
+                        data: {
+                            'cod_unidade'   :   cod_unidade,
+                        },
+                        dataType: 'json',
+                        success: function (dados) {
+                            console.log(dados)
+                            $('#nome_operador option').remove();
+                            dados.lista_colaboradores.forEach(operacao => {
+                                $("#nome_operador").append("<option value='"+
+                                operacao.cod_colaborador+"'>"+operacao.nome_colaborador+"</option>");
+                            });
+
+                            $('#nome_operador').selectpicker('refresh');
+                            $('#tipo_operador').trigger('change');
+                        }
+                    });
                 }
-            });
+                else {
+                    $('#unidade_operador').val('');
+                    $('#unidade_operador').selectpicker('refresh');
+                    $('#tipo_operador').val('');
+                    $('#tipo_operador').selectpicker('refresh');
+                    $('#placa_empilhadeira').val('');
+                    $('#placa_empilhadeira').prop('disabled',true);
+                    $('#placa_empilhadeira').selectpicker('refresh');
+                    $.gritter.add({
+                        title: 'Erro!',
+                        text: 'Sem empilhadeiras cadastradas nesta filial.',
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+
+            }
+        });
     }
     if (nome_select == "nome_operador") {
         $('#documento_operador').val('');
@@ -107,7 +156,7 @@ $(document).on('click','.create-check' , function(){
     }
 
     let let_doc_operador = $('#documento_operador').val();
-    let let_model_empilhadeira = $('#modelo_empilhadeira').val();
+    let let_cod_empilhadeira = $('#placa_empilhadeira').val();
     let let_tp_operacao = $('#tipo_operacao').val();
 
     msg_erro = '';
@@ -122,20 +171,17 @@ $(document).on('click','.create-check' , function(){
     }
 
     if (let_doc_operador == '') {
-        msg_erro += 'Informe o CPF do operador!';
+        msg_erro += 'Informe o CPF do operador!<br>';
     }
     else if (let_doc_operador.length != 11) {
-        msg_erro += 'CPF Inválido, deve ter 11 digitos!';
+        msg_erro += 'CPF Inválido, deve ter 11 digitos!<br>';
     }
     else if (isNaN(let_doc_operador)) {
-        msg_erro += 'CPF Inválido, apenas números!';
+        msg_erro += 'CPF Inválido, apenas números!<br>';
     }
 
-    if (let_model_empilhadeira == '') {
-        msg_erro += '|';
-    }
-    if (let_tp_operacao == '') {
-        msg_erro += '|';
+    if (let_cod_empilhadeira == '') {
+        msg_erro += 'Selecione uma empilhadeira!';
     }
     if (msg_erro == '') {
         $.ajax({
@@ -146,8 +192,7 @@ $(document).on('click','.create-check' , function(){
                 'tipo_operador'   :   let_tp_operador,
                 'nome_operador'   :   let_nome_operador,
                 'documento_operador'   :   let_doc_operador,
-                'modelo_empilhadeira'   :   let_model_empilhadeira,
-                'tipo_operacao'   :   let_tp_operacao
+                'cod_empilhadeira'   :   let_cod_empilhadeira,
             },
             success: function (dados) {
                 $("#div_corpo_gab_op_emp").html(dados);

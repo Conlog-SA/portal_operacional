@@ -16,7 +16,7 @@ from django.db.models import Q
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Colaborador, Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado
-from apps.safety_gab_op_emp_app.models import Modelo_Emp, Tipo_Operacao_Emp, Gabarito_Operacional_Emp
+from apps.safety_gab_op_emp_app.models import Empilhadeira, Gabarito_Operacional_Emp
 from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Item_Check
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -30,14 +30,16 @@ class Form_Gerar_Gab_Emp(View):
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
         nome_colaborador = colaborador.nome_colaborador
 
-        lista_modelos_emp = Modelo_Emp.objects.all()
-        lista_modelos_emp_dict = []
-        for modelo in lista_modelos_emp:
-            lista_modelos_emp_dict.append({'cod_modelo_emp': modelo.cod_modelo_emp, 'desc_emp': modelo.desc_emp})
+        #lista_modelos_emp = Modelo_Emp.objects.all()
+        #lista_modelos_emp_dict = []
+        #for modelo in lista_modelos_emp:
+        #    lista_modelos_emp_dict.append({'cod_modelo_emp': modelo.cod_modelo_emp, 'desc_emp': modelo.desc_emp})
         filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
-            filiais = Filial.objects.all()
+            print(filial_colaborador.cod_filial)
+            filiais = Filial.objects.filter(cod_empresa=filial_colaborador.cod_empresa)
+            filiais = filiais.exclude(desc_filial__contains="AMBEV")
             for filial in filiais:
                 str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
         elif colaborador.perfil_usu == 'U':
@@ -46,7 +48,7 @@ class Form_Gerar_Gab_Emp(View):
         context = {
             'nome_operador': nome_colaborador,
             'cod_filial_operador': filial_colaborador.cod_filial,
-            'lista_modelos_emp': lista_modelos_emp_dict,
+       #     'lista_modelos_emp': lista_modelos_emp_dict,
             'options_select': str_options_select_unidade,
         }
         return render(request, 'safety_gab_op_emp_app/gab_op_emp_form_gerar_check.html', context)
@@ -70,8 +72,7 @@ class Form_Gerar_Gab_Emp(View):
             )
             colaborador.save()
 
-        cod_modelo_empilhadeira = request.POST['modelo_empilhadeira']
-        cod_tipo_operacao = request.POST['tipo_operacao']
+        cod_empilhadeira = request.POST['cod_empilhadeira']
 
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
@@ -110,8 +111,7 @@ class Form_Gerar_Gab_Emp(View):
 
         check_cabecalho = Gabarito_Operacional_Emp(
             tipo_operador=tipo_colaborador,
-            cod_modelo_emp=Modelo_Emp.objects.get(pk=cod_modelo_empilhadeira),
-            cod_tipo_operacao_emp=Tipo_Operacao_Emp.objects.get(pk=cod_tipo_operacao)
+            cod_empilhadeira=Empilhadeira.objects.get(pk=cod_empilhadeira),
         )
         check_cabecalho.save()
 
@@ -134,16 +134,17 @@ class Colaborador_Portal(View):
         }
         return JsonResponse(data)
 
-class Tipos_Operacao(View):
+class Empilhadeiras_Filial(View):
     @csrf_exempt
     def get(self, request):
-        modelo_emp = request.GET['cod_empilhadeira']
-        lista_modelo_operacao_models = Tipo_Operacao_Emp.objects.filter(modelo_emp=modelo_emp)
-        dict_modelo_operacao = []
-        for modelo in lista_modelo_operacao_models:
-            dict_modelo_operacao.append({'cod_tipo_operacao_emp': modelo.cod_tipo_operacao_emp, 'desc_tipo_operacao_desc': modelo.desc_tipo_operacao_desc})
+        unidade = request.GET['cod_unidade']
+        filial_selecionada = Filial.objects.get(pk=unidade)
+        lista_empilhadeiras = Empilhadeira.objects.filter(filial_manutencao=filial_selecionada.handle_benner)
+        dict_empilhadeiras = []
+        for emp in lista_empilhadeiras:
+            dict_empilhadeiras.append({'cod_emp': emp.cod_emp, 'placa': emp.placa})
         data = {
-            'lista_operacao': dict_modelo_operacao
+            'lista_empilhadeiras': dict_empilhadeiras
         }
         return JsonResponse(data)
 

@@ -56,16 +56,8 @@
                                             <input type="text" class="form-control responsive-font" id="documento_operador" name="documento_operador" disabled>
                                         </div>
                                         <div class="form-group">
-                                           <label for="modelo_empilhadeira">Modelo Empilhadeira</label>
-                                           <select class="selectpicker form-control responsive-font" id="modelo_empilhadeira" name="modelo_empilhadeira" placeholder="Escolha o modelo" required>
-                                               {% for modelo in lista_modelos_emp %}
-                                                    <option value="{{modelo.cod_modelo_emp}}">{{modelo.desc_emp}}</option>
-                                               {% endfor %}
-                                           </select>
-                                        </div>
-                                        <div class="form-group">
-                                           <label for="tipo_operacao">Tipo de Operação</label>
-                                           <select class="selectpicker form-control responsive-font" id="tipo_operacao" name="tipo_operacao" placeholder="Escolha o modelo de empilhadeira" required>
+                                           <label for="placa_empilhadeira">Empilhadeira:</label>
+                                           <select class="selectpicker form-control responsive-font" id="placa_empilhadeira" name="placa_empilhadeira" placeholder="Escolha a empilhadeira" disabled>
                                            </select>
                                         </div>
                                     </div>
