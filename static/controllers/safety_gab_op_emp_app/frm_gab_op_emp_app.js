@@ -199,6 +199,15 @@ $(document).on('click','.create-check' , function(){
             success: function (dados) {
                 $("#div_corpo_gab_op_emp").html(dados);
                 $("#div_corpo_gab_op_emp").css('background-color', 'rgba(0,0,0,0)')
+            },
+            error: function (xhr, status, error) {
+                 $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
             }
         });
     }

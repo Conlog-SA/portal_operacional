@@ -1,6 +1,6 @@
 from datetime import datetime, date
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -78,6 +78,8 @@ class Form_Gerar_Relatos_Check(View):
                                                                                           data_atual.day)).order_by(
             '-cod_check__data_desativacao').first()
 
+        if (check_ativo == None):
+            return HttpResponse('Não há check de relatos ativo atualmente para essa filial', status=404)
         check_aplicado = Check_Aplicado(
             cod_filial=unidade_relato,
             cod_colaborador_aplicante=colaborador_envio,

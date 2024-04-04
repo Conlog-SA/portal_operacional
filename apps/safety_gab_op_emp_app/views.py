@@ -96,6 +96,9 @@ class Form_Gerar_Gab_Emp(View):
                                                                                           data_atual.day)).order_by(
             '-cod_check__data_desativacao').first()
 
+        if (check_ativo == None):
+            return HttpResponse('Não há check de empilhadeiras ativo atualmente para essa filial', status=404)
+
         check_aplicado = Check_Aplicado(
             cod_filial=cod_filial_usuario_sessao,
             cod_colaborador_aplicante=colaborador_envio,

@@ -31,7 +31,7 @@ $(document).on('change','.selectpicker',function(){
                     $('#nome_relatado option').remove();
                     dados.lista_colaboradores.forEach(operacao => {
                         $("#nome_relatado").append("<option value='"+
-                        operacao.cod_colaborador+"'>"+operacao.nome_colaborador+"</option>");
+                        operacao.cod_colaborador+"'>"+operacao.nome_colaborador+" (" + operacao.desc_cargo+")</option>");
                     });
                     if ($('#nome_relatado option').length == 0) {
                         $('#situacao_envolvido').val("4");
@@ -150,6 +150,15 @@ $(document).on('click','.create-check-relatos' , function(){
             success: function (dados) {
                 $("#div_corpo_relatos").html(dados);
                 $("#div_corpo_relatos").css('background-color', 'rgba(0,0,0,0)')
+            },
+            error: function (xhr, status, error) {
+                 $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
             }
         });
     } else {
