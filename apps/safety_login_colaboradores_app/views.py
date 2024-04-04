@@ -64,7 +64,7 @@ class Lista_Colaboradores(View):
     def get(self, request):
         cod_unidade = request.GET['cod_unidade']
 
-        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='U'))
+        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade))
         #                       | Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
         dict_colaboradores_options = []
         for colaborador in lista_colaboradores:

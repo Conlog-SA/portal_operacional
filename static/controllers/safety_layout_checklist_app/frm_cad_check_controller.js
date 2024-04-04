@@ -302,8 +302,8 @@ $(document).on('change','.selectpicker',function(){
         $('#filial_check_aplicado').val('');
         $('#filial_check_aplicado').selectpicker('refresh');
 
-        $('#tab_frm_checks_aplicados').empty();
 
+        $('#tab_frm_checks_aplicados').empty();
 
         let cod_tipo = $(this).val();
 
@@ -315,7 +315,7 @@ $(document).on('change','.selectpicker',function(){
             },
             dataType: 'json',
             success: function (dados) {
-                console.log(dados)
+                $('#btn_reset_check').trigger('click');
                 $('#modelos_existentes option').remove();
                 dados.lista_checks.forEach(check => {
                     $("#modelos_existentes").append("<option selected='false' value='"+
@@ -580,28 +580,35 @@ $(document).on('change','.selectpicker',function(){
 $(document).on('change','select.filial-check-aplicado' , function(event){
     let cod_filial =  $(this).val();
     let tipo_check = $("#tipo_check").val();
-
+    /*
     let data_ini = new Date($('#dt_periodo_check_ini').val());
     let day = data_ini.getUTCDate();
     let month = data_ini.getUTCMonth()+1;
     let year = data_ini.getUTCFullYear();
 	let let_data_ini = [year, month, day].join('-')
+	*/
+	let let_data_ini  = $('#dt_periodo_check_ini').val();
 
+    /*
     let data_fim = new Date($('#dt_periodo_check_fim').val());
     let day_final = data_fim.getUTCDate();
     let month_final = data_fim.getUTCMonth()+1;
     let year_final = data_fim.getUTCFullYear();
     let let_data_fim = [year_final, month_final, day_final].join('-')
+    */
+    let let_data_fim = $('#dt_periodo_check_fim').val();
 
     let erro = ""
     if (tipo_check == '')
         erro += "|Preencha o tipo do check!"
     if (cod_filial == '')
         erro += "|Preencha o código da filial!"
+        /*
     if (isNaN(day) || isNaN(month) || isNaN(year))
         erro += "|Preencha corretamente a data de inicio!"
     if (isNaN(day_final) || isNaN(month_final) || isNaN(year_final))
         erro += "|Preencha corretamente a data final!"
+        */
     console.log(erro)
     if (erro == "") {
 

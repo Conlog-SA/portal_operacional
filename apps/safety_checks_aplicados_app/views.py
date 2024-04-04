@@ -9,6 +9,8 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from pyhtml2pdf import converter
+
+from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Colaborador, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado
 from apps.safety_layout_checklist_app.models import Item_Check, Libera_Filial_Check
@@ -19,21 +21,14 @@ class Check_Aplicado_View(View):
     @csrf_exempt
     def get(self, request):
         tipo_check_aplicado = request.GET.get('tipo_check_aplicado', None)
-        filial_check_aplicado = request.GET.get('cod_filial_check_aplicado', None)
-        inicio_periodo_check_aplicado = request.GET.get('inicio_periodo_check_aplicado', None).split('-')
-        fim_periodo_check_aplicado = request.GET.get('fim_periodo_check_aplicado', None).split('-')
+        filial_check_aplicado = request.GET['cod_filial_check_aplicado']
+        inicio_periodo_check_aplicado = request.GET['inicio_periodo_check_aplicado'] + ' 00:00'
+        fim_periodo_check_aplicado = request.GET['fim_periodo_check_aplicado'] + ' 23:59'
 
-        inicio_periodo_check_aplicado = datetime(int(inicio_periodo_check_aplicado[0]), int(inicio_periodo_check_aplicado[1]), int(inicio_periodo_check_aplicado[2]))
-        fim_periodo_check_aplicado = datetime(int(fim_periodo_check_aplicado[0]), int(fim_periodo_check_aplicado[1]), int(fim_periodo_check_aplicado[2]))
-
-
-        lista_checks_aplicados = Check_Aplicado.objects.filter(cod_layout_check__tipo_check=tipo_check_aplicado,cod_filial=filial_check_aplicado,data_registro__gte=date(inicio_periodo_check_aplicado.year,
-                                                                                               inicio_periodo_check_aplicado.month,
-                                                                                               inicio_periodo_check_aplicado.day),
-                                                         data_registro__lte=date(fim_periodo_check_aplicado.year,
-                                                                                          fim_periodo_check_aplicado.month,
-                                                                                          fim_periodo_check_aplicado.day))
-
+        lista_checks_aplicados = Check_Aplicado.objects.filter(cod_layout_check__tipo_check=tipo_check_aplicado,
+                                                               cod_filial=filial_check_aplicado,
+                                                               data_registro__range=[inicio_periodo_check_aplicado, fim_periodo_check_aplicado])
+ 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:
             count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_checks_aplicados=check).count()

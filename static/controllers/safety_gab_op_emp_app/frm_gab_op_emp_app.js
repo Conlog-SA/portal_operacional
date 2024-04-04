@@ -33,6 +33,8 @@ $(document).on('change','.selectpicker',function(){
                 $('#div_operador').removeClass('hidden-div');
                 $('#div_operador_terceiro').addClass('hidden-div');
                 $('#nome_operador_terceiro').val('');
+                $('#nome_operador').prop('disabled',false);
+                $('#nome_operador').selectpicker('refresh');
 
                 $('#documento_operador').val('');
                 $('#documento_operador').prop('disabled',true);
