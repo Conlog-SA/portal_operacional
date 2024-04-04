@@ -28,7 +28,7 @@ class Check_Aplicado_View(View):
         lista_checks_aplicados = Check_Aplicado.objects.filter(cod_layout_check__tipo_check=tipo_check_aplicado,
                                                                cod_filial=filial_check_aplicado,
                                                                data_registro__range=[inicio_periodo_check_aplicado, fim_periodo_check_aplicado])
- 
+
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:
             count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_checks_aplicados=check).count()

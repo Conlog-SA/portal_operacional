@@ -101,7 +101,7 @@ $(document).on('change','.selectpicker',function(){
                             $('#nome_operador option').remove();
                             dados.lista_colaboradores.forEach(operacao => {
                                 $("#nome_operador").append("<option value='"+
-                                operacao.cod_colaborador+"'>"+operacao.nome_colaborador+"</option>");
+                                operacao.cod_colaborador+"'>"+operacao.nome_colaborador+" (" + operacao.desc_cargo+")</option>");
                             });
 
                             $('#nome_operador').selectpicker('refresh');

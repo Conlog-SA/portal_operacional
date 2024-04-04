@@ -7,7 +7,7 @@ class Colaborador(models.Model):
     cod_filial = models.IntegerField(blank=False, null=False)
     desc_cargo = models.CharField(max_length=80, blank=True, null=True)
     cnh = models.CharField(max_length=20, blank=True, null=True)
-    validade_cnh = models.DateTimeField(blank=True, null=True)
+    validade_cnh = models.DateField(blank=True, null=True)
     cpf = models.IntegerField(blank=True, null=True)
     data_nascimento = models.DateField(blank=True, null=True)
     perfil_usu = models.CharField(max_length=1, blank=False, null=False)

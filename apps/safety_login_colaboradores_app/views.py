@@ -68,7 +68,7 @@ class Lista_Colaboradores(View):
         #                       | Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
         dict_colaboradores_options = []
         for colaborador in lista_colaboradores:
-            dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
+            dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador, 'desc_cargo': colaborador.desc_cargo}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
 
         #if not dict_colaboradores_options:
         #    data = {
