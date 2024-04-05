@@ -140,6 +140,7 @@ $(document).on('change','.selectpicker',function(){
             },
             dataType: 'json',
             success: function (dados) {
+                console.log(dados);
                 $('#documento_operador').val(dados);
             }
         });
@@ -223,20 +224,4 @@ $(document).on('click','.create-check' , function(){
     }
 });
 
-$(document).on('click','.btn-voltar-menu-safety' , function(){
-    $.ajax({
-        type: 'POST',
-        url: '/safety_login_colaboradores_app/safe_login_colab',
-        data: {
-                    'flag_voltar'      :   1,
-                 },
-        success: function (dados) {
-            $('#main_container_safety').html(dados);
-            $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
-            $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
-            $('#main_container_safety').css('width', '85%');
-
-        }
-    });
-});
 

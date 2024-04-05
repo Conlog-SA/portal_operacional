@@ -64,6 +64,7 @@ $(document).on('change','.selectpicker',function(){
         let cod_unidade = $('#unidade').val();
 
     }
+
     if (nome_select == "processo_relato") {
         let cod_processo = $(this).val();
             $.ajax({

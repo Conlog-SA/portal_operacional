@@ -33,6 +33,11 @@ class Login_Colaborador(View):
             msg_erro = 'Colaborador não existente/cadastrado.'
         return HttpResponse(msg_erro, status=401)
 
+class Login_Colaborador_Deep(View):
+    @csrf_exempt
+    def get(self, request):
+        return render(request, 'safety_login_colaboradores_app/safe_base_container_deep.html')
+
 class Menu_Safe(View):
     @csrf_exempt
     def get(self, request):
@@ -88,6 +93,8 @@ class Documento_Colaborador(View):
     def get(self, request):
         cod_colaborador = request.GET['cod_colaborador']
 
-        colaborador = Colaborador.objects.get(pk=cod_colaborador)
-
-        return HttpResponse(colaborador.cpf)
+        colab_informado = Colaborador.objects.get(pk=cod_colaborador)
+        cpf_colab_informado = colab_informado.cpf
+        if len(cpf_colab_informado) < 11:
+            cpf_colab_informado = '0' + cpf_colab_informado
+        return JsonResponse(cpf_colab_informado, safe=False)

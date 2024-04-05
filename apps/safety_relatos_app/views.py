@@ -99,7 +99,8 @@ class Form_Gerar_Relatos_Check(View):
         for item in lista_itens:
             lista_itens_dict.append({'cod_item_check': item.cod_item_check, 'desc_check': item.desc_check,
                                      'tipo_resposta': item.tipo_resposta, 'campo_obs_img': item.campo_obs_img,
-                                     'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item})
+                                     'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
+                                     'obrigatorio': item.obrigatorio})
 
         check_cabecalho = Relato(
             cod_tipo_relato=tipo_relato,

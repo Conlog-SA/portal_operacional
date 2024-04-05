@@ -87,7 +87,7 @@ class Form_Gerar_Gab_Emp(View):
         cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=colaborador_envio.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=colaborador.cod_filial,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),
@@ -115,10 +115,12 @@ class Form_Gerar_Gab_Emp(View):
                                                 data_inicio__lte=date(data_atual.year, data_atual.month,
                                                                       data_atual.day)).order_by('ordem_item')
         lista_itens_dict = []
+        str_itens_obrigatorios = []
         for item in lista_itens:
             lista_itens_dict.append({'cod_item_check': item.cod_item_check, 'desc_check': item.desc_check,
                                      'tipo_resposta': item.tipo_resposta, 'campo_obs_img': item.campo_obs_img,
-                                     'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item})
+                                     'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
+                                     'obrigatorio': item.obrigatorio})
 
         check_cabecalho = Gabarito_Operacional_Emp(
             tipo_operador=tipo_colaborador,

@@ -1,0 +1,243 @@
+body {
+margin: 0;
+padding: 0;
+/* imagem tela de login */
+background-image: url('../../img/background-deep.png') !important;
+background-repeat: no-repeat;
+background-size: cover;
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+@media screen and (max-width: 440px) {
+    body {
+        background-position-x: -230vw;
+    }
+}
+
+@media screen and (min-width: 441px) {
+    body {
+        background-position: center center;
+    }
+}
+
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label{
+    text-align: left !important;
+}
+
+.w-95{
+    width: 95%;
+}
+
+.ok-button-check{
+    transition: all 0.3s ease;
+}
+
+.nok-button-check{
+    transition: all 0.3s ease;
+}
+
+.ok-button-check.selected{
+    background-color:green;
+}
+
+.nok-button-check.selected{
+    background-color:red;
+}
+
+.homeApp_loginContainer{
+    background-color: var(--cor_bg_login);
+    border-radius: 0.5rem;
+    position: relative;
+    width:85% !important;
+    height:90% !important;
+}
+
+.homeApp_menuContainer{
+    background-color: var(--cor_bg_login);
+    border-radius: 0.5rem;
+    position: relative;
+    height:30%;
+}
+
+.homeApp_temValor{
+    max-width: 45%;
+}
+
+.conlog-logo{
+    max-width:100%
+}
+
+.homeApp__loginForm{
+    text-align: center;
+}
+
+.homeApp__tituloPortal{
+    text-transform: uppercase;
+    color:var(--cor_empresa);
+    font-weight: 700;
+    text-shadow: 0 0 2px var(--cor_empresa);
+}
+
+.btn-login-safety{
+    font-size: 13px;
+    text-transform: capitalize;
+    background-color: var(--cor_cinza_escuro) !important;
+    border-color: var(--cor_cinza_escuro) !important;
+    text-transform: uppercase;
+    width: 60%;
+}
+
+.homeApp__sobre{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        width: 35%;
+}
+
+.homeApp__loginForm{
+    width: 65%;
+}
+
+.homeApp__tituloPortal{
+    font-size: 2rem;
+}
+
+.form_dt_nascimento{
+    filter:invert(1);
+    color:black;
+}
+
+.form__group {
+    position: relative;
+    padding: 20px 0 0;
+    margin-top: 10px;
+    width: 60%;
+}
+
+.responsive-w-65 {
+    width:65% !important;
+}
+
+.form__field {
+  font-family: inherit;
+  width: 100%;
+  border: none;
+  border-bottom: 2px solid var(--cor_cinza_escuro);
+  outline: 0;
+  font-size: 15px;
+  color: var(--cor_branco);
+  padding: 7px 0;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+
+.form__field::placeholder {
+  color: transparent;
+}
+
+.form__field:placeholder-shown ~ .form__label {
+  font-size: 17px;
+  cursor: text;
+  top: 20px;
+}
+
+.form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 12px;
+  color: var(--cor_cinza_claro);
+  pointer-events: none;
+}
+
+.form__field:focus, .form__field:hover {
+  padding-bottom: 6px;
+  /* font-weight: 700; */
+  border-width: 3px;
+  border-image: linear-gradient(to right, var(--cor_empresa_active), var(--cor_empresa), var(--cor_empresa_active));
+  border-image-slice: 1;
+}
+
+.form__field:focus ~ .form__label {
+  position: absolute;
+  top: 0;
+  display: block;
+  transition: 0.2s;
+  font-size: 15px;
+  color: var(--cor_empresa);
+  /* font-weight: 700; */
+}
+
+/* reset input */
+.form__field:required, .form__field:invalid {
+  box-shadow: none;
+}
+
+html, body {
+  height: 100%;
+}
+
+.icon-empilhadeiras {
+    /* color:var(--cor_empresa); */
+    font-size:3rem;
+    margin-right:1.5rem;
+    color:white;
+}
+
+.icon-relatos {
+    /* color:var(--cor_empresa); */
+    font-size:3rem;
+    margin-right:1.5rem;
+    color:white;
+}
+
+.safety-container-menu {
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    width:100%;
+    height:30%;
+    margin-left:1rem;
+}
+
+.safety-container-app {
+    padding:4px;
+    border-radius:10px;
+    border-style: dotted;
+    /*  border-color:var(--cor_empresa);  */
+    display:flex;
+    align-items: center;
+    text-transform: uppercase;
+}
+
+.safety-container-screen {
+    width:85%;
+    height:90%;
+}
+
+.select.selectpicker {
+    display: block !important
+}
+
+.gera_check_janela {
+    height:100%;
+}
+
+.background-check-preenchido {
+    background-color: rgba(0,0,0,0.7);
+}
+
+.hidden-div {
+    width:0px !important;
+    height: 0px !important;
+    display:none;
+}
