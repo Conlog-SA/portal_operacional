@@ -1477,7 +1477,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             elif cod_modelo_selecionado_form == '3':
                 for cod_conta_form in lista_cod_conta_form.split(','):
                     conta = Conta.objects.get(pk=int(cod_conta_form))
-                    lista_contratos = Contrato.objects.filter(cod_conta=conta,
+                    lista_contratos = Contrato.objects.filter(cod_conta=conta, cod_conta__status_comp='A',
                                                               cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                     for contrato in lista_contratos:
                         '''Calcula dados CP'''
@@ -1720,7 +1720,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             elif cod_modelo_selecionado_form == '3':
                 for cod_conta_form in lista_contas:
                     conta = Conta.objects.get(pk=int(cod_conta_form))
-                    lista_contratos = Contrato.objects.filter(cod_conta=conta.cod_conta,
+                    lista_contratos = Contrato.objects.filter(cod_conta=conta.cod_conta, cod_conta__status_comp='A',
                                                               cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                     for contrato in lista_contratos:
                         '''Calcula dados CP'''
