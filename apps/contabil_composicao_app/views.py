@@ -1228,7 +1228,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 if nome_resp_frm != '':
                     lista_resp_contas = (Responsaveis_Conta.objects
                                     .filter((Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                                            cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                            cod_conta__tipo_modelo=cod_tipo_modelo_form) #cod_conta__status_comp='A'
                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                             'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
                     for reg in lista_resp_contas:
@@ -1240,7 +1240,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                         }
                         lista_contas.append(conta)
                 else:
-                    lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                    lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #status_comp='A'
                                         .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                                 'cod_red_conta_contabil_lp'))
             elif tipo_rel in ('D', 'R'):
@@ -1250,7 +1250,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 lista_resp_contas = (Responsaveis_Conta.objects
                                      .filter(
                     (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form, #cod_conta__status_comp='A'
                     cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_pacotes.split(','))
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
@@ -1264,13 +1264,13 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     }
                     lista_contas.append(conta)
             else:
-                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #status_comp='A'
                                     .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
 
             lista_contas_para_atualizar_benner = list(Contrato.objects
                                                   .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form,
-                                                          cod_conta__status_comp='A',
+                                                          #cod_conta__status_comp='A',
                                                           sincronizar_benner='S',
                                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                                   .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
@@ -1281,7 +1281,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
             competencia_form = request.GET['data_competencia']
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
             lista_contas = list(Auditoria_Status_Composicao_Competencia.objects
-                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
+                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, #cod_conta__status_comp='A',
                                         status=1, data_competencia=competencia_date,
                                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                 .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
@@ -1293,7 +1293,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 lista_resp_contas = (Responsaveis_Conta.objects
                                      .filter(
                     (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form) #, cod_conta__status_comp='A'
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
                                              'cod_conta__cod_red_conta_contabil_lp'))
@@ -1306,7 +1306,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     }
                     lista_contas.append(conta)
             else:
-                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #, status_comp='A'
                                     .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
                 '''for nome in nome_resp_frm.split(','):

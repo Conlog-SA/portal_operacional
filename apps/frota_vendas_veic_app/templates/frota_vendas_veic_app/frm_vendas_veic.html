@@ -2,7 +2,6 @@
 
 {% block link_static_css %}
   <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/faturamento_terceiros_app/faturamento_terceiros.css' %}" />
   <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
   <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
 {% endblock %}
@@ -124,17 +123,14 @@
                         <th scope="col">Marca Benner</th>
                         <th scope="col">Modelo Benner</th>
                         <th scope="col">Ano</th>
-                        <th scope="col">Tipo Tab.</th>
-                        <th scope="col">Marca Tab.</th>
-                        <th scope="col">Modelo Tab</th>
-                        <th scope="col">Cód. Fipe</th>
                         <th scope="col">Filial</th>
                         <th scope="col">Status Benner</th>
                         <th scope="col">NF venda</th>
                         <th scope="col">Data venda</th>
                         <th scope="col">R$ venda</th>
                         <th scope="col">Período Pesq.</th>
-                        <th scope="col">R$ Fipe</th>
+                        <th scope="col">R$ Tabela</th>
+                        <th scope="col">Dados Tabela</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,6 +145,7 @@
 </div>
 
 
+{% include 'frota_vendas_veic_app/modais_frm_vendas_veic.html' %}
 
 
 

@@ -7,6 +7,8 @@ urlpatterns = [
          name='acessa_form_venda_veic'),
     path('retorna_placas_benner_vincula_a_tabela_selecionada', views.Form_Venda_Veic_View.as_view(),
          name='retorna_placas_benner_vincula_a_tabela_selecionada'),
+    path('retorna_marcas_modelo_tipo_veic_selecionado', views.Form_Componente_Select_Tipo_Veic_Marcas_Modelo_View.as_view(),
+         name='retorna_marcas_modelo_tipo_veic_selecionado'),
 
 
 ]
