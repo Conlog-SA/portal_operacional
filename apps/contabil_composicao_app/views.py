@@ -2734,6 +2734,8 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                                      obj_conta.handle_conta_contabil_cp,
                                      primeiro_dia_ano,
                                      ultimo_dia_mes_date)
+        if val_balancete < 0:
+            val_balancete = val_balancete * -1
 
         lista_docs = None
         resumo_docs = None
@@ -3033,21 +3035,27 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                 if reg['tt_val_rel'] != None:
                     if type(reg['tt_val_rel']) == str:
                         val_composicao = float(reg['tt_val_rel'].replace('.', '').replace(',', '.'))
+                        if val_composicao < 0:
+                            val_composicao = val_composicao * -1
                         reg['tt_val_rel'] = locale.currency(
-                            round(float(reg['tt_val_rel'].replace('.', '').replace(',', '.')), 2), grouping=True,
-                            symbol=None)
+                            round(float(val_composicao), 2), grouping=True,symbol=None)
                     else:
                         val_composicao = float(reg['tt_val_rel'])
-                        reg['tt_val_rel'] = locale.currency(round(float(reg['tt_val_rel']), 2), grouping=True,
-                                                            symbol=None)
+                        if val_composicao < 0:
+                            val_composicao = val_composicao * -1
+                        reg['tt_val_rel'] = locale.currency(round(val_composicao, 2), grouping=True, symbol=None)
 
                 if reg['tt_val_razao'] != None:
                     if type(reg['tt_val_razao']) == str:
-                        reg['tt_val_razao'] = locale.currency(
-                            round(float(reg['tt_val_razao'].replace('.', '').replace(',', '.')), 2), grouping=True,
-                            symbol=None)
+                        val_razao = float(reg['tt_val_razao'].replace('.', '').replace(',', '.'))
+                        if val_razao < 0:
+                            val_razao = val_razao * -1
+                        reg['tt_val_razao'] = locale.currency(round(val_razao, 2), grouping=True,symbol=None)
                     else:
-                        reg['tt_val_razao'] = locale.currency(round(float(reg['tt_val_razao']), 2), grouping=True,
+                        val_razao = float(reg['tt_val_razao'])
+                        if val_razao < 0:
+                            val_razao = val_razao * -1
+                        reg['tt_val_razao'] = locale.currency(round(val_razao, 2), grouping=True,
                                                               symbol=None)
                 if reg['tt_dif'] != None:
                     if type(reg['tt_dif']) == str:
@@ -3057,11 +3065,9 @@ class Form_Pesq_Arq_Pac_Contas_M1_View(View):
                     else:
                         reg['tt_dif'] = locale.currency(round(float(reg['tt_dif']), 2), grouping=True,
                                                         symbol=None)
+
                 val_dif_comp_bal = 0
-                if val_balancete < 0:
-                    val_dif_comp_bal = val_composicao + val_balancete
-                else:
-                    val_dif_comp_bal = val_composicao - val_balancete
+                val_dif_comp_bal = val_balancete - val_composicao
                 reg['val_dif_comp_bal'] = locale.currency(round(float(val_dif_comp_bal), 2), grouping=True,
                                                         symbol=None)
 
