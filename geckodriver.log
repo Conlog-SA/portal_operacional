@@ -1,0 +1,1536 @@
+1712758981142	geckodriver	INFO	Listening on 127.0.0.1:56215
+1712758984235	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "56216" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileda2aJC"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712758984893	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712758985047	Marionette	INFO	Listening on port 56224
+WebDriver BiDi listening on ws://127.0.0.1:56216
+Read port: 56224
+1712758985306	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56216/devtools/browser/94f6b03b-1b09-4b69-824e-95cb20e82cdf
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4937 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712759016498	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1712759396790	geckodriver	INFO	Listening on 127.0.0.1:56913
+1712759399845	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "56914" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilenO3bLx"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712759400544	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712759400699	Marionette	INFO	Listening on port 56922
+WebDriver BiDi listening on ws://127.0.0.1:56914
+Read port: 56922
+1712759400910	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56914/devtools/browser/daa119d8-37ac-46e5-8a54-e951f2bebade
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7762 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712759431428	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js, line 140: Script terminated by timeout at:
+get@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:140:119
+Uo/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:262:927
+Uo@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:262:846
+Zo<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:270:1182
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:610
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+ge.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:102:1330
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+rg.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:119:115
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ko/</h/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:258:1969
+Va@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:339
+Sa.prototype.flush@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:147
+Ua@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:466
+Ai/c/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:292
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ah/</</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:516
+Ra.prototype.bc/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:298
+Ah/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:525
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ud.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:172
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:672
+
+1712759452199	Marionette	INFO	Stopped listening on port 56922
+Dynamically enable window occlusion 1
+1712766879488	geckodriver	INFO	Listening on 127.0.0.1:57623
+1712766882585	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "57624" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile09D828"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712766883196	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712766883364	Marionette	INFO	Listening on port 57632
+WebDriver BiDi listening on ws://127.0.0.1:57624
+Read port: 
+1712766883381	geckodriver::browser	WARN	Failed fo convert  to u16
+Read port: 57632
+1712766883659	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:57624/devtools/browser/1c92e67e-ea89-432a-a3eb-8e5c8dda4487
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1427 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 317: Script terminated by timeout at:
+xm.prototype.flush/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:317:276
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:317:277
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:315:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:312:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:576:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:524:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:420
+
+1712766891329	Marionette	INFO	Stopped listening on port 57632
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712767007473	geckodriver	INFO	Listening on 127.0.0.1:57868
+1712767010572	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "57869" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileDWJtHX"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712767011179	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712767011315	Marionette	INFO	Listening on port 57880
+WebDriver BiDi listening on ws://127.0.0.1:57869
+Read port: 57880
+1712767011598	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:57869/devtools/browser/34a1db9d-3eb7-44fd-a5b6-552ac6ec4919
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4009 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 525: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:525:42
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:412
+
+1712767020262	Marionette	INFO	Stopped listening on port 57880
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712767231817	geckodriver	INFO	Listening on 127.0.0.1:58230
+1712767234909	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "58231" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileyerpqf"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712767235556	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712767235697	Marionette	INFO	Listening on port 58255
+WebDriver BiDi listening on ws://127.0.0.1:58231
+Read port: 58255
+1712767235899	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:58231/devtools/browser/9ebcdd58-300f-4143-8612-4ae7d9cb68df
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 794 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+Exiting due to channel error.
+1712767317132	geckodriver	INFO	Listening on 127.0.0.1:58457
+1712767320223	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "58458" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile5pqnAF"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712767320716	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712767320845	Marionette	INFO	Listening on port 58466
+WebDriver BiDi listening on ws://127.0.0.1:58458
+Read port: 58466
+1712767321080	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:58458/devtools/browser/ac6a921c-4571-4379-9e07-5e56ebc4a380
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6702 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712767351436	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 523: Script terminated by timeout at:
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:115
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:412
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712768022687	Marionette	INFO	Stopped listening on port 58466
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712768330645	geckodriver	INFO	Listening on 127.0.0.1:60081
+1712768333705	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "60082" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileL9zHb8"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712768334155	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712768334283	Marionette	INFO	Listening on port 60090
+WebDriver BiDi listening on ws://127.0.0.1:60082
+Read port: 60090
+1712768334513	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:60082/devtools/browser/9b07ec14-0648-4a5c-93b9-f7f37794f276
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5120 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712768366563	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 152: Script terminated by timeout at:
+yb@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:152:391
+Hl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:307:594
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:312:613
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:576:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:524:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:420
+
+1712768409791	Marionette	INFO	Stopped listening on port 60090
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712768439849	geckodriver	INFO	Listening on 127.0.0.1:60338
+1712768442915	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "60339" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileziLJYS"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712768443413	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712768443542	Marionette	INFO	Listening on port 60347
+WebDriver BiDi listening on ws://127.0.0.1:60339
+Read port: 60347
+1712768443799	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:60339/devtools/browser/20380de5-736b-447c-af5b-e71c33f461fd
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5816 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712768473633	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 525: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:525:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:412
+
+1712768642352	Marionette	INFO	Stopped listening on port 60347
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+r: "Warning: unrecognized command line flag" "-no-sandbox"
+1712768626666	Marionette	INFO	Listening on port 60690
+WebDriver BiDi listening on ws://127.0.0.1:60682
+Read port: 60690
+1712768626930	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:60682/devtools/browser/27af9551-8493-4244-b151-d1e2ca05113c
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4754 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+Exiting due to channel error.
+1712768683166	geckodriver	INFO	Listening on 127.0.0.1:60875
+1712768686257	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "60876" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileuwFSXt"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712768686756	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712768686888	Marionette	INFO	Listening on port 60884
+WebDriver BiDi listening on ws://127.0.0.1:60876
+Read port: 60884
+1712768687141	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:60876/devtools/browser/846ef63e-fe7b-4ab5-b096-c1cea0b75e59
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1180 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712768716780	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+Exiting due to channel error.
+1712769526938	geckodriver	INFO	Listening on 127.0.0.1:62354
+1712769530040	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "62355" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilerdE2hp"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712769530591	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712769530721	Marionette	INFO	Listening on port 62364
+WebDriver BiDi listening on ws://127.0.0.1:62355
+Read port: 62364
+1712769531094	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:62355/devtools/browser/c6acf64d-4dcf-460b-8b02-3ab935f64208
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3534 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712769561662	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 525: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:525:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:412
+
+1712769586499	Marionette	INFO	Stopped listening on port 62364
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712769637493	geckodriver	INFO	Listening on 127.0.0.1:62608
+1712769640580	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "62609" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileLoDqSs"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712769641061	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712769641172	Marionette	INFO	Listening on port 62618
+WebDriver BiDi listening on ws://127.0.0.1:62609
+Read port: 62618
+1712769641388	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:62609/devtools/browser/1412aff0-abfb-4284-8fda-86ba0c7956cf
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3656 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712769671271	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+Exiting due to channel error.
+1712769733614	geckodriver	INFO	Listening on 127.0.0.1:62839
+1712769736724	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "62840" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile3SuVes"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712769737232	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712769737343	Marionette	INFO	Listening on port 62852
+WebDriver BiDi listening on ws://127.0.0.1:62840
+Read port: 62852
+1712769737574	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:62840/devtools/browser/60013892-b8e6-46d0-a15c-bd8fc30a16ca
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7141 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712769768732	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 525: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:525:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:412
+
+1712770204055	Marionette	INFO	Stopped listening on port 62852
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+console.error: (new Error("Data is not ready.", "resource://gre/modules/JSONFile.sys.mjs", 178))
+g on port 63523
+WebDriver BiDi listening on ws://127.0.0.1:63513
+Read port: 63523
+1712770202933	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:63513/devtools/browser/3ea05888-c403-4ebb-aee0-8cd68f41651f
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6595 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712770232653	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 152: Script terminated by timeout at:
+yb@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:152:391
+Hl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:307:594
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:312:613
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:576:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:524:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:523:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712770328649	Marionette	INFO	Stopped listening on port 63523
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712771657330	geckodriver	INFO	Listening on 127.0.0.1:49369
+1712771660416	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "49370" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilemSqyCF"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712771660929	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712771661040	Marionette	INFO	Listening on port 49378
+WebDriver BiDi listening on ws://127.0.0.1:49370
+Read port: 49378
+1712771661268	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:49370/devtools/browser/2234a323-26f5-439e-a35e-5d43df2bd052
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6438 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7303 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712771690985	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+Exiting due to channel error.
+Exiting due to channel error.
+1712772718792	geckodriver	INFO	Listening on 127.0.0.1:51394
+1712772721887	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "51395" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileavI1jY"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712772722451	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712772722578	Marionette	INFO	Listening on port 51404
+WebDriver BiDi listening on ws://127.0.0.1:51395
+Read port: 51404
+1712772722885	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:51395/devtools/browser/1ccdb878-7441-4f2d-beca-411a59f53abf
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6210 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7303 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712772752607	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 535: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:535:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:412
+
+1712772823624	Marionette	INFO	Stopped listening on port 51404
+Dynamically enable window occlusion 1
+1712773040422	geckodriver	INFO	Listening on 127.0.0.1:52012
+1712773043509	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52013" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileMVzNRl"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712773044049	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712773044224	Marionette	INFO	Listening on port 52022
+WebDriver BiDi listening on ws://127.0.0.1:52013
+Read port: 52022
+1712773044523	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52013/devtools/browser/f64d9129-f553-4314-83ba-ef2c06b66fa1
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3788 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712773074693	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js, line 79: Script terminated by timeout at:
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:882
+Wf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:115:152
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+lg.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:118:238
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+ge.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:102:1330
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:96:135
+Ed.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1316
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Wf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:115:152
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+rg.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:119:115
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ai/c/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:320
+Va@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:339
+Sa.prototype.flush@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:127
+Ua@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:466
+Ai/c/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:292
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ah/</</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:516
+Ra.prototype.bc/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:298
+Ah/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:525
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ud.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:172
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:672
+
+1712773089856	Marionette	INFO	Stopped listening on port 52022
+Dynamically enable window occlusion 1
+1712773263642	geckodriver	INFO	Listening on 127.0.0.1:52435
+1712773266741	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52436" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile5QTluE"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712773267267	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712773267394	Marionette	INFO	Listening on port 52467
+WebDriver BiDi listening on ws://127.0.0.1:52436
+Read port: 52467
+1712773267632	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52436/devtools/browser/3804444b-9fd6-4402-997a-703655d311e3
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1159 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4005 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712773297417	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js1712773422773	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52795" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileghQuNj"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712773423279	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712773423459	Marionette	INFO	Listening on port 52803
+WebDriver BiDi listening on ws://127.0.0.1:52795
+Read port: 52803
+1712773423687	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52795/devtools/browser/bb539c88-743e-4802-a495-89c5b8603bd8
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1945 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5029 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712773453333	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712773597285	Marionette	INFO	Stopped listening on port 52803
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712773621754	geckodriver	INFO	Listening on 127.0.0.1:53228
+1712773624844	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "53229" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilehHqSGr"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712773625393	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712773625521	Marionette	INFO	Listening on port 53262
+WebDriver BiDi listening on ws://127.0.0.1:53229
+Read port: 53262
+1712773625776	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:53229/devtools/browser/cecd2d1e-2773-4b30-a5fd-0d6f377a86a5
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2115 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6950 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712773655403	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1712774132623	geckodriver	INFO	Listening on 127.0.0.1:54130
+1712774135718	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54131" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileo3uFid"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712774136303	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712774136442	Marionette	INFO	Listening on port 54162
+WebDriver BiDi listening on ws://127.0.0.1:54131
+Read port: 54162
+1712774136702	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54131/devtools/browser/f54f2899-c210-442c-b66c-5d2151b19cee
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6337 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712774166351	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6494 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 303: Script terminated by timeout at:
+Yk@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:303:1011
+gl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:311:725
+hl/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:312:86
+hl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:312:59
+Sn/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:354:169
+Sn@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:354:137
+Un@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:349:594
+Vn@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:352:203
+Xn@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:349:669
+lo@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:354:814
+fF@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:539:99
+aa.am@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:570:461
+aa.Zl/</<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:248
+ol@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:313:439
+Bl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:153
+aa.Zl/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:234
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:435:169
+tt@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:436:269
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:220
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712774426142	Marionette	INFO	Stopped listening on port 54162
+Dynamically enable window occlusion 1
+1712774456857	geckodriver	INFO	Listening on 127.0.0.1:54714
+1712774459967	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54715" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile4jfv2T"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712774460501	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712774460625	Marionette	INFO	Listening on port 54724
+WebDriver BiDi listening on ws://127.0.0.1:54715
+Read port: 54724
+1712774460838	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54715/devtools/browser/ebf10334-be38-4b98-8b7f-26f8a9e0573e
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6182 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3031 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712774490573	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+Exiting due to channel error.
+1712774823753	geckodriver	INFO	Listening on 127.0.0.1:55351
+1712774826802	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "55352" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilep9nrHs"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712774827289	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712774827420	Marionette	INFO	Listening on port 55380
+WebDriver BiDi listening on ws://127.0.0.1:55352
+Read port: 55380
+1712774827716	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:55352/devtools/browser/a99410f2-88fd-4305-a6c1-b998fa31d289
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6204 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712774857434	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3573 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 533: Script terminated by timeout at:
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:115
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:412
+
+1712774885577	Marionette	INFO	Stopped listening on port 55380
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+console.error: (new Error("Data is not ready.", "resource://gre/modules/JSONFile.sys.mjs", 178))
+1712774911601	geckodriver	INFO	Listening on 127.0.0.1:55622
+1712774914665	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "55623" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileFaWAzF"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712774915159	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712774915287	Marionette	INFO	Listening on port 55645
+WebDriver BiDi listening on ws://127.0.0.1:55623
+Read port: 55645
+1712774915524	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:55623/devtools/browser/c1a55fbf-3559-4403-93c1-ec81a733f08e
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3960 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712774945164	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7825 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5486 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4297 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 535: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:535:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:412
+
+1712774983431	Marionette	INFO	Stopped listening on port 55645
+Dynamically enable window occlusion 1
+1712774991035	geckodriver	INFO	Listening on 127.0.0.1:55850
+1712774994110	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "55851" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileBFnvlg"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712774994618	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712774994759	Marionette	INFO	Listening on port 55860
+WebDriver BiDi listening on ws://127.0.0.1:55851
+Read port: 55860
+1712774995013	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:55851/devtools/browser/603b331b-71d0-49c3-b9aa-68cb357e01dc
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5622 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712775024792	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 586: Script terminated by timeout at:
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:142
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712775185148	Marionette	INFO	Stopped listening on port 55860
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712775223162	geckodriver	INFO	Listening on 127.0.0.1:56265
+1712775226232	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "56266" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilefzUGz5"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712775226721	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712775226852	Marionette	INFO	Listening on port 56276
+WebDriver BiDi listening on ws://127.0.0.1:56266
+Read port: 56276
+1712775227072	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56266/devtools/browser/70909035-e1a0-4e24-ac71-cb5209f35057
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1769 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712775257888	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+console.error: (new TypeError("currentNode is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 66))
+TypeError: currentNode is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:66:20
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:242:32
+emit@resource://devtools/shared/event-emitter.js:186:18
+emit@resource://devtools/shared/event-emitter.js:330:18
+getMutations@resource://devtools/client/fronts/walker.js:309:10
+
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.error: "Unable to find target with innerWindowId:4294967298"
+console.error: "Unable to find target with innerWindowId:4294967298"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3347 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: "Listener for event 'frame' did not return a promise."
+console.error: "Unable to find target with innerWindowId:4294967323"
+console.error: "Unable to find target with innerWindowId:4294967323"
+console.error: "Unable to find target with innerWindowId:4294967317"
+console.error: "Unable to find target with innerWindowId:4294967317"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3884 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.error: "Unable to find target with innerWindowId:4294967341"
+console.error: "Unable to find target with innerWindowId:4294967341"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4491 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.error: "Unable to find target with innerWindowId:4294967353"
+console.error: "Unable to find target with innerWindowId:4294967353"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1676 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: , line 0: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1761 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2364 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 39 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 533: Script terminated by timeout at:
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:115
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:412
+
+1712775362685	Marionette	INFO	Stopped listening on port 56276
+Dynamically enable window occlusion 1
+1712775363616	geckodriver	INFO	Listening on 127.0.0.1:56558
+1712775366710	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "56559" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileANhKYV"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712775367352	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712775367487	Marionette	INFO	Listening on port 56585
+WebDriver BiDi listening on ws://127.0.0.1:56559
+Read port: 56585
+1712775367747	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56559/devtools/browser/0a7b3b7c-a4d3-4f2b-864c-2ad75f5edb26
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6568 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712775397420	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712775471618	Marionette	INFO	Stopped listening on port 56585
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+console.error: (new Error("Data is not ready.", "resource://gre/modules/JSONFile.sys.mjs", 178))
+1712775491236	geckodriver	INFO	Listening on 127.0.0.1:56839
+1712775494320	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "56840" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileHKwyit"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712775494823	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712775494953	Marionette	INFO	Listening on port 56849
+WebDriver BiDi listening on ws://127.0.0.1:56840
+Read port: 56849
+1712775495182	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:56840/devtools/browser/da98c28d-b795-467c-a205-3a1a38397b6c
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 808 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712775525222	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+console.error: (new TypeError("currentNode is null", "resource://devtools/client/inspector/shared/style-change-tracker.js", 66))
+TypeError: currentNode is null: canMutationImpactCurrentStyles@resource://devtools/client/inspector/shared/style-change-tracker.js:66:20
+onMutations@resource://devtools/client/inspector/shared/style-change-tracker.js:84:41
+_emit@resource://devtools/shared/event-emitter.js:242:32
+emit@resource://devtools/shared/event-emitter.js:186:18
+emit@resource://devtools/shared/event-emitter.js:330:18
+getMutations@resource://devtools/client/fronts/walker.js:309:10
+
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.error: "Unable to find target with innerWindowId:4294967298"
+console.error: "Unable to find target with innerWindowId:4294967298"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2803 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712775599519	Marionette	INFO	Stopped listening on port 56849
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712775636691	geckodriver	INFO	Listening on 127.0.0.1:57175
+1712775639786	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "57176" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileKkgK6f"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712775640271	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712775640393	Marionette	INFO	Listening on port 57184
+WebDriver BiDi listening on ws://127.0.0.1:57176
+Read port: 57184
+1712775640628	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:57176/devtools/browser/358b1227-c948-4232-ba09-f84e53bd8573
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5828 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712775671754	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1934 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+console.error: "buildList failed: " ({})
+JavaScript warning: https://pagead2.googlesyndication.com/pa1712776667498	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "64792" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileL2I4wU"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712776668041	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712776668171	Marionette	INFO	Listening on port 64800
+WebDriver BiDi listening on ws://127.0.0.1:64792
+Read port: 64800
+1712776668408	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:64792/devtools/browser/ea0602e5-583c-4bcb-9853-5ae7095697cc
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2073 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712776698891	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN, line 507: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:507:42
+get@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:412
+
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 318: Script terminated by timeout at:
+Vl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:318:664
+km@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:261
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:322:384
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712776792070	Marionette	INFO	Stopped listening on port 64800
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+n.com/pagead/managed/js/activeview/current/ufs_web_display.js:258:1969
+Va@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:339
+Sa.prototype.flush@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:147
+Ua@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:466
+Ai/c/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:292
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ah/</</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:516
+Ra.prototype.bc/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:298
+Ah/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:525
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ud.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:172
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:672
+
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN, line 507: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:507:89
+get@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-H30R9PNQFN:505:412
+
+1712776665505	Marionette	INFO	Stopped listening on port 57184
+Dynamically enable window occlusion 1
+JavaScript error: chrome://remote/content/marionette/cert.sys.mjs, line 47: NS_ERROR_NOT_AVAILABLE: Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]
+!!! error running onStopped callback: TypeError: callback is not a function
+1712776665623	WebDriver BiDi	ERROR	Failed to stop protocol: [Exception... "Component returned failure code: 0x80040111 (NS_ERROR_NOT_AVAILABLE) [nsICertOverrideService.setDisableAllSecurityChecksAndLetAttackersInterceptMyData]"  nsresult: "0x80040111 (NS_ERROR_NOT_AVAILABLE)"  location: "JS frame :: chrome://remote/content/marionette/cert.sys.mjs :: allowAllCerts.disable :: line 47"  data: no] Stack trace: allowAllCerts.disable()@cert.sys.mjs:47
+destroy()@Session.sys.mjs:239
+deleteSession()@WebDriverBiDi.sys.mjs:140
+stop()@WebDriverBiDi.sys.mjs:228
+observe()@resource://gre/modules/AsyncShutdown.sys.mjs:570
+1712776821829	geckodriver	INFO	Listening on 127.0.0.1:65133
+1712776824910	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "65134" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofiledzPkMW"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712776825454	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712776825584	Marionette	INFO	Listening on port 65142
+WebDriver BiDi listening on ws://127.0.0.1:65134
+Read port: 65142
+1712776825837	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:65134/devtools/browser/92b769be-2640-42c4-a057-ec28d2e4e953
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4200 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712776857027	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+console.error: "Unable to find target with innerWindowId:4294967306"
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+console.error: "Unable to find target with innerWindowId:4294967306"
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+Handler function threw an exception: TypeError: browsingContext.currentWindowGlobal is null
+Stack: isChannelFromSystemPrincipal@resource://devtools/shared/network-observer/NetworkUtils.sys.mjs:89:1
+_createResource@resource://devtools/server/actors/network-monitor/network-event-actor.js:204:40
+NetworkEventActor@resource://devtools/server/actors/network-monitor/network-event-actor.js:112:27
+onNetworkEvent@resource://devtools/server/actors/resources/network-events.js:284:19
+#createNetworkEvent@resource://devtools/shared/network-observer/NetworkObserver.sys.mjs:761:46
+@resource://devtools/shared/network-observer/NetworkObserver.sys.mjs:358:33
+makeInfallible/<@resource://devtools/shared/DevToolsInfaillibleUtils.sys.mjs:43:22
+Line: 89, column: 1
+console.error: (new TypeError("browsingContext.currentWindowGlobal is null", "resource://devtools/shared/network-observer/NetworkUtils.sys.mjs", 89))
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+console.warn: "Listener for event 'frame' did not return a promise."
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 316: Script terminated by timeout at:
+Hl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:889
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:613
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712777433798	Marionette	INFO	Stopped listening on port 65142
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+!!! error running onStopped callback: TypeError: callback is not a function
+1712777466829	geckodriver	INFO	Listening on 127.0.0.1:49958
+1712777469928	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "49959" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilexLSWzD"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712777470514	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712777470662	Marionette	INFO	Listening on port 49968
+WebDriver BiDi listening on ws://127.0.0.1:49959
+Read port: 49968
+1712777470914	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:49959/devtools/browser/f6546461-1170-4cc4-8c8d-d0a5128d278b
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4690 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712777501299	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 319: Script terminated by timeout at:
+T@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:319:16
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:137
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712777577812	Marionette	INFO	Stopped listening on port 49968
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712777581698	geckodriver	INFO	Listening on 127.0.0.1:50263
+1712777584778	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "50264" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileTayQNT"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712777585320	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712777585459	Marionette	INFO	Listening on port 50273
+WebDriver BiDi listening on ws://127.0.0.1:50264
+Read port: 50273
+1712777585701	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:50264/devtools/browser/50bcc7f3-6fea-4c8e-96cc-4fe52bd5c702
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1480 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712777616632	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js, line 48: Script terminated by timeout at:
+get@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:48:121
+h@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:258:1915
+Ko/</m</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:258:2214
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+rg.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:119:115
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+lg.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:118:238
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ai/c/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:320
+Va@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:339
+Sa.prototype.flush@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:127
+Ua@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:466
+Ai/c/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:292
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ah/</</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:516
+Ra.prototype.bc/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:298
+Ah/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:525
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ud.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:172
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:672
+
+1712777635426	Marionette	INFO	Stopped listening on port 50273
+Dynamically enable window occlusion 1
+1712777656553	geckodriver	INFO	Listening on 127.0.0.1:50476
+1712777659641	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "50477" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileQZL2EH"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712777660103	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712777660185	Marionette	INFO	Listening on port 50485
+WebDriver BiDi listening on ws://127.0.0.1:50477
+Read port: 50485
+1712777660360	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: ({})
+DevTools listening on ws://127.0.0.1:50477/devtools/browser/963391f6-c0fc-439f-8efc-7db0a2f04268
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3077 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712777690983	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1712778095108	geckodriver	INFO	Listening on 127.0.0.1:51198
+1712778098187	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--headless" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "51199" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofile1lktbJ"
+*** You are running in headless mode.
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778098705	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778098786	Marionette	INFO	Listening on port 51208
+WebDriver BiDi listening on ws://127.0.0.1:51199
+Read port: 51208
+1712778098971	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.error: ({})
+DevTools listening on ws://127.0.0.1:51199/devtools/browser/836db236-9745-4a1e-8d1e-677ca77cf6c2
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3201 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778130684	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+1712778162490	geckodriver	INFO	Listening on 127.0.0.1:51362
+1712778165582	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "51363" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileilvWTk"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778166123	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778166259	Marionette	INFO	Listening on port 51391
+WebDriver BiDi listening on ws://127.0.0.1:51363
+Read port: 51391
+1712778166506	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:51363/devtools/browser/8327d400-1419-452e-ab40-7367d5d52d95
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 1756 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+1712778196883	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 155: Script terminated by timeout at:
+Wa@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:155:36
+rq@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:399:467
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:57
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712778382371	Marionette	INFO	Stopped listening on port 51391
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712778387070	geckodriver	INFO	Listening on 127.0.0.1:51778
+1712778390170	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "51779" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilecHxYVE"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778390710	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778390842	Marionette	INFO	Listening on port 51788
+WebDriver BiDi listening on ws://127.0.0.1:51779
+Read port: 51788
+1712778391087	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:51779/devtools/browser/b98606f3-f831-406f-91fe-bc5d099d97e7
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 638 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778421412	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712778487142	Marionette	INFO	Stopped listening on port 51788
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712778491178	geckodriver	INFO	Listening on 127.0.0.1:51985
+1712778494257	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "51986" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilerktbMS"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778494726	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778494851	Marionette	INFO	Listening on port 52012
+WebDriver BiDi listening on ws://127.0.0.1:51986
+Read port: 52012
+1712778495107	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:51986/devtools/browser/ebda7516-ec5c-4374-a881-1bb69a789807
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2818 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778524747	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 159: Script terminated by timeout at:
+yb@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:159:391
+Hl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:594
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:613
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712778706620	Marionette	INFO	Stopped listening on port 52012
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712778711047	geckodriver	INFO	Listening on 127.0.0.1:52412
+1712778714134	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52413" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileOuCxG5"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778714667	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778714814	Marionette	INFO	Listening on port 52422
+WebDriver BiDi listening on ws://127.0.0.1:52413
+Read port: 52422
+1712778715028	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52413/devtools/browser/6391dc20-eff2-4c6b-8343-bc020795e467
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5413 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778745444	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 586: Script terminated by timeout at:
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:142
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+1712778876419	Marionette	INFO	Stopped listening on port 52422
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712778880802	geckodriver	INFO	Listening on 127.0.0.1:52714
+1712778883884	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52715" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileVsWEor"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778884383	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778884516	Marionette	INFO	Listening on port 52740
+WebDriver BiDi listening on ws://127.0.0.1:52715
+Read port: 52740
+1712778884796	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52715/devtools/browser/ef798b96-d985-4ab6-8a75-6afee5a220f4
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 655 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778916243	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 539 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 535: Script terminated by timeout at:
+aa.lh@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:535:89
+get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:119
+stop@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:87
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:412
+
+1712778946890	Marionette	INFO	Stopped listening on port 52740
+Dynamically enable window occlusion 1
+1712778950830	geckodriver	INFO	Listening on 127.0.0.1:52929
+1712778953908	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "52930" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileU01lLK"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712778954422	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712778954557	Marionette	INFO	Listening on port 52938
+WebDriver BiDi listening on ws://127.0.0.1:52930
+Read port: 52938
+1712778954784	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:52930/devtools/browser/b2825891-8605-4f82-af91-cdb4289db29a
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4469 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712778984913	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://devtools/server/actors/utils/sources-manager.js, line 446: TypeError: channel is null
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712779309152	Marionette	INFO	Stopped listening on port 52938
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712779319819	geckodriver	INFO	Listening on 127.0.0.1:53556
+1712779322902	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "53557" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilehVYjWq"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712779323405	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712779323535	Marionette	INFO	Listening on port 53566
+WebDriver BiDi listening on ws://127.0.0.1:53557
+Read port: 53566
+1712779323753	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:53557/devtools/browser/b933cea4-7792-4dbe-ba02-e87369fb020f
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4336 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779354317	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 512 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2431 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2926 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779415786	Marionette	INFO	Stopped listening on port 53566
+Dynamically enable window occlusion 1
+1712779466933	geckodriver	INFO	Listening on 127.0.0.1:53908
+1712779470017	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "53909" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileFXpjMH"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712779470512	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712779470643	Marionette	INFO	Listening on port 53918
+WebDriver BiDi listening on ws://127.0.0.1:53909
+Read port: 53918
+1712779470829	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:53909/devtools/browser/ddee2fe3-b3ea-4cf0-985b-81b23d9f7393
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6164 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779501209	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3907 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 318: Script terminated by timeout at:
+T@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:318:956
+aa.am@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:571:46
+aa.Zl/</<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:248
+ol@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:313:439
+Bl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:153
+aa.Zl/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:234
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:435:169
+tt@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:436:269
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:220
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+1712779550912	Marionette	INFO	Stopped listening on port 53918
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712779556182	geckodriver	INFO	Listening on 127.0.0.1:54125
+1712779559251	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54126" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilei5svto"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712779559692	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712779559817	Marionette	INFO	Listening on port 54135
+WebDriver BiDi listening on ws://127.0.0.1:54126
+Read port: 54135
+1712779560046	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54126/devtools/browser/05e4ecfd-8e9d-497b-b924-384e5dc959da
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 730 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779591547	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 2093 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 349: Script terminated by timeout at:
+Rn@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:349:353
+XF@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:561:731
+aa.am@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:565:356
+aa.Zl/</<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:248
+ol@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:313:439
+Bl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:153
+aa.Zl/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:234
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:435:169
+tt@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:436:269
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:220
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712779672534	Marionette	INFO	Stopped listening on port 54135
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function
+1712779673980	geckodriver	INFO	Listening on 127.0.0.1:54387
+1712779677066	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54388" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilebhLNOb"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712779677608	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712779677759	Marionette	INFO	Listening on port 54400
+WebDriver BiDi listening on ws://127.0.0.1:54388
+Read port: 54400
+1712779678015	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54388/devtools/browser/1f95a437-f560-4440-ad73-b11289144fa8
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6830 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779708891	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 3395 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 160: Script terminated by timeout at:
+sb.prototype.get@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:160:170
+Yi@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:265:679
+aa.am@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:574:40
+aa.Zl/</<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:248
+ol@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:313:439
+Bl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:316:153
+aa.Zl/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:234
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:435:169
+tt@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:436:269
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:220
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+JavaScript error: resource://gre/modules/AsyncShutdown.sys.mjs, line 570: NotFoundError: No such JSWindowActor 'DevToolsFrame'
+1712779938640	Marionette	INFO	Stopped listening on port 54400
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712779942522	geckodriver	INFO	Listening on 127.0.0.1:54864
+1712779945571	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54865" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileBxALgA"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712779946083	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712779946231	Marionette	INFO	Listening on port 54878
+WebDriver BiDi listening on ws://127.0.0.1:54865
+Read port: 54878
+1712779946444	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54865/devtools/browser/c5804af1-546b-4fc7-a434-51c83dde91b5
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 6382 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712779977541	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5636 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c, line 318: Script terminated by timeout at:
+T@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:318:956
+aa.Zl@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:564:137
+c@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:585:675
+ym@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:323:298
+xm.prototype.flush@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:326:284
+xm.prototype.push@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:324:207
+qm@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:321:636
+qG/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:586:178
+aa.tk/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:534:126
+aa.tk/c/<@https://www.googletagmanager.com/gtag/js?id=G-FE61H1RSQN&l=dataLayer&cx=c:533:420
+
+1712780185439	Marionette	INFO	Stopped listening on port 54878
+Dynamically enable window occlusion 1
+JavaScript error: , line 0: TypeError: NetworkError when attempting to fetch resource.
+1712780186552	geckodriver	INFO	Listening on 127.0.0.1:55341
+1712780189664	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "55342" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofileqgChj9"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1712780190117	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1712780190249	Marionette	INFO	Listening on port 55350
+WebDriver BiDi listening on ws://127.0.0.1:55342
+Read port: 55350
+1712780190475	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:55342/devtools/browser/ed9efa5c-4a87-4586-8830-6b5ca94656ce
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 4197 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1712780221187	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7363 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+JavaScript warning: https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js, line 270: Script terminated by timeout at:
+Zo<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:270:1135
+ge.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:102:1239
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:84:833
+n.Ei@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:86:1929
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+rg.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:119:115
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ko/</h/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:258:1969
+Va@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:339
+Sa.prototype.flush@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:47:147
+Ua@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:466
+Ai/c/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:156:292
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+yf.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:111:248
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+sd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:90:698
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ah/</</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:516
+Ra.prototype.bc/<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:46:298
+Ah/</</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:139:525
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:81:424
+n.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:80:223
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Ud.prototype.Ga@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:172
+Dd.prototype.s@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:92:1027
+n.next@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:79:899
+Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/current/ufs_web_display.js:98:672
+
+1712781158613	Marionette	INFO	Stopped listening on port 55350
+Dynamically enable window occlusion 1
+!!! error running onStopped callback: TypeError: callback is not a function

@@ -56,8 +56,6 @@ $(document).on('click','button', function(){
     let let_val_btn = $(this).attr('value');
 
     if (let_nome_btn == "btn_abre_modal_edita_dados_veic_tab") {
-        let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
-        let_loader_frm_vendas_veic.style.display = "flex";
         let let_indice_veic = $(this).val();
 
         /* Seta campos com os dados do veículo */
@@ -76,14 +74,14 @@ $(document).on('click','button', function(){
         for (var i = 0; i < let_lista_tipo_veic_tab.length; i++) {
             let let_cod_tipo_veic = let_lista_tipo_veic_tab[i][0];
             let let_desc_tipo_veic = let_lista_tipo_veic_tab[i][1];
-            if(let_cod_tipo_veic == let_lista_veic[let_indice_veic][16]){
-                $("#sl_tipo_veic_tab").append("<option value='"+let_cod_tipo_veic+"' selected='selected'>"+let_desc_tipo_veic+"</option>");
-            }else{
-                $("#sl_tipo_veic_tab").append("<option value='"+let_cod_tipo_veic+"'>"+let_desc_tipo_veic+"</option>");
-            }
+            $("#sl_tipo_veic_tab").append("<option value='"+let_cod_tipo_veic+"'>"+let_desc_tipo_veic+"</option>");
+
         }
+        $("#sl_tipo_veic_tab").val(let_lista_veic[let_indice_veic][16]);
         $("#sl_tipo_veic_tab").selectpicker('refresh');
 
+
+       let let_data;
         if ( let_lista_veic[let_indice_veic][19] > 0){
             $.ajax({
             type: 'GET',
@@ -96,27 +94,21 @@ $(document).on('click','button', function(){
             success: function (data) {
                 $("#sl_marca_veic_tab option").remove();
                 data.lista_marcas.forEach( marca => {
-                    if(marca.cod_marca_tab_precos == let_lista_veic[let_indice_veic][18]) {
-                        $("#sl_marca_veic_tab").append("<option value='"+marca.cod_marca_tab_precos+"' selected='selected'>"+marca.desc_marca+"</option>");
-                    }else{
-                        $("#sl_marca_veic_tab").append("<option value='"+marca.cod_marca_tab_precos+"'>"+marca.desc_marca+"</option>");
-                    }
+                    $("#sl_marca_veic_tab").append("<option value='"+marca.cod_marca_tab_precos+"'>"+marca.desc_marca+"</option>");
                 });
+                $("#sl_marca_veic_tab").val(let_lista_veic[let_indice_veic][18]);
                 $("#sl_marca_veic_tab").selectpicker('refresh');
 
                 $("#sl_modelo_veic_tab option").remove();
                 data.lista_modelos.forEach( modelo =>{
-                    if(marca.cod_marca_tab_precos == let_lista_veic[let_indice_veic][19]){
-                        $("#sl_modelo_veic_tab").append("<option value='"+modelo.cod_modelo_tab_precos+"' selected='selected'>"+modelo.desc_modelo+"</option>");
-                    }else{
-                        $("#sl_modelo_veic_tab").append("<option value='"+modelo.cod_modelo_tab_precos+"'>"+modelo.desc_modelo+"</option>");
-                    }
+                    $("#sl_modelo_veic_tab").append("<option value='"+modelo.cod_modelo_tab_precos+"'>"+modelo.desc_modelo+"</option>");
+
                 });
+                $("#sl_modelo_veic_tab").val(let_lista_veic[let_indice_veic][19]);
                 $("#sl_modelo_veic_tab").selectpicker('refresh');
 
             },
             error: function (request, status, error) {
-                let_loader_frm_vendas_veic.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -127,13 +119,67 @@ $(document).on('click','button', function(){
               }
             });
         }
+        if(let_lista_veic[let_indice_veic][21] == '') {
+            $("#txt_ano_veic_tab").val(let_lista_veic[let_indice_veic][7]);
+        } else {
+            $("#txt_ano_veic_tab").val(let_lista_veic[let_indice_veic][21]);
+        }
 
-
-        $("#btn_confirma_marca_modelo_tab").val(let_lista_veic[let_indice_veic][17]);
+        $("#btn_confirma_marca_modelo_tab").val(let_lista_veic[let_indice_veic][20]);
         $("#modal_edita_dados_veic_tab").show();
 
-    } else if (let_nome_btn == "btn_fecha_modal_edita_dados_veic_tab") {
+    }
+    else if (let_nome_btn == "btn_fecha_modal_edita_dados_veic_tab") {
+        $("#sl_marca_veic_tab").val('');
+        $("#sl_marca_veic_tab").selectpicker('refresh');
+
+        $("#sl_modelo_veic_tab").val('');
+        $("#sl_modelo_veic_tab").selectpicker('refresh');
+
         $("#modal_edita_dados_veic_tab").hide();
+    }
+    else if (let_nome_btn == "btn_confirma_marca_modelo_tab") {
+        let let_loader_frm_vincula_veic_tab = document.getElementById("loader_frm_vincula_veic_tab");
+        let_loader_frm_vincula_veic_tab.style.display = "flex";
+
+        let let_cod_tab = $("#sl_tab_preco_veic").val();
+        let let_cod_veic = let_val_btn;
+        let let_ano_veic_tab = $("#txt_ano_veic_tab").val();
+        let let_cod_veic_na_tab = $("#txt_cod_modelo_veic_tab").val();
+        let let_cod_modelo = $("#sl_modelo_veic_tab").val();
+        $.ajax({
+            type: 'POST',
+            url: '/frota_vendas_veic_app/vincula_veic_tab_preco',
+            data: {
+                'cod_tab': let_cod_tab,
+                'cod_veic':    let_cod_veic,
+                'ano_veic_tab': let_ano_veic_tab,
+                'cod_modelo'   :   let_cod_modelo,
+                'cod_veic_na_tab': let_cod_veic_na_tab
+            },
+            dataType: 'json',
+            success: function (data) {
+                let_loader_frm_vincula_veic_tab.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_vincula_veic_tab.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
 
     }
 });
@@ -142,8 +188,7 @@ $(document).on('click','button', function(){
 $(document).on('change', 'select', function(){
     let let_nome_sl = $(this).attr('name');
     let let_id_sl = $(this).attr('id');
-    let let_val_sl = $(this).attr('value');
-
+    let let_val_sl = $(this).val();
     if(let_nome_sl == 'sl_tipo_veic_tab') {
         let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
         let_loader_frm_vendas_veic.style.display = "flex";
@@ -159,10 +204,9 @@ $(document).on('change', 'select', function(){
                 $("#sl_marca_veic_tab option").remove();
                 data.lista_marcas.forEach( marca => {
                     $("#sl_marca_veic_tab").append("<option value='"+marca.cod_marca_tab_precos+"'>"+marca.desc_marca+"</option>");
-
                 });
+                $("#sl_marca_veic_tab").val('');
                 $("#sl_marca_veic_tab").selectpicker('refresh');
-
             },
             error: function (request, status, error) {
                 let_loader_frm_vendas_veic.style.display = "none";
@@ -211,8 +255,6 @@ $(document).on('change', 'select', function(){
 
 
 
-
-
 function atualiza_tab_veic(cod_tab, mostra_veic_vendidos){
     let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
     let_loader_frm_vendas_veic.style.display = "flex";
@@ -257,12 +299,12 @@ function atualiza_tab_veic(cod_tab, mostra_veic_vendidos){
                     /* periodo_pesq */ data.lista_veic_vendas[i].periodo_pesq,
                     /* val_fipe */ data.lista_veic_vendas[i].val_fipe,
                     let_btn_abre_modal_edita_dados_veic_tab,
-
                     /* tipo_veic_tab */ data.lista_veic_vendas[i].tipo_veic_tab,
                     /* codigo_veic_tab */ data.lista_veic_vendas[i].codigo_veic_tab,
                     /* marca_tab */ data.lista_veic_vendas[i].marca_tab,
                     /* modelo_tab */ data.lista_veic_vendas[i].modelo_tab,
-                    /* cod_veic */ data.lista_veic_vendas[i].cod_veic
+                    /* cod_veic */ data.lista_veic_vendas[i].cod_veic,
+                    /* ano_veic_tab */ data.lista_veic_vendas[i].ano_veic_tab
 
                 ];
                 let_lista_veic.push(let_veic);

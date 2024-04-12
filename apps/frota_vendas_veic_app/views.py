@@ -8,6 +8,11 @@ from apps.benner_app.views import ConexaoBancoBenner
 from apps.frota_vendas_veic_app.models import Tabela_Preco_Veic, Veiculo_Venda, Veiculo_Venda_Tab_Precos, \
     Marca_Tab_Precos, Tipo_Veic_Tab_Precos, Modelo_Tab_Precos
 
+import time
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+
 
 # Create your views here.
 class Form_Venda_Veic_View(View):
@@ -66,7 +71,6 @@ class Form_Venda_Veic_View(View):
                                           cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab.cod_tab_precos).first())
             if obj_veic_venda_tab == None:
                 obj_veic_venda_tab = Veiculo_Venda_Tab_Precos(
-                    ano = None,
                     codigo_veic_tab = None,
                     competencia = None,
                     val_comp = 0.00,
@@ -75,7 +79,7 @@ class Form_Venda_Veic_View(View):
                 )
                 obj_veic_venda_tab.save()
             else:
-                if obj_veic_venda_tab.cod_modelo_tab_fipe != None:
+                if obj_veic_venda_tab.cod_modelo_tab_precos != None:
                     cod_marca = obj_veic_venda_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_marca_tab_precos
                     cod_modelo = obj_veic_venda_tab.cod_modelo_tab_precos.cod_modelo_tab_precos
                     cod_tipo_veic_tab = obj_veic_venda_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_tipo_veic_tab_precos.cod_tipo_veic_tab_precos
@@ -122,7 +126,8 @@ class Form_Venda_Veic_View(View):
                 'codigo_veic_tab': obj_veic_venda_tab.codigo_veic_tab, #16
                 'periodo_pesq': competencia, #17
                 'val_fipe': val_fipe, #18
-                'cod_veic_venda_tab': obj_veic_venda_tab.cod_veic_venda_tab #19
+                'cod_veic_venda_tab': obj_veic_venda_tab.cod_veic_venda_tab, #19
+                'ano_veic_tab': obj_veic_venda_tab.ano_veic_tab
             }
             lista_veic_vendas.append((veic_vendas))
 
@@ -174,4 +179,136 @@ class Form_Componente_Select_Tipo_Veic_Marcas_Modelo_View(View):
             'lista_modelos': lista_modelos
         }
         return JsonResponse(data, safe=False)
+
+
+class Form_Vincula_Veic_Tab_Precos_View(View):
+    def post(self, request):
+        cod_tab_frm = request.POST['cod_tab']
+        cod_veic_frm = request.POST['cod_veic']
+        ano_veic_tab_frm = request.POST['ano_veic_tab']
+        cod_modelo_frm = request.POST['cod_modelo']
+        cod_veic_na_tab_frm = request.POST['cod_veic_na_tab']
+
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+        competencia_date = datetime(data_hora_atual.year, data_hora_atual.month, 1)
+
+        obj_tab_precos = Tabela_Preco_Veic.objects.get(pk=cod_tab_frm)
+        obj_veic = Veiculo_Venda.objects.get(pk=cod_veic_frm)
+        obj_modelo = Modelo_Tab_Precos.objects.get(pk=cod_modelo_frm)
+
+        obj_veic_tab = (Veiculo_Venda_Tab_Precos.objects
+                        .filter(cod_veic=obj_veic,
+                                cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos = obj_tab_precos)
+                        .first())
+
+        dic_pesq_preco_tab = self.acessa_site_tab_captura_val(
+            obj_modelo.cod_marca_tab_precos.cod_tipo_veic_tab_precos.id_tipo_veic_tab,
+            obj_modelo.cod_marca_tab_precos.cod_marca_tab_precos,
+            obj_modelo.cod_modelo_tab_precos,
+            ano_veic_tab_frm)
+        val_comp_veic = 0
+        cod_veic_tab = cod_veic_na_tab_frm
+        if dic_pesq_preco_tab[0] == 0:
+            msg = 'Não foi possível retornar o preço do site. Contate o adm!'
+
+        else:
+            msg = 'Valor do veículo atualizado!'
+            cod_veic_tab = dic_pesq_preco_tab[1]
+            val_comp_veic = dic_pesq_preco_tab[2]
+
+        if obj_veic_tab == None:
+            obj_veic_tab = Veiculo_Venda_Tab_Precos(
+                codigo_veic_tab= cod_veic_tab,
+                competencia= competencia_date,
+                ano_veic_tab=ano_veic_tab_frm,
+                val_comp= val_comp_veic,
+                cod_veic= obj_veic,
+                cod_modelo_tab_precos= obj_modelo
+            )
+            obj_veic_tab.save()
+        else:
+            obj_veic_tab.codigo_veic_tab = cod_veic_na_tab_frm
+            obj_veic_tab.competencia = competencia_date
+            obj_veic_tab.ano_veic_tab = ano_veic_tab_frm
+            obj_veic_tab.val_comp = val_comp_veic
+            obj_veic_tab.cod_modelo_tab_precos = obj_modelo
+            obj_veic_tab.save()
+
+
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+
+    def acessa_site_tab_captura_val(self, cod_tipo_veic, cod_marca, cod_modelo, ano_veic):
+        status = 0
+        val_comp = 0
+
+        print('Aguarde ...')
+        nav_options = webdriver.FirefoxOptions()
+        #nav_options.add_argument('--headless')
+        nav_options.add_argument('--no-sandbox')
+        nav_options.add_argument('--disable-dev-shm-usage')
+        navegador = webdriver.Firefox(options=nav_options)
+
+        navegador.get(r'https://tabelafipecarros.com.br/')
+        time.sleep(3)
+        tipos_veiculos = navegador.find_elements(By.XPATH, value='//*[@id="tipoVeiculo"]/option')
+
+        for tipo in tipos_veiculos:
+            if tipo.get_attribute('value') == str(cod_tipo_veic):
+                tipo.click()
+                break
+        time.sleep(3)
+        marcas = navegador.find_elements(By.XPATH, value='//*[@id="marcaVeiculo"]/option')
+        for marca in marcas:
+            if marca.get_attribute('value') == str(cod_marca):
+                marca.click()
+                break
+        time.sleep(5)
+        modelos = navegador.find_elements(By.XPATH, value='//*[@id="modeloVeiculo"]/option')
+        for modelo in modelos:
+            if modelo.get_attribute('value') == str(cod_modelo):
+                modelo.click()
+                break
+        time.sleep(3)
+        anos = navegador.find_elements(By.XPATH, value='//*[@id="anoVeiculo"]/option')
+
+        for ano in anos:
+            if ano.text == str(ano_veic):
+                ano.click()
+                break
+        time.sleep(5)
+        navegador.find_element(By.XPATH, value='//*[@id="BuscaVeiculo"]').click()
+        time.sleep(10)
+        #anuncio = navegador.find_elements(By.TAG_NAME, value='ins')[0]
+        #navegador.execute_script("""var element = arguments[0]; element.parentNode.removeChild(element);""", anuncio)
+        #btn_fecha_anuncio = navegador.find_element(By.XPATH, value='//*[@id="dismiss-button"]')
+        #navegador.execute_script("arguments[0].click();", btn_fecha_anuncio)
+
+        ins_element = navegador.find_elements(By.TAG_NAME, value='ins')
+        for el in ins_element:
+            navegador.execute_script("var element = arguments[0]; element.removeAttribute('style');",
+                                     el)
+        time.sleep(10)
+        navegador.find_element(By.XPATH, value='//*[@id="BuscaVeiculo"]').click()
+        '''spans = navegador.find_elements(By.TAG_NAME, value='span')
+        count = 0
+        for span in spans:
+            print(str(count) + ' - ' + span.txt)
+            count += 1'''
+        time.sleep(5)
+        cod_fipe = (navegador.find_element(By.XPATH, value='//*[@id="CodFipe"] ').text).split(':')[1]
+        val_veic = (navegador.find_element(By.CLASS_NAME, value='Valor_Veiculo ').text).split(':')[1]
+        val_comp = (val_veic.split(',')[0]).replace('R$', '')
+        navegador.quit()
+
+
+
+        return status, cod_fipe, val_comp
+
 

@@ -114,7 +114,8 @@ class Form_Imp_Contratos_Conta_View(View):
                 obj_empresa = Empresa.objects.filter(cod_empresa=contrato['cod_empresa']).first()
                 prox_parc_pendente = 0
                 if contrato['proxima_parc_pendente'] != None:
-                    prox_parc_pendente = contrato['proxima_parc_pendente'].split('/')[1]
+                    #prox_parc_pendente = contrato['proxima_parc_pendente'].split('/')[1]
+                    prox_parc_pendente = contrato['proxima_parc_pendente']
                 obj_contrato = Contrato.objects.filter(handle_fn_doc=contrato['handle_fn_doc'],
                                                        cod_empresa__cod_empresa=cod_empresa).first()
                 if obj_contrato == None:

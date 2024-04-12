@@ -63,10 +63,10 @@ class Veiculo_Venda(models.Model):
 
 class Veiculo_Venda_Tab_Precos(models.Model):
     cod_veic_venda_tab = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    ano = models.IntegerField(blank=True, null=True)
     codigo_veic_tab = models.CharField(max_length=10, blank=True, null=True)
     competencia = models.DateField(null=True, blank=True)
     val_comp = models.DecimalField(max_digits=16, decimal_places=6, blank=True, null=True)
+    ano_veic_tab = models.IntegerField(blank=False, null=False)
     cod_veic = models.ForeignKey(Veiculo_Venda, models.DO_NOTHING, db_column='cod_veic')
     cod_modelo_tab_precos = models.ForeignKey(Modelo_Tab_Precos, models.DO_NOTHING, db_column='cod_modelo_tab_precos',
                                             null=True, blank=True)

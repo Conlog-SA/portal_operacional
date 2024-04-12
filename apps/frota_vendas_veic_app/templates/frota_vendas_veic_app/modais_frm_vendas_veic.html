@@ -29,6 +29,8 @@
                       class="d-flex flex-column align-items-center justify-content-between"
                       method="POST">
 
+
+
                     <div class="d-flex justify-content-between align-items-between w-100 mb-4"
                          style="font-size: 11px; color: #000000;">
                         <div id="div_placa" class="d-flex flex-column w-50 align-items-start" style="margin-right: 0.5rem;">
@@ -54,7 +56,7 @@
                     </div>
 
 
-                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-3">
                         <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
                             <label style="color: #000000;">
                                 Tipo veículo
@@ -75,6 +77,14 @@
                                 Código modelo tabela
                             </label>
                             <input type="text" id="txt_cod_modelo_veic_tab" name="txt_cod_modelo_veic_tab"
+                                   class="form-control" style="height: 37.6px;">
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                            <label for="txt_cod_modelo_veic_tab" style="color: #000000;">
+                                Considerar ano:
+                            </label>
+                            <input type="text" id="txt_ano_veic_tab" name="txt_ano_veic_tab"
                                    class="form-control" style="height: 37.6px;">
                         </div>
                     </div>
@@ -109,6 +119,18 @@
 
                     <div class="mt-3 d-flex justify-content-between align-items-between w-100 mb-2" >
                         <div class="d-flex flex-column w-100">
+                            <div class="loader" id="loader_frm_vincula_veic_tab">
+                                <div class="loader-inner">
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
                             <button type='button' id="btn_confirma_marca_modelo_tab"
