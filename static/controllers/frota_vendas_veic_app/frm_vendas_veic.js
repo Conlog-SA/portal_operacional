@@ -82,13 +82,13 @@ $(document).on('click','button', function(){
 
 
        let let_data;
-        if ( let_lista_veic[let_indice_veic][19] > 0){
+        if ( let_lista_veic[let_indice_veic][21] > 0){
             $.ajax({
             type: 'GET',
             url: '/frota_vendas_veic_app/retorna_marcas_modelo_tipo_veic_selecionado',
             data: {
                 'tipo_pesq':    'carrega_dados_veic_tab',
-                'cod_modelo_tabela'   :   let_lista_veic[let_indice_veic][19]
+                'cod_ano_tabela'   :   let_lista_veic[let_indice_veic][21]
             },
             dataType: 'json',
             success: function (data) {
@@ -106,6 +106,14 @@ $(document).on('click','button', function(){
                 });
                 $("#sl_modelo_veic_tab").val(let_lista_veic[let_indice_veic][19]);
                 $("#sl_modelo_veic_tab").selectpicker('refresh');
+
+                $("#sl_ano_veic_tab option").remove();
+                data.lista_anos.forEach( ano =>{
+                    $("#sl_ano_veic_tab").append("<option value='"+ano.cod_ano_modelo_tab+"'>"+ano.ano+"</option>");
+
+                });
+                $("#sl_ano_veic_tab").val(let_lista_veic[let_indice_veic][21]);
+                $("#sl_ano_veic_tab").selectpicker('refresh');
 
             },
             error: function (request, status, error) {
@@ -136,6 +144,9 @@ $(document).on('click','button', function(){
         $("#sl_modelo_veic_tab").val('');
         $("#sl_modelo_veic_tab").selectpicker('refresh');
 
+        $("#sl_ano_veic_tab").val('');
+        $("#sl_ano_veic_tab").selectpicker('refresh');
+
         $("#modal_edita_dados_veic_tab").hide();
     }
     else if (let_nome_btn == "btn_confirma_marca_modelo_tab") {
@@ -144,7 +155,7 @@ $(document).on('click','button', function(){
 
         let let_cod_tab = $("#sl_tab_preco_veic").val();
         let let_cod_veic = let_val_btn;
-        let let_ano_veic_tab = $("#txt_ano_veic_tab").val();
+        let let_cod_ano_modelo_tab = $("#sl_ano_veic_tab").val();
         let let_cod_veic_na_tab = $("#txt_cod_modelo_veic_tab").val();
         let let_cod_modelo = $("#sl_modelo_veic_tab").val();
         $.ajax({
@@ -153,8 +164,7 @@ $(document).on('click','button', function(){
             data: {
                 'cod_tab': let_cod_tab,
                 'cod_veic':    let_cod_veic,
-                'ano_veic_tab': let_ano_veic_tab,
-                'cod_modelo'   :   let_cod_modelo,
+                'cod_ano_modelo_tab'   :   let_cod_ano_modelo_tab,
                 'cod_veic_na_tab': let_cod_veic_na_tab
             },
             dataType: 'json',
@@ -190,8 +200,8 @@ $(document).on('change', 'select', function(){
     let let_id_sl = $(this).attr('id');
     let let_val_sl = $(this).val();
     if(let_nome_sl == 'sl_tipo_veic_tab') {
-        let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
-        let_loader_frm_vendas_veic.style.display = "flex";
+        let let_loader_frm_vincula_veic_tab = document.getElementById("loader_frm_vincula_veic_tab");
+        let_loader_frm_vincula_veic_tab.style.display = "flex";
         $.ajax({
             type: 'GET',
             url: '/frota_vendas_veic_app/retorna_marcas_modelo_tipo_veic_selecionado',
@@ -207,9 +217,11 @@ $(document).on('change', 'select', function(){
                 });
                 $("#sl_marca_veic_tab").val('');
                 $("#sl_marca_veic_tab").selectpicker('refresh');
+
+                loader_frm_vincula_veic_tab.style.display = "none";
             },
             error: function (request, status, error) {
-                let_loader_frm_vendas_veic.style.display = "none";
+                loader_frm_vincula_veic_tab.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -220,8 +232,8 @@ $(document).on('change', 'select', function(){
             }
         });
     } else if(let_nome_sl == 'sl_marca_veic_tab') {
-        let let_loader_frm_vendas_veic = document.getElementById("loader_frm_vendas_veic");
-        let_loader_frm_vendas_veic.style.display = "flex";
+        let let_loader_frm_vincula_veic_tab = document.getElementById("loader_frm_vincula_veic_tab");
+        let_loader_frm_vincula_veic_tab.style.display = "flex";
         $.ajax({
             type: 'GET',
             url: '/frota_vendas_veic_app/retorna_marcas_modelo_tipo_veic_selecionado',
@@ -235,11 +247,46 @@ $(document).on('change', 'select', function(){
                 data.lista_modelos.forEach( modelo => {
                     $("#sl_modelo_veic_tab").append("<option value='"+modelo.cod_modelo_tab_precos+"'>"+modelo.desc_modelo+"</option>");
                 });
+                $("#sl_modelo_veic_tab").val('');
                 $("#sl_modelo_veic_tab").selectpicker('refresh');
+
+                let_loader_frm_vincula_veic_tab.style.display = "none";
 
             },
             error: function (request, status, error) {
-                let_loader_frm_vendas_veic.style.display = "none";
+                let_loader_frm_vincula_veic_tab.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    } else if(let_nome_sl == 'sl_modelo_veic_tab') {
+        let let_loader_frm_vincula_veic_tab = document.getElementById("loader_frm_vincula_veic_tab");
+        let_loader_frm_vincula_veic_tab.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            url: '/frota_vendas_veic_app/retorna_marcas_modelo_tipo_veic_selecionado',
+            data: {
+                'tipo_pesq':    'carrega_dados_anos',
+                'cod_modelo_tab'   :   let_val_sl
+            },
+            dataType: 'json',
+            success: function (data) {
+                $("#sl_ano_veic_tab option").remove();
+                data.lista_anos.forEach( ano => {
+                    $("#sl_ano_veic_tab").append("<option value='"+ano.cod_ano_modelo_tab+"'>"+ano.ano+"</option>");
+                });
+                $("#sl_ano_veic_tab").selectpicker('refresh');
+
+                let_loader_frm_vincula_veic_tab.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_vincula_veic_tab.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,

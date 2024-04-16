@@ -1199,16 +1199,27 @@ $(document).on('click','button', function(){
         $("#sl_contas_atualiza_contratos_benner").selectpicker('selectAll');
     }
     else if (let_nome_btn == 'btn_atualiza_dados_contrato_benner'){
-        let let_loader_frm_modal_atualiza_contratos_benner =
-            document.getElementById("loader_frm_modal_atualiza_contratos_benner");
-        let_loader_frm_modal_atualiza_contratos_benner.style.display = "flex";
         let let_lista_cod_contas = $("#sl_contas_atualiza_contratos_benner").val().toString();
+        let let_data_corte = $("#dt_data_corte_atualiza_ctr_parc_benner").val();
 
-        $.ajax({
+        if(let_lista_cod_contas == '' || let_data_corte == '') {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Selecione as contas que desejas atualizar e/ou a data corte de atualização!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        } else {
+            let let_loader_frm_modal_atualiza_contratos_benner =
+                document.getElementById("loader_frm_modal_atualiza_contratos_benner");
+            let_loader_frm_modal_atualiza_contratos_benner.style.display = "flex";
+            $.ajax({
             type: 'POST',
             url: '/contabil_composicao_app/atualiza_contratos_com_dados_do_benner',
             data: {
-                'lista_cod_contas': let_lista_cod_contas
+                'lista_cod_contas': let_lista_cod_contas,
+                'data_corte': let_data_corte
             },
             dataType: 'json',
             success: function (dados) {
@@ -1302,6 +1313,8 @@ $(document).on('click','button', function(){
                 });
           }
         });
+        }
+
 
     }
 

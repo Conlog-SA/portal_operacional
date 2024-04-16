@@ -94,7 +94,7 @@ class Form_Imp_Contratos_Conta_View(View):
         return JsonResponse(data, safe=False)
 
 
-    def atualiza_dados_contratos_parcelas(self, cod_conta_form, num_contrato_form, tipo_pesq_form, cod_empresa):
+    def atualiza_dados_contratos_parcelas(self, cod_conta_form, num_contrato_form, tipo_pesq_form, cod_empresa, data_corte):
         obj_conta = Conta.objects.get(pk=cod_conta_form)
         handle_conta_cp = obj_conta.handle_conta_contabil_cp
         handle_conta_lp = obj_conta.handle_conta_contabil_lp
@@ -116,6 +116,9 @@ class Form_Imp_Contratos_Conta_View(View):
                 if contrato['proxima_parc_pendente'] != None:
                     #prox_parc_pendente = contrato['proxima_parc_pendente'].split('/')[1]
                     prox_parc_pendente = contrato['proxima_parc_pendente']
+                qtd_parcela = 0
+                if contrato['qtd_parc'] != None:
+                    qtd_parcela = contrato['qtd_parc']
                 obj_contrato = Contrato.objects.filter(handle_fn_doc=contrato['handle_fn_doc'],
                                                        cod_empresa__cod_empresa=cod_empresa).first()
                 if obj_contrato == None:
@@ -132,7 +135,7 @@ class Form_Imp_Contratos_Conta_View(View):
                         cod_conta=obj_conta,
                         sincronizar_benner='S',
                         dia_util=None,
-                        qtd_parcelas=prox_parc_pendente,
+                        qtd_parcelas=qtd_parcela,
                         cod_empresa=obj_empresa
                     )
                     obj_contrato.save()
@@ -162,7 +165,7 @@ class Form_Imp_Contratos_Conta_View(View):
 
                 lista_parcelas_contrato_form = []
                 lista_parcelas_contrato = ConexaoBancoBenner().retorna_dados_parcelas_contrato(
-                    contrato['handle_fn_doc'])
+                    contrato['handle_fn_doc'], data_corte)
                 # lista_contratos_benner.append(lista_parcelas_contrato)
                 val_tt_contrato_reajustado = 0
                 val_tt_liq_cp = 0
@@ -1231,7 +1234,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                                     .filter((Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
                                             cod_conta__tipo_modelo=cod_tipo_modelo_form) #cod_conta__status_comp='A'
                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
-                                            'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
+                                            'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp').distinct())
                     for reg in lista_resp_contas:
                         conta = {
                             'cod_conta': reg['cod_conta__cod_conta'],
@@ -1255,7 +1258,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_pacotes.split(','))
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
-                                             'cod_conta__cod_red_conta_contabil_lp'))
+                                             'cod_conta__cod_red_conta_contabil_lp').distinct())
                 for reg in lista_resp_contas:
                     conta = {
                         'cod_conta': reg['cod_conta__cod_conta'],
@@ -1297,7 +1300,8 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     cod_conta__tipo_modelo=cod_tipo_modelo_form) #, cod_conta__status_comp='A'
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
-                                             'cod_conta__cod_red_conta_contabil_lp'))
+                                             'cod_conta__cod_red_conta_contabil_lp')
+                                     .distinct())
                 for reg in lista_resp_contas:
                     conta = {
                         'cod_conta': reg['cod_conta__cod_conta'],
@@ -3521,6 +3525,7 @@ class Comp_Cb_Contas_Imp_Docs_Pac_M1_View(View):
 class Form_Atualiza_Contratos_Benner_View(View):
     def post(self, request):
         lista_cod_contas = request.POST['lista_cod_contas']
+        data_corte_frm = request.POST['data_corte']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -3542,7 +3547,7 @@ class Form_Atualiza_Contratos_Benner_View(View):
                     Form_Imp_Contratos_Conta_View()
                     .atualiza_dados_contratos_parcelas(
                         obj_conta.cod_conta, contrato['cod_contrato__num_contrato'],'C',
-                        obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa) )[2]
+                        obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa) )[2], data_corte_frm
                 for parc in lista_parcelas_atualizadas:
                     val_pago = 0.00
                     if parc.val_corrigido != None:

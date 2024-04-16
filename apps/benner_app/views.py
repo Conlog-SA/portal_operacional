@@ -167,7 +167,8 @@ class ConexaoBancoBenner():
                       WHERE	ordem.DOCUMENTO = fn_doc.handle
 							   AND	ordem.DATALIQUIDACAO IS null
 								ORDER BY ordem.handle ASC)
-                                                        AS	val_proxima_parc_pendente                                                         
+                                                        AS	val_proxima_parc_pendente,
+                    COUNT(DISTINCT fn_parc.handle) 		AS  qtd_parc                                                         
               FROM	FN_DOCUMENTOS fn_doc (NOLOCK)
               LEFT	JOIN FN_PARCELAS fn_parc (NOLOCK) 
                  ON	fn_parc.DOCUMENTO = fn_doc.HANDLE
@@ -232,7 +233,8 @@ class ConexaoBancoBenner():
                 'proxima_parc_pendente': row.proxima_parc_pendente,
                 'data_venc_proxima_parc_pendente': row.data_venc_proxima_parc_pendente,
                 'val_proxima_parc_pendente': row.val_proxima_parc_pendente,
-                'total_pago': row.total_pago
+                'total_pago': row.total_pago,
+                'qtd_parc': row.qtd_parc
             }
             lista_contratos_conta_benner.append(contrato)
 
@@ -242,9 +244,13 @@ class ConexaoBancoBenner():
 
         return lista_contratos_conta_benner
 
-    def retorna_dados_parcelas_contrato(self, handle_contrato):
+    def retorna_dados_parcelas_contrato(self, handle_contrato, data_corte):
         '''Objeto a retornar'''
         lista_parcelas_contrato_benner = []
+
+        param_data_corte = ''
+        if data_corte != None:
+            param_data_corte = f" AND CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' "
 
         '''Processamento'''
         cursor = self.__conn.cursor()
@@ -310,6 +316,7 @@ class ConexaoBancoBenner():
                AND	fn_doc.ABRANGENCIA <> 'R'
                AND	((fn_doc.DATACANCELAMENTO IS NULL) OR(fn_doc.DATACANCELAMENTO > CONVERT(DATETIME,'20221231',103)))
                AND	fn_doc.HANDLE = {handle_contrato}
+               {param_data_corte}
              GROUP	BY fn_doc.HANDLE,
                     fn_parc.handle,
                     fn_parc.AP,

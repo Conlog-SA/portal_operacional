@@ -1534,3 +1534,20 @@ Xd/</<@https://pagead2.googlesyndication.com/pagead/managed/js/activeview/curren
 1712781158613	Marionette	INFO	Stopped listening on port 55350
 Dynamically enable window occlusion 1
 !!! error running onStopped callback: TypeError: callback is not a function
+1713239052308	geckodriver	INFO	Listening on 127.0.0.1:54815
+1713239055386	mozrunner::runner	INFO	Running command: "C:\\Program Files\\Mozilla Firefox\\firefox.exe" "--marionette" "--no-sandbox" "--disable-dev-shm-usage" "--remote-debugging-port" "54816" "--remote-allow-hosts" "localhost" "-no-remote" "-profile" "C:\\Users\\DANILO~1.COS\\AppData\\Local\\Temp\\rust_mozprofilenrh8fq"
+console.warn: services.settings: Ignoring preference override of remote settings server
+console.warn: services.settings: Allow by setting MOZ_REMOTE_SETTINGS_DEVTOOLS=1 in the environment
+1713239056158	Marionette	INFO	Marionette enabled
+Dynamically enable window occlusion 0
+console.error: "Warning: unrecognized command line flag" "-no-sandbox"
+1713239056297	Marionette	INFO	Listening on port 54870
+WebDriver BiDi listening on ws://127.0.0.1:54816
+Read port: 54870
+1713239056565	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+DevTools listening on ws://127.0.0.1:54816/devtools/browser/630b756f-266c-430f-8a30-bf03c479fd66
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 7474 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1713239086198	addons.xpi	ERROR	System addon update list error SyntaxError: XMLHttpRequest.open: 'http://%(server)s/dummy-system-addons.xml' is not a valid URL.
+JavaScript warning: https://pagead2.googlesyndication.com/bg/L0LConaBzCc577BZGNgzP3bg87fF5vhB9-a07M4Tw6o.js line 2 > eval line 5486 > eval line 1 > eval line 1 > eval, line 1: WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER.
+1713239111937	Marionette	INFO	Stopped listening on port 54870
+Dynamically enable window occlusion 1

@@ -6,7 +6,7 @@ from django.views import View
 
 from apps.benner_app.views import ConexaoBancoBenner
 from apps.frota_vendas_veic_app.models import Tabela_Preco_Veic, Veiculo_Venda, Veiculo_Venda_Tab_Precos, \
-    Marca_Tab_Precos, Tipo_Veic_Tab_Precos, Modelo_Tab_Precos
+    Marca_Tab_Precos, Tipo_Veic_Tab_Precos, Modelo_Tab_Precos, Ano_Modelo_Tab_Precos
 
 import time
 from selenium import webdriver
@@ -66,23 +66,25 @@ class Form_Venda_Veic_View(View):
             cod_marca = None
             cod_modelo = None
             cod_tipo_veic_tab = None
+            cod_ano_modelo = None
             obj_veic_venda_tab = (Veiculo_Venda_Tab_Precos.objects
                                   .filter(cod_veic=obj_veic,
-                                          cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab.cod_tab_precos).first())
+                                          cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab.cod_tab_precos).first())
             if obj_veic_venda_tab == None:
                 obj_veic_venda_tab = Veiculo_Venda_Tab_Precos(
                     codigo_veic_tab = None,
                     competencia = None,
                     val_comp = 0.00,
                     cod_veic = obj_veic,
-                    cod_modelo_tab_precos = None
+                    cod_ano_modelo_tab = None
                 )
                 obj_veic_venda_tab.save()
             else:
-                if obj_veic_venda_tab.cod_modelo_tab_precos != None:
-                    cod_marca = obj_veic_venda_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_marca_tab_precos
-                    cod_modelo = obj_veic_venda_tab.cod_modelo_tab_precos.cod_modelo_tab_precos
-                    cod_tipo_veic_tab = obj_veic_venda_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_tipo_veic_tab_precos.cod_tipo_veic_tab_precos
+                if obj_veic_venda_tab.cod_ano_modelo_tab != None:
+                    cod_ano_modelo = obj_veic_venda_tab.cod_ano_modelo_tab.cod_ano_modelo_tab
+                    cod_marca = obj_veic_venda_tab.cod_ano_modelo_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_marca_tab_precos
+                    cod_modelo = obj_veic_venda_tab.cod_ano_modelo_tab.cod_modelo_tab_precos.cod_modelo_tab_precos
+                    cod_tipo_veic_tab = obj_veic_venda_tab.cod_ano_modelo_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_tipo_veic_tab_precos.cod_tipo_veic_tab_precos
 
 
             locale.setlocale(locale.LC_MONETARY, 'pt-BR')
@@ -127,7 +129,7 @@ class Form_Venda_Veic_View(View):
                 'periodo_pesq': competencia, #17
                 'val_fipe': val_fipe, #18
                 'cod_veic_venda_tab': obj_veic_venda_tab.cod_veic_venda_tab, #19
-                'ano_veic_tab': obj_veic_venda_tab.ano_veic_tab
+                'ano_veic_tab': cod_ano_modelo #20
             }
             lista_veic_vendas.append((veic_vendas))
 
@@ -149,14 +151,18 @@ class Form_Componente_Select_Tipo_Veic_Marcas_Modelo_View(View):
         tipo_pesq_frm = request.GET['tipo_pesq']
         lista_marcas = []
         lista_modelos = []
+        lista_anos = []
         if tipo_pesq_frm == 'carrega_dados_veic_tab':
-            cod_modelo_tabela_frm = request.GET['cod_modelo_tabela']
-            obj_modelo_tab = Modelo_Tab_Precos.objects.get(pk=cod_modelo_tabela_frm)
+            cod_ano_tabela_frm = request.GET['cod_ano_tabela']
+            obj_ano_tab = Ano_Modelo_Tab_Precos.objects.get(pk=cod_ano_tabela_frm)
+            lista_anos = list(Ano_Modelo_Tab_Precos.objects
+                              .filter(cod_modelo_tab_precos=obj_ano_tab.cod_modelo_tab_precos)
+                              .values('cod_ano_modelo_tab', 'ano'))
             lista_modelos = list(Modelo_Tab_Precos.objects
-                                 .filter(cod_marca_tab_precos=obj_modelo_tab.cod_marca_tab_precos)
+                                 .filter(cod_marca_tab_precos=obj_ano_tab.cod_modelo_tab_precos.cod_marca_tab_precos)
                                  .values('cod_modelo_tab_precos', 'desc_modelo'))
             lista_marcas = list(Marca_Tab_Precos.objects
-                                .filter(cod_tipo_veic_tab_precos=obj_modelo_tab.cod_marca_tab_precos.cod_tipo_veic_tab_precos)
+                                .filter(cod_tipo_veic_tab_precos=obj_ano_tab.cod_modelo_tab_precos.cod_marca_tab_precos.cod_tipo_veic_tab_precos)
                                 .values('cod_marca_tab_precos', 'desc_marca'))
         elif tipo_pesq_frm == 'carrega_dados_marca':
             cod_tipo_veic_frm = request.GET['cod_tipo_veic']
@@ -171,10 +177,17 @@ class Form_Componente_Select_Tipo_Veic_Marcas_Modelo_View(View):
             lista_modelos = list(Modelo_Tab_Precos.objects
                                  .filter(cod_marca_tab_precos=obj_marca_tab)
                                  .values('cod_modelo_tab_precos', 'desc_modelo'))
+        elif tipo_pesq_frm == 'carrega_dados_anos':
+            cod_modelo_tab_frm = request.GET['cod_modelo_tab']
+            obj_modelo_tab = Modelo_Tab_Precos.objects.get(pk=cod_modelo_tab_frm)
+            lista_anos = list(Ano_Modelo_Tab_Precos.objects
+                                 .filter(cod_modelo_tab_precos=obj_modelo_tab)
+                                 .values('cod_ano_modelo_tab', 'ano'))
 
 
         data = dict()
         data = {
+            'lista_anos': lista_anos,
             'lista_marcas': lista_marcas,
             'lista_modelos': lista_modelos
         }
@@ -185,8 +198,8 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
     def post(self, request):
         cod_tab_frm = request.POST['cod_tab']
         cod_veic_frm = request.POST['cod_veic']
-        ano_veic_tab_frm = request.POST['ano_veic_tab']
-        cod_modelo_frm = request.POST['cod_modelo']
+        cod_ano_modelo_tab_frm = request.POST['cod_ano_modelo_tab']
+        #cod_modelo_frm = request.POST['cod_modelo']
         cod_veic_na_tab_frm = request.POST['cod_veic_na_tab']
 
         data_hora_atual = datetime.now()
@@ -195,18 +208,20 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
 
         obj_tab_precos = Tabela_Preco_Veic.objects.get(pk=cod_tab_frm)
         obj_veic = Veiculo_Venda.objects.get(pk=cod_veic_frm)
-        obj_modelo = Modelo_Tab_Precos.objects.get(pk=cod_modelo_frm)
+        #obj_modelo = Modelo_Tab_Precos.objects.get(pk=cod_modelo_frm)
+        obj_ano_modelo = Ano_Modelo_Tab_Precos.objects.get(pk=cod_ano_modelo_tab_frm)
 
         obj_veic_tab = (Veiculo_Venda_Tab_Precos.objects
                         .filter(cod_veic=obj_veic,
-                                cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos = obj_tab_precos)
+                                cod_ano_modelo_tab=obj_ano_modelo)
+                                #cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos = obj_tab_precos)
                         .first())
 
         dic_pesq_preco_tab = self.acessa_site_tab_captura_val(
-            obj_modelo.cod_marca_tab_precos.cod_tipo_veic_tab_precos.id_tipo_veic_tab,
-            obj_modelo.cod_marca_tab_precos.cod_marca_tab_precos,
-            obj_modelo.cod_modelo_tab_precos,
-            ano_veic_tab_frm)
+            obj_ano_modelo.cod_modelo_tab_precos.cod_marca_tab_precos.cod_tipo_veic_tab_precos.id_tipo_veic_tab,
+            obj_ano_modelo.cod_modelo_tab_precos.cod_marca_tab_precos.cod_marca_tab_precos,
+            obj_ano_modelo.cod_modelo_tab_precos.cod_modelo_tab_precos,
+            obj_ano_modelo.ano)
         val_comp_veic = 0
         cod_veic_tab = cod_veic_na_tab_frm
         if dic_pesq_preco_tab[0] == 0:
@@ -221,18 +236,16 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
             obj_veic_tab = Veiculo_Venda_Tab_Precos(
                 codigo_veic_tab= cod_veic_tab,
                 competencia= competencia_date,
-                ano_veic_tab=ano_veic_tab_frm,
                 val_comp= val_comp_veic,
                 cod_veic= obj_veic,
-                cod_modelo_tab_precos= obj_modelo
+                cod_ano_modelo_tab= obj_ano_modelo
             )
             obj_veic_tab.save()
         else:
             obj_veic_tab.codigo_veic_tab = cod_veic_na_tab_frm
             obj_veic_tab.competencia = competencia_date
-            obj_veic_tab.ano_veic_tab = ano_veic_tab_frm
             obj_veic_tab.val_comp = val_comp_veic
-            obj_veic_tab.cod_modelo_tab_precos = obj_modelo
+            obj_veic_tab.cod_ano_modelo_tab = obj_ano_modelo
             obj_veic_tab.save()
 
 
