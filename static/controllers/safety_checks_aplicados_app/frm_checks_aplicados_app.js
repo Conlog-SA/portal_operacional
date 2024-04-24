@@ -7,7 +7,6 @@ $(document).on('click','.button-check-post' , function(){
     $(this).addClass("selected");
     element = $(this).siblings().eq(0);
     element.removeClass("selected");
-
     let resposta_check = 2;
     let name =  $(this).attr("name").split('@')
     let cod_item_check = name[0]
@@ -23,7 +22,7 @@ $(document).on('click','.button-check-post' , function(){
     if (resposta_check != 2) {
         $.ajax({
             type: 'POST',
-            url: '/safety_gab_op_emp_app/item_check_empilhadeira',
+            url: '/safety_checks_aplicados_app/item_aplicado',
             data: {
                 'tipo_input'   :   'button',
                 'resposta'     :   resposta_check,
@@ -31,7 +30,6 @@ $(document).on('click','.button-check-post' , function(){
                 'cod_check_aplicado' : cod_check_aplicado
             },
             success: function (dados) {
-
             }
         });
 
@@ -47,7 +45,7 @@ $(document).on('change', '.textarea-check-post', function(){
 
     $.ajax({
         type: 'POST',
-        url: '/safety_gab_op_emp_app/item_check_empilhadeira',
+        url: '/safety_checks_aplicados_app/item_aplicado',
         data: {
             'tipo_input'   :   'text',
             'resposta'     :   resposta_check,
@@ -87,7 +85,7 @@ $(document).on('change','.file-check-post' , function(event){
     $.ajax({
         type: 'POST',
         enctype: "multipart/form-data; charset=utf-8",
-        url: '/safety_gab_op_emp_app/item_check_empilhadeira',
+        url: '/safety_checks_aplicados_app/item_aplicado',
         data: formDataImg,
         processData: false,
         contentType: false,
@@ -98,20 +96,8 @@ $(document).on('change','.file-check-post' , function(event){
 });
 
 $(document).on('click','.btn-voltar-menu-safety' , function(){
-    let flag_invalido = 0;
 
-    $('.background-check-preenchido').each(function(){
-        if($(this).find('.obrigatorio').val() == "1") {
-            if($(this).find('.input-item').val() == '') {
-                flag_invalido = 1;
-            }
-            let lista_botoes = $(this).find('.input-botao');
-            if (lista_botoes.length > 0 && !lista_botoes.hasClass("selected")) {
-                flag_invalido = 1;
-            }
-        }
-    });
-    if (flag_invalido == 0) {
+    if ($('.background-check-preenchido').length == 0) {
         $.ajax({
             type: 'POST',
             url: '/safety_login_colaboradores_app/safe_login_colab',
@@ -123,25 +109,56 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                 $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
                 $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
                 $('#main_container_safety').css('width', '85%');
-
-                $.gritter.add({
-                    title: 'Sucesso!',
-                    text: 'Check preenchido com sucesso',
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
             }
         });
     }
-    else if (flag_invalido == 1) {
-        $.gritter.add({
-            title: 'Erro!',
-            text: 'Existem perguntas obrigatórias não respondidas!',
-            image: '/static/icons/triangle-exclamation-solid.svg',
-            sticky: false,
-            time: '',
+    else {
+        let flag_invalido = 0;
+
+        $('.background-check-preenchido').each(function(){
+            if($(this).find('.obrigatorio').val() == "1") {
+                if($(this).find('.input-item').val() == '') {
+                    flag_invalido = 1;
+                }
+                let lista_botoes = $(this).find('.input-botao');
+                if (lista_botoes.length > 0 && !lista_botoes.hasClass("selected")) {
+                    flag_invalido = 1;
+                }
+            }
         });
+
+        if (flag_invalido == 0) {
+            $.ajax({
+                type: 'POST',
+                url: '/safety_login_colaboradores_app/safe_login_colab',
+                data: {
+                            'flag_voltar'      :   1,
+                         },
+                success: function (dados) {
+                    $('#main_container_safety').html(dados);
+                    $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
+                    $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
+                    $('#main_container_safety').css('width', '85%');
+
+                    $.gritter.add({
+                        title: 'Sucesso!',
+                        text: 'Check preenchido com sucesso',
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+        }
+        else if (flag_invalido == 1) {
+            $.gritter.add({
+                title: 'Erro!',
+                text: 'Existem perguntas obrigatórias não respondidas!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
     }
 });
 

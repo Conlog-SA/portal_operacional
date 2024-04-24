@@ -48,9 +48,9 @@ class Form_Gerar_Relatos_Check(View):
         situacao_envolvido = request.POST['situacao_envolvido']
         nome_relatado = request.POST['nome_relatado']
         local_relato = request.POST['local_relato']
+        turno_relato = request.POST['turno_relato']
         atividade_relato = request.POST['atividade_relato']
         processo_relato = request.POST['processo_relato']
-        descricao_relato = request.POST['situacao_relato']
         unidade_relato = request.POST['unidade_relato']
         colaborador = None
         if situacao_envolvido == '1':
@@ -106,9 +106,9 @@ class Form_Gerar_Relatos_Check(View):
             cod_tipo_relato=tipo_relato,
             situacao_envolvido=situacao_envolvido,
             local_relato=local_relato,
+            turno_relato=turno_relato,
             processo_relato=processo_relato,
-            atividade_relato=atividade_relato,
-            descricao_relato=descricao_relato
+            atividade_relato=atividade_relato
         )
         check_cabecalho.save()
 

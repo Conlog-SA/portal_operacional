@@ -7,7 +7,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Check_Aplicado
-from apps.safety_gab_op_emp_app.views import Item_Check_Aplicado
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check
 from apps.usuario_app.models import Usuario
 
@@ -18,15 +17,22 @@ class Form_Seguranca_Check(View):
     @csrf_exempt
     def get(self, request):
         lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos'}
-        lista_filiais = Filial.objects.all()
-        #lista_filiais_dict = []
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+        flag_corporativo = 0
+        if usuario.corporativo == 'S':
+            lista_filiais = Filial.objects.all()
+            flag_corporativo = 1
+        elif usuario.corporativo == 'N':
+            lista_filiais = [usuario.cod_filial]
 
         '''for filial in lista_filiais:
             lista_filiais_dict.append({filial.cod_filial, filial.desc_filial})
         print(lista_filiais_dict)'''
         contexto = {
             'lista_tipos': lista_tipos,
-            'lista_filiais' : lista_filiais
+            'lista_filiais' : lista_filiais,
+            'flag_corporativo': flag_corporativo,
         }
         return render(request,'safety_layout_checklist_app/form_cad_layout_checklist.html', contexto)
 
@@ -34,7 +40,16 @@ class Lista_Check(View):
     @csrf_exempt
     def get(self, request):
         cod_tipo = request.GET['cod_tipo']
-        lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+        if usuario.corporativo == 'S':
+            lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
+        elif usuario.corporativo == 'N':
+            checks_liberados_filial_usu = Libera_Filial_Check.objects.filter(cod_filial=usuario.cod_filial)
+
+            lista_checks = Layout_Check.objects.filter(tipo_check=cod_tipo,cod_usu__cod_filial=usuario.cod_filial)
+            lista_checks = lista_checks.union(Layout_Check.objects.filter(cod_check__in=checks_liberados_filial_usu))
+
         lista_checks_dict = []
         for check in lista_checks:
             lista_checks_dict.append({'cod_check': check.cod_check, 'desc_check': check.desc_check})

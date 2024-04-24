@@ -1,0 +1,28 @@
+
+
+.importa2art__tabelaMapas{
+  background-color: var(--cor_cinza_claro2);
+  color: black;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  padding:1.5rem;
+  margin-right: 0rem !important;
+  height: 85%;
+}
+
+.form_importa_2art{
+  height: 45px !important;
+
+}
+
+table, tr, td, .dataTables_info, .dataTables_filter{
+  font-size: 0.85rem !important;
+}
+
+#tab_mapas_nao_importados_2art_wrapper{
+  height: 100% !important;
+}
+
+table{
+  height: 85% !important;
+}

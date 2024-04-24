@@ -27,7 +27,7 @@ class Arquivo2Art(models.Model):
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
     class Meta:
         managed = True
-        db_table = 'ger_arq_2art'#op_frota_arq_2art'
+        db_table = 'ger_arq_2art'
 
 
 class Registro2Art(models.Model):

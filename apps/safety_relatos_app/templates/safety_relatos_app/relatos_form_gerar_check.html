@@ -63,6 +63,15 @@
                                            <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato">
                                         </div>
                                         <div class="form-group">
+                                           <label for="turno_relato">Turno do relato:</label>
+                                            <select class="form-control responsive-font selectpicker" id="turno_relato" name="turno_relato" placeholder="Selecione o turno">
+                                                <option value="1">Turno A</option>
+                                                <option value="2">Turno B</option>
+                                                <option value="3">Turno C</option>
+                                                <option value="4">ADM</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="processo_relato">Processo:</label>
                                             <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" placeholder="Selecione o processo">
                                                 {% autoescape off %}
@@ -74,10 +83,6 @@
                                            <label for="atividade_relato">Atividade sendo realizada:</label>
                                             <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled>
                                             </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="descricao_situacao">Descrição da situação:</label>
-                                            <textarea class="form-control responsive-font" id="descricao_situacao" name="descricao_situacao"></textarea>
                                         </div>
                                     </div>
                                     <div class="w-100" style="justify-content:space-between;display:flex;padding-right:2rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">

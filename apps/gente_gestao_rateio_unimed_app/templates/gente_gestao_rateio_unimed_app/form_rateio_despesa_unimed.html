@@ -1,0 +1,157 @@
+{% load static %}
+
+{% block link_static_css %} 
+  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-file-import fa-2xl" alt="Rateio Despesas Unimed" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+    <div class="containerApp">
+        <form id="form_upload_plan_despesas" name="form_upload_plan_despesas"  method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
+              enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <input type="file" name="fl_campo_arquivo_plan_despesas" id="fl_campo_arquivo_plan_despesas" class="containerApp"
+                   placeholder='Selecione uma planilha de despesas válida...'
+                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex align-items-end w-100 cl_div_loader">
+                    <div class="loader" id="loader_imp_plan_despesas">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex align-items-end w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
+        </form>
+
+        <div class="form-group cl_div_tabela_principal_pagina w-100">
+            <nav>
+                <div class="nav nav-tabs" id="myTab" role="tablist">
+                    <button class="nav-link active tabs-nav a_tab_rateio_despesas_erros" id="a_tab_rateio_despesas_erros" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_rateio_despesas_erros" type="button" role="tab"
+                            aria-controls="div_tab_rateio_despesas_erros"
+                            aria-selected="true" style="border-radius:0px 0px 0 0; font-size:15px">
+                        Erros
+                        <i class="fa-solid fa-filter" style="color: #f46424;"></i>
+                    </button>
+                    <button class="nav-link tabs-nav a_tab_rateio_despesas_importadas" id="a_tab_rateio_despesas_importadas" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_rateio_despesas_importadas" type="button" role="tab"
+                            aria-controls="div_tab_rateio_despesas_importadas"
+                            aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px">
+                        Consulta
+                        <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
+                    </button>
+                    <button class="nav-link tabs-nav a_tab_rateio_projetos" id="a_tab_rateio_projetos" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_rateio_projetos" type="button" role="tab"
+                            aria-controls="div_tab_rateio_projetos"
+                            aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px">
+                        Rateio
+                        <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
+                    </button>
+                </div>
+            </nav>
+            <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
+                <div class="tab-pane active" id="div_tab_rateio_despesas_erros" role="tabpanel"
+                 aria-labelledby="a_tab_rateio_despesas_erros" style="padding-left:5px;">
+                    <div class="col-md-12 w-100 h-100">
+                        <table id="tab_rateio_despesas_erros"  class="display wrap w-100 cl_tab_principal_pagina">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Competência</th>
+                                    <th scope="col">Beneficiário</th>
+                                    <th scope="col">CPF Beneficiário</th>
+                                    <th scope="col">Tipo Dependência</th>
+                                    <th scope="col">Titular</th>
+                                    <th scope="col">CPF Titular</th>
+                                    <th scope="col">Despesa</th>
+                                    <th scope="col">Valor</th>
+                                    <th scope="col">Matricula Titular</th>
+                                    <th scope="col">Nome Tit. Senior</th>
+                                    <th scope="col">Filial</th>
+                                    <th scope="col">Projeto</th>
+                                    <th scope="col">Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_tab_rateio_despesas_importadas"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="div_tab_rateio_despesas_importadas" role="tabpanel"
+                             aria-labelledby="a_tab_rateio_despesas_importadas" style="padding-left:5px">
+                    <div class="form-group col-sm-3" style="margin-top:20px;display:flex;">
+                        <label for="input_competencia">Inicio em:</label>
+                        <input type="month" class="form-control" id="input_competencia">
+                        <button type="button" class="btn btn-primary btn-rounded botaoPrincipal" name="teste">Editar</button>
+                    </div>
+                    <div class="col-md-12 w-100 h-100">
+                        <table id="tab_rateio_despesas_consulta"  class="display wrap w-100 cl_tab_principal_pagina">
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Competência</th>
+                                    <th scope="col">Beneficiário</th>
+                                    <th scope="col">CPF Beneficiário</th>
+                                    <th scope="col">Tipo Dependência</th>
+                                    <th scope="col">Titular</th>
+                                    <th scope="col">CPF Titular</th>
+                                    <th scope="col">Despesa</th>
+                                    <th scope="col">Valor</th>
+                                    <th scope="col">Matricula Titular</th>
+                                    <th scope="col">Nome Tit. Senior</th>
+                                    <th scope="col">Filial</th>
+                                    <th scope="col">Projeto</th>
+                                    <th scope="col">Editar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_tab_rateio_despesas_consulta"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="div_tab_rateio_projetos" role="tabpanel"
+                             aria-labelledby="a_tab_rateio_projetos" style="padding-right:1rem">
+                    <div class="col-md-12 w-100 h-100">
+                        teste
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% include 'gente_gestao_rateio_unimed_app/modal_form_rateio_despesa_unimed.html' %}
+
+

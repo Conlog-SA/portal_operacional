@@ -82,6 +82,113 @@ class Conexao_Senior_BD():
             self.__conn.close()
             return data
 
+    def pesquisar_dados_colaborador_por_cpf_emp(self, cpf, cod_empresa):
+        lista_colabs = {}
+        print(cpf)
+        print(cod_empresa)
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
+                A.NOMFUN   AS NOME_FUNC,
+                A.NUMCPF   AS CPF,
+                B.TITCAR   AS DESC_CARGO,
+                C.CODFIL   AS COD_FIL,
+                C.NOMFIL   AS NOM_FIL,
+                CASE WHEN A.SITAFA = 7
+                        THEN 'Desligado'
+                        ELSE 'Ativo' END
+                        AS  SITUACAO_COLAB,
+                A.CODCCU AS COD_PROJ,
+                D.NOMCCU AS NOM_PROJ
+                
+                FROM R034FUN A (NOLOCK)
+                LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
+                LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
+                LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
+                WHERE A.NUMCPF = ?
+                AND C.NUMEMP = ?''', [int(cpf.split('.')[0]), int(cod_empresa)])
+        result = cursor.fetchall()
+        if cursor is not None and len(result) == 1:
+            colaborador = result[0]
+            data = {
+                    'nome_colab': colaborador.NOME_FUNC,
+                    'desc_cargo_colab': colaborador.DESC_CARGO,
+                    'cod_filial_colab': colaborador.COD_FIL,
+                    'nom_filial_colab': colaborador.NOM_FIL,
+                    'cod_projeto_colab': colaborador.COD_PROJ,
+                    'nom_projeto_colab': colaborador.NOM_PROJ,
+                    'cpf_colab': colaborador.CPF,
+                    'matricula_colab': colaborador.ID,
+                    'situacao_colab': colaborador.SITUACAO_COLAB,
+                }
+            cursor.close()
+            self.__conn.close()
+            return data
+        else:
+            columns = [column[0] for column in cursor.description]
+            print(columns)
+            if len(cursor.fetchall()) == 0 or cursor is None:
+                data = {
+                    'erro': 'Colaborador não encontrado'
+                }
+                return data
+            if len(cursor.fetchall()) > 1:
+                data = {
+                    'erro': 'Colaborador duplicado'
+                }
+                return data
+
+    def pesquisar_dados_por_matricula(self, matricula, cod_empresa):
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
+                A.NOMFUN   AS NOME_FUNC,
+                A.NUMCPF   AS CPF,
+                B.TITCAR   AS DESC_CARGO,
+                C.CODFIL   AS COD_FIL,
+                C.NOMFIL   AS NOM_FIL,
+                CASE WHEN A.SITAFA = 7
+                        THEN 'Desligado'
+                        ELSE 'Ativo' END
+                        AS  SITUACAO_COLAB,
+                A.CODCCU AS COD_PROJ,
+                D.NOMCCU AS NOM_PROJ
+
+                FROM R034FUN A (NOLOCK)
+                LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
+                LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
+                LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
+                WHERE A.NUMCAD = ?
+                AND C.NUMEMP = ?''', [int(matricula), int(cod_empresa)])
+        result = cursor.fetchall()
+        if cursor is not None and len(result) == 1:
+            colaborador = result[0]
+            data = {
+                'nome_colab': colaborador.NOME_FUNC,
+                'desc_cargo_colab': colaborador.DESC_CARGO,
+                'cod_filial_colab': colaborador.COD_FIL,
+                'nom_filial_colab': colaborador.NOM_FIL,
+                'cod_projeto_colab': colaborador.COD_PROJ,
+                'nom_projeto_colab': colaborador.NOM_PROJ,
+                'cpf_colab': colaborador.CPF,
+                'matricula_colab': colaborador.ID,
+                'situacao_colab': colaborador.SITUACAO_COLAB,
+            }
+            cursor.close()
+            self.__conn.close()
+            return data
+        else:
+            columns = [column[0] for column in cursor.description]
+            print(columns)
+            if len(cursor.fetchall()) == 0 or cursor is None:
+                data = {
+                    'erro': 'Colaborador não encontrado'
+                }
+                return data
+            if len(cursor.fetchall()) > 1:
+                data = {
+                    'erro': 'Colaborador duplicado'
+                }
+                return data
+
     def retorna_df_folha_pagamento(self, data_ref, lista_handle_proj):
         sql_query_folha_pagamento_proeventos = (
                 '''

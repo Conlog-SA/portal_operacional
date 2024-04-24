@@ -1,8 +1,10 @@
 import os
+import shutil
 from datetime import date, datetime
 import time
 from itertools import count
 
+from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse, FileResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -15,7 +17,7 @@ from apps.safety_checks_aplicados_app.models import Check_Aplicado, Colaborador,
     Item_Fotos_Texto_Check_Aplicado
 from apps.safety_layout_checklist_app.models import Item_Check, Libera_Filial_Check
 from apps.usuario_app.models import Usuario
-
+from proj_portal_operacional.settings import BASE_DIR
 
 class Check_Aplicado_View(View):
     @csrf_exempt
@@ -129,4 +131,105 @@ class Itens_Check_Aplicado(View):
 
         return HttpResponse(html_check_aplicado)
 
+class Item_Check_Aplicado(View):
+    @csrf_exempt
+    def post(self, request):
+        tipo_resposta = request.POST['tipo_input']
+        cod_item_check = request.POST['cod_item_check']
+        cod_check_aplicado = request.POST['cod_check_aplicado']
+        #tipo_check_informado = request.POST['tipo_check']
 
+        tipo_check = Item_Check.objects.get(pk=cod_item_check).cod_check.tipo_check
+        #if tipo_check_informado == tipo_check:
+
+
+        if tipo_resposta == 'button':
+            resposta = request.POST['resposta']
+
+            item_existente = Item_Check_Aplicados.objects.filter(
+                    cod_item_check=cod_item_check,cod_checks_aplicados=cod_check_aplicado).first()
+            if item_existente == None:
+                resposta_item = Item_Check_Aplicados(
+                    cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
+                    cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first(),
+                    resp_item=resposta
+                )
+                resposta_item.save()
+            else:
+                item_existente.resp_item = resposta
+                item_existente.save()
+            msg = 'Resposta salva com sucesso!'
+
+        if tipo_resposta == 'text':
+            resposta = request.POST['resposta']
+
+            item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+                cod_item_check=cod_item_check,cod_checks_aplicados=cod_check_aplicado).first()
+
+            if item_existente == None:
+                resposta_item = Item_Fotos_Texto_Check_Aplicado(
+                    comentario=resposta,
+                    cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
+                    cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
+                )
+                resposta_item.save()
+            else:
+                item_existente.comentario = resposta
+                item_existente.save()
+            msg = 'Resposta salva com sucesso!'
+
+        if tipo_resposta == 'image':
+            file_form = request.FILES['file']
+            if tipo_check == 1:
+                path_app = 'safety_gab_op_emp_app'
+            elif tipo_check == 2:
+                path_app = 'safety_relatos_app'
+
+            msg = self.salva_imagem_anexo(file_form, file_form.name, cod_item_check, cod_check_aplicado, path_app)
+
+        return HttpResponse(msg)
+
+    @csrf_exempt
+    def salva_imagem_anexo(self, file_form, desc_doc_form, cod_item_check, cod_check_aplicado, path_app):
+
+        msg = ''
+        item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+            cod_item_check=cod_item_check, cod_checks_aplicados=cod_check_aplicado).first()
+        if item_existente == None:
+            item_existente = Item_Fotos_Texto_Check_Aplicado(
+                cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
+                cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
+            )
+            item_existente.save()
+        elif item_existente.caminho_imagem != None:
+            arquivo_anterior_a_deletar = str(item_existente.caminho_imagem).replace('/', '\\')
+            os.remove(arquivo_anterior_a_deletar)
+
+        fs = FileSystemStorage()
+        if type(file_form) == str:
+            caminho_arq_importado = os.path.join(BASE_DIR, f'media\\docs\\{path_app}\\{cod_check_aplicado}\\')
+            if not (os.path.exists(caminho_arq_importado) and os.path.isdir(caminho_arq_importado)):
+                os.makedirs(caminho_arq_importado)
+            nome_arquivo, extensao = os.path.splitext(desc_doc_form)
+            destination_path = os.path.join(caminho_arq_importado, f'{nome_arquivo}__{item_existente.cod_item_fotos_texto_itens_checks_aplicados}{extensao}')
+            shutil.move(file_form, destination_path)
+            item_existente.caminho_imagem = destination_path
+        else:
+            nome_arquivo = file_form.name
+            caminho_arq_importado = os.path.join(BASE_DIR, f'media\\docs\\{path_app}\\{cod_check_aplicado}\\')
+            if not (os.path.exists(caminho_arq_importado) and os.path.isdir(caminho_arq_importado)):
+                os.makedirs(caminho_arq_importado)
+
+            full_filepath = os.path.join(caminho_arq_importado, f'{item_existente.cod_item_fotos_texto_itens_checks_aplicados}_{nome_arquivo}')
+
+            with open(full_filepath, 'wb+') as destination:
+                for chunk in file_form.chunks():
+                    destination.write(chunk)
+
+            item_existente.caminho_imagem = full_filepath
+
+        item_existente.save()
+
+        msg = 'Imagem enviada com sucesso.'
+
+        return msg

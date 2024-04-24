@@ -32,7 +32,7 @@ $(document).on('click','button', function(){
         if (valMedidaPeriodicidade == '' || valMedidaPeriodicidade == null) {
             msg_erro += 'Informe uma medida para a periodicidade!<br>';
         }
-        if (valPeriodicidade == '') {
+        if ((valPeriodicidade == '') && valMedidaPeriodicidade != 4) {
             msg_erro += 'Informe um valor para a periodicidade!<br>';
         } else if (isNaN(valPeriodicidade)) {
             msg_erro += 'A periodicidade deve ser um número!<br>';
@@ -301,11 +301,15 @@ $(document).on('change','.selectpicker',function(){
     if (nome_select == "tipo_check") {
         $('#filial_check_aplicado').val('');
         $('#filial_check_aplicado').selectpicker('refresh');
-
-
         $('#tab_frm_checks_aplicados').empty();
 
         let cod_tipo = $(this).val();
+        if (cod_tipo == 1) {
+            $('#medida_periodicidade_new_check').find('[value="4"]').remove();
+        }
+        else if (cod_tipo == 2 && $('#medida_periodicidade_new_check').find('[value="4"]').length == 0) {
+            $('#medida_periodicidade_new_check').append('<option value="4">Não há</option>');
+        }
 
         $.ajax({
             type: 'GET',
@@ -515,6 +519,18 @@ $(document).on('change','.selectpicker',function(){
 
             }
         });
+    }
+
+    if (nome_select == "medida_periodicidade_new_check") {
+        let periodicidade = $(this).val();
+
+        if (periodicidade == 4) {
+            $('#periodicidade_new_check').val('');
+            $('#periodicidade_new_check').prop('disabled',true);
+        }
+        else {
+            $('#periodicidade_new_check').prop('disabled',false);
+        }
     }
 
     if (nome_select == "liberado_filiais") {

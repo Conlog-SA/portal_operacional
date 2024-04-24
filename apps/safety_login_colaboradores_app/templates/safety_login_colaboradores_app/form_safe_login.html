@@ -1,9 +1,7 @@
 {% load static %}
 
-<form class="d-flex justify-content-center align-items-center flex-column">
+<form class="d-flex justify-content-center align-items-center flex-column" style="width:100%;">
         {% csrf_token %}
-          <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
-          <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
 
         <h1 class="homeApp__tituloPortal">Safety</h1>
 
@@ -25,6 +23,7 @@
             <h6>{{ msg }}</h6>
         </div>
           <div class="homeApp__sobre">
-
+              <img class="conlog-logo" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
+              <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
             </div>
       </form>

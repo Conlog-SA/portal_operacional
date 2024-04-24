@@ -61,31 +61,30 @@ $(document).on('change','.selectpicker',function(){
             $('#nome_relatado').val('');
             $('#nome_relatado').selectpicker('refresh');
         }
-        let cod_unidade = $('#unidade').val();
 
+        let cod_unidade = $('#unidade').val();
     }
 
     if (nome_select == "processo_relato") {
         let cod_processo = $(this).val();
-            $.ajax({
-                type: 'GET',
-                url: '/safety_relatos_app/lista_atividades',
-                data: {
-                    'cod_processo'   :   cod_processo,
-                },
-                dataType: 'json',
-                success: function (dados) {
-                    $('#atividade_relato option').remove();
-                    dados.lista_atividades.forEach(atividade => {
-                        $("#atividade_relato").append("<option value='"+
-                        atividade.cod_atividade+"'>"+atividade.desc_atividade+"</option>");
-                    });
+        $.ajax({
+            type: 'GET',
+            url: '/safety_relatos_app/lista_atividades',
+            data: {
+                'cod_processo'   :   cod_processo,
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $('#atividade_relato option').remove();
+                dados.lista_atividades.forEach(atividade => {
+                    $("#atividade_relato").append("<option value='"+
+                    atividade.cod_atividade+"'>"+atividade.desc_atividade+"</option>");
+                });
 
-                    $('#atividade_relato').prop('disabled',false);
-                    $('#atividade_relato').selectpicker('refresh');
-                }
-            });
-
+                $('#atividade_relato').prop('disabled',false);
+                $('#atividade_relato').selectpicker('refresh');
+            }
+        });
     }
 });
 
@@ -94,6 +93,7 @@ $(document).on('click','.create-check-relatos' , function(){
     let let_tipo_relato = $('#tipo_relato').val();
     let let_situacao_envolvido = $('#situacao_envolvido').val();
     let let_local_relato = $('#local_relato').val();
+    let let_turno_relato = $('#turno_relato').val();
     let let_atividade_relato = $('#atividade_relato').val();
     let let_processo_relato = $('#processo_relato').val();
     let let_descricao_situacao = $('#descricao_situacao').val();
@@ -124,15 +124,18 @@ $(document).on('click','.create-check-relatos' , function(){
     if (let_local_relato == '') {
         msg_erro += 'Informe o local do relato!<br>';
     }
+    if (let_turno_relato == '' || let_turno_relato == null) {
+        msg_erro += 'Informe o turno do relato!<br>';
+    }
     if (let_processo_relato == '' || let_processo_relato == null) {
         msg_erro += 'Informe o processo do relato!<br>';
     }
     if (let_atividade_relato == '' || let_atividade_relato == null) {
         msg_erro += 'Informe a atividade do relato!<br>';
     }
-    if (let_descricao_situacao.length <= 299) {
+    /*if (let_descricao_situacao.length <= 299) {
         msg_erro += 'Descreva a situação (min. 300 caracteres)';
-    }
+    }*/
     console.log(msg_erro);
     if (msg_erro == '') {
         $.ajax({
@@ -144,9 +147,9 @@ $(document).on('click','.create-check-relatos' , function(){
                 'situacao_envolvido'   :   let_situacao_envolvido,
                 'nome_relatado'   :   let_nome_relatado,
                 'local_relato'   :   let_local_relato,
+                'turno_relato'   :   let_turno_relato,
                 'processo_relato' : let_processo_relato,
-                'atividade_relato' : let_atividade_relato,
-                'situacao_relato' : let_descricao_situacao
+                'atividade_relato' : let_atividade_relato
             },
             success: function (dados) {
                 $("#div_corpo_relatos").html(dados);

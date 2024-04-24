@@ -94,7 +94,5 @@ class Documento_Colaborador(View):
         cod_colaborador = request.GET['cod_colaborador']
 
         colab_informado = Colaborador.objects.get(pk=cod_colaborador)
-        cpf_colab_informado = colab_informado.cpf
-        if len(cpf_colab_informado) < 11:
-            cpf_colab_informado = '0' + cpf_colab_informado
+        cpf_colab_informado = colab_informado.cpf.zfill(11)
         return JsonResponse(cpf_colab_informado, safe=False)
