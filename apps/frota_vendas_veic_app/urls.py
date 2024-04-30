@@ -11,6 +11,7 @@ urlpatterns = [
          name='retorna_marcas_modelo_tipo_veic_selecionado'),
     path('vincula_veic_tab_preco', views.Form_Vincula_Veic_Tab_Precos_View.as_view(),
          name='vincula_veic_tab_preco'),
-
+    path('atualiza_precos_tabela_veiculos', views.Form_Atualiza_Veic_Vinculados_View.as_view(),
+         name='Form_Atualiza_Veic_Vinculados_View'),
 
 ]

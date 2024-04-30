@@ -83,7 +83,7 @@ class Form_Imp_Contratos_Conta_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         dados = self.atualiza_dados_contratos_parcelas(cod_conta_form, num_contrato_form, tipo_pesq_form,
-                                                       obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa)
+                                                       obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa, None)
 
 
         data = dict()
@@ -151,7 +151,7 @@ class Form_Imp_Contratos_Conta_View(View):
                     # obj_contrato.cod_conta = obj_conta
                     # obj_contrato.sincronizar_benner = 'S'
                     # obj_contrato.dia_util = None
-                    obj_contrato.qtd_parcelas = prox_parc_pendente
+                    obj_contrato.qtd_parcelas = qtd_parcela
                     # obj_contrato.cod_empresa = obj_empresa
                     obj_contrato.save()
 
@@ -3543,11 +3543,9 @@ class Form_Atualiza_Contratos_Benner_View(View):
 
 
             for contrato in lista_contratos_para_atualizar:
-                lista_parcelas_atualizadas = (
-                    Form_Imp_Contratos_Conta_View()
-                    .atualiza_dados_contratos_parcelas(
-                        obj_conta.cod_conta, contrato['cod_contrato__num_contrato'],'C',
-                        obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa) )[2], data_corte_frm
+                lista_parcelas_atualizadas = Form_Imp_Contratos_Conta_View().atualiza_dados_contratos_parcelas(
+                    obj_conta.cod_conta, contrato['cod_contrato__num_contrato'],'C',
+                    obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa, data_corte_frm )[2]
                 for parc in lista_parcelas_atualizadas:
                     val_pago = 0.00
                     if parc.val_corrigido != None:

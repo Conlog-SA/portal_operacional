@@ -39,18 +39,7 @@
                 </div>
 
                 <div class="d-flex justify-content-center align-items-center w-100">
-                    <label class="col-form-label text-white text-left cursor-pointer" for="chk_veic_vendidos">
-                        Mostrar veículos vendidos ?
-                        <div class="d-flex flex-column ">
-                            <div class="container">
-                                <input type="checkbox" class="checkbox" name="chk_veic_vendidos"
-                                id="chk_veic_vendidos">
-                                <label class="switch" for="chk_veic_vendidos">
-                                    <span class="slider"></span>
-                                </label>
-                            </div>
-                        </div>
-                    </label>
+                    &nbsp;&nbsp;
                 </div>
 
                 <div class="d-flex align-items-start w-100">
@@ -79,65 +68,154 @@
                 <div class="d-flex align-items-end w-100">
                     &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column w-100 cl_div_btn_pesq_mapas_terceiros">
+                <div class="d-flex flex-column w-100">
                     &nbsp;&nbsp;
                 </div>
             </div>
-
-
-
-
-
 
         </form>
         <!-- cl_div_tab_mapas_terceitos_2art -->
         <div class="form-group  cl_div_tabela_principal_pagina w-100">
-            <div class="d-flex justify-content-between align-items-between w-100 mb-5">
-                <div class="d-flex flex-column w-100">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex align-items-end w-100">
                     &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column w-100">
+                <div class="d-flex align-items-end w-100">
                     &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column w-100">
-                    &nbsp;&nbsp;
-                </div>
-                <div class="d-flex flex-column w-100">
-                    &nbsp;&nbsp;
-                </div>
-                <div class="d-flex flex-column w-100">
+                <div class="d-flex align-items-end w-100" id="div_comp_atualiza_preco_veic">
                     &nbsp;&nbsp;
                 </div>
             </div>
 
-            <!--  fatTerceiros__tabelaMapas -->
-            <table id="tab_veic_vendas"  class="display wrap w-100 cl_tab_principal_pagina" >
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col">Placa</th>
-                        <th scope="col">Renavam</th>
-                        <th scope="col">Tipo</th>
-                        <th scope="col">Eixo</th>
-                        <th scope="col">Marca Benner</th>
-                        <th scope="col">Modelo Benner</th>
-                        <th scope="col">Ano</th>
-                        <th scope="col">Filial</th>
-                        <th scope="col">Status Benner</th>
-                        <th scope="col">NF venda</th>
-                        <th scope="col">Data venda</th>
-                        <th scope="col">R$ venda</th>
-                        <th scope="col">Período Pesq.</th>
-                        <th scope="col">R$ Tabela</th>
-                        <th scope="col">Dados Tabela</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column w-100">
+                    <nav>
+                        <div class="nav nav-tabs" id="myTab" role="tablist">
+                            <button class="nav-link active" id="a_tab_veic_venda" data-bs-toggle="tab"
+                                    data-bs-target="#div_tab_veic_venda" type="button" role="tab"
+                                    aria-controls="div_tab_veic_venda" aria-selected="true">
+                                <i class="fa-solid fa-file-invoice-dollar" style="color: #f46424;"></i>
+                                Veículos à venda
+                            </button>
+                            <button class="nav-link" id="a_tab_veic_vendidos" data-bs-toggle="tab"
+                                    data-bs-target="#div_tab_veic_vendidos" type="button" role="tab"
+                                    aria-controls="div_tab_veic_vendidos" aria-selected="false">
+                                <i class="fa-regular fa-circle-check" style="color: #f46424;"></i>
+                                Veículos vendidos
+                            </button>
+                            <button class="nav-link" id="a_tab_media_veic_vendidos" data-bs-toggle="tab"
+                                    data-bs-target="#div_tab_media_veic_vendidos" type="button" role="tab"
+                                    aria-controls="div_tab_media_veic_vendidos" aria-selected="false">
+                                <i class="fa-solid fa-chart-line" style="color: #f46424;"></i>
+                                Médias
+                            </button>
+                        </div>
+                    </nav>
 
-                </tbody>
+                    <div class="tab-content" style="border-radius:0 0 10px 10px;">
+                        <div class="tab-pane active" id="div_tab_veic_venda" name="div_tab_veic_venda"
+                             role="tabpanel" aria-labelledby="a_tab_veic_venda">
 
-            </table>
+                            <table id="tab_veic_vendas"  class="display wrap w-100 cl_tab_principal_pagina" >
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Placa</th>
+                                        <th scope="col">Renavam</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Eixo</th>
+                                        <th scope="col">Marca Benner</th>
+                                        <th scope="col">Modelo Benner</th>
+                                        <th scope="col">Ano</th>
+                                        <th scope="col">Filial</th>
+                                        <th scope="col">Status Benner</th>
+                                        <th scope="col">Período Pesq.</th>
+                                        <th scope="col">R$ Compra</th>
+                                        <th scope="col">R$ Tabela</th>
+                                        <th scope="col">% Sugestão venda</th>
+                                         <th scope="col">R$ Sugestão venda</th>
+                                        <th scope="col">Tempo parado</th>
+                                        <th scope="col">Idade</th>
+                                        <th scope="col">Dados Tabela</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
 
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                         <div class="tab-pane" id="div_tab_veic_vendidos" name="div_tab_veic_vendidos"
+                              role="tabpanel" aria-labelledby="a_tab_veic_vendidos">
+
+                             <table id="tab_veic_vendidos"  class="display wrap w-100 cl_tab_principal_pagina" >
+                                 <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Placa</th>
+                                        <th scope="col">Renavam</th>
+                                        <th scope="col">Tipo</th>
+                                        <th scope="col">Eixo</th>
+                                        <th scope="col">Marca Benner</th>
+                                        <th scope="col">Modelo Benner</th>
+                                        <th scope="col">Ano</th>
+                                        <th scope="col">Filial</th>
+                                        <th scope="col">Status Benner</th>
+                                        <th scope="col">NF venda</th>
+                                        <th scope="col">Data venda</th>
+                                        <th scope="col">Período Pesq.</th>
+                                        <th scope="col">R$ Compra</th>
+                                        <th scope="col">R$ Tabela</th>
+                                        <th scope="col">% Sugestão venda</th>
+                                         <th scope="col">R$ Sugestão venda</th>
+                                        <th scope="col">R$ Venda</th>
+                                        <th scope="col">% Venda</th>
+                                        <th scope="col">Tempo parado</th>
+                                        <th scope="col">Idade</th>
+                                        <th scope="col">Dados Tabela</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody>
+
+                                </tbody>
+                             </table>
+
+                        </div>
+
+                         <div class="tab-pane" id="div_tab_media_veic_vendidos" name="div_tab_media_veic_vendidos"
+                              role="tabpanel" aria-labelledby="a_tab_media_veic_vendidos">
+
+                             <table id="tab_modelos_tab_vinculados"  class="display wrap w-100 cl_tab_principal_pagina" >
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Marca(Veíc./Tab.)</th>
+                                        <th scope="col">Modelo(Veíc./Tab.)</th>
+                                        <th scope="col">Ano(Veíc./Tab.)</th>
+                                        <th scope="col">Cód. tab.</th>
+                                        <th scope="col">R$ média compra</th>
+                                        <th scope="col">R$ média tab.</th>
+                                        <th scope="col">R$ média venda</th>
+                                        <th scope="col">% venda x tabela</th>
+                                        <th scope="col">Qtd. veíc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+            </div>
 
         </div>
     </div>

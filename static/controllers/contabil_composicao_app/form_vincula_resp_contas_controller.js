@@ -368,7 +368,7 @@ function atualiza_contas_x_resp_vinculadas(){
                 "bJQueryUI": true,
                 "pageLength": 5,
                 "destroy": true,
-                "searching": false,
+                "searching": true,
                 "paging": true,
                 "data":let_lista_reg,
                 "dom": 'Bfrtip',
