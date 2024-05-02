@@ -39,8 +39,8 @@ class ConexaoBancoBenner():
                     ma.handle       AS  handle_placa,
                     ma.codigo       AS  placa,
                     ma.inativo      AS  status_placa
-              FROM  gn_pessoas gn_p
-             RIGHT  JOIN ma_recursos ma
+              FROM  gn_pessoas gn_p (NOLOCK)
+             RIGHT  JOIN ma_recursos ma (NOLOCK)
                 ON  (ma.proprietario = gn_p.handle)
              WHERE  ma.projeto = 
             '''
@@ -277,23 +277,23 @@ class ConexaoBancoBenner():
                     CAST(fn_parc.DATALIQUIDACAO AS DATE)		
                                                     AS	data_liquidacao,
                     (SELECT MAX(lan_principal.VALOR)
-                       FROM FN_LANCAMENTOS lan_principal
-                       LEFT JOIN FN_CONTAS con_principal
+                       FROM FN_LANCAMENTOS lan_principal (NOLOCK)
+                       LEFT JOIN FN_CONTAS con_principal (NOLOCK)
                          ON (con_principal.HANDLE = lan_principal.CONTA)
                       WHERE lan_principal.PARCELA = fn_parc.handle
                         AND	lan_principal.TIPO = '3'
                         AND lan_principal.ORIGEM = 2)	AS	val_fn_principal,
 			        (SELECT MIN(lan_taxas.VALOR)
-                       FROM FN_LANCAMENTOS lan_taxas
-                       LEFT JOIN FN_CONTAS con_taxas
+                       FROM FN_LANCAMENTOS lan_taxas (NOLOCK)
+                       LEFT JOIN FN_CONTAS con_taxas (NOLOCK)
                          ON (con_taxas.HANDLE = lan_taxas.CONTA)
                       WHERE lan_taxas.PARCELA = fn_parc.handle
                         AND	lan_taxas.TIPO = '3'
                         AND lan_taxas.ORIGEM = 2
                         AND	con_taxas.NOME LIKE '%TAXA%')	AS	val_fn_taxas,
                     (SELECT MIN(lan_fundo.VALOR)
-                       FROM FN_LANCAMENTOS lan_fundo
-                       LEFT JOIN FN_CONTAS con_fundo
+                       FROM FN_LANCAMENTOS lan_fundo (NOLOCK)
+                       LEFT JOIN FN_CONTAS con_fundo (NOLOCK)
                          ON (con_fundo.HANDLE = lan_fundo.CONTA)
                       WHERE lan_fundo.PARCELA = fn_parc.handle
                         AND	lan_fundo.TIPO = '3'
@@ -403,8 +403,8 @@ class ConexaoBancoBenner():
                 "       ma_rec.K_PLACAANTERIOR " +
                 "                       AS	placa_anterior, " +
                 "       ma_rec.ATIVO	AS	ativo " +
-                " FROM	MA_RECURSOS ma_rec " +
-                " LEFT	JOIN MF_VEICULOMODELOS mf_model " +
+                " FROM	MA_RECURSOS ma_rec (NOLOCK)" +
+                " LEFT	JOIN MF_VEICULOMODELOS mf_model (NOLOCK) " +
                 "   ON	(mf_model.HANDLE = ma_rec.MODELOVEICULO) " +
                 "WHERE	ma_rec.PROJETO =  " + handle_proj +
                 "  AND	ma_rec.TIPOVEICULO = 4 " +
@@ -447,12 +447,12 @@ class ConexaoBancoBenner():
                 "       os.DESCRICAO                        " +
                 "                   AS	desc_os,            " +
                 "       os.SITUACAO	AS	situacao            " +
-                "FROM	MF_ORDEMSERVICOS os                 " +
-                "LEFT	JOIN MA_RECURSOS ma_rec             " +
+                "FROM	MF_ORDEMSERVICOS os  (NOLOCK)               " +
+                "LEFT	JOIN MA_RECURSOS ma_rec  (NOLOCK)           " +
                 "  ON	(ma_rec.HANDLE = os.VEICULO)        " +
-                "LEFT	JOIN MF_TIPOORDEMSERVICOS tipo_os   " +
+                "LEFT	JOIN MF_TIPOORDEMSERVICOS tipo_os (NOLOCK)  " +
                 "  ON	(tipo_os.HANDLE = os.TIPOORDEMSERVICO)  " +
-                "LEFT	JOIN MA_RECURSOPARTES partes            " +
+                "LEFT	JOIN MA_RECURSOPARTES partes (NOLOCK)           " +
                 "  ON	(partes.HANDLE = os.CONJUNTOMANUTENCAO) " +
                 "WHERE	os.TIPOORDEMSERVICO in (1,3,22)           " +
                 " AND	os.STATUS = 4                           " +
@@ -505,12 +505,12 @@ class ConexaoBancoBenner():
                 "       os.DESCRICAO                        " +
                 "                   AS	desc_os,            " +
                 "       os.SITUACAO	AS	situacao            " +
-                "FROM	MF_ORDEMSERVICOS os                 " +
-                "LEFT	JOIN MA_RECURSOS ma_rec             " +
+                "FROM	MF_ORDEMSERVICOS os (NOLOCK)                " +
+                "LEFT	JOIN MA_RECURSOS ma_rec  (NOLOCK)           " +
                 "  ON	(ma_rec.HANDLE = os.VEICULO)        " +
-                "LEFT	JOIN MF_TIPOORDEMSERVICOS tipo_os   " +
+                "LEFT	JOIN MF_TIPOORDEMSERVICOS tipo_os (NOLOCK)  " +
                 "  ON	(tipo_os.HANDLE = os.TIPOORDEMSERVICO)  " +
-                "LEFT	JOIN MA_RECURSOPARTES partes            " +
+                "LEFT	JOIN MA_RECURSOPARTES partes  (NOLOCK)          " +
                 "  ON	(partes.HANDLE = os.CONJUNTOMANUTENCAO) " +
                 "WHERE	os.TIPOORDEMSERVICO in (1,3,22)           " +
                 " AND	os.STATUS = 4                           " +
@@ -550,7 +550,7 @@ class ConexaoBancoBenner():
                         EMPRESA,
                         NOME,
                         CGC
-                  FROM	FILIAIS
+                  FROM	FILIAIS (NOLOCK)
                  WHERE	nome NOT LIKE '%x--%'
                    AND  empresa = {cod_empresa};
             '''
@@ -1035,8 +1035,8 @@ class ConexaoBancoBenner():
                             gn_p.inativo,
                             gn_p.CGCCPF,
                             COUNT(ma.codigo)	AS	qtd_placa
-                        FROM gn_pessoas gn_p
-                        RIGHT JOIN ma_recursos ma
+                        FROM gn_pessoas gn_p (NOLOCK)
+                        RIGHT JOIN ma_recursos ma (NOLOCK)
                         ON (ma.proprietario = gn_p.handle)
                         WHERE gn_p.ehfornecedor = 'S'
                         AND gn_p.ehtransportador = 'S'
@@ -1179,7 +1179,7 @@ class ConexaoBancoBenner():
             f'''
             SELECT	DISTINCT
                     nota.natOp		AS	desc_natureza_nota
-              FROM	K_Conlog_ProcNFe nota
+              FROM	K_Conlog_ProcNFe nota (NOLOCK)
               WHERE YEAR(nota.dhEmi) = {ano_data_atual}
             '''
         )
@@ -1216,8 +1216,8 @@ class ConexaoBancoBenner():
                         fil.EMPRESA		AS	handle_empresa_nota,
                         fil.HANDLE      AS  handle_filial_nota,
                         fil.NOME		AS	nome_filial_nota
-                  FROM	K_Conlog_ProcNFe nota
-                  LEFT	JOIN FILIAIS fil
+                  FROM	K_Conlog_ProcNFe nota (NOLOCK)
+                  LEFT	JOIN FILIAIS fil (NOLOCK)
                     ON	((REPLACE(REPLACE(REPLACE(fil.CGC,'.',''),'-',''),'/','')) = nota.dest_cnpj)            
                  WHERE	CAST(nota.dhEmi AS DATE) BETWEEN '{data_ini}'	AND	'{data_fim}'
                         {param_num_nota}
@@ -1238,8 +1238,8 @@ class ConexaoBancoBenner():
                         fil.EMPRESA		AS	handle_empresa_nota,
                         fil.HANDLE      AS  handle_filial_nota,
                         fil.NOME		AS	nome_filial_nota
-                  FROM	K_Conlog_ProcNFe nota
-                  LEFT	JOIN FILIAIS fil
+                  FROM	K_Conlog_ProcNFe nota (NOLOCK)
+                  LEFT	JOIN FILIAIS fil (NOLOCK)
                     ON	((REPLACE(REPLACE(REPLACE(fil.CGC,'.',''),'-',''),'/','')) = nota.dest_cnpj)            
                  WHERE	nota.chNFe = '{chave_nota}'
                 '''
@@ -1298,7 +1298,7 @@ class ConexaoBancoBenner():
                         itens_compra.valorunitario				AS	val_unit_itens_compra,
 
                         COALESCE((SELECT	TOP 1 oci.valorunitario
-                                    FROM	cp_ordenscompraitens oci(NOLOCK)
+                                    FROM	cp_ordenscompraitens oci (NOLOCK)
                                LEFT JOIN 	CP_ORDENSCOMPRA oc (NOLOCK)
                                       ON	(oc.handle = oci.ordemcompra)
                                LEFT	JOIN	pd_produtos prod	(NOLOCK)
@@ -1454,8 +1454,8 @@ class ConexaoBancoBenner():
                     fn_mov.VALORTOTAL		        AS	val_corrigido,
                     MAX(fn_lan_principal.VALOR)		AS	val_fn_principal,
                     (SELECT MIN(lan_taxas.VALOR)
-                       FROM FN_LANCAMENTOS lan_taxas
-                       LEFT JOIN FN_CONTAS con_taxas
+                       FROM FN_LANCAMENTOS lan_taxas (NOLOCK)
+                       LEFT JOIN FN_CONTAS con_taxas (NOLOCK)
                          ON (con_taxas.HANDLE = lan_taxas.CONTA)
                       WHERE lan_taxas.PARCELA = fn_parc.handle
                         AND	lan_taxas.TIPO = '3'
@@ -1537,7 +1537,9 @@ class ConexaoBancoBenner():
                                         AS	val_venda_veic,
                     veic.k_numnf		AS	num_nf_veic,
                     veic.k_comprador	AS	handle_comprador_veic,		
-		            comprador.NOME		AS	nome_comprador_veic
+		            comprador.NOME		AS	nome_comprador_veic,
+		            veic.K_VALORCOMPRACAMI 
+		            					AS	val_compra_veic
               FROM	MA_RECURSOS veic (NOLOCK)
               LEFT	JOIN MF_VEICULOTIPOS tipo_veic (NOLOCK)
                 ON	(tipo_veic.HANDLE = veic.TIPOVEICULO)
@@ -1553,6 +1555,8 @@ class ConexaoBancoBenner():
                 ON	(comprador.HANDLE = veic.k_comprador)
              WHERE	veic.PROJETO = 128
                AND  veic.EMPRESA  = 12
+               AND  (tipo_veic.NOME like '%CAMINHAO%'
+                OR  tipo_veic.NOME in ( 'CAVALO MECANICO'))
                {param_mostra_veic_vendidos};
              '''
         )
@@ -1580,7 +1584,8 @@ class ConexaoBancoBenner():
                 'val_venda_veic': row.val_venda_veic,
                 'num_nf_veic': row.num_nf_veic,
                 'handle_comprador': row.handle_comprador_veic,
-                'nome_comprador': row.nome_comprador_veic
+                'nome_comprador': row.nome_comprador_veic,
+                'val_compra_veic': row.val_compra_veic
             }
             lista_veiculos_venda.append(placa)
 
