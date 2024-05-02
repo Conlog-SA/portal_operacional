@@ -259,6 +259,100 @@ $(document).on('click','.btnSalvaColabSenior' , function(){
     });
 });
 
+$(document).on('click','.btnInputBuscaDespesas' , function(){
+    let let_competencia = $("#input_competencia").val();
+    let let_filial = $("#input_filial").val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/gente_gestao_rateio_unimed_app/busca_despesas',
+        data: {
+            'competencia'   :   let_competencia,
+            'filial'   :    let_filial,
+        },
+        success: function (dados) {
+            data.tab_rateio_despesas_nao_importadas.forEach( despesa => {
+                let split_retorno = despesa.split(' ');
+                let let_dado_despesa = [
+                    '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
+                    split_retorno[1],
+                    split_retorno[4].replaceAll("_", " "),
+                    ('000000'+split_retorno[6].split('.')[0]).slice(-11),
+                    split_retorno[8],
+                    split_retorno[10].replaceAll("_", " "),
+                    ('000000'+split_retorno[12].split('.')[0]).slice(-11),
+                    split_retorno[14].replaceAll("_", " "),
+                    split_retorno[16],
+                    '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[18]+'">Buscar</button>',
+                    '',
+                    '',
+                    '',
+                    ''
+			    ];
+			    let_lista_dados_rateio.push(let_dado_despesa);
+            });
+            $('#tab_rateio_despesas_consulta').DataTable( {
+				    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 7,
+                    "autoWidth": false,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+			  		"data":let_lista_dados_rateio,
+			  		"columns": [
+			  		    { title: "" },
+			  		    { title: "Competência" },
+                        { title: "Beneficiário" },
+                        { title: "CPF Beneficiário" },
+                        { title: "Tipo Dependência" },
+                        { title: "Titular" },
+                        { title: "CPF Titular" },
+                        { title: "Despesa" },
+                        { title: "Valor" },
+                        { title: "Matricula Titular" },
+                        { title: "Nome Tit. Senior" },
+                        { title: "Filial" },
+                        { title: "Projeto" },
+                        { title: "Editar" }
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+				});
+
+            tabelaRateioUnimed.columns.adjust();
+        }
+    });
+});
+
 $(document).on('click','.fechaModalBuscaColabSenior' , function(){
     $('#modalBuscaColabSenior').hide();
 });

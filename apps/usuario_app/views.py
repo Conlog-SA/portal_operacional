@@ -95,7 +95,8 @@ class Form_Usuario_Menus_View(View):
     def get(self, request):
         lista_usuarios_ativos = Usuario.objects.filter(status_usu='A')
         contexto = {
-            'lista_usuarios_ativos': lista_usuarios_ativos
+            'lista_usuarios_ativos': lista_usuarios_ativos,
+            'lista_filiais': lista_usuarios_ativos
         }
         return render(request, 'usuario_app/form_libera_modulos.html', contexto)
 

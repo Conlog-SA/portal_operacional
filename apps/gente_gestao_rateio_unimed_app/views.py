@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views import View
 
 from apps.conecta_senior_app.views import Conexao_Senior_BD
+from apps.estrut_org_app.models import Filial
 from apps.gente_gestao_rateio_unimed_app.models import Arquivo_Despesas, Despesa_Unimed
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -15,8 +16,13 @@ from proj_portal_operacional.settings import BASE_DIR
 
 class Form_Importa_Plan_Despesas_View(View):
     def get(self, request):
+        cod_usu_session = request.session['cod_usuario_logado']
+
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        lista_filiais = Filial.objects.filter(cod_empresa=obj_usu.cod_filial.cod_empresa)
         contexto = {
-            'desc_menu': 'Rateio Despesas Unimed'
+            'desc_menu': 'Rateio Despesas Unimed',
+            'lista_filiais': lista_filiais,
         }
         return render(request, 'gente_gestao_rateio_unimed_app/form_rateio_despesa_unimed.html', contexto)
 
@@ -212,6 +218,68 @@ class Preenche_Colaborador(View):
         despesa_selecionada.save()
 
         return HttpResponse('Sucesso!')
+
+'''class Busca_Despesas(View):
+    def get(self, request):
+        competencia = request.session['competencia']
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
+            cod_empresa_senior = 1
+        elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
+            cod_empresa_senior = 2
+
+        lista_despesas = Despesa_Unimed.objects.filter(comptenecia=competencia,)
+
+        for despesa in lista_despesas:
+            #try:
+            competencia = despesa.competencia
+            cpf_beneficiario = despesa.cpf_beneficiario
+            nome_beneficiario = despesa.nome_beneficiario
+            tipo_depencencia = despesa.tipo_depencencia
+            nome_titular = despesa.nome_titular
+            cpf_titular = despesa.cpf_titular
+            desc_despesa = despesa.desc_despesa
+            valor = despesa.valor
+            obj_registro_despesa = Despesa_Unimed.objects.filter(competencia=competencia,
+                                                              cpf_beneficiario=cpf_beneficiario,
+                                                              nome_beneficiario=nome_beneficiario,
+                                                              tipo_depencencia=tipo_depencencia,
+                                                              nome_titular=nome_titular,
+                                                              cpf_titular=cpf_titular,
+                                                              desc_despesa=desc_despesa).first()
+
+        data = {
+            'nome_titular_senior': titular_senior['nome_colab'],
+            'cod_filial_colab': titular_senior['cod_filial_colab'],
+            'nom_filial_colab': titular_senior['nom_filial_colab'],
+            'cod_projeto_colab': titular_senior['cod_projeto_colab'],
+            'nom_projeto_colab': titular_senior['nom_projeto_colab']
+        }
+        else:
+            return HttpResponse('erro')
+    def post(self, request):
+        matricula = request.POST['matricula']
+        nome_titular = request.POST['nome_titular']
+        cod_filial = request.POST['cod_filial']
+        desc_filial = request.POST['desc_filial']
+        cod_projeto = request.POST['cod_projeto']
+        desc_projeto = request.POST['desc_projeto']
+        cod_despesa = request.POST['cod_despesa']
+
+        despesa_selecionada = Despesa_Unimed.objects.get(cod_despesa_unimed=cod_despesa)
+
+        despesa_selecionada.nome_titular_senior = nome_titular
+        despesa_selecionada.matricula_titular = matricula
+        despesa_selecionada.cod_filial_senior = cod_filial
+        despesa_selecionada.desc_filial_senior = desc_filial
+        despesa_selecionada.cod_projeto_senior = cod_projeto
+        despesa_selecionada.desc_projeto_senior = desc_projeto
+
+        despesa_selecionada.save()
+
+        return HttpResponse('Sucesso!')'''
+
 
 
 

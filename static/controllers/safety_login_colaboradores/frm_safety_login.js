@@ -9,19 +9,28 @@ $(document).on('click','.btn-login-safety' , function(){
     else if (isNaN(let_cpf_colaborador)) {
         msg_erro_form += 'Digite apenas números no CPF!<br>';
     }
-    let data_nasc_split = let_data_nascimento.split('-');
-    console.log(let_data_nascimento);
+
     if (let_data_nascimento == '') {
         msg_erro_form += 'Informe a data de nascimento!<br>';
     }
+    let let_data_nasc_split = let_data_nascimento.split('/');
+    if (!isNaN(let_data_nasc_split[0]) && !isNaN(let_data_nasc_split[1]) && !isNaN(let_data_nasc_split[2])) {
+        if ((let_data_nasc_split[0].length != 2 || Number(let_data_nasc_split[0]) > 31 || Number(let_data_nasc_split[0]) < 1) || (let_data_nasc_split[1].length != 2 || Number(let_data_nasc_split[1]) > 12 || Number(let_data_nasc_split[1]) < 1) || (let_data_nasc_split[2].length != 4 || Number(let_data_nasc_split[2] < 1900) )) {
+            msg_erro_form += 'Informe uma data de nascimento válida!<br>';
+        }
+    }
+    else {
+        msg_erro_form += 'Informe uma data de nascimento válida! (apenas números)<br>';
+    }
 
     if (msg_erro_form == '') {
+        let let_data_nasc_date = let_data_nasc_split[2] + '-' + let_data_nasc_split[1] + '-' + let_data_nasc_split[0];
         $.ajax({
             type: 'POST',
             url: '/safety_login_colaboradores_app/safe_login_colab',
             data: {
                 'cpf_colaborador'   :   let_cpf_colaborador,
-                'data_nasc_colaborador'   :   let_data_nascimento,
+                'data_nasc_colaborador'   :   let_data_nasc_date,
             },
             success: function (dados) {
                 $('#main_container_safety').removeClass('align-items-center');
@@ -116,4 +125,17 @@ $(document).on('click','.btn-sair-safety' , function(){
             $('.selectpicker').selectpicker();
         }
     });
+});
+
+$(document).on('keydown','.input-data-nascimento' , function(e){
+    let let_dt_nascimento = $(this).val();
+    let dt_nasc_len = let_dt_nascimento.length;
+    if (e.key != 'Backspace') {
+        if (dt_nasc_len == 2) {
+            $(this).val(let_dt_nascimento.concat('/'));
+        }
+        if (dt_nasc_len == 5) {
+            $(this).val(let_dt_nascimento.concat('/'));
+        }
+    }
 });

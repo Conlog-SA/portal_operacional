@@ -21,7 +21,8 @@ class Form_Seguranca_Check(View):
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
         if usuario.corporativo == 'S':
-            lista_filiais = Filial.objects.all()
+            lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa)
+            #lista_filiais = Filial.objects.all()
             flag_corporativo = 1
         elif usuario.corporativo == 'N':
             lista_filiais = [usuario.cod_filial]
