@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Check_Aplicado
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check
+from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usuario
 
 
@@ -357,6 +358,28 @@ class Sortable_View(View):
         }
         return JsonResponse(data)
 
+class Form_Cadastro_Colaborador(View):
+    @csrf_exempt
+    def post(self, request):
+        nome_colab = request.POST['nome_colab']
+        cpf_colab = request.POST['cpf_colab']
+        dt_nasc_colab = request.POST['dt_nasc_colab']
+        filial_cad_colab = request.POST['filial_cad_colab']
+        if Colaborador.objects.filter(cpf=str(cpf_colab).zfill(11)).first() != None:
+            response = HttpResponse('Colaborador já consta no sistema!')
+            response.status_code = 400
+            return response
+        else:
+            novo_colab = Colaborador(
+                nome_colaborador=nome_colab,
+                cpf=cpf_colab,
+                data_nascimento=dt_nasc_colab,
+                cod_filial=filial_cad_colab,
+                perfil_usu='U'
+            )
+            novo_colab.save()
+
+        return HttpResponse('Colaborador cadastrado com sucesso!')
 
 class Comportamentos_Sortable():
     @csrf_exempt

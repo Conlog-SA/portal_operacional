@@ -33,7 +33,6 @@ body {
 }
 
 .barraLateral:hover {
-
     border-color: var(--cor_empresa);
     border-image-slice: 50vh;
 }

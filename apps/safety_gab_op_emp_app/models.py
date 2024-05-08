@@ -1,6 +1,7 @@
 from django.db import models
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_checks_aplicados_app.models import Check_Aplicado
 
 
 class Empilhadeira(models.Model):
@@ -23,6 +24,8 @@ class Gabarito_Operacional_Emp(models.Model):
     cod_empilhadeira = models.ForeignKey(Empilhadeira, models.DO_NOTHING, db_column='cod_empilhadeira', blank=True,
                                          null=True)
     cod_avaliador = models.IntegerField(blank=True, null=True)
+    cod_checks_aplicados = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
+                                         null=True)
 
     class Meta:
         managed = True

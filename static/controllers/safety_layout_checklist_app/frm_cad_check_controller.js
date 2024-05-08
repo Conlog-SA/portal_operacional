@@ -37,7 +37,6 @@ $(document).on('click','button', function(){
         } else if (isNaN(valPeriodicidade)) {
             msg_erro += 'A periodicidade deve ser um número!<br>';
         }
-
         if (valVersao == '') {
             msg_erro += 'Informe uma versão para o check!<br>';
         } else if (isNaN(valVersao)) {
@@ -762,6 +761,73 @@ $(document).on('click','.check-preenchido-element' , function(){
     });
 });
 
+$(document).on('click','.btn-novo-colab' , function(){
+    let let_nome_colab = $('#nome_colab').val();
+    let let_cpf_colab = $('#cpf_colab').val();
+    let let_dt_nasc_colab = $('#dt_nascimento_colab').val();
+    let let_filial_cad_colab = $('#filial_cad_colab').val();
+    let msg_erro = '';
+    let data_temp = new Date(let_dt_nasc_colab);
+
+    if (isNaN(data_temp.getDay()) || isNaN(data_temp.getMonth()) || isNaN(data_temp.getFullYear())) {
+        msg_erro += 'Data de nascimento inválida!<br>';
+    }
+    if (let_nome_colab == '' || let_nome_colab == null) {
+        msg_erro += 'Informe o nome completo do colaborador!<br>';
+    }
+    if (let_cpf_colab == '' || let_cpf_colab == null || isNaN(let_cpf_colab)) {
+        msg_erro += 'CPF Inválido!<br>';
+    }
+    else if (let_cpf_colab.length < 11) {
+        msg_erro += 'O CPF deve conter 11 números!<br>';
+    }
+    if (let_filial_cad_colab == '' || let_filial_cad_colab == 0) {
+        msg_erro += 'Informe a filial do colaborador!<br>';
+    }
+
+
+    if (msg_erro == '') {
+        $.ajax({
+            type: 'POST',
+            data: {
+                'nome_colab'   :   let_nome_colab,
+                'cpf_colab'  :  let_cpf_colab,
+                'dt_nasc_colab'  : let_dt_nasc_colab,
+                'filial_cad_colab'  : let_filial_cad_colab
+            },
+            url: '/safety_layout_checklist_app/cadastro_colaborador',
+            success: function(response) {
+                $.gritter.add({
+                   title: 'Sucesso!',
+                   text: response,
+                   image: '/static/icons/triangle-exclamation-solid.svg',
+                   sticky: false,
+                   time: '',
+                });
+            },
+            error: function(xhr, status, error) {
+                var errorMessage = xhr.responseText || error;
+                $.gritter.add({
+                    title: 'Erro!',
+                    text: errorMessage,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else {
+        $.gritter.add({
+           title: 'Erro!',
+           text: msg_erro,
+           image: '/static/icons/triangle-exclamation-solid.svg',
+           sticky: false,
+           time: '',
+        });
+    }
+});
+
 $(document).on('click','.a_tab_check_criados',function(){
     $('#modelos_existentes button').prop('disabled',true);
 });
@@ -773,7 +839,6 @@ $(document).on('click','.a_tab_new_check',function(){
 $(document).on('click','.arrow-go-back' , function(){
     $('#lista_checks_aplicados').html(html_old)
 });
-
 
 function Popular_Itens(cod_check) {
     if (cod_check == '') {

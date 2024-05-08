@@ -9,5 +9,6 @@ urlpatterns = [
     path('registra_check', csrf_exempt(views.Form_Cadastro_Check.as_view()), name='registra_check'),
     path('filiais_check', csrf_exempt(views.Form_Filial_Check.as_view()), name='filiais_check'),
     path('registra_item', csrf_exempt(views.Form_Item_Check.as_view()), name='registra_item'),
-    path('sortable', csrf_exempt(views.Sortable_View.as_view()), name='sortable')
+    path('sortable', csrf_exempt(views.Sortable_View.as_view()), name='sortable'),
+    path('cadastro_colaborador', csrf_exempt(views.Form_Cadastro_Colaborador.as_view()), name='cadastro_colaborador'),
 ]

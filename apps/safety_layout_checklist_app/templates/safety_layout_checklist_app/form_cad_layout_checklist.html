@@ -20,8 +20,8 @@
     </div>
     <div class="containerApp w-95">
         <div class="form-group form_div_check w-100">
-            <div class="col-md-12 w-100 h-100">
-                <form id="form_new_check_list" name="form_nem_check_list" style="padding-left:1rem">
+            <div class="col-md-12 w-100 h-100" style="padding-left:1rem;">
+                <div>
                     {% if flag_corporativo == 1 %}
                     <div style="display:flex;justify-content:right;margin-right:1rem;margin-bottom:0.5rem;margin-top:0.25rem">
                         <div style="width:11rem;margin-right:15px">
@@ -70,6 +70,13 @@
                                     aria-controls="div_tab_new_check"
                                     aria-selected="true" style="border-radius:0px 0px 0 0; font-size:15px">
                                 Novo Check List
+                                <i class="fa-solid fa-filter" style="color: #f46424;"></i>
+                            </button>
+                            <button class="nav-link tabs-nav a_tab_new_colab" id="a_tab_new_colab" data-bs-toggle="tab"
+                                    data-bs-target="#div_edita_colab" type="button" role="tab"
+                                    aria-controls="div_edita_colab"
+                                    aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px">
+                                Cad. Colaboradores
                                 <i class="fa-solid fa-filter" style="color: #f46424;"></i>
                             </button>
                             {% endif %}
@@ -242,6 +249,52 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="tab-pane" id="div_edita_colab" role="tabpanel"
+                             aria-labelledby="a_tab_new_colab" style="padding-right:1rem">
+                            <form id="form_edita_colabs" name="form_edita_colabs"
+                                  style="margin-left:10px;margin-right:10px;margin-bottom:16px">
+                                <div class="row" style="margin-top:1rem;display:flex;justify-content:center">
+                                    <label style="width:60%">
+                                        Nome completo:
+                                        <input class="form-control" name="nome_colab"
+                                           id="nome_colab" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="row" style="margin-top:1rem;display:flex;justify-content:center">
+                                    <label style="width:30%">
+                                        CPF:
+                                        <input class="form-control" name="cpf_colab"
+                                           id="cpf_colab" autocomplete="off"/>
+                                    </label>
+                                    <label style="width:30%">
+                                        Data nascimento:
+                                        <input type="date" class="form-control" name="dt_nascimento_colab"
+                                           id="dt_nascimento_colab" autocomplete="off" style="width:100%"/>
+                                    </label>
+                                </div>
+                                <div class="row" style="margin-top:1rem;justify-content:center">
+                                    <div style="width:60%">
+                                        <label for="filial_cad_colab" style="width:100%">
+                                            Filial:
+                                            <select class="selectpicker form-control filial-cadastro-colab" id="filial_cad_colab"
+                                                name="filial_cad_colab" placeholder="Selecione a filial" data-live-search="true">
+                                            {% for f in lista_filiais %}
+                                            <option value="{{f.cod_filial}}">{{f.desc_filial}}</option>
+                                            {% endfor %}
+                                            </select>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:1rem;width:60%;display:flex;justify-content:flex-end">
+                                    <button type="button" class="btn btn-primary btn-form btn-cadastro btn-novo-colab"
+                                                    id="btn_new_colab"
+                                                    name="btn_new_colab" style="margin-top:10px; margin-left:10px;width:fit-content">
+                                                <i class="fa-solid fa-user-plus"></i>
+                                                Cadastrar Colaborador
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
                         <div class="tab-pane" id="div_check_criados" role="tabpanel"
                              aria-labelledby="a_tab_check_criados" style="padding-right:1rem">
                             <form id="form_check_aplicados" name="form_check_aplicados" method="POST"
@@ -357,7 +410,7 @@
                         </div>
                         {% endif %}
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

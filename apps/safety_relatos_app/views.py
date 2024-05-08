@@ -108,7 +108,8 @@ class Form_Gerar_Relatos_Check(View):
             local_relato=local_relato,
             turno_relato=turno_relato,
             processo_relato=processo_relato,
-            atividade_relato=atividade_relato
+            atividade_relato=atividade_relato,
+            cod_checks_aplicados=check_aplicado
         )
         check_cabecalho.save()
 

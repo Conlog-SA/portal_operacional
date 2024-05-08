@@ -125,6 +125,7 @@ class Form_Gerar_Gab_Emp(View):
         check_cabecalho = Gabarito_Operacional_Emp(
             tipo_operador=tipo_colaborador,
             cod_empilhadeira=Empilhadeira.objects.get(pk=cod_empilhadeira),
+            cod_checks_aplicados=check_aplicado,
         )
         check_cabecalho.save()
 
