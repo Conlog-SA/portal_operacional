@@ -21,7 +21,7 @@ class Check_Aplicado(models.Model):
 
 class Item_Check_Aplicados(models.Model):
     cod_item_ap = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_checks_aplicados', blank=False,
+    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=False,
                                          null=False)
     cod_item_check = models.ForeignKey(Item_Check, models.DO_NOTHING, db_column='cod_item_check', blank=False,
                                          null=False)
@@ -35,7 +35,7 @@ class Item_Fotos_Texto_Check_Aplicado(models.Model):
     cod_item_fotos_texto_itens_checks_aplicados = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     comentario = models.CharField(max_length=40, blank=True, null=True)
     caminho_imagem = models.CharField(max_length=80, blank=True, null=True)
-    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_checks_aplicados', blank=False,
+    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=False,
                                          null=False)
     cod_item_check = models.ForeignKey(Item_Check, models.DO_NOTHING, db_column='cod_item_check', blank=False,
                                          null=False)
