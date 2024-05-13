@@ -125,13 +125,13 @@ class Form_Gerar_Gab_Emp(View):
         check_cabecalho = Gabarito_Operacional_Emp(
             tipo_operador=tipo_colaborador,
             cod_empilhadeira=Empilhadeira.objects.get(pk=cod_empilhadeira),
-            cod_checks_aplicados=check_aplicado,
+            cod_check_aplicado=check_aplicado,
         )
         check_cabecalho.save()
 
         context = {
             'lista_itens' : lista_itens_dict,
-            'cod_check_aplicado': check_aplicado.cod_checks_aplicados
+            'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }
         return render(request, 'safety_gab_op_emp_app/gab_op_emp_form_check.html', context)
 

@@ -109,13 +109,13 @@ class Form_Gerar_Relatos_Check(View):
             turno_relato=turno_relato,
             processo_relato=processo_relato,
             atividade_relato=atividade_relato,
-            cod_checks_aplicados=check_aplicado
+            cod_check_aplicado=check_aplicado
         )
         check_cabecalho.save()
 
         context = {
             'lista_itens' : lista_itens_dict,
-            'cod_check_aplicado': check_aplicado.cod_checks_aplicados
+            'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }
         return render(request, 'safety_relatos_app/relatos_form_check.html', context)
 

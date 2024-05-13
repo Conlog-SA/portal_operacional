@@ -13,7 +13,7 @@ class Relato(models.Model):
     turno_relato = models.IntegerField(blank=False, null=False)
     atividade_relato = models.IntegerField(blank=False, null=False)
     processo_relato = models.IntegerField(blank=False, null=False)
-    cod_checks_aplicados = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
+    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
                                          null=True)
 
     class Meta:
