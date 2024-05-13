@@ -33,12 +33,12 @@ class Check_Aplicado_View(View):
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:
-            count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_checks_aplicados=check).count()
-            count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_checks_aplicados=check).count()
+            count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
+            count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
             obj_layout_check = check.cod_layout_check
             total_itens_layout = Item_Check.objects.filter(cod_check=obj_layout_check).count()
             count_respostas_nao_respondidos = total_itens_layout - (count_respostas_ok + count_respostas_nok)
-            lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_checks_aplicados, 'nome_colaborador_avaliado': check.cod_colaborador_avaliado.nome_colaborador,
+            lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_check_aplicado, 'nome_colaborador_avaliado': check.cod_colaborador_avaliado.nome_colaborador,
                                      'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador, 'data_registro': (check.data_registro).strftime("%d/%m/%Y %H:%M"), 'cod_layout_check': check.cod_layout_check.cod_check,
                                      'desc_check': check.cod_layout_check.desc_check, 'qtd_ok': str(count_respostas_ok), 'qtd_nok': str(count_respostas_nok), 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
                                                 'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:grey"></i>'})
@@ -51,13 +51,13 @@ class Itens_Check_Aplicado(View):
         cod_check_aplicado = request.GET.get('cod_check_aplicado', None)
         check_aplicado = Check_Aplicado.objects.get(pk=cod_check_aplicado)
 
-        lista_itens_check_aplicado = Item_Check_Aplicados.objects.filter(cod_checks_aplicados=cod_check_aplicado).order_by('cod_item_check__ordem_item').first()
-        lista_fotos_texto_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_checks_aplicados=cod_check_aplicado).order_by('cod_item_check__ordem_item').first()
+        lista_itens_check_aplicado = Item_Check_Aplicados.objects.filter(cod_check_aplicado=cod_check_aplicado).order_by('cod_item_check__ordem_item').first()
+        lista_fotos_texto_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=cod_check_aplicado).order_by('cod_item_check__ordem_item').first()
 
         lista_itens_check_aplicado_dict = []
         if lista_itens_check_aplicado != None:
             lista_itens_check_aplicado = Item_Check_Aplicados.objects.filter(
-                cod_checks_aplicados=cod_check_aplicado).order_by('cod_item_check__ordem_item')
+                cod_check_aplicado=cod_check_aplicado).order_by('cod_item_check__ordem_item')
             for item in lista_itens_check_aplicado:
                 fotos_texto_item = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_item_check__ordem_item=item.cod_item_check.ordem_item).first()
 
@@ -76,7 +76,7 @@ class Itens_Check_Aplicado(View):
 
         if lista_fotos_texto_check_aplicado != None:
             lista_fotos_texto_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
-                cod_checks_aplicados=cod_check_aplicado).order_by('cod_item_check__ordem_item')
+                cod_check_aplicado=cod_check_aplicado).order_by('cod_item_check__ordem_item')
             for item in lista_fotos_texto_check_aplicado:
                 resposta_item_existente = Item_Check_Aplicados.objects.filter(
                     cod_item_check__ordem_item=item.cod_item_check.ordem_item).first()
@@ -147,11 +147,11 @@ class Item_Check_Aplicado(View):
             resposta = request.POST['resposta']
 
             item_existente = Item_Check_Aplicados.objects.filter(
-                    cod_item_check=cod_item_check,cod_checks_aplicados=cod_check_aplicado).first()
+                    cod_item_check=cod_item_check,cod_check_aplicado=cod_check_aplicado).first()
             if item_existente == None:
                 resposta_item = Item_Check_Aplicados(
                     cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
-                    cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first(),
+                    cod_check_aplicado=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first(),
                     resp_item=resposta
                 )
                 resposta_item.save()
@@ -164,13 +164,13 @@ class Item_Check_Aplicado(View):
             resposta = request.POST['resposta']
 
             item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
-                cod_item_check=cod_item_check,cod_checks_aplicados=cod_check_aplicado).first()
+                cod_item_check=cod_item_check,cod_check_aplicado=cod_check_aplicado).first()
 
             if item_existente == None:
                 resposta_item = Item_Fotos_Texto_Check_Aplicado(
                     comentario=resposta,
                     cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
-                    cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
+                    cod_check_aplicado=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
                 )
                 resposta_item.save()
             else:
@@ -194,11 +194,11 @@ class Item_Check_Aplicado(View):
 
         msg = ''
         item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
-            cod_item_check=cod_item_check, cod_checks_aplicados=cod_check_aplicado).first()
+            cod_item_check=cod_item_check, cod_check_aplicado=cod_check_aplicado).first()
         if item_existente == None:
             item_existente = Item_Fotos_Texto_Check_Aplicado(
                 cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
-                cod_checks_aplicados=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
+                cod_check_aplicado=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
             )
             item_existente.save()
         elif item_existente.caminho_imagem != None:
