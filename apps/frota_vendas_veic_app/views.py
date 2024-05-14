@@ -134,8 +134,15 @@ class Form_Venda_Veic_View(View):
             if dados_sugestao[0] != None:
                 perc_sug_venda = dados_sugestao[0] * 100
             val_sug_venda = 0
+            val_sug_venda_banco = 0
             if dados_sugestao[1] != None:
                 val_sug_venda = locale.currency(round(dados_sugestao[1], 2), grouping=True, symbol=None)
+                val_sug_venda_banco = round(dados_sugestao[1], 2)
+
+
+            obj_veic_venda_tab.perc_sug_venda = perc_sug_venda
+            obj_veic_venda_tab.val_sug_venda = val_sug_venda_banco
+            obj_veic_venda_tab.save()
 
             perc_tab_x_venda = 0
             if obj_veic.val_venda != None and obj_veic_venda_tab.val_comp != None:
@@ -398,7 +405,7 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
             )
             obj_veic_tab.save()
         else:
-            obj_veic_tab.codigo_veic_tab = cod_veic_na_tab_frm
+            obj_veic_tab.codigo_veic_tab = cod_veic_tab
             obj_veic_tab.competencia = competencia_date
             obj_veic_tab.val_comp = val_comp_veic
             obj_veic_tab.cod_ano_modelo_tab = obj_ano_modelo
@@ -470,7 +477,8 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
         for span in spans:
             print(str(count) + ' - ' + span.txt)
             count += 1'''
-        time.sleep(2)
+        time.sleep(5)
+        print(navegador.find_element(By.XPATH, value='//*[@id="CodFipe"]').text)
         cod_fipe = (navegador.find_element(By.XPATH, value='//*[@id="CodFipe"]').text).split(':')[1]
         val_veic = (navegador.find_element(By.CLASS_NAME, value='Valor_Veiculo').text).split(':')[1]
         try:
@@ -483,7 +491,7 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
 
         navegador.quit()
 
-        return status, cod_fipe, val_comp, msg_erro
+        return status, cod_fipe.strip(), val_comp, msg_erro
 
     def pesquisa_val_tab_comp(self, competencia, cod_modelo_tab_precos, ano_veic):
         valor_veic_comp = 0
@@ -566,7 +574,7 @@ class Form_Vincula_Veic_Tab_Precos_View(View):
         objs_td_valor = div_resultado.find_elements(By.TAG_NAME, value='td')[15]
         valor_veic_comp = str(objs_td_valor.text).strip().replace('R$', '').replace('.', '').replace(',', '.')
         navegador.quit()
-        return valor_veic_comp
+        return valor_veic_comp.strip()
 
 
 class Form_Atualiza_Veic_Vinculados_View(View):
@@ -580,7 +588,7 @@ class Form_Atualiza_Veic_Vinculados_View(View):
 
         lista_obj_modelos_veic_venda = list(Veiculo_Venda_Tab_Precos.objects
                                             .filter(cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab_preco,
-                                                    cod_veic__status_venda='N', codigo_veic_tab__isnull=False)
+                                                    cod_veic__status_venda='N', cod_ano_modelo_tab__isnull=False)
                                             .values('cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_marca_tab_precos',
                                                     'cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__id_tipo_veic_tab',
                                                     'cod_ano_modelo_tab__cod_modelo_tab_precos__cod_modelo_tab_precos',
@@ -588,14 +596,17 @@ class Form_Atualiza_Veic_Vinculados_View(View):
         
         #return status, cod_fipe, val_comp, msg_erro
         for reg in lista_obj_modelos_veic_venda:
+            print(reg['cod_ano_modelo_tab'])
             dados_pesq_tab = (Form_Vincula_Veic_Tab_Precos_View()
                               .acessa_site_tab_captura_val_atual(reg['cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__id_tipo_veic_tab'],
                                                                  reg['cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_marca_tab_precos'],
                                                                  reg['cod_ano_modelo_tab__cod_modelo_tab_precos__cod_modelo_tab_precos'],
                                                                  reg['cod_ano_modelo_tab__ano']))
+            print(dados_pesq_tab)
             dic_dados = {
-                'cod_ano_modelo_tab': reg['cod_ano_modelo_tab__ano'],
+                'cod_ano_modelo_tab': reg['cod_ano_modelo_tab'],
                 'status_venda': 'N',
+                'cod_veic_tab': dados_pesq_tab[1],
                 'val_tabela': dados_pesq_tab[2]
             }
             lista_dados_tab_modelos_veic_pesq_tab.append(dic_dados)
@@ -605,19 +616,21 @@ class Form_Atualiza_Veic_Vinculados_View(View):
                                                 .filter(cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab_preco,
                                                         cod_veic__status_venda='N', cod_ano_modelo_tab__cod_ano_modelo_tab=modelo['cod_ano_modelo_tab']))
             for veic in lista_veic_atualizar:
-                veic.val_comp = modelo['val_comp']
+                print(veic.cod_veic.placa + ' - ' + veic.codigo_veic_tab)
+                veic.val_comp = modelo['val_tabela']
+                veic.codigo_veic_tab = modelo['cod_veic_tab']
                 veic.save()
 
         if check_atualiza_veic_vendidos_frm == 'S':
             lista_dados_tab_modelos_veic_vencidos_pesq_tab = []
             lista_obj_modelos_veic_vendidos = list(Veiculo_Venda_Tab_Precos.objects
                                                    .filter(cod_ano_modelo_tab__cod_modelo_tab_precos__cod_marca_tab_precos__cod_tipo_veic_tab_precos__cod_tab_precos=obj_tab_preco,
-                                                           cod_veic__status_venda='S', codigo_veic_tab__isnull=False)
+                                                           cod_veic__status_venda='S', cod_ano_modelo_tab__isnull=False)
                                                    .values('cod_veic__data_venda', 'codigo_veic_tab', 'cod_ano_modelo_tab__ano', 'cod_ano_modelo_tab').distinct())
 
             for reg in lista_obj_modelos_veic_vendidos:
                 competencia_pesq = datetime.strftime(reg['cod_veic__data_venda'], '%Y-%m')
-                cod_tab_fipe = reg['codigo_veic_tab'].strip().replace('-','')
+                cod_tab_fipe = reg['codigo_veic_tab'].replace('-','')
                 val_tabela_veic = (Form_Vincula_Veic_Tab_Precos_View()
                                   .pesquisa_val_tab_comp(competencia_pesq, cod_tab_fipe,reg['cod_ano_modelo_tab__ano']))
                 dic_dados = {
