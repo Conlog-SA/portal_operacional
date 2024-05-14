@@ -49,6 +49,17 @@ class Ano_Modelo_Tab_Precos(models.Model):
         db_table = 'op_frota_ano_modelo_tab_precos'
 
 
+class Ano_Modelo_Historico_Tab_Precos(models.Model):
+    cod_ano_modelo_hist_preco = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    competencia = models.DateField(null=True, blank=True)
+    val_comp = models.IntegerField(blank=True, null=True)
+    cod_ano_modelo_tab = models.ForeignKey(Ano_Modelo_Tab_Precos, models.DO_NOTHING, db_column='cod_ano_modelo_tab',
+                                           null=True, blank=True)
+    class Meta:
+        managed = True
+        db_table = 'op_frota_ano_modelo_historico_tab_precos'
+
+
 
 class Veiculo_Venda(models.Model):
     cod_veic = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -79,6 +90,8 @@ class Veiculo_Venda_Tab_Precos(models.Model):
     codigo_veic_tab = models.CharField(max_length=10, blank=True, null=True)
     competencia = models.DateField(null=True, blank=True)
     val_comp = models.IntegerField(blank=True, null=True)
+    perc_sug_venda = models.DecimalField(max_digits=16, decimal_places=6, blank=True, null=True)
+    val_sug_venda = models.DecimalField(max_digits=16, decimal_places=6, blank=True, null=True)
     cod_veic = models.ForeignKey(Veiculo_Venda, models.DO_NOTHING, db_column='cod_veic')
     cod_tab_precos = models.ForeignKey(Tabela_Preco_Veic, models.DO_NOTHING, db_column='cod_tab_precos',
                                        null=False, blank=False)

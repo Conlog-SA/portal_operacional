@@ -250,7 +250,20 @@ class ConexaoBancoBenner():
 
         param_data_corte = ''
         if data_corte != None:
-            param_data_corte = f" AND CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' "
+            param_data_corte = f'''
+                ,COALESCE((SELECT MAX(fn_mov_ocor.handle) 
+                    FROM FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+                   WHERE fn_mov_ocor.PARCELA = fn_parc.HANDLE 
+                     AND fn_mov_ocor.tipomovimento in (7)
+                     AND fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+                     AND CAST(fn_mov_ocor.DATA AS DATE) <= '2024-04-30'),0)	AS status_atualizacao
+            '''
+        else:
+            param_data_corte = ''' 
+                , '0'       AS  status_atualizacao
+            '''
+
+            #f" AND CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' "
 
         '''Processamento'''
         cursor = self.__conn.cursor()
@@ -299,6 +312,7 @@ class ConexaoBancoBenner():
                         AND	lan_fundo.TIPO = '3'
                         AND lan_fundo.ORIGEM = 2
                         AND	con_fundo.NOME LIKE '%FUNDO%')	AS	val_fn_fundo
+                        {param_data_corte}
               FROM	FN_PARCELAS fn_parc (NOLOCK) 
               LEFT	JOIN	FN_DOCUMENTOS fn_doc (NOLOCK) 
                  ON	fn_parc.DOCUMENTO = fn_doc.HANDLE 
@@ -315,8 +329,7 @@ class ConexaoBancoBenner():
                AND	fn_parc.VALOR > 0
                AND	fn_doc.ABRANGENCIA <> 'R'
                AND	((fn_doc.DATACANCELAMENTO IS NULL) OR(fn_doc.DATACANCELAMENTO > CONVERT(DATETIME,'20221231',103)))
-               AND	fn_doc.HANDLE = {handle_contrato}
-               {param_data_corte}
+               AND	fn_doc.HANDLE = {handle_contrato}               
              GROUP	BY fn_doc.HANDLE,
                     fn_parc.handle,
                     fn_parc.AP,
@@ -347,7 +360,11 @@ class ConexaoBancoBenner():
                 'val_taxas': row.val_fn_taxas,
                 'val_fundo': row.val_fn_fundo
             }
-            lista_parcelas_contrato_benner.append(parcela)
+            if data_corte == None:
+                lista_parcelas_contrato_benner.append(parcela)
+            else:
+                if row.status_atualizacao > 0:
+                    lista_parcelas_contrato_benner.append(parcela)
 
         '''Fecha componentes'''
         cursor.close()
