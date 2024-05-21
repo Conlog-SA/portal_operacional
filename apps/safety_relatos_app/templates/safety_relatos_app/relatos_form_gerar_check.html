@@ -40,6 +40,14 @@
                                                <option value="3">Abordagem positiva</option>
                                            </select>
                                         </div>
+                                        <div id="div_ato_inseguro_categorias" class="form-group hidden-div">
+                                            <label class="responsive-font" for="nome_relatado_terceiro">Categoria do ato:</label>
+                                            <select class="selectpicker form-control responsive-font" id="ato_inseguro_categoria" name="ato_inseguro_categoria" placeholder="Escolha a categoria">
+                                                {% for categoria in lista_categorias %}
+                                                <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                         <div class="form-group">
                                            <label class="responsive-font" for="situacao_envolvido">Situação do envolvido:</label>
                                            <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" placeholder="Escolha a situação" disabled>

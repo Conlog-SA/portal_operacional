@@ -33,12 +33,14 @@ class Form_Gerar_Relatos_Check(View):
         processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1)
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
+        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3)
 
         context = {
             'cod_usuario': nome_colaborador,
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade,
-            'options_select_processo': str_options_select_processo
+            'options_select_processo': str_options_select_processo,
+            'lista_categorias': lista_categorias_ato_inseguro
         }
         return render(request, 'safety_relatos_app/relatos_form_gerar_check.html', context)
 
@@ -52,6 +54,7 @@ class Form_Gerar_Relatos_Check(View):
         atividade_relato = request.POST['atividade_relato']
         processo_relato = request.POST['processo_relato']
         unidade_relato = request.POST['unidade_relato']
+        categoria_relato = request.POST['categoria_relato']
         colaborador = None
         if situacao_envolvido == '1':
             colaborador = Colaborador.objects.get(pk=int(nome_relatado))
@@ -109,7 +112,8 @@ class Form_Gerar_Relatos_Check(View):
             turno_relato=turno_relato,
             processo_relato=processo_relato,
             atividade_relato=atividade_relato,
-            cod_check_aplicado=check_aplicado
+            cod_check_aplicado=check_aplicado,
+            categoria=categoria_relato
         )
         check_cabecalho.save()
 

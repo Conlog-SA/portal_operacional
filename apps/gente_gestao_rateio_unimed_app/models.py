@@ -35,8 +35,11 @@ class Despesa_Unimed(models.Model):
     desc_projeto_senior = models.CharField(max_length=50, blank=True, null=True)
     cod_filial_senior = models.IntegerField(blank=True, null=True)
     desc_filial_senior = models.CharField(max_length=50, blank=True, null=True)
+    cod_empresa_senior = models.IntegerField(blank=True, null=True)
     cod_projeto = models.ForeignKey(Projeto, models.DO_NOTHING, db_column='cod_projeto', blank=False,
                null=False)
+    cod_arq_despesa = models.ForeignKey(Arquivo_Despesas, models.DO_NOTHING, db_column='cod_arq_despesa', blank=False,
+                                    null=False)
 
     class Meta:
         managed = True

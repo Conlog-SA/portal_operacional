@@ -70,7 +70,7 @@
                             data-bs-target="#div_tab_rateio_despesas_importadas" type="button" role="tab"
                             aria-controls="div_tab_rateio_despesas_importadas"
                             aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px">
-                        Consulta
+                        Despesas
                         <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
                     </button>
                     <button class="nav-link tabs-nav a_tab_rateio_projetos" id="a_tab_rateio_projetos" data-bs-toggle="tab"
@@ -111,21 +111,21 @@
                 </div>
                 <div class="tab-pane" id="div_tab_rateio_despesas_importadas" role="tabpanel"
                              aria-labelledby="a_tab_rateio_despesas_importadas" style="padding-left:5px">
-                    <div class="form-group col-sm-3" style="margin-top:20px;display:flex;">
+                    <div class="form-group" style="margin-top:20px;display:flex;">
                         <div style="padding-left:1rem;">
                             <label for="input_competencia">Competencia:</label>
-                            <input type="month" class="form-control" id="input_competencia">
+                            <input type="month" class="form-control" id="input_competencia" name="input_competencia">
                         </div>
-                        <div style="padding-left:1rem;">
+                        <div style="padding-left:1rem;width:30%">
                             <label for="input_filial">Filial:</label>
                             <select class="selectpicker form-control" id="input_filial" style="width:fit-content">
                                 {% for reg in lista_filiais %}
-                                    <option value="{{reg.cod_filial}}">{{reg.desc_filial}}</option>
+                                    <option value="{{reg.cod_filial_senior}}">{{reg.desc_filial_senior}}</option>
                                 {% endfor %}
                             </select>
                         </div>
                         <div style="display:flex;align-items:flex-end;padding-left:1rem">
-                            <button type="button" class="btn btn-primary btn-rounded botaoPrincipal btnInputBuscaDespesas" style="width:fit-content;height:fit-content;padding:0.6rem">Buscar</button>
+                            <button type="button" class="btn btn-primary btn-rounded botaoPrincipal btn-input-busca-despesas" style="width:fit-content;height:fit-content;padding:0.6rem">Buscar</button>
                         </div>
                     </div>
                     <div class="col-md-12 w-100 h-100">
@@ -153,9 +153,35 @@
                     </div>
                 </div>
                 <div class="tab-pane" id="div_tab_rateio_projetos" role="tabpanel"
-                             aria-labelledby="a_tab_rateio_projetos" style="padding-right:1rem">
+                             aria-labelledby="a_tab_rateio_projetos" style="padding-left:5px">
+                    <div class="form-group" style="margin-top:20px;display:flex;">
+                        <div style="padding-left:1rem;">
+                            <label for="input_competencia">Competencia:</label>
+                            <input type="month" class="form-control" id="input_competencia_calculo_rateio" name="input_competencia_calculo_rateio">
+                        </div>
+                        <div style="padding-left:1rem;width:30%">
+                            <label for="input_filial">Filial:</label>
+                            <select class="selectpicker form-control" id="input_filial_calculo_rateio" style="width:fit-content">
+                                {% for reg in lista_filiais %}
+                                    <option value="{{reg.cod_filial_senior}}">{{reg.desc_filial_senior}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div style="display:flex;align-items:flex-end;padding-left:1rem">
+                            <button type="button" class="btn btn-primary btn-rounded botaoPrincipal btn-input-calculo-rateios" style="width:fit-content;height:fit-content;padding:0.6rem">Buscar</button>
+                        </div>
+                    </div>
                     <div class="col-md-12 w-100 h-100">
-                        teste
+                        <table id="tab_calculo_rateio"  class="display wrap w-100 cl_tab_principal_pagina">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Projeto</th>
+                                    <th scope="col">Quantidade de Colaboradores</th>
+                                    <th scope="col">Valor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_tab_calculo_rateio"></tbody>
+                        </table>
                     </div>
                 </div>
             </div>
