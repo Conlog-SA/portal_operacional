@@ -55,6 +55,10 @@ class Form_Gerar_Relatos_Check(View):
         processo_relato = request.POST['processo_relato']
         unidade_relato = request.POST['unidade_relato']
         categoria_relato = request.POST['categoria_relato']
+
+        if categoria_relato == '':
+            categoria_relato = None
+
         colaborador = None
         if situacao_envolvido == '1':
             colaborador = Colaborador.objects.get(pk=int(nome_relatado))
