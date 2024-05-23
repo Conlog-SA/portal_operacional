@@ -152,6 +152,8 @@ urlpatterns = [
          name='acessa_frm_detalhes_conta_composicao'),
     path('povoa_cb_pac_contas_comp_detalhado', views.Comp_Pac_Contas_Comp_Detalhado_View.as_view(),
          name='povoa_cb_pac_contas_comp_detalhado'),
+    path('renegociar_contrato', views.Form_Renegociacao_Contrato_View.as_view(),
+         name='renegociar_contrato'),
 
 ]
 

@@ -907,19 +907,29 @@ class ConexaoBancoBenner():
     def retorna_itens_by_familia_filial(self, handle_familia, handle_filial):
         param_handle_familia = ''
         if handle_familia != '0':
-            param_handle_familia = ' AND p.FAMILIA in (' + handle_familia + ') '
+            param_handle_familia = ' AND al_prod.FAMILIA in (' + handle_familia + ') '
         cursor = self.__conn.cursor()
         lista_itens = []
         sql_pd_produtos = (
             f'''
-            SELECT 	distinct	
-                    p.handle    AS  handle,
-                    p.nome      AS  nome,
-                    p.codigoreferencia
-                                AS  codigoreferencia
-              FROM  PD_PRODUTOS p (NOLOCK)
-             WHERE  p.FILIAL in ( {handle_filial} )
-            {param_handle_familia}
+            SELECT	distinct
+                    prod.HANDLE				as	handle,
+                    prod.NOME 				as	nome,
+                    prod.CODIGOREFERENCIA	as	codigoreferencia
+              FROM	PD_ALMOXARIFADOPRODUTOS al_prod (NOLOCK)
+              left	join PD_PRODUTOS prod (NOLOCK)
+                on	(PROD.HANDLE = al_prod.PRODUTO)
+              LEFT 	join PD_FAMILIASPRODUTOS familia (NOLOCK)
+                on	(familia.HANDLE = al_prod.FAMILIA)
+              left	join PD_ALMOXARIFADOS al (NOLOCK)
+                on	(al.HANDLE  = al_prod.ALMOXARIFADO)
+              LEFT	JOIN FILIAIS f (NOLOCK)
+                on	(f.HANDLE = al.FILIAL)
+             WHERE	f.HANDLE in ({handle_filial} )
+               and	(familia.nome not like '%NÃO%' and familia.nome not like '%SERVIÇO%' and familia.nome not like '%SERVICO%')
+               and	prod.TIPO = 1
+               {param_handle_familia}   
+             order	by 2
             '''
         )
         cursor.execute(sql_pd_produtos)
@@ -1535,7 +1545,7 @@ class ConexaoBancoBenner():
                     veic.PLACANUMERO	AS	placa_veic,
                     veic.TIPOVEICULO	AS	handle_tipo_veic,
                     tipo_veic.NOME 		AS	desc_tipo_veic,
-                    veic.MARCA 			AS	handle_marca_veic,
+                    veic.MARCAVEICULO	AS	handle_marca_veic,
                     marca.NOME 			AS	desc_marca_veic,
                     veic.MODELOVEICULO 	AS	handle_modelo_veic,
                     modelos.NOME 		AS	desc_modelo_veic,
@@ -1561,7 +1571,7 @@ class ConexaoBancoBenner():
               LEFT	JOIN MF_VEICULOTIPOS tipo_veic (NOLOCK)
                 ON	(tipo_veic.HANDLE = veic.TIPOVEICULO)
               LEFT 	JOIN MF_PARTEMARCAS marca (NOLOCK) 
-                ON	(marca.HANDLE = veic.MARCA)
+                ON	(marca.HANDLE = veic.MARCAVEICULO)
               LEFT 	JOIN MF_VEICULOMODELOS modelos (NOLOCK)
                 ON	(modelos.HANDLE = veic.MODELOVEICULO)
               LEFT 	JOIN ESTADOS uf (NOLOCK)

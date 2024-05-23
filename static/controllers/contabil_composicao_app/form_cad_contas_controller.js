@@ -1185,7 +1185,8 @@ $(document).on('click','button', function(){
         }
 
 
-    } else if (let_nome_btn == 'btn_abrir_modal_atualiza_contratos_benner') {
+    }
+    else if (let_nome_btn == 'btn_abrir_modal_atualiza_contratos_benner') {
         $("#modal_atualiza_contratos_benner").show();
 
     } else if (let_nome_btn == 'btn_fecha_modal_atualiza_contratos_benner') {
@@ -1431,7 +1432,8 @@ $(document).on('click','button', function(){
                 });
             }
         });
-    }else if (let_nome_btn == 'btn_desmarcar_resp_contas'){
+    }
+    else if (let_nome_btn == 'btn_desmarcar_resp_contas'){
         $("#cb_responsaveis_contas").selectpicker('deselectAll');
     }
     else if (let_nome_btn == 'btn_marcar_resp_contas'){
@@ -1508,6 +1510,49 @@ $(document).on('click','button', function(){
     } else if (let_nome_btn == 'btn_desmarcar_pac_contas_comp_detalhado'){
         $("#cb_pac_contas_comp_detalhado").selectpicker('deselectAll');
         fn_limpar_comp_contas_comp_detalhado();
+    } else if (let_nome_btn == 'btn_abre_modal_renegociacao_contrato') {
+         $("#btn_confirma_renegociacao_contrato").val(let_val_btn);
+         $("#modal_renegociacao_contrato").show();
+
+    } else if (let_nome_btn == 'btn_fecha_modal_renegociacao_contrato') {
+        $("#modal_renegociacao_contrato").hide();
+
+    } else if (let_nome_btn == 'btn_confirma_renegociacao_contrato') {
+        let let_cod_contrato = let_val_btn;
+        let let_justificativa_renegociacao = $("#ta_justificativa_renegociacao_contrato").val();
+
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/renegociar_contrato',
+            data: {
+                'cod_contrato' :    let_cod_contrato,
+                'justificativa'   :    let_justificativa_renegociacao
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $("#modal_renegociacao_contrato").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_contratos_conta(dados.cod_conta);
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+          }
+        });
+
     }
 
 });

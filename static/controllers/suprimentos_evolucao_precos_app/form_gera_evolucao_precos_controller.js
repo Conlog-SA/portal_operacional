@@ -630,6 +630,8 @@ $(document).on('change', 'input', function(){
 
 $(document).on('change', '#cb_empresas_gera_evolucao_precos', function(){
     var var_cod_empresa_selecionada = $(this).val();
+    let let_loader_evolucao_preco = document.getElementById("loader_evolucao_preco");
+    let_loader_evolucao_preco.style.display = "flex";
     $.ajax({
         type: 'GET',
         url:"/suprimentos_evolucao_precos_app/povoa_cd_filial_por_empresa",
@@ -643,8 +645,10 @@ $(document).on('change', '#cb_empresas_gera_evolucao_precos', function(){
                 $("#cb_filial_gera_evolucao_precos").append("<option value='"+fil.handle+"'>"+fil.nome+"</option>");
             });
             $('#cb_filial_gera_evolucao_precos').selectpicker('refresh');
+            let_loader_evolucao_preco.style.display = "none";
         },
         error: function (request, status, error) {
+            let_loader_evolucao_preco.style.display = "none";
             $.gritter.add({
                 title: 'Atenção!',
                 text: error,
