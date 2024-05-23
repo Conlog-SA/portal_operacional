@@ -147,7 +147,8 @@ class Form_Venda_Veic_View(View):
             perc_tab_x_venda = 0
             if obj_veic.val_venda != None and obj_veic_venda_tab.val_comp != None:
                 if obj_veic.val_venda > 0 and obj_veic_venda_tab.val_comp > 0:
-                    perc_tab_x_venda = ((obj_veic.val_venda - obj_veic_venda_tab.val_comp) / obj_veic_venda_tab.val_comp) * 100
+                    #perc_tab_x_venda = ((obj_veic.val_venda - obj_veic_venda_tab.val_comp) / obj_veic_venda_tab.val_comp) * 100
+                    perc_tab_x_venda = ((obj_veic.val_venda - val_sug_venda_banco) / val_sug_venda_banco) * 100
 
                     if perc_tab_x_venda >= perc_sug_venda:
                         status_venda = 'OK'
@@ -233,7 +234,7 @@ class Form_Venda_Veic_View(View):
         for modelo in lista_obj_modelos_tab_informados:
             perc_venda_x_tab_preco = 0
             val_media_venda = 0
-            if modelo['val_media_venda'] != None:
+            if modelo['val_media_venda'] != None and (modelo['val_media_tab_precos'] != None and modelo['val_media_tab_precos'] > 0):
                 val_media_venda = locale.currency(round(modelo['val_media_venda'], 2), grouping=True, symbol=None)
                 calc_perc_venda_x_tab_preco = (modelo['val_media_venda'] / decimal.Decimal(modelo['val_media_tab_precos'])) * 100
                 if calc_perc_venda_x_tab_preco > 0:
