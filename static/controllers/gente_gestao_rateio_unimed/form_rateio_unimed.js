@@ -29,6 +29,7 @@ $.ajaxSetup({
 
 {
     tabelaRateioUnimed = null;
+    tabelaConsultaDespesas = null;
 }
 
 $(document).on('change','input', function(){
@@ -54,17 +55,18 @@ $(document).on('change','input', function(){
                 let let_lista_dados_rateio = [];
                 data.tab_rateio_despesas_nao_importadas.forEach( despesa => {
                     let split_retorno = despesa.split(' ');
+                    console.log(split_retorno[1]);
                     let let_dado_despesa = [
                         '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                        split_retorno[1],
-                        split_retorno[4].replaceAll("_", " "),
-                        ('000000'+split_retorno[6].split('.')[0]).slice(-11),
-                        split_retorno[8],
-                        split_retorno[10].replaceAll("_", " "),
-                        ('000000'+split_retorno[12].split('.')[0]).slice(-11),
-                        split_retorno[14].replaceAll("_", " "),
-                        split_retorno[16],
-                        '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[18]+'">Buscar</button>',
+                        split_retorno[1].split('-')[1]+'/'+split_retorno[1].split('-')[0],
+                        split_retorno[3].replaceAll("_", " "),
+                        ('000000'+split_retorno[5].split('.')[0]).slice(-11),
+                        split_retorno[7],
+                        split_retorno[9].replaceAll("_", " "),
+                        ('000000'+split_retorno[11].split('.')[0]).slice(-11),
+                        split_retorno[13].replaceAll("_", " "),
+                        split_retorno[15],
+                        '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[17]+'">Buscar</button>',
                         '',
                         '',
                         '',
@@ -73,7 +75,7 @@ $(document).on('change','input', function(){
 					let_lista_dados_rateio.push(let_dado_despesa);
                 });
 
-				tabelaRateioUnimed = $('#tab_rateio_despesas_importadas').DataTable( {
+				tabelaRateioUnimed = $('#tab_rateio_despesas_erros').DataTable( {
 				    "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
@@ -161,24 +163,14 @@ $(document).on('change','input', function(){
 });
 
 $(document).on('click','.buscaColabModal, .editaColabModal' , function(){
-    var var_cod_projeto = $("#listProjetosPesqCadPlacaTerc").val();
-    if (var_cod_projeto == '') {
-        $.gritter.add({
-            title: 'Atenção!',
-            text: 'Selecione um projeto !',
-            image: '/static/icons/triangle-exclamation-solid.svg',
-            sticky: false,
-            time: '',
-        });
-    } else {
-        $("#textFieldMatricColab").val("");
-        $("#nomeTitularSenior").val("");
-        $("#filialTitularSenior").val("");
-        $("#projetoTitularSenior").val("");
-        $("#btnSalvaColabSenior").val($(this).attr('name'));
 
-        $("#modalBuscaColabSenior").show();
-    }
+    $("#textFieldMatricColab").val("");
+    $("#nomeTitularSenior").val("");
+    $("#filialTitularSenior").val("");
+    $("#projetoTitularSenior").val("");
+    $("#btnSalvaColabSenior").val($(this).attr('name'));
+
+    $("#modalBuscaColabSenior").show();
 
 });
 
@@ -254,44 +246,60 @@ $(document).on('click','.btnSalvaColabSenior' , function(){
             html_matricula = let_matricula_colab;
             $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(9).html(html_matricula);
 
-            tabelaRateioUnimed.columns.adjust();
+            try {
+                tabelaRateioUnimed.columns.adjust();
+            } catch { };
+            try {
+                tabelaConsultaDespesas.columns.adjust();
+            } catch { };
         }
     });
 });
 
-$(document).on('click','.btnInputBuscaDespesas' , function(){
+$(document).on('click','.btn-input-busca-despesas' , function(){
     let let_competencia = $("#input_competencia").val();
     let let_filial = $("#input_filial").val();
 
     $.ajax({
-        type: 'POST',
+        type: 'GET',
         url: '/gente_gestao_rateio_unimed_app/busca_despesas',
         data: {
             'competencia'   :   let_competencia,
             'filial'   :    let_filial,
         },
         success: function (dados) {
-            data.tab_rateio_despesas_nao_importadas.forEach( despesa => {
-                let split_retorno = despesa.split(' ');
+            let_lista_dados_rateio = [];
+            dados.tab_rateio_despesas_busca.forEach( despesa => {
+                let let_html_matricula = '';
+                let let_html_editar = '';
+
+                if (despesa['Matricula_Titular'] == '') {
+                    let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'">Buscar</button>';
+                }
+                else {
+                    let_html_matricula = despesa['Matricula_Titular'];
+                    let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'">Editar</button>';
+                }
+
                 let let_dado_despesa = [
                     '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                    split_retorno[1],
-                    split_retorno[4].replaceAll("_", " "),
-                    ('000000'+split_retorno[6].split('.')[0]).slice(-11),
-                    split_retorno[8],
-                    split_retorno[10].replaceAll("_", " "),
-                    ('000000'+split_retorno[12].split('.')[0]).slice(-11),
-                    split_retorno[14].replaceAll("_", " "),
-                    split_retorno[16],
-                    '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[18]+'">Buscar</button>',
-                    '',
-                    '',
-                    '',
-                    ''
+                    despesa['Competencia'].split('-')[1]+'/'+despesa['Competencia'].split('-')[0],
+                    despesa['Beneficiario'],
+                    ('000000'+despesa['Cpf'].split('.')[0]).slice(-11),
+                    despesa['Dependencia'],
+                    despesa['Titular'],
+                    ('000000'+despesa['Cpf_Titular'].split('.')[0]).slice(-11),
+                    despesa['Desc_Despesa'],
+                    despesa['Valor'].split('.')[0]+','+despesa['Valor'].split('.')[1].substring(0,2),
+                    let_html_matricula,
+                    despesa['Nome_Titular_Senior'],
+                    despesa['Desc_Filial_Senior'],
+                    despesa['Desc_Projeto_Senior'],
+                    let_html_editar
 			    ];
 			    let_lista_dados_rateio.push(let_dado_despesa);
             });
-            $('#tab_rateio_despesas_consulta').DataTable( {
+            tabelaConsultaDespesas = $('#tab_rateio_despesas_consulta').DataTable( {
 				    "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
@@ -346,9 +354,8 @@ $(document).on('click','.btnInputBuscaDespesas' , function(){
                             }
                         }
                     }
-				});
-
-            tabelaRateioUnimed.columns.adjust();
+			});
+            tabelaConsultaDespesas.columns.adjust();
         }
     });
 });

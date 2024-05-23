@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Check_Aplicado
-from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check
+from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usuario
 
@@ -34,7 +34,7 @@ class Form_Seguranca_Check(View):
         contexto = {
             'lista_tipos': lista_tipos,
             'lista_filiais' : lista_filiais,
-            'flag_corporativo': flag_corporativo,
+            'flag_corporativo': flag_corporativo
         }
         return render(request,'safety_layout_checklist_app/form_cad_layout_checklist.html', contexto)
 

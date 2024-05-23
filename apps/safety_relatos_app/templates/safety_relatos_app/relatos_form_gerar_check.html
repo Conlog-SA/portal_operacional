@@ -26,7 +26,7 @@
                                     <div style="padding:15px;padding-right:30px;padding-left:30px">
                                         <div class="form-group">
                                            <label for="unidade"> Unidade: </label>
-                                            <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" placeholder="Selecione a unidade">
+                                            <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" placeholder="Selecione a unidade" data-live-search="true">
                                                 {% autoescape off %}
                                                     {{options_select_unidade}}
                                                 {% endautoescape %}
@@ -39,6 +39,14 @@
                                                <option value="2">Condição insegura</option>
                                                <option value="3">Abordagem positiva</option>
                                            </select>
+                                        </div>
+                                        <div id="div_ato_inseguro_categorias" class="form-group hidden-div">
+                                            <label class="responsive-font" for="nome_relatado_terceiro">Categoria do ato:</label>
+                                            <select class="selectpicker form-control responsive-font" id="ato_inseguro_categoria" name="ato_inseguro_categoria" placeholder="Escolha a categoria" data-live-search="true">
+                                                {% for categoria in lista_categorias %}
+                                                <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                {% endfor %}
+                                            </select>
                                         </div>
                                         <div class="form-group">
                                            <label class="responsive-font" for="situacao_envolvido">Situação do envolvido:</label>
@@ -73,7 +81,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="processo_relato">Processo:</label>
-                                            <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" placeholder="Selecione o processo">
+                                            <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" placeholder="Selecione o processo" data-live-search="true">
                                                 {% autoescape off %}
                                                     {{options_select_processo}}
                                                 {% endautoescape %}
@@ -81,7 +89,7 @@
                                         </div>
                                         <div class="form-group">
                                            <label for="atividade_relato">Atividade sendo realizada:</label>
-                                            <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled>
+                                            <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled data-live-search="true">
                                             </select>
                                         </div>
                                     </div>

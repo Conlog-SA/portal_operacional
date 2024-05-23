@@ -11,6 +11,7 @@ class Colaborador(models.Model):
     cpf = models.CharField(max_length=50, blank=True, null=True)
     data_nascimento = models.DateField(blank=True, null=True)
     perfil_usu = models.CharField(max_length=1, blank=False, null=False)
+    setor = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = True

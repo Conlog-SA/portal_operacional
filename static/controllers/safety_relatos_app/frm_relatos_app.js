@@ -86,6 +86,19 @@ $(document).on('change','.selectpicker',function(){
             }
         });
     }
+
+    if (nome_select == "tipo_relato") {
+        if ($(this).val() == 1) {
+            $('#div_ato_inseguro_categorias').removeClass('hidden-div');
+        }
+        else {
+            $('#ato_inseguro_categoria').val('');
+            $('#ato_inseguro_categoria').selectpicker('refresh');
+            $('#div_ato_inseguro_categorias').addClass('hidden-div');
+        }
+
+    }
+
 });
 
 $(document).on('click','.create-check-relatos' , function(){
@@ -97,6 +110,7 @@ $(document).on('click','.create-check-relatos' , function(){
     let let_atividade_relato = $('#atividade_relato').val();
     let let_processo_relato = $('#processo_relato').val();
     let let_descricao_situacao = $('#descricao_situacao').val();
+    let let_categoria_relato = $('#ato_inseguro_categoria').val();
     let let_nome_relatado = "";
 
     if (let_situacao_envolvido == '1') {
@@ -149,7 +163,8 @@ $(document).on('click','.create-check-relatos' , function(){
                 'local_relato'   :   let_local_relato,
                 'turno_relato'   :   let_turno_relato,
                 'processo_relato' : let_processo_relato,
-                'atividade_relato' : let_atividade_relato
+                'atividade_relato' : let_atividade_relato,
+                'categoria_relato' : let_categoria_relato
             },
             success: function (dados) {
                 $("#div_corpo_relatos").html(dados);
