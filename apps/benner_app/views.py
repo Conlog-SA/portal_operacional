@@ -256,7 +256,7 @@ class ConexaoBancoBenner():
                    WHERE fn_mov_ocor.PARCELA = fn_parc.HANDLE 
                      AND fn_mov_ocor.tipomovimento in (7)
                      AND fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
-                     AND CAST(fn_mov_ocor.DATA AS DATE) <= '2024-04-30'),0)	AS status_atualizacao
+                     AND CAST(fn_mov_ocor.DATA AS DATE) <= '{data_corte}'),0)	AS status_atualizacao
             '''
         else:
             param_data_corte = ''' 
