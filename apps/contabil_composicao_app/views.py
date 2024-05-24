@@ -1233,7 +1233,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 if nome_resp_frm != '':
                     lista_resp_contas = (Responsaveis_Conta.objects
                                     .filter((Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                                            cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
+                                            cod_conta__tipo_modelo=cod_tipo_modelo_form) #cod_conta__status_comp='A'
                                     .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                             'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp').distinct())
                     for reg in lista_resp_contas:
@@ -1245,7 +1245,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                         }
                         lista_contas.append(conta)
                 else:
-                    lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
+                    lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #status_comp='A'
                                         .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                                 'cod_red_conta_contabil_lp'))
             elif tipo_rel in ('D', 'R'):
@@ -4907,6 +4907,7 @@ class Form_Renegociacao_Contrato_View(View):
     def post(self, request):
         cod_contrato_frm = request.POST['cod_contrato']
         justificativa_frm = request.POST['justificativa']
+        data_renegociacao_frm = request.POST['data_renegociacao']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -4922,10 +4923,10 @@ class Form_Renegociacao_Contrato_View(View):
             obj_parcela.val_principal = 0
             obj_parcela.val_taxas = 0
             obj_parcela.tipo_prazo = 'RN'
-            obj_parcela.data_liquidacao = data_hora_atual_y_m_d
+            obj_parcela.data_liquidacao = data_renegociacao_frm
             obj_parcela.val_pago = 0
             obj_parcela.val_fundo = 0
-            obj_parcela.obs_parcela = f'/Operação de renegociação executada em {data_hora_atual_d_m_y} por {obj_usuario_sessao.login_usu}/'
+            obj_parcela.obs_parcela = f"/Operação de renegociação executada em {datetime.strptime(data_renegociacao_frm,'%Y-%m-%d').strftime('%d-%m-%Y')} por {obj_usuario_sessao.login_usu}/"
             obj_parcela.save()
         msg = 'Operação de renegociação, realizada com sucesso !'
 

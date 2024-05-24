@@ -1520,13 +1520,15 @@ $(document).on('click','button', function(){
     } else if (let_nome_btn == 'btn_confirma_renegociacao_contrato') {
         let let_cod_contrato = let_val_btn;
         let let_justificativa_renegociacao = $("#ta_justificativa_renegociacao_contrato").val();
+        let let_data_renegociacao = $("#dt_renegociacao_contrato").val();
 
         $.ajax({
             type: 'POST',
             url: '/contabil_composicao_app/renegociar_contrato',
             data: {
                 'cod_contrato' :    let_cod_contrato,
-                'justificativa'   :    let_justificativa_renegociacao
+                'justificativa'   :    let_justificativa_renegociacao,
+                'data_renegociacao': let_data_renegociacao
             },
             dataType: 'json',
             success: function (dados) {
