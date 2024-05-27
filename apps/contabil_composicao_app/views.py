@@ -1366,15 +1366,15 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         if tipo_visualizacao_form == 'R':
             if cod_modelo_selecionado_form == '1':
                 for cod_conta_form in lista_cod_conta_form.split(','):
-                    obj_conta = Conta.objects.filter(pk=int(cod_conta_form))
+                    obj_conta = Conta.objects.get(pk=int(cod_conta_form))
                     registros_tabela = []
                     val_composicao = 0
                     val_dif = 0
                     val_balancete = 0
                     conta_auditada = (Auditoria_Status_Composicao_Competencia.objects
-                                      .filter(cod_conta=obj_conta,
-                                              data_competencia=data_competencia,
-                                              status=1).first())
+                                      .filter(cod_conta=obj_conta,data_competencia=data_competencia,
+                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,status=1)
+                                      .first())
                     if conta_auditada == None:
                         if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
                             registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
@@ -1612,6 +1612,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     conta_auditada = (Auditoria_Status_Composicao_Competencia.objects
                                       .filter(cod_conta=obj_conta,
                                               data_competencia=data_competencia,
+                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
                                               status=1).first())
                     if conta_auditada == None:
                         if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
@@ -1868,6 +1869,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             cod_estrutura = conta.cod_estrut_cp
             conta_cp_auditada = (Auditoria_Status_Composicao_Competencia.objects
                               .filter(status=1, tipo_prazo=tipo_prazo, data_competencia=competencia + '-01',
+                                      cod_usu__cod_filial__cod_empresa=contrato.cod_empresa,
                                       cod_contrato=contrato, cod_conta=conta).first())
             val_composicao = 0
             val_balancete = 0
@@ -1943,6 +1945,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             cod_estrutura = conta.cod_estrut_lp
             conta_lp_auditada = (Auditoria_Status_Composicao_Competencia.objects
                                  .filter(status=1, tipo_prazo=tipo_prazo, data_competencia=competencia + '-01',
+                                         cod_usu__cod_filial__cod_empresa=contrato.cod_empresa,
                                          cod_contrato=contrato, cod_conta=conta).first())
             val_composicao = 0
             val_balancete = 0
