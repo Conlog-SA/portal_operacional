@@ -99,8 +99,14 @@ class Parcela_Contrato(models.Model):
     atualiza_benner = models.CharField(max_length=1, blank=False, null=False)
     data_liquidacao = models.DateField(blank=True, null=True)
     val_pago = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    obs_parcela = models.CharField(max_length=300, blank=True, null=True)
+    obs_parcela = models.CharField(max_length=500, blank=True, null=True)
     cod_contrato = models.ForeignKey(Contrato, models.DO_NOTHING, db_column='cod_contrato')
+    data_ultima_atualizacao = models.DateField(blank=True, null=True)
+    val_desc_taxas = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    val_acres_taxas = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    val_desc_principal = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    val_acres_principal = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
     class Meta:
         managed = True
         db_table = 'op_contabil_comp_parcelas_contratos'

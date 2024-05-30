@@ -86,6 +86,8 @@ urlpatterns = [
          name='pesq_dados_importado_pac_contas_m1'),
     path('atualiza_contratos_com_dados_do_benner', views.Form_Atualiza_Contratos_Benner_View.as_view(),
          name='atualiza_contratos_com_dados_do_benner'),
+    path('atualiza_parcelas_data_corte', views.Form_Atualiza_Parcelas_Data_Corte.as_view(),
+         name='atualiza_parcelas_data_corte'),
     path('retorna_dados_doc_pac_contas_pag_receb', views.Docs_Pac_Contas_Pagar_Receber_M1_View.as_view(),
          name='altera_dados_doc_pac_contas_pag_receb'),
     path('altera_dados_doc_pac_contas_pag_receb', views.Docs_Pac_Contas_Pagar_Receber_M1_View.as_view(),

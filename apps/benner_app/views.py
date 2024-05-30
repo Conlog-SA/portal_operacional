@@ -244,24 +244,10 @@ class ConexaoBancoBenner():
 
         return lista_contratos_conta_benner
 
-    def retorna_dados_parcelas_contrato(self, handle_contrato, data_corte):
+    def retorna_dados_parcelas_contrato(self, handle_contrato):
         '''Objeto a retornar'''
         lista_parcelas_contrato_benner = []
 
-        param_data_corte = ''
-        if data_corte != None:
-            param_data_corte = f'''
-                ,COALESCE((SELECT MAX(fn_mov_ocor.handle) 
-                    FROM FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
-                   WHERE fn_mov_ocor.PARCELA = fn_parc.HANDLE 
-                     AND fn_mov_ocor.tipomovimento in (7)
-                     AND fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
-                     AND CAST(fn_mov_ocor.DATA AS DATE) <= '{data_corte}'),0)	AS status_atualizacao
-            '''
-        else:
-            param_data_corte = ''' 
-                , '0'       AS  status_atualizacao
-            '''
 
             #f" AND CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' "
 
@@ -295,7 +281,8 @@ class ConexaoBancoBenner():
                          ON (con_principal.HANDLE = lan_principal.CONTA)
                       WHERE lan_principal.PARCELA = fn_parc.handle
                         AND	lan_principal.TIPO = '3'
-                        AND lan_principal.ORIGEM = 2)	AS	val_fn_principal,
+                        AND lan_principal.ORIGEM = 2
+                        AND	con_principal.NOME not like '%MULTA E JUROS%')	AS	val_fn_principal,
 			        (SELECT MIN(lan_taxas.VALOR)
                        FROM FN_LANCAMENTOS lan_taxas (NOLOCK)
                        LEFT JOIN FN_CONTAS con_taxas (NOLOCK)
@@ -312,7 +299,6 @@ class ConexaoBancoBenner():
                         AND	lan_fundo.TIPO = '3'
                         AND lan_fundo.ORIGEM = 2
                         AND	con_fundo.NOME LIKE '%FUNDO%')	AS	val_fn_fundo
-                        {param_data_corte}
               FROM	FN_PARCELAS fn_parc (NOLOCK) 
               LEFT	JOIN	FN_DOCUMENTOS fn_doc (NOLOCK) 
                  ON	fn_parc.DOCUMENTO = fn_doc.HANDLE 
@@ -343,7 +329,12 @@ class ConexaoBancoBenner():
         )
         cursor.execute(sql_parcelas)
         registros_cursor = cursor.fetchall()
+
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+
         for row in registros_cursor:
+
             parcela = {
                 'handle_fn_doc': row.handle_fn_doc,
                 'handle_parc': row.handle_parc,
@@ -358,19 +349,171 @@ class ConexaoBancoBenner():
                 'val_total_pago': row.val_corrigido,
                 'val_principal': row.val_fn_principal,
                 'val_taxas': row.val_fn_taxas,
-                'val_fundo': row.val_fn_fundo
+                'val_fundo': row.val_fn_fundo,
+
+                'val_desc_taxas': 0.00,
+                'val_acres_taxas': 0.00,
+                'val_desc_principal': 0.00,
+                'val_acres_principal': 0.00,
+                'data_ultima_atualizacao': data_atual_dd_mm_yyyy
             }
-            if data_corte == None:
-                lista_parcelas_contrato_benner.append(parcela)
-            else:
-                if row.status_atualizacao > 0:
-                    lista_parcelas_contrato_benner.append(parcela)
+            lista_parcelas_contrato_benner.append(parcela)
 
         '''Fecha componentes'''
         cursor.close()
         self.__conn.close()
 
         return lista_parcelas_contrato_benner
+
+    def atualiza_parcelas_data_corte(self, handle_parcela, data_corte):
+            '''Objeto a retornar'''
+            lista_parcelas_contrato_benner = []
+
+            '''Processamento'''
+            cursor = self.__conn.cursor()
+            sql_parcelas = (
+                f'''
+                SELECT  fn_parc.handle				    AS	handle_parc,
+                        fn_parc.AP						AS	ap_parcela,
+                        fn_parc.PARCELADIGITADA		    AS	ordem_parcela,
+                        fn_parc.VALOR 					AS	val_conta,
+                        
+                        CASE 
+                            WHEN CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' 
+                            THEN CAST(fn_parc.VCTOPRORROGADO AS DATE)
+                            ELSE CAST(fn_parc.DATAVENCIMENTO AS DATE)
+                        END                             AS data_vencimento,                        		
+                                                        
+                        CASE 
+                            WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}' 
+                            THEN CAST(fn_parc.DATALIQUIDACAO AS DATE)
+                            ELSE Null
+                        END                             AS	data_liquidacao,
+                        
+                        CASE 
+                            WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}'  
+                            THEN sum(fn_mov.VALORTOTAL)
+                            ELSE 0
+                        END  							AS	val_corrigido,
+                        
+                        (SELECT MAX(lan_principal.VALOR)
+                           FROM FN_LANCAMENTOS lan_principal (NOLOCK)
+                           LEFT JOIN FN_CONTAS con_principal (NOLOCK)
+                             ON (con_principal.HANDLE = lan_principal.CONTA)
+                          WHERE lan_principal.PARCELA = fn_parc.handle
+                            AND	lan_principal.TIPO = '3'
+                            AND lan_principal.ORIGEM = 2)	AS	val_fn_principal,
+                        (SELECT MIN(lan_taxas.VALOR)
+                           FROM FN_LANCAMENTOS lan_taxas (NOLOCK)
+                           LEFT JOIN FN_CONTAS con_taxas (NOLOCK)
+                             ON (con_taxas.HANDLE = lan_taxas.CONTA)
+                          WHERE lan_taxas.PARCELA = fn_parc.handle
+                            AND	lan_taxas.TIPO = '3'
+                            AND lan_taxas.ORIGEM = 2
+                            AND	con_taxas.NOME LIKE '%TAXA%')	AS	val_fn_taxas,
+                        (SELECT MIN(lan_fundo.VALOR)
+                           FROM FN_LANCAMENTOS lan_fundo (NOLOCK)
+                           LEFT JOIN FN_CONTAS con_fundo (NOLOCK)
+                             ON (con_fundo.HANDLE = lan_fundo.CONTA)
+                          WHERE lan_fundo.PARCELA = fn_parc.handle
+                            AND	lan_fundo.TIPO = '3'
+                            AND lan_fundo.ORIGEM = 2
+                            AND	con_fundo.NOME LIKE '%FUNDO%')	AS	val_fn_fundo,
+                            
+                        COALESCE((
+                            SELECT	sum(fn_mov_ocor.ABATIMENTO)
+                              FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+                              left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+                                on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+                             WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_ocor.tipomovimento in (7)
+                               AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_ocor.DATA AS DATE) > '{data_corte}' 
+                               AND  ocorr.NOME like '%(Resultado)%'),0)
+                                             AS  val_desc_taxas,
+                        
+                        COALESCE(( 
+                            SELECT	sum(fn_mov_ocor.ACRESCIMOS)
+                              FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+                              left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+                                on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+                             WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_ocor.tipomovimento in (7)
+                               AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_ocor.DATA AS DATE) > '{data_corte}' 
+                               AND  ocorr.NOME like '%(Resultado)%')
+                        ,0)                     AS  val_acres_taxas,
+                        
+                        COALESCE(( 
+                            SELECT	sum(fn_mov_ocor.ABATIMENTO)
+                              FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+                              left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+                                on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+                             WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_ocor.tipomovimento in (7)
+                               AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_ocor.DATA AS DATE) > '{data_corte}' 
+                               AND  ocorr.NOME like '%PRINCIPAL%')
+                        ,0)                     AS  val_desc_principal,
+                        
+                        COALESCE(( 
+                            SELECT	sum(fn_mov_ocor.ACRESCIMOS)
+                              FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+                              left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+                                on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+                             WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_ocor.tipomovimento in (7)
+                               AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_ocor.DATA AS DATE) > '{data_corte}' 
+                               AND  ocorr.NOME like '%PRINCIPAL%')
+                        ,0)                     AS  val_acres_principal    
+                        
+                        
+                  FROM	FN_PARCELAS fn_parc (NOLOCK)  
+                  LEFT	JOIN FN_MOVIMENTACOES fn_mov (NOLOCK) 
+                    ON	(fn_mov.PARCELA = fn_parc.HANDLE 
+                   AND	fn_mov.tipomovimento = 1
+                   AND	fn_mov.AUTORIZACAOPAGAMENTO IS NOT NULL) 
+                 WHERE	fn_parc.HANDLE =  {handle_parcela}  
+                 GROUP	BY fn_parc.handle,
+                        fn_parc.AP,
+                        fn_parc.PARCELADIGITADA,
+                        fn_parc.VALOR,
+                        fn_parc.VCTOPRORROGADO,
+                        fn_parc.DATAVENCIMENTO,
+                        fn_parc.DATALIQUIDACAO
+                 ORDER	BY fn_parc.AP;
+                   '''
+            )
+            cursor.execute(sql_parcelas)
+            registros_cursor = cursor.fetchall()
+            for row in registros_cursor:
+
+                parcela = {
+                    'handle_parc': row.handle_parc,
+                    'ap_parcela': row.ap_parcela,
+                    'ordem_parcela': row.ordem_parcela,
+                    'valor_conta': row.val_conta,
+                    'data_vencimento': row.data_vencimento,
+                    'data_liquidacao': row.data_liquidacao,
+                    'valor_corrigido': row.val_corrigido,
+                    'val_total_pago': row.val_corrigido,
+                    'val_principal': (row.val_fn_principal - row.val_acres_principal) + row.val_desc_principal,
+                    'val_taxas': (row.val_fn_taxas - row.val_acres_taxas) + row.val_desc_taxas,
+                    'val_fundo': row.val_fn_fundo,
+                    'val_desc_taxas': row.val_desc_taxas,
+                    'val_acres_taxas': row.val_acres_taxas,
+                    'val_desc_principal': row.val_desc_principal,
+                    'val_acres_principal': row.val_acres_principal,
+                    'data_ultima_atualizacao': data_corte
+                }
+                lista_parcelas_contrato_benner.append(parcela)
+
+            '''Fecha componentes'''
+            cursor.close()
+            self.__conn.close()
+
+            return lista_parcelas_contrato_benner
 
     def retorna_balancete_conta(self, cod_empresa, handle_conta, data_ini, data_fim):
         '''A data inicial é setada aki 01/01/2023 até fizerem o processo de abertura do balence para 2024 segundo o Talison Brisola'''
