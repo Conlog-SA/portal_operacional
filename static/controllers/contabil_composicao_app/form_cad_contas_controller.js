@@ -1231,7 +1231,8 @@ $(document).on('click','button', function(){
             let_loader_frm_modal_atualiza_contratos_benner.style.display = "flex";
             $.ajax({
             type: 'POST',
-            url: '/contabil_composicao_app/atualiza_contratos_com_dados_do_benner',
+            /* url: '/contabil_composicao_app/atualiza_contratos_com_dados_do_benner', */
+            url: '/contabil_composicao_app/atualiza_parcelas_data_corte',
             data: {
                 'lista_cod_contas': let_lista_cod_contas,
                 'data_corte': let_data_corte
