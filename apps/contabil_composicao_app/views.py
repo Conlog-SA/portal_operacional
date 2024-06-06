@@ -5030,7 +5030,8 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
                                                  .filter(cod_conta=parcela.cod_contrato.cod_conta,
                                                          cod_contrato=parcela.cod_contrato,
                                                          data_competencia=competencia_aud))
-                if verifica_se_contrato_auditada == None:
+
+                if len(verifica_se_contrato_auditada) == 0:
                     conexao_benner = ConexaoBancoBenner()
                     lista_parcelas_atualizadas = conexao_benner.atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm)
 
