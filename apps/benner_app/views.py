@@ -488,6 +488,25 @@ class ConexaoBancoBenner():
             cursor.execute(sql_parcelas)
             registros_cursor = cursor.fetchall()
             for row in registros_cursor:
+                val_desc_princ = 0
+                if row.val_desc_principal != None:
+                    val_desc_princ = row.val_desc_principal
+
+                val_acres_princ = 0
+                if row.val_acres_principal != None:
+                    val_acres_princ = row.val_acres_principal
+
+                val_taxa = 0
+                if row.val_fn_taxas != None:
+                    val_taxa = row.val_fn_taxas
+
+                val_acres_taxa = 0
+                if row.val_acres_taxas != None:
+                    val_acres_taxa = row.val_acres_taxas
+
+                val_desc_taxa = 0
+                if row.val_desc_taxas != None:
+                    val_desc_taxa = row.val_desc_taxas
 
                 parcela = {
                     'handle_parc': row.handle_parc,
@@ -498,8 +517,8 @@ class ConexaoBancoBenner():
                     'data_liquidacao': row.data_liquidacao,
                     'valor_corrigido': row.val_corrigido,
                     'val_total_pago': row.val_corrigido,
-                    'val_principal': (row.val_fn_principal - row.val_acres_principal) + row.val_desc_principal,
-                    'val_taxas': (row.val_fn_taxas - row.val_acres_taxas) + row.val_desc_taxas,
+                    'val_principal': (row.val_fn_principal - val_acres_princ) + val_desc_princ,
+                    'val_taxas': (val_taxa - val_acres_taxa) + val_desc_taxa,
                     'val_fundo': row.val_fn_fundo,
                     'val_desc_taxas': row.val_desc_taxas,
                     'val_acres_taxas': row.val_acres_taxas,
