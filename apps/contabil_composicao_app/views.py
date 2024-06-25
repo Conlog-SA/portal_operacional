@@ -83,7 +83,7 @@ class Form_Imp_Contratos_Conta_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         dados = self.atualiza_dados_contratos_parcelas(cod_conta_form, num_contrato_form, tipo_pesq_form,
-                                                       obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa, None)
+                                                       obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa, obj_usuario_sessao)
 
 
         data = dict()
@@ -94,7 +94,7 @@ class Form_Imp_Contratos_Conta_View(View):
         return JsonResponse(data, safe=False)
 
 
-    def atualiza_dados_contratos_parcelas(self, cod_conta_form, num_contrato_form, tipo_pesq_form, cod_empresa, data_corte):
+    def atualiza_dados_contratos_parcelas(self, cod_conta_form, num_contrato_form, tipo_pesq_form, cod_empresa,obj_usuario_sessao):
         obj_conta = Conta.objects.get(pk=cod_conta_form)
         handle_conta_cp = obj_conta.handle_conta_contabil_cp
         handle_conta_lp = obj_conta.handle_conta_contabil_lp
@@ -102,7 +102,6 @@ class Form_Imp_Contratos_Conta_View(View):
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
 
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
-
 
         lista_contratos = []
         lista_parcelas_atualizadas = []
@@ -165,7 +164,7 @@ class Form_Imp_Contratos_Conta_View(View):
 
                 lista_parcelas_contrato_form = []
                 lista_parcelas_contrato = ConexaoBancoBenner().retorna_dados_parcelas_contrato(
-                    contrato['handle_fn_doc'], data_corte)
+                    contrato['handle_fn_doc'])
                 # lista_contratos_benner.append(lista_parcelas_contrato)
                 val_tt_contrato_reajustado = 0
                 val_tt_liq_cp = 0
@@ -233,7 +232,13 @@ class Form_Imp_Contratos_Conta_View(View):
                                 tipo_prazo=tipo_prazo_parc,
                                 data_liquidacao=parcela['data_liquidacao'],
                                 val_pago=val_pago,
-                                cod_contrato=obj_contrato
+                                cod_contrato=obj_contrato,
+                                cod_usu=obj_usuario_sessao,
+                                data_ultima_atualizacao=data_atual_dd_mm_yyyy,
+                                val_desc_taxas = 0,
+                                val_acres_taxas=0,
+                                val_desc_principal = 0,
+                                val_acres_principal=0
                             )
                             obj_parcela.save()
                         elif obj_contrato.sincronizar_benner == 'S' and (
@@ -250,6 +255,11 @@ class Form_Imp_Contratos_Conta_View(View):
                             obj_parcela.tipo_prazo = tipo_prazo_parc
                             obj_parcela.data_liquidacao = parcela['data_liquidacao']
                             obj_parcela.val_pago = val_pago
+                            obj_parcela.data_ultima_atualizacao = data_atual_dd_mm_yyyy
+                            obj_parcela.val_desc_taxas = 0
+                            obj_parcela.val_acres_taxas = 0
+                            obj_parcela.val_desc_principal = 0
+                            obj_parcela.val_acres_principal = 0
                             # obj_parcela.cod_contrato = obj_contrato
                             obj_parcela.save()
 
@@ -321,7 +331,12 @@ class Form_Imp_Contratos_Conta_View(View):
                             'data_vencimento': data_vencimento_formatada,
                             'tipo_prazo': obj_parcela.tipo_prazo,
                             'data_liquidacao': data_liquidacao_formatada,
-                            'val_total_pago': val_total_pago
+                            'val_total_pago': val_total_pago,
+                            'data_ultima_atualizacao': parcela['data_ultima_atualizacao'],
+                            'val_desc_taxas': parcela['val_desc_taxas'],
+                            'val_acres_taxas': parcela['val_acres_taxas'],
+                            'val_desc_principal': parcela['val_desc_principal'],
+                            'val_acres_principal': parcela['val_acres_principal']
                         }
                         lista_parcelas_contrato_form.append(parcela_form)
 
@@ -788,7 +803,8 @@ class Form_Cad_Contrato_View(View):
                             'tipo_prazo': parc.tipo_prazo,
                             'data_liquidacao': data_liquidacao,
                             'val_total_pago': locale.currency(val_pago_parc, grouping=True, symbol=None),
-                            'val_balancete': locale.currency(val_balancete, grouping=True, symbol=None)
+                            'val_balancete': locale.currency(val_balancete, grouping=True, symbol=None),
+                            'obs_parcela': parc.obs_parcela
                         }
                         lista_parcelas_contrato.append(parcela)
 
@@ -1254,7 +1270,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 lista_resp_contas = (Responsaveis_Conta.objects
                                      .filter(
                     (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                    cod_conta__tipo_modelo=cod_tipo_modelo_form, #cod_conta__status_comp='A'
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
                     cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_pacotes.split(','))
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
@@ -1268,13 +1284,13 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     }
                     lista_contas.append(conta)
             else:
-                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #status_comp='A'
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
                                     .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
 
             lista_contas_para_atualizar_benner = list(Contrato.objects
                                                   .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form,
-                                                          #cod_conta__status_comp='A',
+                                                          cod_conta__status_comp='A',
                                                           sincronizar_benner='S',
                                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                                   .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
@@ -1285,7 +1301,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
             competencia_form = request.GET['data_competencia']
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
             lista_contas = list(Auditoria_Status_Composicao_Competencia.objects
-                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, #cod_conta__status_comp='A',
+                                .filter(cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
                                         status=1, data_competencia=competencia_date,
                                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                 .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
@@ -1297,7 +1313,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                 lista_resp_contas = (Responsaveis_Conta.objects
                                      .filter(
                     (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
-                    cod_conta__tipo_modelo=cod_tipo_modelo_form) #, cod_conta__status_comp='A'
+                    cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A')
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                              'cod_conta__cod_red_conta_contabil_cp',
                                              'cod_conta__cod_red_conta_contabil_lp')
@@ -1311,7 +1327,7 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
                     }
                     lista_contas.append(conta)
             else:
-                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form) #, status_comp='A'
+                lista_contas = list(Conta.objects.filter(tipo_modelo=cod_tipo_modelo_form, status_comp='A')
                                     .values('cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
                 '''for nome in nome_resp_frm.split(','):
@@ -1367,106 +1383,115 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 for cod_conta_form in lista_cod_conta_form.split(','):
                     obj_conta = Conta.objects.get(pk=int(cod_conta_form))
                     registros_tabela = []
-                    if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
-                        registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
-                        registros_tabela = list(Docs_Pac_Estoque_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
-                        registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
-                        registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
-                        registros_tabela = list(Docs_Pac_Tributos_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-                        registros_tabela = list(Docs_Pac_Intercompany_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-                        registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
-                        registros_tabela = list(Docs_Demais_Contas_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-
-
                     val_composicao = 0
-                    for reg in registros_tabela:
-                        val_composicao += float(reg.tt_val_rel)
+                    val_dif = 0
+                    val_balancete = 0
+                    conta_auditada = (Auditoria_Status_Composicao_Competencia.objects
+                                      .filter(cod_conta=obj_conta,data_competencia=data_competencia,
+                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,status=1)
+                                      .first())
+                    if conta_auditada == None:
+                        if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
+                            registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
+                            registros_tabela = list(Docs_Pac_Estoque_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
+                            registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
+                            registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
+                            registros_tabela = list(Docs_Pac_Tributos_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
+                            registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
+                            registros_tabela = list(Docs_Pac_Intercompany_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
+                            registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
+                            registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
+                            registros_tabela = list(Docs_Demais_Contas_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+
+                        for reg in registros_tabela:
+                            val_composicao += float(reg.tt_val_rel)
+
+                        val_balancete = ConexaoBancoBenner() \
+                            .retorna_balancete_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
+                                                     obj_conta.handle_conta_contabil_cp,
+                                                     primeiro_dia_ano,
+                                                     ultimo_dia_mes_date)
+
+                        if val_balancete < 0 and val_composicao < 0:
+                            val_dif = val_composicao - val_balancete
+                        elif val_balancete < 0 and val_composicao > 0:
+                            val_dif = val_composicao + val_balancete
+                        else:
+                            val_dif = val_composicao - val_balancete
+                    else:
+                        #Se existir registro na conta_auditada
+                        val_composicao = float(conta_auditada.val_composicao)
+                        val_balancete = float(conta_auditada.val_balancete)
+                        val_dif = float(conta_auditada.val_diferenca)
+
 
                     cod_anexo_competencia = 0
-                    obj_anexo_competencia = (Anexos_Contrato.objects.filter(cod_conta=obj_conta,
-                                                                           data_competencia=datetime.strptime(
-                                                                               competencia_form + '-01',
-                                                                               '%Y-%m-%d'),
-                                                                           cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                    obj_anexo_competencia = (Anexos_Contrato.objects
+                                             .filter(cod_conta=obj_conta,
+                                                     data_competencia=datetime.strptime(competencia_form + '-01','%Y-%m-%d'),
+                                                     cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                              .first())
                     if obj_anexo_competencia != None:
                         cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
-
-                    val_balancete = ConexaoBancoBenner() \
-                                        .retorna_balancete_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
-                                                                 obj_conta.handle_conta_contabil_cp,
-                                                                 primeiro_dia_ano,
-                                                                 ultimo_dia_mes_date)
-
-
-                    val_dif = 0
-                    if val_balancete < 0 and val_composicao < 0:
-                        val_dif = val_composicao - val_balancete
-                    elif val_balancete < 0 and val_composicao > 0:
-                        val_dif = val_composicao + val_balancete
-                    else:
-                        val_dif = val_composicao - val_balancete
 
                     linha = []
                     linha.append(obj_conta.cod_conta) #0
@@ -1596,80 +1621,107 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 for cod_conta_form in lista_contas:
                     obj_conta = Conta.objects.get(pk=int(cod_conta_form))
                     registros_tabela = []
-                    if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
-                        registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
-                        registros_tabela = list(Docs_Pac_Estoque_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
-                        registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
-                        registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
-                        registros_tabela = list(Docs_Pac_Tributos_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
-                        registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
-                        registros_tabela = list(Docs_Pac_Intercompany_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
-                        registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
-                        registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-                    elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
-                        registros_tabela = list(Docs_Demais_Contas_M1.objects
-                                                .filter(cod_conta=obj_conta,
-                                                        cod_arquivo__data_competencia=data_competencia,
-                                                        ativo='S',
-                                                        cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                .annotate(tt_val_rel=Sum('val_rel')))
-
                     val_composicao = 0
-                    for reg in registros_tabela:
-                        val_composicao += float(reg.tt_val_rel)
+                    val_dif = 0
+                    val_balancete = 0
+                    conta_auditada = (Auditoria_Status_Composicao_Competencia.objects
+                                      .filter(cod_conta=obj_conta,
+                                              data_competencia=data_competencia,
+                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                              status=1).first())
+                    if conta_auditada == None:
+                        if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
+                            registros_tabela = list(Docs_Pac_Contas_Pagar_Receber_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 4:
+                            registros_tabela = list(Docs_Pac_Estoque_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 5:
+                            registros_tabela = list(Docs_Pac_Folha_Pag_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 6:
+                            registros_tabela = list(Docs_Pac_Contas_Compensacao_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 7:
+                            registros_tabela = list(Docs_Pac_Tributos_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 9:
+                            registros_tabela = list(Docs_Pac_Finac_Disponib_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 10:
+                            registros_tabela = list(Docs_Pac_Intercompany_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 11:
+                            registros_tabela = list(Docs_Pac_Imobilizado_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 13:
+                            registros_tabela = list(Docs_Pac_Consorcio_Ativo_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+                        elif obj_conta.cod_pacote_conta.cod_pacote_conta == 14:
+                            registros_tabela = list(Docs_Demais_Contas_M1.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_arquivo__data_competencia=data_competencia,
+                                                            ativo='S',
+                                                            cod_arquivo__cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                                    .annotate(tt_val_rel=Sum('val_rel')))
+
+
+                        for reg in registros_tabela:
+                            val_composicao += float(reg.tt_val_rel)
+
+                        val_balancete = ConexaoBancoBenner() \
+                            .retorna_balancete_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
+                                                     obj_conta.handle_conta_contabil_cp,
+                                                     primeiro_dia_ano,
+                                                     ultimo_dia_mes_date)
+
+                        if val_balancete < 0 and val_composicao < 0:
+                            val_dif = val_composicao - val_balancete
+                        elif val_balancete < 0 and val_composicao > 0:
+                            val_dif = val_composicao + val_balancete
+                        else:
+                            val_dif = val_composicao - val_balancete
+                    else:
+                        # Se existir registro na conta_auditada
+                        val_composicao = float(conta_auditada.val_composicao)
+                        val_balancete = float(conta_auditada.val_balancete)
+                        val_dif = float(conta_auditada.val_diferenca)
 
                     cod_anexo_competencia = 0
                     obj_anexo_competencia = Anexos_Contrato.objects.filter(cod_conta=obj_conta,
@@ -1680,22 +1732,6 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if obj_anexo_competencia != None:
                         cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
 
-                    val_balancete = ConexaoBancoBenner() \
-                                        .retorna_balancete_conta(obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
-                                                                 obj_conta.handle_conta_contabil_cp,
-                                                                 primeiro_dia_ano,
-                                                                 ultimo_dia_mes_date)
-                    '''if val_balancete < 0:
-                        val_balancete *= -1
-                    if val_composicao < 0:
-                        val_composicao *= -1'''
-                    val_dif = 0
-                    if val_balancete < 0 and val_composicao < 0:
-                        val_dif = val_composicao - val_balancete
-                    elif val_balancete < 0 and val_composicao > 0:
-                        val_dif = val_composicao + val_balancete
-                    else:
-                        val_dif = val_composicao - val_balancete
 
                     '''Verifica se há status da conta na competencia'''
                     cod_status_auditoria_comp = 0
@@ -1846,51 +1882,68 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         if tipo_prazo == 'CP':
             cod_red = conta.cod_red_conta_contabil_cp
             cod_estrutura = conta.cod_estrut_cp
-            val_composicao_ano_dic = Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato,
-                        data_vencimento__range=[data_competencia_mais_um,
-                                                ultimo_dia_data_competencia_mais_12_meses_date]) \
-                .aggregate(sum_principal=Sum('val_principal'))
+            conta_cp_auditada = (Auditoria_Status_Composicao_Competencia.objects
+                              .filter(status=1, tipo_prazo=tipo_prazo, data_competencia=competencia + '-01',
+                                      cod_usu__cod_filial__cod_empresa=contrato.cod_empresa,
+                                      cod_contrato=contrato, cod_conta=conta).first())
+            val_composicao = 0
+            val_balancete = 0
+            val_dif_comp_bal = 0
+            if conta_cp_auditada == None:
+                val_composicao_ano_dic = Parcela_Contrato.objects \
+                    .filter(cod_contrato=contrato,
+                            data_vencimento__range=[data_competencia_mais_um,
+                                                    ultimo_dia_data_competencia_mais_12_meses_date]) \
+                    .aggregate(sum_principal=Sum('val_principal'))
 
 
-            parcelas = Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato,
-                        data_vencimento__range=[data_competencia_mais_um,
-                                                ultimo_dia_data_competencia_mais_12_meses_date])
+                parcelas = Parcela_Contrato.objects \
+                    .filter(cod_contrato=contrato,
+                            data_vencimento__range=[data_competencia_mais_um,
+                                                    ultimo_dia_data_competencia_mais_12_meses_date])
 
 
-            val_parcelas_atrasadas = Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato,  #val_pago=0
-                        data_vencimento__lte=data_competencia_mais_um) \
-                .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
-                .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'))
+                val_parcelas_atrasadas = Parcela_Contrato.objects \
+                    .filter(cod_contrato=contrato,  #val_pago=0
+                            data_vencimento__lte=data_competencia_mais_um) \
+                    .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
+                    .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'))
 
-            val_parc_atrasadas = Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato,  # val_pago=0
-                        data_vencimento__lte=data_competencia_mais_um) \
-                .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
-
-
-
-            val_composicao_ano = 0
-            if val_composicao_ano_dic['sum_principal'] != None:
-                val_composicao_ano = val_composicao_ano_dic['sum_principal']
-
-            if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
-                val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas']
+                val_parc_atrasadas = Parcela_Contrato.objects \
+                    .filter(cod_contrato=contrato,  # val_pago=0
+                            data_vencimento__lte=data_competencia_mais_um) \
+                    .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
 
 
-            val_composicao = val_composicao_ano
-            '''if val_composicao < 0:
-                val_composicao *= -1'''
 
-            val_balancete = ConexaoBancoBenner() \
-                                .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
-                                                         conta.handle_conta_contabil_cp,
-                                                         primeiro_dia_ano,
-                                                         ultimo_dia_periodo)
-            '''if val_balancete < 0:
-                val_balancete *= -1'''
+                val_composicao_ano = 0
+                if val_composicao_ano_dic['sum_principal'] != None:
+                    val_composicao_ano = val_composicao_ano_dic['sum_principal']
+
+                if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
+                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas']
+
+
+                val_composicao = val_composicao_ano
+
+                val_balancete = ConexaoBancoBenner() \
+                                    .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
+                                                             conta.handle_conta_contabil_cp,
+                                                             primeiro_dia_ano,
+                                                             ultimo_dia_periodo)
+
+                if val_balancete < 0:
+                    val_dif_comp_bal = float(val_composicao) + val_balancete
+                else:
+                    val_dif_comp_bal = float(val_composicao) - val_balancete
+
+            else:
+                #Se conta_cp_auditada diferente de None
+                val_composicao = conta_cp_auditada.val_composicao
+                val_balancete = conta_cp_auditada.val_balancete
+                val_dif_comp_bal = conta_cp_auditada.val_diferenca
+
+
 
             '''Verifica se há status da conta na competencia'''
             competencia_date = datetime(int(competencia.split('-')[0]), int(competencia.split('-')[1]), 1)
@@ -1905,31 +1958,47 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         elif tipo_prazo == 'LP':
             cod_red = conta.cod_red_conta_contabil_lp
             cod_estrutura = conta.cod_estrut_lp
-            '''val_composicao_ano_dic = (Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato, data_vencimento__gte=ultimo_dia_data_competencia_mais_12_meses_date)
-                                      .exclude(tipo_prazo='PG') \
-                .aggregate(sum_principal=Sum('val_principal')))'''
-            val_composicao_ano_dic = (Parcela_Contrato.objects \
-                .filter(cod_contrato=contrato, data_vencimento__gt=ultimo_dia_data_competencia_mais_12_meses_date)
-                                      .exclude(tipo_prazo='PG') \
-                .aggregate(sum_principal=Sum('val_principal')))
+            conta_lp_auditada = (Auditoria_Status_Composicao_Competencia.objects
+                                 .filter(status=1, tipo_prazo=tipo_prazo, data_competencia=competencia + '-01',
+                                         cod_usu__cod_filial__cod_empresa=contrato.cod_empresa,
+                                         cod_contrato=contrato, cod_conta=conta).first())
+            val_composicao = 0
+            val_balancete = 0
+            val_dif_comp_bal = 0
+            if conta_lp_auditada == None:
+                val_composicao_ano_dic = (Parcela_Contrato.objects \
+                    .filter(cod_contrato=contrato, data_vencimento__gt=ultimo_dia_data_competencia_mais_12_meses_date)
+                                          .exclude(tipo_prazo='PG') \
+                    .aggregate(sum_principal=Sum('val_principal')))
 
-            val_composicao_ano = 0
-            if val_composicao_ano_dic['sum_principal'] != None:
-                val_composicao_ano = val_composicao_ano_dic['sum_principal']
+                val_composicao_ano = 0
+                if val_composicao_ano_dic['sum_principal'] != None:
+                    val_composicao_ano = val_composicao_ano_dic['sum_principal']
 
 
-            val_composicao = val_composicao_ano
-            '''if val_composicao < 0:
-                val_composicao *= -1'''
+                val_composicao = val_composicao_ano
+                '''if val_composicao < 0:
+                    val_composicao *= -1'''
 
-            val_balancete = ConexaoBancoBenner() \
-                                .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
-                                                         conta.handle_conta_contabil_lp,
-                                                         primeiro_dia_ano,
-                                                         ultimo_dia_periodo)
-            '''if val_balancete < 0:
-                val_balancete *= -1'''
+                val_balancete = ConexaoBancoBenner() \
+                                    .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
+                                                             conta.handle_conta_contabil_lp,
+                                                             primeiro_dia_ano,
+                                                             ultimo_dia_periodo)
+
+
+                if val_balancete < 0:
+                    val_dif_comp_bal = float(val_composicao) + val_balancete
+                else:
+                    val_dif_comp_bal = float(val_composicao) - val_balancete
+
+            else:
+                # Se conta_cp_auditada diferente de None
+                val_composicao = conta_lp_auditada.val_composicao
+                val_balancete = conta_lp_auditada.val_balancete
+                val_dif_comp_bal = conta_lp_auditada.val_diferenca
+
+
 
             '''Verifica se há status da conta na competencia'''
             competencia_date = datetime(int(competencia.split('-')[0]), int(competencia.split('-')[1]), 1)
@@ -1941,11 +2010,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 cod_status_auditoria_comp = obj_status_contrato_competencia.status
                 obs_status_auditoria_comp = obj_status_contrato_competencia.obs_status
 
-        val_dif_comp_bal = 0
-        if val_balancete < 0:
-            val_dif_comp_bal = float(val_composicao) + val_balancete
-        else:
-            val_dif_comp_bal = float(val_composicao) - val_balancete
+
 
         cod_anexo_competencia = 0
         obj_anexo_competencia = Anexos_Contrato.objects.filter(cod_contrato=contrato,
@@ -3545,7 +3610,7 @@ class Form_Atualiza_Contratos_Benner_View(View):
             for contrato in lista_contratos_para_atualizar:
                 lista_parcelas_atualizadas = Form_Imp_Contratos_Conta_View().atualiza_dados_contratos_parcelas(
                     obj_conta.cod_conta, contrato['cod_contrato__num_contrato'],'C',
-                    obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa, data_corte_frm )[2]
+                    obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,obj_usuario_sessao )[2]
                 for parc in lista_parcelas_atualizadas:
                     val_pago = 0.00
                     if parc.val_corrigido != None:
@@ -4900,3 +4965,146 @@ class Comp_Pac_Contas_Comp_Detalhado_View(View):
         }
         return JsonResponse(data, safe=False)
 
+
+
+class Form_Renegociacao_Contrato_View(View):
+    def post(self, request):
+        cod_contrato_frm = request.POST['cod_contrato']
+        justificativa_frm = request.POST['justificativa']
+        data_renegociacao_frm = request.POST['data_renegociacao']
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        data_hora_atual = datetime.now()
+        data_hora_atual_y_m_d = data_hora_atual.strftime('%Y-%m-%d')
+        data_hora_atual_d_m_y = data_hora_atual.strftime('%d-%m-%Y')
+
+        obj_contrato = Contrato.objects.get(pk=cod_contrato_frm)
+        lista_obj_parcelas = Parcela_Contrato.objects.filter(cod_contrato=obj_contrato, tipo_prazo__in=['CP', 'LP'])
+        for obj_parcela in lista_obj_parcelas:
+            obj_parcela.val_conta = 0
+            obj_parcela.val_principal = 0
+            obj_parcela.val_taxas = 0
+            obj_parcela.tipo_prazo = 'RN'
+            obj_parcela.data_liquidacao = data_renegociacao_frm
+            obj_parcela.val_pago = 0
+            obj_parcela.val_fundo = 0
+            obj_parcela.obs_parcela = f"/Operação de renegociação executada em {datetime.strptime(data_renegociacao_frm,'%Y-%m-%d').strftime('%d-%m-%Y')} por {obj_usuario_sessao.login_usu}/"
+            obj_parcela.save()
+        msg = 'Operação de renegociação, realizada com sucesso !'
+
+        data = dict()
+        data = {
+            'msg': msg,
+            'cod_conta': obj_contrato.cod_conta.cod_conta
+        }
+        return JsonResponse(data, safe=False)
+
+
+
+
+class Form_Atualiza_Parcelas_Data_Corte(View):
+    def post(self, request):
+        lista_cod_contas = request.POST['lista_cod_contas']
+        data_corte_frm = request.POST['data_corte']
+        competencia_aud = data_corte_frm.split('-')[0] + '-' + data_corte_frm.split('-')[1] + '-01'
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        lista_parcelas_atualizadas_form = []
+        for cod_conta in lista_cod_contas.split(','):
+            obj_conta = Conta.objects.get(pk=cod_conta)
+
+            lista_parcelas_para_atualizar = (Parcela_Contrato.objects
+                                                 .filter(data_liquidacao__isnull=True,
+                                                         cod_contrato__cod_conta=obj_conta,
+                                                         cod_contrato__sincronizar_benner='S',
+                                                         cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+
+
+            for parcela in lista_parcelas_para_atualizar:
+                verifica_se_contrato_auditada = (Auditoria_Status_Composicao_Competencia.objects
+                                                 .filter(cod_conta=parcela.cod_contrato.cod_conta,
+                                                         cod_contrato=parcela.cod_contrato,
+                                                         data_competencia=competencia_aud))
+
+                if len(verifica_se_contrato_auditada) == 0:
+                    conexao_benner = ConexaoBancoBenner()
+                    lista_parcelas_atualizadas = conexao_benner.atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm)
+
+                    for parc in lista_parcelas_atualizadas:
+                        obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parc['handle_parc']).first()
+
+                        val_principal_anterior = ''
+                        if obj_parcela.val_principal != None:
+                            val_principal_anterior = str(obj_parcela.val_principal)
+
+                        val_taxa_anterior = ''
+                        if obj_parcela.val_taxas > 0:
+                            val_taxa_anterior = str(obj_parcela.val_taxas)
+
+
+                        data_liquidacao = None
+                        if parc['data_liquidacao'] != None:
+                            data_liquidacao = (datetime.strptime(parc['data_liquidacao'], '%Y-%m-%d')
+                                               .strftime('%d-%m-%Y'))
+                            obj_parcela.tipo_prazo = 'PG'
+                            obj_parcela.data_liquidacao = parc['data_liquidacao']
+
+                        obj_parcela.data_vencimento = parc['data_vencimento']
+                        obj_parcela.val_corrigido = parc['valor_corrigido']
+                        obj_parcela.val_pago = parc['val_total_pago']
+                        obj_parcela.val_principal = parc['val_principal']
+                        obj_parcela.val_taxas = parc['val_taxas']
+                        obj_parcela.val_fundo = parc['val_fundo']
+                        obj_parcela.data_ultima_atualizacao = parc['data_ultima_atualizacao']
+                        obj_parcela.val_desc_taxas = parc['val_desc_taxas']
+                        obj_parcela.val_acres_taxas = parc['val_acres_taxas']
+                        obj_parcela.val_desc_principal = parc['val_desc_principal']
+                        obj_parcela.val_acres_principal = parc['val_acres_principal']
+                        obj_parcela.cod_usu = obj_usuario_sessao
+                        obj_parcela.obs_parcela = f'''/Atualização realizada em {parc['data_ultima_atualizacao']}.Por {obj_usuario_sessao.login_usu}.Principal estava em R$ {val_principal_anterior} e R$ Taxas {val_taxa_anterior}/ '''
+                        obj_parcela.save()
+
+                        val_pago = 0.00
+                        if parc['valor_corrigido'] != None:
+                            val_pago = locale.currency(round(parc['valor_corrigido'], 2), grouping=True, symbol=None)
+
+                        val_principal = 0.00
+                        if parc['val_principal'] != None:
+                            val_principal = locale.currency(round(parc['val_principal'], 2), grouping=True, symbol=None)
+
+                        val_taxas = 0.00
+                        if parc['val_taxas'] != None:
+                            val_taxas = locale.currency(round(parc['val_taxas'], 2), grouping=True, symbol=None)
+
+                        val_fundo = 0.00
+                        if parc['val_fundo'] != None:
+                            val_fundo = locale.currency(round(parc['val_fundo'], 2), grouping=True, symbol=None)
+
+
+
+                        reg_parc = {
+                            'cod_conta': obj_parcela.cod_contrato.cod_conta.cod_conta,
+                            'desc_conta': obj_parcela.cod_contrato.cod_conta.desc_conta,
+                            'num_contrato': obj_parcela.cod_contrato.num_contrato,
+                            'num_parcela': obj_parcela.ordem_parcela,
+                            'val_pago': val_pago,
+                            'val_principal': val_principal,
+                            'val_taxas': val_taxas,
+                            'val_fundo': val_fundo,
+                            'data_vencimento': (datetime.strptime(obj_parcela.data_vencimento, '%Y-%m-%d').strftime('%d-%m-%Y')),
+                            'data_liquidacao': data_liquidacao,
+                            'handle_parcela': obj_parcela.handle_parcela
+                        }
+                        lista_parcelas_atualizadas_form.append(reg_parc)
+
+
+        data = dict()
+        data = {
+            'lista_parcelas_atualizados': lista_parcelas_atualizadas_form
+        }
+        return JsonResponse(data, safe=False)

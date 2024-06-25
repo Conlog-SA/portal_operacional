@@ -501,7 +501,7 @@ function atualiza_tab_veic(cod_tab, mostra_veic_vendidos){
         dataType: 'json',
         success: function (data) {
             $("#div_comp_atualiza_preco_veic").html('');
-
+            /*
             let let_chk_atualiza_veic_vendidos = `
                 <label class="col-form-label text-white text-left cursor-pointer" for="chk_atualiza_veic_vendidos">
                     Atualizar os veículos vendidos ?
@@ -530,7 +530,7 @@ function atualiza_tab_veic(cod_tab, mostra_veic_vendidos){
 
             $("#div_comp_atualiza_preco_veic").html(let_chk_atualiza_veic_vendidos + "&nbsp;&nbsp;" + let_btn_atualiza_veic);
             //$("#div_btn_atualiza_preco_veic").html();
-
+            */
 
             let_lista_veic = [];
             let_lista_veic_vendido = [];
