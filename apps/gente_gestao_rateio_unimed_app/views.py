@@ -1,3 +1,4 @@
+import locale
 import os
 from datetime import datetime
 
@@ -43,6 +44,7 @@ class Form_Importa_Plan_Despesas_View(View):
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%d/%m/%Y')
         hota_atual = data_hora_atual.strftime('%H:%M:%S')
+
         caminho_arq_importado = 'docs/rateio_unimed/' + obj_usu.cod_filial.unidade_abrev + '/rateio_unimed_' + obj_usu.cod_filial.unidade_abrev + '_' + \
                                 obj_usu.login_usu.replace('.', '_') + '_' + str(data_atual_dd_mm_yyyy).replace('/', '_') \
                                 + '_' + str(hota_atual).replace(':', '_') + '.xlsx'
@@ -61,21 +63,28 @@ class Form_Importa_Plan_Despesas_View(View):
         uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
         tab_rateio_despesas_nao_importadas = []
         conteudo_arq_plan_unimed = pd.read_excel(uploaded_file_url)
-        conteudo_arq_plan_unimed = conteudo_arq_plan_unimed.dropna()
+        conteudo_arq_plan_unimed = conteudo_arq_plan_unimed.dropna(how='all')
         conteudo_arq_plan_unimed.rename(columns=lambda x: str(x).strip(), inplace=True)
         count_reg_imp = 0
         count_reg_up = 0
+        print(conteudo_arq_plan_unimed.columns.values.tolist())
         for index, row in conteudo_arq_plan_unimed.iterrows():
-            cpf_beneficiario = str(row['CPF']).strip()
             nome_beneficiario = str(row['NOME']).strip()
             tipo_depencencia = str(row['DEPENDENCIA']).strip()
             nome_titular = str((row['NOME_TITULAR'])).strip()
-            cpf_titular = str(row['CPF_TITULAR']).strip()
             desc_despesa = str(row['DESC_DESPESA']).strip()
             valor = float(row['VL_FATURADO'])
+            cpf_beneficiario = str(row['CPF']).strip()
 
-            competencia_split = str(row['COMPETENCIA']).strip().split('-')
-            competencia = competencia_split[0] + '-' + competencia_split[1]
+            if 'CPF_TITULAR' in conteudo_arq_plan_unimed.columns.values.tolist():
+                cpf_titular = str(row['CPF_TITULAR']).strip()
+            else:
+                print(str(row['NOME']).strip())
+                cpf_titular = str(conteudo_arq_plan_unimed[(conteudo_arq_plan_unimed['NOME'] == row['NOME_TITULAR']) & (conteudo_arq_plan_unimed['NOME'] == conteudo_arq_plan_unimed['NOME_TITULAR'])]['CPF'].iloc[0]).strip()
+
+
+            competencia_split = str(row['COMPETENCIA']).strip().split('/')
+            competencia = competencia_split[1] + '-' + competencia_split[0]
 
             obj_registro_despesa = Despesa_Unimed.objects.filter(competencia=competencia,
                                                               cpf_beneficiario=cpf_beneficiario,
@@ -111,6 +120,7 @@ class Form_Importa_Plan_Despesas_View(View):
                         desc_projeto_senior=titular_senior['nom_projeto_colab'],
                         cod_empresa_senior=cod_empresa_senior,
                     )
+                    print(titular_senior['nom_projeto_colab'])
                     obj_registro_despesa_new.save()
                     '''  tab_rateio_despesas_importadas.append(
                         'Competencia: ' + str(row['COMPETENCIA']).strip() + ' Beneficiário: ' + str(row['NOME']).strip().replace(' ', '_') +
@@ -139,24 +149,24 @@ class Form_Importa_Plan_Despesas_View(View):
                     )
                     obj_registro_despesa_new.save()
 
-                    cpf_beneficiario = str(row['CPF']).strip()
-                    nome_beneficiario = str(row['NOME']).strip()
-                    tipo_depencencia = str(row['DEPENDENCIA']).strip()
-                    nome_titular = str((row['NOME_TITULAR'])).strip()
-                    cpf_titular = str(row['CPF_TITULAR']).strip()
-                    desc_despesa = str(row['DESC_DESPESA']).strip()
-                    valor = float(row['VL_FATURADO'])
-
-                    competencia_split = str(row['COMPETENCIA']).strip().split('-')
-                    competencia = competencia_split[0] + '-' + competencia_split[1]
-
-                    tab_rateio_despesas_nao_importadas.append(
+                    '''tab_rateio_despesas_nao_importadas.append(
                         'Competencia: ' + competencia + ' Beneficiário: ' + nome_beneficiario.strip().replace(' ', '_') +
                         ' Cpf: ' + cpf_beneficiario.strip() + ' Dependencia: ' + tipo_depencencia.strip() +
                         ' Titular: ' + nome_titular.strip().replace(' ', '_') + ' Cpf_Titular: ' + cpf_titular.strip() +
                         ' Desc_Despesa: ' + desc_despesa.strip().replace(' ', '_') +
                         ' Valor: ' + str(valor) + ' Cod_Despesa: ' + str(obj_registro_despesa_new.cod_despesa_unimed)
-                    )
+                    )'''
+                    tab_rateio_despesas_nao_importadas.append({
+                        'competencia': competencia,
+                        'beneficiario': nome_beneficiario.strip().replace(' ', '_'),
+                        'cpf': cpf_beneficiario.strip(),
+                        'dependencia': tipo_depencencia.strip(),
+                        'titular': nome_titular.strip().replace(' ', '_'),
+                        'cpf_titular': cpf_titular.strip(),
+                        'desc_despesa': desc_despesa.strip().replace(' ', '_'),
+                        'valor': str(valor),
+                        'cod_despesa': str(obj_registro_despesa_new.cod_despesa_unimed)
+                    })
 
                     count_reg_imp += 1
             else:
@@ -184,6 +194,23 @@ class Form_Importa_Plan_Despesas_View(View):
         }
         return JsonResponse(data)
 
+class Form_Filial_Despesas(View):
+    def get(self, request):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
+            cod_empresa_filtro = 1
+        elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
+            cod_empresa_filtro = 2
+
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list('cod_filial_senior', 'desc_filial_senior').distinct()
+        lista_filiais_dict = []
+        for filial in lista_filiais:
+            lista_filiais_dict.append({'cod_filial_senior': filial[0], 'desc_filial_senior': filial[1]})
+        contexto = {
+            'lista_filiais': lista_filiais_dict,
+        }
+        return JsonResponse(contexto)
 class Preenche_Colaborador(View):
     def get(self, request):
         cod_usu_session = request.session['cod_usuario_logado']
@@ -309,6 +336,9 @@ class Calcula_Rateio(View):
         filial_busca = request.GET['filial']
         cod_usu_session = request.session['cod_usuario_logado']
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        #locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
         if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
             cod_empresa_senior = 1
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
@@ -328,12 +358,16 @@ class Calcula_Rateio(View):
             print(calculo_projetos_lista)
             for projeto in calculo_projetos_lista:
                 despesa_dict = {
-                               'desc_projeto_senior': projeto.desc_projeto_senior,
-                               'valor': projeto.valor,
-                               'quantidade_colaboradores': projeto.quantidade_beneficiarios
+                               'desc_projeto_senior': projeto['desc_projeto_senior'],
+                               'valor': projeto['valor'], #locale.currency(projeto['valor'], grouping=True, symbol=None),
+                               'quantidade_beneficiarios': projeto['quantidade_beneficiarios']
                                }
 
                 tab_rateio_despesas_busca.append(despesa_dict)
+        else:
+            response = HttpResponse('Resolva as despesas sem titular antes de fazer o rateio!')
+            response.status_code = 405
+            return response
 
         data = {
             'tab_rateio_despesas_busca': tab_rateio_despesas_busca
