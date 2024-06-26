@@ -8,4 +8,5 @@ urlpatterns = [
     path('busca_despesas', views.Busca_Despesas.as_view(), name='busca_despesas'),
     path('calcula_rateio', views.Calcula_Rateio.as_view(), name='calcula_rateio'),
     path('filiais_despesa', views.Form_Filial_Despesas.as_view(), name='filiais_despesa'),
+    path('obter_filiais', views.Obter_Filiais.as_view(), name='obter_filiais'),
 ]

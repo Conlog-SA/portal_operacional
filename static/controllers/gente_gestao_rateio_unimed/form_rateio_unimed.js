@@ -145,56 +145,24 @@ $(document).on('change','input', function(){
                 loader_imp_2art.style.display = "none";
                 tabelaRateioUnimed.columns.adjust();
 
-                $.ajax({
-                    type: 'POST',
-                    enctype: "multipart/form-data; charset=utf-8",
-                    url: "/gente_gestao_rateio_unimed_app/rateio_unimed",
-                    data: let_frm_data,
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    cache: false,
-                    success: function(data){
-                        data.lista_filiais.forEach( despesa => {
-                            /*let split_retorno = despesa.split(' ');
-                            console.log(split_retorno[1]);
-                            let let_dado_despesa = [
-                                '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                                split_retorno[1].split('-')[1]+'/'+split_retorno[1].split('-')[0],
-                                split_retorno[3].replaceAll("_", " "),
-                                ('000000'+split_retorno[5].split('.')[0]).slice(-11),
-                                split_retorno[7],
-                                split_retorno[9].replaceAll("_", " "),
-                                ('000000'+split_retorno[11].split('.')[0]).slice(-11),
-                                split_retorno[13].replaceAll("_", " "),
-                                split_retorno[15],
-                                '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[17]+'_1">Buscar</button>',
-                                '',
-                                '',
-                                '',
-                                ''
-                            ];*/
-                            let let_dado_despesa = [
-                                '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                                despesa.competencia.split('-')[1]+'/'+despesa.competencia.split('-')[0],
-                                despesa.beneficiario.replaceAll("_", " "),
-                                ('000000'+despesa.cpf.split('.')[0]).slice(-11),
-                                despesa.dependencia,
-                                despesa.titular.replaceAll("_", " "),
-                                ('000000'+despesa.cpf_titular.split('.')[0]).slice(-11),
-                                despesa.desc_despesa.replaceAll("_", " "),
-                                despesa.valor,
-                                '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa.cod_despesa+'_1">Buscar</button>',
-                                '',
-                                '',
-                                '',
-                                ''
-                            ];
-                            let_lista_dados_rateio.push(let_dado_despesa);
-                        });
-                    }
+                $('#input_filial option').remove();
+                $('#input_filial_calculo_rateio option').remove();
+
+                data.lista_filiais.forEach( filial => {
+                    $('#input_filial').append('<option value="'+filial.cod_filial_senior+'">'+filial.desc_filial_senior+'</option>');
+                    $('#input_filial_calculo_rateio').append('<option value="'+filial.cod_filial_senior+'">'+filial.desc_filial_senior+'</option>');
                 });
 
+                $('#input_filial').selectpicker('refresh');
+                $('#input_filial_calculo_rateio').selectpicker('refresh');
+
+                /*$.ajax({
+                    type: 'GET',
+                    url: "/gente_gestao_rateio_unimed_app/obter_filiais",
+                    success: function(response){
+
+                    }
+			    });*/
 			},
 			error: function (request, status, error) {
 			    loader_imp_2art.style.display = "none";

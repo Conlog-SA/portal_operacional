@@ -19,18 +19,23 @@ from proj_portal_operacional.settings import BASE_DIR
 class Form_Importa_Plan_Despesas_View(View):
     def get(self, request):
         cod_usu_session = request.session['cod_usuario_logado']
+
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        cod_empresa_filtro = 0
         if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
             cod_empresa_filtro = 1
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
             cod_empresa_filtro = 2
-
-        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list('cod_filial_senior', 'desc_filial_senior').distinct()
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+            'cod_filial_senior', 'desc_filial_senior').distinct()
         lista_filiais_dict = []
         for filial in lista_filiais:
+            print(filial[0])
+            print(filial[1])
             lista_filiais_dict.append({'cod_filial_senior': filial[0], 'desc_filial_senior': filial[1]})
         #lista_filiais = Filial.objects.filter(cod_empresa__cod_empresa=obj_usu.cod_filial.cod_empresa.cod_empresa)
         contexto = {
+            'lista_filiais': lista_filiais_dict,
             'desc_menu': 'Rateio Despesas Unimed',
             'lista_filiais': lista_filiais_dict,
         }
@@ -186,8 +191,23 @@ class Form_Importa_Plan_Despesas_View(View):
         arquivo_despesa.qtd_importados = count_reg_imp
         arquivo_despesa.qtd_atualizados = count_reg_up
         arquivo_despesa.save()
+
+        cod_empresa_filtro = 0
+        if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
+            cod_empresa_filtro = 1
+        elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
+            cod_empresa_filtro = 2
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+            'cod_filial_senior', 'desc_filial_senior').distinct()
+        lista_filiais_dict = []
+        for filial in lista_filiais:
+            print(filial[0])
+            print(filial[1])
+            lista_filiais_dict.append({'cod_filial_senior': filial[0], 'desc_filial_senior': filial[1]})
+
         data = {
             'tab_rateio_despesas_nao_importadas': tab_rateio_despesas_nao_importadas,
+            'lista_filiais': lista_filiais_dict,
             'qtd_total_reg': conteudo_arq_plan_unimed.shape[0],
             'qtd_reg_imp': count_reg_imp,
             'qtd_reg_up': count_reg_up
@@ -373,6 +393,23 @@ class Calcula_Rateio(View):
             'tab_rateio_despesas_busca': tab_rateio_despesas_busca
         }
         return JsonResponse(data)
+
+class Obter_Filiais(View):
+    def get(self, request):
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        if obj_usu.cod_filial.cod_empresa.cod_empresa == 12:
+            cod_empresa_filtro = 1
+        elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
+            cod_empresa_filtro = 2
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+            'cod_filial_senior', 'desc_filial_senior').distinct()
+        lista_filiais_dict = []
+        for filial in lista_filiais:
+            print(filial[0])
+            print(filial[1])
+            lista_filiais_dict.append({'cod_filial_senior': filial[0], 'desc_filial_senior': filial[1]})
+        return JsonResponse(lista_filiais_dict, safe=False)
 
 
 
