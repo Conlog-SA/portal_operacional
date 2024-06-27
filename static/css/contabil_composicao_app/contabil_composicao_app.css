@@ -336,6 +336,8 @@
     font-size: 0.925em;
     border-color: var(--cor_empresa) !important;
     background-color: var(--cor_empresa) !important;
+    width: 145.6px;
+    height: 35.6px;
 }
 
 .cl_div_visualizacao_anexo_conta{
