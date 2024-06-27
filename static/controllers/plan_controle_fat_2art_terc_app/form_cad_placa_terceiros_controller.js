@@ -708,13 +708,76 @@ function povoa_tab_cad_placas_terc(){
                 "buttons": [
                     'copyHtml5'
                 ],
-                /*"bJQueryUI": true,
-                "pageLength": 10,
-                "destroy": true,
-                "dom": 'Bfrtip',
-                "buttons": [
-                    'copyHtml5'
-                ],*/
+                "initComplete": function () {
+                    this.api()
+                    .columns([1,2,3,4,5,6,7,8,9])
+                    .every(function () {
+                        let let_div = document.createElement('div');
+                        let column = this;
+                        let title = column.header().textContent;
+                        // Create input element
+                        let input = document.createElement('input');
+                        input.classList.add('input_pesq_column_icon');
+                        input.style.borderRadius = '0.2rem 0.2rem 0.2rem 0.2rem';
+                        input.style.padding = '2px';
+                        input.style.width = '120px';
+                        input.placeholder = title;
+
+                        let let_icon_input = document.createElement('i');
+                        let_icon_input.classList.add('fa-solid');
+                        let_icon_input.style.color = '#696969';
+                        let_icon_input.classList.add('fa-magnifying-glass');
+
+                        let_div.appendChild(let_icon_input);
+                        let_div.appendChild(input);
+
+
+                        column.header().replaceChildren(let_div);
+
+                        // Event listener for user input
+                        input.addEventListener('keyup', () => {
+                            if (column.search() !== this.value) {
+                                column.search(input.value).draw();
+                            }
+                        });
+                    });
+
+                    this.api()
+                    .columns([0])
+                    .every(function() {
+                        let column = this;
+
+                        let let_icon_input = document.createElement('i');
+                        let_icon_input.classList.add('fa-solid');
+                        let_icon_input.style.color = '#f46424';
+                        let_icon_input.classList.add('fa-eraser');
+
+                        let let_btn_limpar = document.createElement('button');
+                        let_btn_limpar.classList.add('btn');
+                        let_btn_limpar.title = 'Limpar pesquisa';
+                        let_btn_limpar.classList.add('btn-rounded');
+                        let_btn_limpar.classList.add('btn-space');
+                        let_btn_limpar.appendChild(let_icon_input)
+
+                        column.header().replaceChildren(let_btn_limpar);
+
+                        let let_ev_enter = new Event('keyup');
+
+                        // Event listener for user input
+                        let_btn_limpar.addEventListener('click', () => {
+                            let let_inputs = document.getElementsByClassName('input_pesq_column_icon');
+
+                            for(let i = 0; i < let_inputs.length; i++) {
+                                let_inputs[i].value = null;
+
+
+                                // Despacha o evento para o campo de entrada
+                                let_inputs[i].dispatchEvent(let_ev_enter);
+                            }
+                        });
+
+                    });
+                },
                 "data":listaDados,
                 "columns": [
                     { title: "" },

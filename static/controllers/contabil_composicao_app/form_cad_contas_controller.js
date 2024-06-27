@@ -860,10 +860,15 @@ $(document).on('click','button', function(){
     }
     else if(let_nome_btn == 'btn_anexa_doc_contrato') {
         let let_cod_conta = $(this).val();
+        let let_eh_anexo_principal = 'N';
+        if($("#ck_eh_anexo_principal").prop('checked') == true){
+            let_eh_anexo_principal = 'S';
+        }
         if(let_cod_conta != "0"){
             var formDataImg = new FormData();
             formDataImg.append("file", $('input[type=file]')[0].files[0]);
             formDataImg.append("cod_conta", let_cod_conta);
+            formDataImg.append("eh_anexo_principal", let_eh_anexo_principal);
             formDataImg.append("cod_contrato", $("#list_contratos_conta_anexo").val());
             formDataImg.append("competencia_doc", $("#dt_competencia_anexo_doc_contrato").val());
             $.ajax({
@@ -2163,6 +2168,50 @@ $(document).on('change','input', function(){
         $("#div_tab_conciliacao_composicao_benner_aud").empty();
 
     }
+    else if ( let_nome_inp == "ck_eh_anexo_principal_tab") {
+        let let_status_anexo = 'N';
+        if($("#"+let_id_inp).prop('checked') == true){
+            let_status_anexo = 'S';
+        }
+        let let_cod_anexo_contrato = let_id_inp.split('_')[5];
+        let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        let_loader_frm_cad_contas.style.display = "flex";
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_status_anexo_conta_ver_na_composicao',
+            data: {
+                'cod_anexo_contrato'    :  let_cod_anexo_contrato,
+                'status_anexo'          :  let_status_anexo
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_anexos_conta(dados.cod_conta);
+                let_loader_frm_cad_contas.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_cad_contas.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+          }
+        });
+
+
+
+    }
 
 
 });
@@ -2485,9 +2534,15 @@ function atualiza_tab_anexos_conta(cod_conta){
                     doc.data_competencia.split('-')[1] + '-' +
                     doc.data_competencia.split('-')[0]
 
+                let let_chk_anexo_main = 'unchecked';
+                if ( doc.eh_anexo_principal_competencia == 'S' ) {
+                    let_chk_anexo_main = 'checked';
+                }
+
 
                 reg = [
-                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    ` <input type="checkbox" class="checkbox" id="ck_eh_anexo_principal_tab_${doc.cod_anexo_contrato}"
+                    name="ck_eh_anexo_principal_tab" ${let_chk_anexo_main}>`,
                     let_num_contrato,
                     let_competencia,
                     doc.desc_anexo,
@@ -2500,14 +2555,14 @@ function atualiza_tab_anexos_conta(cod_conta){
                 "bJQueryUI": true,
                 "pageLength": 5,
                 "destroy": true,
-                "searching": false,
+                "searching": true,
                 "paging": true,
                 "data":var_lista_docs,
                 "columns": [
-                    { title: "" },
+                    { title: "Ver na composição ?" },
                     { title: "Contrato" },
                     { title: "Competencia" },
-                    { title: "Descrição" },
+                    { title: "Nome do arquivo" },
                     { title: "Visualizar" },
                     { title: "Excluir" }
                 ],
@@ -2565,6 +2620,8 @@ function atualiza_tab_anexos_conta(cod_conta){
         }
     });
 }
+
+
 
 
 function atualiza_tab_status_contrato_composicao(cod_conta){
