@@ -32,9 +32,9 @@ class Despesa_Unimed(models.Model):
     nome_titular_senior = models.CharField(max_length=100, blank=False, null=False)
    # nome_beneficiario_senior = models.CharField(max_length=100, blank=False, null=False)
     cod_projeto_senior = models.CharField(max_length=30, blank=False, null=False)
-    desc_projeto_senior = models.CharField(max_length=50, blank=True, null=True)
+    desc_projeto_senior = models.TextField(max_length=255, blank=True, null=True)
     cod_filial_senior = models.IntegerField(blank=True, null=True)
-    desc_filial_senior = models.CharField(max_length=50, blank=True, null=True)
+    desc_filial_senior = models.TextField(max_length=50, blank=True, null=True)
     cod_empresa_senior = models.IntegerField(blank=True, null=True)
     cod_projeto = models.ForeignKey(Projeto, models.DO_NOTHING, db_column='cod_projeto', blank=False,
                null=False)

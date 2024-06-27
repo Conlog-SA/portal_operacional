@@ -30,6 +30,7 @@ $.ajaxSetup({
 {
     tabelaRateioUnimed = null;
     tabelaConsultaDespesas = null;
+    tabelaCalculaRateio = null;
 }
 
 $(document).on('change','input', function(){
@@ -54,24 +55,22 @@ $(document).on('change','input', function(){
             success: function(data){
                 let let_lista_dados_rateio = [];
                 data.tab_rateio_despesas_nao_importadas.forEach( despesa => {
-                    let split_retorno = despesa.split(' ');
-                    console.log(split_retorno[1]);
                     let let_dado_despesa = [
                         '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                        split_retorno[1].split('-')[1]+'/'+split_retorno[1].split('-')[0],
-                        split_retorno[3].replaceAll("_", " "),
-                        ('000000'+split_retorno[5].split('.')[0]).slice(-11),
-                        split_retorno[7],
-                        split_retorno[9].replaceAll("_", " "),
-                        ('000000'+split_retorno[11].split('.')[0]).slice(-11),
-                        split_retorno[13].replaceAll("_", " "),
-                        split_retorno[15],
-                        '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+split_retorno[17]+'">Buscar</button>',
+                        despesa.competencia.split('-')[1]+'/'+despesa.competencia.split('-')[0],
+                        despesa.beneficiario.replaceAll("_", " "),
+                        ('000000'+despesa.cpf.split('.')[0]).slice(-11),
+                        despesa.dependencia,
+                        despesa.titular.replaceAll("_", " "),
+                        ('000000'+despesa.cpf_titular.split('.')[0]).slice(-11),
+                        despesa.desc_despesa.replaceAll("_", " "),
+                        despesa.valor,
+                        '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa.cod_despesa+'_1">Buscar</button>',
                         '',
                         '',
                         '',
                         ''
-					];
+                    ];
 					let_lista_dados_rateio.push(let_dado_despesa);
                 });
 
@@ -145,6 +144,25 @@ $(document).on('change','input', function(){
                 });
                 loader_imp_2art.style.display = "none";
                 tabelaRateioUnimed.columns.adjust();
+
+                $('#input_filial option').remove();
+                $('#input_filial_calculo_rateio option').remove();
+
+                data.lista_filiais.forEach( filial => {
+                    $('#input_filial').append('<option value="'+filial.cod_filial_senior+'">'+filial.desc_filial_senior+'</option>');
+                    $('#input_filial_calculo_rateio').append('<option value="'+filial.cod_filial_senior+'">'+filial.desc_filial_senior+'</option>');
+                });
+
+                $('#input_filial').selectpicker('refresh');
+                $('#input_filial_calculo_rateio').selectpicker('refresh');
+
+                /*$.ajax({
+                    type: 'GET',
+                    url: "/gente_gestao_rateio_unimed_app/obter_filiais",
+                    success: function(response){
+
+                    }
+			    });*/
 			},
 			error: function (request, status, error) {
 			    loader_imp_2art.style.display = "none";
@@ -217,9 +235,9 @@ $(document).on('click','.btnSalvaColabSenior' , function(){
     let let_cod_despesa = arr_split[0];
     let let_matricula_colab = $("#textFieldMatricColab").val();
     let let_nome_titular = $("#nomeTitularSenior").val();
-    let let_cod_filial = arr_split[1];
+    let let_cod_filial = arr_split[2];
     let let_desc_filial = $("#filialTitularSenior").val();
-    let let_cod_projeto = arr_split[2];
+    let let_cod_projeto = arr_split[3];
     let let_desc_projeto = $("#projetoTitularSenior").val();
     $.ajax({
         type: 'POST',
@@ -246,12 +264,21 @@ $(document).on('click','.btnSalvaColabSenior' , function(){
             html_matricula = let_matricula_colab;
             $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(9).html(html_matricula);
 
-            try {
-                tabelaRateioUnimed.columns.adjust();
-            } catch { };
-            try {
-                tabelaConsultaDespesas.columns.adjust();
-            } catch { };
+            if (arr_split[1] == '1') {
+                try {
+                    tabelaRateioUnimed.row($('button[name^="'+let_cod_despesa+'"]').parent().parent()).remove().draw();
+                    tabelaConsultaDespesas.clear().draw();
+                } catch { };
+            }
+            if (arr_split[1] == '2') {
+                try {
+                    console.log($('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(11).html());
+                    console.log($('#input_filial option:selected').text());
+                    if ($('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(11).html() != $('#input_filial option:selected').text()) {
+                        tabelaConsultaDespesas.row($('button[name^="'+let_cod_despesa+'"]').parent().parent()).remove().draw();
+                    }
+                } catch { };
+            }
         }
     });
 });
@@ -269,16 +296,18 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
         },
         success: function (dados) {
             let_lista_dados_rateio = [];
+            let let_soma_valor = 0;
             dados.tab_rateio_despesas_busca.forEach( despesa => {
                 let let_html_matricula = '';
                 let let_html_editar = '';
 
                 if (despesa['Matricula_Titular'] == '') {
-                    let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'">Buscar</button>';
+                    let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'_2">Buscar</button>';
                 }
                 else {
                     let_html_matricula = despesa['Matricula_Titular'];
-                    let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'">Editar</button>';
+                    let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'_2">Editar</button>';
+                    let_soma_valor += parseFloat(despesa['Valor']);
                 }
 
                 let let_dado_despesa = [
@@ -356,11 +385,148 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
                     }
 			});
             tabelaConsultaDespesas.columns.adjust();
+            //$('#contabilizador_valor_nf_filial_despesas')[0].innerText = 'Valor total da Filial: ' + String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
+            let let_valor_final = '';
+            if (String(let_soma_valor).split('.').length > 1) {
+                if (String(let_soma_valor).split('.')[1].length > 2) {
+                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
+                }
+                if (String(let_soma_valor).split('.')[1].length == 1) {
+                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,1)+'0';
+                }
+            }
+            else if (String(let_soma_valor).split('.').length == 1) {
+                let_valor_final = String(let_soma_valor)+',00';
+            }
+            $('#contabilizador_valor_nf_filial_despesas').html('Valor total da Filial: <p style="font-size:25px">R$ ' + let_valor_final + '</p>');
+
         }
     });
+});
+
+$(document).on('click','.btn-input-calculo-rateios' , function(){
+    let let_competencia = $("#input_competencia_calculo_rateio").val();
+    let let_filial = $("#input_filial_calculo_rateio").val();
+
+    $.ajax({
+        type: 'GET',
+        url: '/gente_gestao_rateio_unimed_app/calcula_rateio',
+        data: {
+            'competencia'   :   let_competencia,
+            'filial'   :    let_filial,
+        },
+        success: function (dados) {
+            let_lista_dados_rateio = [];
+            let let_soma_valor = 0;
+            dados.tab_rateio_despesas_busca.forEach( despesa => {
+                let_soma_valor += parseFloat(despesa['valor']);
+                let let_dado_despesa = [
+                    despesa['desc_projeto_senior'],
+                    parseFloat(despesa['valor']).toFixed(2),
+                    despesa['quantidade_beneficiarios']
+			    ];
+			    let_lista_dados_rateio.push(let_dado_despesa);
+            });
+            tabelaCalculaRateio = $('#tab_calculo_rateio').DataTable( {
+				    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 7,
+                    "autoWidth": false,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+			  		"data":let_lista_dados_rateio,
+			  		"columns": [
+			  		    { title: "Projeto" },
+                        { title: "Valor" },
+                        { title: "Quantidade de Beneficiários" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-left", "targets": [0]}
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+			});
+            tabelaCalculaRateio.columns.adjust();
+            //$('#contabilizador_valor_nf_filial_rateio')[0].innerText = 'Valor total da NF: ' + String(let_soma_valor).replace('.', ',');
+            console.log(let_soma_valor);
+            let let_valor_final = '';
+            let let_primeiro_valor_com_ponto = '';
+            if (String(let_soma_valor).split('.').length > 1) {
+                if (String(let_soma_valor).split('.')[1].length > 2) {
+                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
+                }
+                if (String(let_soma_valor).split('.')[1].length == 1) {
+                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,1)+'0';
+                }
+            }
+            else if (String(let_soma_valor).split('.').length == 1) {
+                let_valor_final = String(let_soma_valor)+',00';
+            }
+            $('#contabilizador_valor_nf_filial_rateio').html('Valor total da Filial: <p style="font-size:25px">R$ ' + let_valor_final + '</p>');
+        },
+        error: function (xhr, status, error) {
+            $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '../../icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+            });
+        }
+    });
+});
+
+$(document).on('shown.bs.tab','.tab-nav' , function(e) {
+  let target = e.target.id;
+
+  if (target == 'a_tab_rateio_despesas_erros') {
+    tabelaRateioUnimed = $('#tab_rateio_despesas_erros').DataTable();
+    tabelaRateioUnimed.clear().columns.adjust();
+    tabelaRateioUnimed.draw();
+  }
+  else if (target == 'a_tab_rateio_despesas_importadas') {
+    tabelaConsultaDespesas = $('#tab_rateio_despesas_consulta').DataTable();
+    tabelaConsultaDespesas.clear().columns.adjust();
+    tabelaConsultaDespesas.draw();
+  }
+  else if (target == 'a_tab_rateio_projetos') {
+    tabelaCalculaRateio = $('#tab_calculo_rateio').DataTable();
+    tabelaCalculaRateio.clear().columns.adjust();
+    tabelaCalculaRateio.draw();
+  }
 });
 
 $(document).on('click','.fechaModalBuscaColabSenior' , function(){
     $('#modalBuscaColabSenior').hide();
 });
+
 
