@@ -501,7 +501,7 @@
                                 </div>
 
                                 <div class="d-flex flex-column w-100 cl_div_dt_competencia_anexo_doc_contrato">
-                                    <label>
+                                    <label for="dt_competencia_anexo_doc_contrato">
                                         Competência
                                         <input type="month" class="form-control" id="dt_competencia_anexo_doc_contrato" required>
                                     </label>
@@ -509,8 +509,17 @@
 
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-2" >
-                                <div class="d-flex flex-column align-items-end w-75">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3" >
+
+                                <div class="d-flex flex-column align-items-start">
+                                    <label for="txt_desc_anexo_contrato">Descrição do arquivo</label>
+                                    <input type="text" name="txt_desc_anexo_contrato"
+                                                id="txt_desc_anexo_contrato"
+                                                class="form-control"/>
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end w-75"
+                                     style="margin-top: 1rem;margin-left: 0.5rem;">
                                     <input type="file" name="file_anexo_contrato"
                                                 id="file_anexo_contrato"
                                                 class="containerApp"
@@ -519,7 +528,8 @@
                                     />{% csrf_token %}
                                 </div>
 
-                                <div class="d-flex flex-column align-items-end w-25">
+                                <div class="d-flex flex-column align-items-end w-25"
+                                     style="margin-top: 1rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
                                         name="btn_anexa_doc_contrato"
