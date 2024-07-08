@@ -5,6 +5,7 @@ from django.shortcuts import render
 
 from apps.calendario_app.models import Calendario_Dias
 from apps.ti_tma_app.models import Chamado_Atendido_TMA
+from apps.usuario_app.models import Usuario
 
 
 class ConexaoHelpDesk():
@@ -165,3 +166,53 @@ class ConexaoHelpDesk():
         status = cursor.fetchone()
 
         return status[0]
+
+    def retorna_chamado_by_cod(self, num_chamado):
+        obj_chamado = None
+
+        cursor = self.__conn.cursor()
+        sql_chamados = (
+            f'''
+                SELECT	ch.id_chamado		    AS	id_ch,
+                        ch.problema             AS  desc_problema,
+                        usu_abr.usuario         AS  login_usu_abertura,
+                        ch.data_abertura        AS  data_chamado,
+                        atend.usuario           AS  login_atendente
+                  FROM	chm_chamados ch
+                  
+                    /* Retorna usuario abertura */
+                  LEFT	JOIN chm_alteracoes_status_chamado usu_chm_abr
+                    ON	(usu_chm_abr.id_chamado = ch.id_chamado
+                   AND	usu_chm_abr.id_status = 7)
+                  LEFT	JOIN chm_usuarios usu_abr
+                    ON	(usu_abr.id_usu = usu_chm_abr.id_usu
+                   AND	usu_abr.id_perfil_usu = 1)
+
+                    /* Retorna atendente do chamado */
+                  LEFT	JOIN chm_alteracoes_status_chamado atend_chm_abr
+                    ON	(atend_chm_abr.id_chamado = ch.id_chamado
+                   AND	atend_chm_abr.id_status = 1)
+                  LEFT  JOIN chm_usuarios atend
+                    ON  (atend.id_usu = atend_chm_abr.id_usu)
+                 WHERE	ch.id_chamado = {num_chamado};
+                    '''
+        )
+        cursor.execute(sql_chamados)
+        chamados_cursor = cursor.fetchone()
+
+        cod_usu_abertura = 0
+        obj_usu_abertura = Usuario.objects.filter(login_usu=chamados_cursor[2]).first()
+        if obj_usu_abertura != None:
+            cod_usu_abertura = obj_usu_abertura.cod_usu
+
+        cod_usu_atendente = 0
+        obj_usu_atendente = Usuario.objects.filter(login_usu=chamados_cursor[4]).first()
+        if obj_usu_atendente != None:
+            cod_usu_atendente = obj_usu_atendente.cod_usu
+        dic_chamado = {
+            'desc_problema': chamados_cursor[1],
+            'data_chamado': datetime.strftime(chamados_cursor[3], '%Y-%m-%d'),
+            'cod_usu_abertura': cod_usu_abertura,
+            'cod_usu_atendente': cod_usu_atendente
+        }
+        return dic_chamado

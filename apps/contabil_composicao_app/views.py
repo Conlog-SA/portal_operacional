@@ -5125,11 +5125,12 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
                 verifica_se_contrato_auditada = (Auditoria_Status_Composicao_Competencia.objects
                                                  .filter(cod_conta=parcela.cod_contrato.cod_conta,
                                                          cod_contrato=parcela.cod_contrato,
-                                                         data_competencia=competencia_aud))
+                                                         data_competencia=competencia_aud, status=1))
 
                 if len(verifica_se_contrato_auditada) == 0:
                     conexao_benner = ConexaoBancoBenner()
-                    lista_parcelas_atualizadas = conexao_benner.atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm)
+                    lista_parcelas_atualizadas = (conexao_benner
+                                                  .atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm))
 
                     for parc in lista_parcelas_atualizadas:
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parc['handle_parc']).first()

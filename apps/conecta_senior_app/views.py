@@ -409,3 +409,6 @@ class Conexao_Senior_BD():
         df_provisao_folha_senior = pd.read_sql(sql_query_provisao_folha, self.__conn)
         self.__conn.close()
         return df_provisao_folha_senior
+
+
+

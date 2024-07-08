@@ -108,7 +108,7 @@ $(document).on('click', 'a', function(){
                         'copyHtml5'
                     ],
                     "columnDefs": [
-                        {"className": "dt-left", "targets": [0]}
+                        {"className": "dt-center", "targets": [0,1,2]}
                     ],
                     "oLanguage": {
                         "sProcessing":   "Processando...",

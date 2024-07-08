@@ -14,6 +14,7 @@ class Usuario(models.Model):
     perfil_usu = models.TextField(max_length=30)
     login_usu = models.TextField(max_length=50)
     sala = models.CharField(max_length=3,null=True)
+    tipo_colab = models.CharField(max_length=1, null=True, blank=True)
     corporativo = models.TextField(max_length=1,default='N')
     class Meta:
         managed = True
