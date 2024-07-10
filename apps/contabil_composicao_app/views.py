@@ -3570,6 +3570,33 @@ class Form_Vincula_Resp_Contas_View(View):
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
 
+
+    def post(self, request):
+        lista_nome_responsavel_frm = request.POST['lista_nome_responsavel']
+        lista_cod_contas_frm = request.POST['lista_cod_contas']
+        dt_fim_atividade_frm = request.POST['dt_fim_atividade']
+        msg = ''
+        try:
+            lista_resp = (Responsaveis_Conta.objects
+                                .filter((Q(resp_composicao__in=lista_nome_responsavel_frm.split(',')) |
+                                         Q(resp_validacao__in=lista_nome_responsavel_frm.split(','))),
+                                        data_fim_atividade__isnull=True,
+                                        cod_conta__cod_conta__in=lista_cod_contas_frm.split(',')))
+            for reg in lista_resp:
+                reg.data_fim_atividade = dt_fim_atividade_frm
+                reg.save()
+            msg = 'Contas desativadas com sucesso!'
+        except Exception as e:
+            msg = f'Algo interrompeu o processo. Conta o Adm. {e}'
+
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+
 class Importa_Anexos_Contas_View(View):
     def post(self, request):
         cod_usuario_sessao = request.session['cod_usuario_logado']
@@ -4963,6 +4990,13 @@ class Form_Contas_Resp_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
         dic_lista_contas_resp = []
+        lista_pacotes_resp = []
+        lista_pacotes_resp = list(Responsaveis_Conta.objects
+                                  .filter((Q(resp_composicao__in=lista_cod_usuarios.split(',')) | Q(resp_validacao__in=lista_cod_usuarios.split(','))),
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                          cod_conta__status_comp='A')
+                                  .values('cod_conta__cod_pacote_conta__cod_pacote_conta',
+                                          'cod_conta__cod_pacote_conta__desc_pacote_conta').distinct())
         for nome_usu in lista_cod_usuarios.split(','):
             lista_contas_resp = (Responsaveis_Conta.objects
                                  .filter( (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)),
@@ -4973,7 +5007,10 @@ class Form_Contas_Resp_View(View):
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp',
                                          'cod_conta__tipo_modelo',
                                          'resp_composicao', 'resp_validacao', 'data_ini_atividade',
-                                         'data_fim_atividade'))
+                                         'data_fim_atividade', 'cod_conta__cod_pacote_conta__cod_pacote_conta'))
+
+
+
             for reg in lista_contas_resp:
                 if reg['data_ini_atividade'] != None:
                     reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
@@ -4982,7 +5019,8 @@ class Form_Contas_Resp_View(View):
                 dic_lista_contas_resp.append(reg)
         data = dict()
         data = {
-            'dic_lista_contas_resp': dic_lista_contas_resp
+            'dic_lista_contas_resp': dic_lista_contas_resp,
+            'lista_pacotes_resp': lista_pacotes_resp
         }
         return JsonResponse(data, safe=False)
 
@@ -5203,5 +5241,23 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
         data = dict()
         data = {
             'lista_parcelas_atualizados': lista_parcelas_atualizadas_form
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Comp_Contas_Resp_View(View):
+    def get(self, request):
+        lista_nome_responsavel_frm = request.GET['lista_nome_responsavel']
+        lista_cod_pacote_frm = request.GET['lista_cod_pacote']
+
+        lista_contas = list(Responsaveis_Conta.objects
+                        .filter((Q(resp_composicao__in=lista_nome_responsavel_frm.split(',')) |
+                                 Q(resp_validacao__in=lista_nome_responsavel_frm.split(','))),
+                                cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_cod_pacote_frm.split(','))
+                        .values('cod_conta__cod_conta', 'cod_conta__desc_conta','cod_conta__cod_red_conta_contabil_cp',
+                                'cod_conta__cod_red_conta_contabil_lp').distinct())
+        data = dict()
+        data = {
+            'lista_contas': lista_contas
         }
         return JsonResponse(data, safe=False)

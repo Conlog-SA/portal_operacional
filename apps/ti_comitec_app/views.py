@@ -34,6 +34,7 @@ class Frm_Cad_Ideias_View(View):
         return render(request, 'ti_comitec_app/frm_cad_ideias.html', context)
 
     def post(self, request):
+        cod_ideia_frm = request.POST['cod_ideia']
         desc_ideia_frm = request.POST['desc_ideia']
         resumo_ideia_frm = request.POST['resumo_ideia']
         cod_atividade_frm = request.POST['cod_atividade']
@@ -48,6 +49,10 @@ class Frm_Cad_Ideias_View(View):
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        dic_usuario_sessao = {
+            'cod_usu': obj_usuario_sessao.cod_usu,
+            'tipo_colab_comitec': obj_usuario_sessao.tipo_colab
+        }
 
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
@@ -62,21 +67,38 @@ class Frm_Cad_Ideias_View(View):
 
         msg = ''
         try:
-            obj_ideia = Ideia(
-                cod_chamado = num_chamado_frm,
-                data_lancamento_idea = data_ideia_frm,
-                desc_ideia = desc_ideia_frm,
-                resumo_ideia = resumo_ideia_frm,
-                val_ganhos = estimativa_val_ganhos_frm,
-                val_despesas = estimativa_desp_frm,
-                horas_ganhas = estimativa_ganhos_horas_frm,
-                cod_status = 0,
-                cod_atividade = obj_atv,
-                cod_usu_master = obj_usu_master,
-                cod_usu_owner = obj_usu_owner,
-                obs_usu_owner = obs_usu_owner_frm
-            ).save()
-            msg = 'Idéia adicionada com sucesso!'
+            if cod_ideia_frm > 0:
+                obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
+                obj_ideia.cod_chamado = num_chamado_frm
+                obj_ideia.data_lancamento_idea = data_ideia_frm
+                obj_ideia.desc_ideia = desc_ideia_frm
+                obj_ideia.resumo_ideia = resumo_ideia_frm
+                obj_ideia.val_ganhos = estimativa_val_ganhos_frm
+                obj_ideia.val_despesas = estimativa_desp_frm
+                obj_ideia.horas_ganhas = estimativa_ganhos_horas_frm
+                obj_ideia.cod_status = 0
+                obj_ideia.cod_atividade = obj_atv
+                obj_ideia.cod_usu_master = obj_usu_master
+                obj_ideia.cod_usu_owner = obj_usu_owner
+                obj_ideia.obs_usu_owner = obs_usu_owner_frm
+                obj_ideia.save()
+                msg = 'Dados atualizados com sucesso!'
+            else:
+                obj_ideia = Ideia(
+                    cod_chamado = num_chamado_frm,
+                    data_lancamento_idea = data_ideia_frm,
+                    desc_ideia = desc_ideia_frm,
+                    resumo_ideia = resumo_ideia_frm,
+                    val_ganhos = estimativa_val_ganhos_frm,
+                    val_despesas = estimativa_desp_frm,
+                    horas_ganhas = estimativa_ganhos_horas_frm,
+                    cod_status = 0,
+                    cod_atividade = obj_atv,
+                    cod_usu_master = obj_usu_master,
+                    cod_usu_owner = obj_usu_owner,
+                    obs_usu_owner = obs_usu_owner_frm
+                ).save()
+                msg = 'Idéia adicionada com sucesso!'
         except Exception as e:
             msg = f'Erro ao adicionar nova ideia: {e}'
 
@@ -84,7 +106,8 @@ class Frm_Cad_Ideias_View(View):
         data = dict()
         data = {
             'msg': msg,
-            'lista_ideias_frm': lista_ideias_frm
+            'lista_ideias_frm': lista_ideias_frm,
+            'dic_usuario_sessao': dic_usuario_sessao
         }
         return JsonResponse(data, safe=False)
 
@@ -94,7 +117,7 @@ class Frm_Cad_Item_Gut_View(View):
         desc_head_modal_add_item_gut = ''
         icon_head_modal_add_item_gut = ''
         lista_itens_gut = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
-                               .values('cod_item_gut', 'desc', 'peso', 'ativo', 'flag'))
+                               .values('cod_item_gut', 'desc', 'peso', 'ativo', 'flag', 'color_flag'))
         if tipo_item_gut_frm == 'G':
             desc_head_modal_add_item_gut = 'Gravidade - Matriz GUT'
             icon_head_modal_add_item_gut = '<i class="fa-solid fa-g fa-2xl" style="color: #FFFFFF;"></i>'
@@ -305,6 +328,46 @@ class Frm_Pontua_Item_Gut_View( View):
             'peso_item_gut': obj_item_gut.peso,
             'nota_total_gut': nota_total_gut,
             'lista_ideias_frm': lista_ideias_frm
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Frm_Avaliacao_Master_View(View):
+    def post(self, request):
+        cod_ideia_frm = request.POST['cod_ideia']
+        cod_usu_master_frm = request.POST['cod_usu_master']
+        obs_usu_master_frm = request.POST['obs_usu_master']
+
+        obj_usu_master = Usuario.objects.get(pk=cod_usu_master_frm)
+
+        obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
+        obj_ideia.cod_usu_master = obj_usu_master
+        obj_ideia.obs_usu_master = obs_usu_master_frm
+        obj_ideia.save()
+        data = dict()
+        data = {
+            'msg': 'Parecer técnico registrado'
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Frm_Avaliacao_Head_View(View):
+    def post(self, request):
+        cod_ideia_frm = request.POST['cod_ideia']
+        cod_usu_head_frm = request.POST['cod_usu_head']
+        nota_head_frm = request.POST['nota_head']
+        obs_usu_head_frm = request.POST['obs_usu_head']
+
+        obj_usu_head = Usuario.objects.get(pk=cod_usu_head_frm)
+
+        obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
+        obj_ideia.cod_usu_head = obj_usu_head
+        obj_ideia.nota_head = nota_head_frm
+        obj_ideia.obs_usu_head = obs_usu_head_frm
+        obj_ideia.save()
+        data = dict()
+        data = {
+            'msg': 'Parecer do head registrado'
         }
         return JsonResponse(data, safe=False)
 
