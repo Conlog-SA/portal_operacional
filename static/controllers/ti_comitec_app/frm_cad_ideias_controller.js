@@ -318,7 +318,7 @@ $(document).on('click','button', function(){
         let let_elem_array = Array.from(let_lista_componente_campos_obgo);
         let let_campos_validados = 0;
         let_elem_array.forEach(campo => {
-            if(campo.value == '' || campo.value == null){
+            if(campo.getAttribute('name') != null && (campo.value == '' || campo.value == null)){
                 let_campos_validados += 1;
             }
 
@@ -332,6 +332,12 @@ $(document).on('click','button', function(){
                 time: '',
             });
         } else {
+            /* window.scroll({
+                top: 0,
+                behavior: 'smooth'
+            }); */
+            let let_loader_frm_cad_ideias_comitec = document.getElementById("loader_frm_cad_ideias_comitec");
+            let_loader_frm_cad_ideias_comitec.style.display = "flex";
             $.ajax({
             type: 'POST',
             url: '/ti_comitec_app/add_nova_ideia_comitec',
@@ -351,6 +357,7 @@ $(document).on('click','button', function(){
                 'obs_usu_owner': let_obs_usu_owner
             },
             success: function (dados) {
+
                 $.gritter.add({
                     title: 'Atenção!',
                     text: dados.msg,
@@ -358,12 +365,59 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                if(dados.dic_usuario_sessao.tipo_colab_comitec == 'L'){
+                    $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
+                    $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
+                    $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
+
+                }
+                else if(dados.dic_usuario_sessao.tipo_colab_comitec == 'M'){
+                    $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
+                    $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
+                    $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
+
+
+                }
+                else if(dados.dic_usuario_sessao.tipo_colab_comitec == 'H' || dados.obj_usu_dic.tipo_colab_comitec == 'G'){
+                    $("#btn_abre_modal_add_nota_gut_g").prop('disabled', false);
+                    $("#btn_abre_modal_add_nota_gut_u").prop('disabled', false);
+                    $("#btn_abre_modal_add_nota_gut_t").prop('disabled', false);
+
+                    $("#txt_nota_usu_head_ideia_comitec").prop('disabled', false);
+                    $("#txt_obs_usu_head").prop('disabled', false);
+                    $("#btn_add_aval_usu_head_ideia_comitec").prop('disabled', false);
+                }
+
+
+                let let_img_btn_atualizar_ideia = `
+                    <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
+                    Atualizar dados da minha idéia
+                `;
+                $("#btn_add_nova_ideia_comitec").val(dados.cod_ideia);
+                $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
+
+                let btn_limpar_campos = `
+                    <button type="button" name="btn_limpa_campos_frm_ideia_comitec"
+                              id="btn_limpa_campos_frm_ideia_comitec"
+                              class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-regular fa-lightbulb" style="color: #FFFFFF;"></i>
+                          Registrar Nova Idéia
+                      </button>
+                `;
+                $("#div_btn_nova_ideia").html(btn_limpar_campos);
 
                 carrega_tabela_ideias(dados.lista_ideias_frm);
-                limpa_campos_frm_ideia_comitec(dados.dic_usuario_sessao);
+                //limpa_campos_frm_ideia_comitec(dados.dic_usuario_sessao);
 
+                $("#btn_add_aval_usu_master_ideia_comitec").val(dados.cod_ideia);
+                $("#btn_add_aval_usu_head_ideia_comitec").val(dados.cod_ideia);
+                $("#btn_confirma_peso_item_gut").val(dados.cod_ideia);
+
+
+                let_loader_frm_cad_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
+                let_loader_frm_cad_ideias_comitec.style.display = "none";
                 $.gritter.add({
                     title: 'Atenção!',
                     text: error,
@@ -545,6 +599,9 @@ $(document).on('click','button', function(){
     }
     else if(let_nome_btn == 'btn_abre_modal_add_nota_gut_g' || let_nome_btn == "btn_abre_modal_add_nota_gut_u" ||
         let_nome_btn == "btn_abre_modal_add_nota_gut_t") {
+
+        $("#btn_fecha_modal_pontua_item_gut").prop('disabled', false);
+        $("#btn_confirma_peso_item_gut").prop('disabled', false);
         $.ajax({
             type: 'GET',
             url: '/ti_comitec_app/abre_modal_peso_item_gut_ideia',
@@ -587,9 +644,13 @@ $(document).on('click','button', function(){
         $("#modal_pontua_item_gut").hide();
     }
     else if (let_nome_btn == 'btn_confirma_peso_item_gut'){
+        $("#btn_confirma_peso_item_gut").prop('disabled', true);
+        $("#btn_fecha_modal_pontua_item_gut").prop('disabled', true);
         let let_cod_tipo_item_gut = $("#cb_cod_item_gut").val();
         let let_desc_tipo_item_gut = $("#hd_tipo_item_gup_nota").val();
         let let_cod_ideia = let_val_btn;
+        let let_loader_frm_cad_ideias_comitec = document.getElementById("loader_princ_frm_cad_ideias_comitec");
+        let_loader_frm_cad_ideias_comitec.style.display = "flex";
         $.ajax({
             type: 'POST',
             url: '/ti_comitec_app/pontua_ideia_nota_gut',
@@ -606,6 +667,7 @@ $(document).on('click','button', function(){
                 $("#txt_nota_tt_gut").val(dados.nota_total_gut);
                 $("#modal_pontua_item_gut").hide();
                 carrega_tabela_ideias(dados.lista_ideias_frm);
+                let_loader_frm_cad_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -630,6 +692,8 @@ $(document).on('click','button', function(){
     else if(let_nome_btn == 'btn_add_aval_usu_master_ideia_comitec'){
         let let_cod_usu_master = $("#cb_usu_master_ideia_comitec").val();
         let let_obs_usu_master = $("#txt_obs_usu_master").val();
+        let let_loader_frm_parecer_master_ideias_comitec = document.getElementById("loader_frm_parecer_master_ideias_comitec");
+        let_loader_frm_parecer_master_ideias_comitec.style.display = "flex";
         $.ajax({
             type: 'POST',
             url: '/ti_comitec_app/atualiza_parecer_tecnico_ideia',
@@ -646,6 +710,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                let_loader_frm_parecer_master_ideias_comitec.style.display = "flex";
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -662,7 +727,18 @@ $(document).on('click','button', function(){
         let let_cod_usu_head = $("#cb_usu_head_ideia_comitec").val();
         let let_nota_head = $("#txt_nota_usu_head_ideia_comitec").val();
         let let_obs_usu_head = $("#txt_obs_usu_head").val();
-        $.ajax({
+        if( let_nota_head == '' || let_nota_head == null){
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Sr. Head. Informe a sua nota para registrar seu parecer!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        } else {
+            let let_loader_frm_parecer_head_ideias_comitec = document.getElementById("loader_frm_parecer_head_ideias_comitec");
+            let_loader_frm_parecer_head_ideias_comitec.style.display = "flex";
+            $.ajax({
             type: 'POST',
             url: '/ti_comitec_app/atualiza_parecer_head_ideia',
             data: {
@@ -679,6 +755,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                let_loader_frm_parecer_head_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -690,6 +767,8 @@ $(document).on('click','button', function(){
                 });
           }
         });
+        }
+
     }
 
 
@@ -891,21 +970,28 @@ function limpa_campos_frm_ideia_comitec(dic_usuario){
     let let_lista_campos_usu_head = document.getElementsByClassName('cl_campo_head');
     let let_elem_head_array = Array.from(let_lista_campos_usu_head);
 
+    $("#txt_nota_usu_head_ideia_comitec").val('');
+
+    $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
+    $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
+    $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
+
+
     if(dic_usuario.tipo_colab_comitec == 'L'){
-        $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
+        /*$("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
         $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
-        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
+        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);*/
 
         let_elem_owner_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
 
         let_elem_master_array.forEach(campo => {
-            campo.disabled = false;
+            campo.disabled = true;
         });
 
         let_elem_head_array.forEach(campo => {
-            campo.disabled = false;
+            campo.disabled = true;
         });
 
         $("#cb_usu_owner_ideia_comitec").val(dic_usuario.cod_usu);
@@ -913,39 +999,39 @@ function limpa_campos_frm_ideia_comitec(dic_usuario){
         $("#cb_usu_head_ideia_comitec").val('');
     }
     else if(dic_usuario.tipo_colab_comitec == 'M'){
-        $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
+        /* $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
         $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
-        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
+        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true); */
         let_elem_owner_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
 
         let_elem_master_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
 
         let_elem_head_array.forEach(campo => {
-            campo.disabled = false;
+            campo.disabled = true;
         });
 
         $("#cb_usu_owner_ideia_comitec").val(dic_usuario.cod_usu);
         $("#cb_usu_master_ideia_comitec").val(dic_usuario.cod_usu);
         $("#cb_usu_head_ideia_comitec").val('');
     }
-    else if(dados.obj_usu_dic.tipo_colab_comitec == 'H' || dados.obj_usu_dic.tipo_colab_comitec == 'G'){
-        $("#btn_abre_modal_add_nota_gut_g").prop('disabled', false);
+    else if(dic_usuario.tipo_colab_comitec == 'H' || dic_usuario.tipo_colab_comitec == 'G'){
+        /* $("#btn_abre_modal_add_nota_gut_g").prop('disabled', false);
         $("#btn_abre_modal_add_nota_gut_u").prop('disabled', false);
-        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', false);
+        $("#btn_abre_modal_add_nota_gut_t").prop('disabled', false); */
         let_elem_owner_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
 
         let_elem_master_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
 
         let_elem_head_array.forEach(campo => {
-            campo.disabled = true;
+            campo.disabled = false;
         });
         $("#cb_usu_owner_ideia_comitec").val(dic_usuario.cod_usu);
         $("#cb_usu_master_ideia_comitec").val(dic_usuario.cod_usu);
@@ -954,4 +1040,8 @@ function limpa_campos_frm_ideia_comitec(dic_usuario){
     }
     $(".selectpicker").selectpicker("refresh");
     let_dic_usu_sessao = null;
+    window.scroll({
+        top: 0,
+        behavior: 'smooth'
+    });
 }

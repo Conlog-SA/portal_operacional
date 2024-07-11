@@ -64,10 +64,20 @@ class Frm_Cad_Ideias_View(View):
             obj_usu_master = Usuario.objects.get(pk=cod_usu_master_frm)
         if num_chamado_frm == '':
             num_chamado_frm = 0
+        if estimativa_val_ganhos_frm == '':
+            estimativa_val_ganhos_frm = 0.00
+        else:
+            estimativa_val_ganhos_frm = estimativa_val_ganhos_frm.replace('.','').replace(',','.')
+        if estimativa_desp_frm == '':
+            estimativa_desp_frm = 0.00
+        else:
+            estimativa_desp_frm = estimativa_desp_frm.replace('.', '').replace(',', '.')
+        if estimativa_ganhos_horas_frm == '':
+            estimativa_ganhos_horas_frm = 0
 
         msg = ''
         try:
-            if cod_ideia_frm > 0:
+            if int(cod_ideia_frm) > 0:
                 obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
                 obj_ideia.cod_chamado = num_chamado_frm
                 obj_ideia.data_lancamento_idea = data_ideia_frm
@@ -97,7 +107,9 @@ class Frm_Cad_Ideias_View(View):
                     cod_usu_master = obj_usu_master,
                     cod_usu_owner = obj_usu_owner,
                     obs_usu_owner = obs_usu_owner_frm
-                ).save()
+                )
+                obj_ideia.save()
+                cod_ideia_frm = obj_ideia.cod_ideia
                 msg = 'Idéia adicionada com sucesso!'
         except Exception as e:
             msg = f'Erro ao adicionar nova ideia: {e}'
@@ -107,7 +119,8 @@ class Frm_Cad_Ideias_View(View):
         data = {
             'msg': msg,
             'lista_ideias_frm': lista_ideias_frm,
-            'dic_usuario_sessao': dic_usuario_sessao
+            'dic_usuario_sessao': dic_usuario_sessao,
+            'cod_ideia': cod_ideia_frm
         }
         return JsonResponse(data, safe=False)
 

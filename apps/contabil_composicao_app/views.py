@@ -436,6 +436,18 @@ class Form_Cad_Conta_View(View):
 
         tipo_return_form = request.GET['tipo_return']
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)
+
+        empresas_usam_conta = (Responsaveis_Conta
+                               .objects
+                               .filter(cod_conta=obj_conta_pesq).values('cod_empresa__cod_empresa')
+                               .distinct())
+        conlog_usa = 'N'
+        deep_usa = 'N'
+        for emp in empresas_usam_conta:
+            if emp['cod_empresa__cod_empresa'] == 12:
+                conlog_usa = 'S'
+            elif emp['cod_empresa__cod_empresa'] == 17:
+                deep_usa = 'S'
         data_ini_atv = None
         if obj_conta_pesq.data_ini_atividade != None:
             data_ini_atv = datetime.strftime(obj_conta_pesq.data_ini_atividade, '%Y-%m-%d')
@@ -458,7 +470,9 @@ class Form_Cad_Conta_View(View):
             'data_ini_atividade': data_ini_atv,
             'data_fim_atividade': data_fim_atv,
             'status_comp': obj_conta_pesq.status_comp,
-            'cod_pacote_conta': nome_pacote
+            'cod_pacote_conta': nome_pacote,
+            'conlog_usa': conlog_usa,
+            'deep_usa': deep_usa
         }
 
 

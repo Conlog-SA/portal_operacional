@@ -345,7 +345,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
-                povoa_tab_mapas_terceitos_2art();
+                /* povoa_tab_mapas_terceitos_2art(); */
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -757,7 +757,7 @@ $(document).on('click','button', function(){
         $("#txt_placa_lanc_2art_terc").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][3]
             .split("-")[0].replace(' ',''));
         $("#txt_data_ocorrencia_lanc_2art_terc").val("");
-        $("#txt_valor_lanc_2art_terc").val("0,00");
+        $("#txt_valor_lanc_2art_terc").val("");
         $("#txt_obs_lanc_2art_terc").val("");
         $("#tab_lanc_2art_terc").DataTable().clear().draw();
 
@@ -781,7 +781,7 @@ $(document).on('click','button', function(){
 
         povoa_tab_lanc_acres_desc_do_mapa(let_cod_reg_2art_terc_financ);
 
-        $("input[type=text][name=txt_valor_lanc_2art_terc]").mask('999,99', {placeholder: "0,00"});
+        $("input[type=text][name=txt_valor_lanc_2art_terc]").mask('###0,00', {reverse: true});
 
         $("#modal_lanc_2art_terc").show();
 
@@ -795,7 +795,7 @@ $(document).on('click','button', function(){
         $("#txt_obs_lanc_2art_terc").val("");
         $("#modal_lanc_2art_terc").hide();
 
-        povoa_tab_mapas_terceitos_2art();
+        /* povoa_tab_mapas_terceitos_2art(); */
 
 
     }

@@ -13,6 +13,22 @@
             <i class="fa-solid fa-comments-dollar fa-2xl" style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
         </div>
+        <span style="font-style: italic;">
+            {{ obj_usuario_sessao.nome_usu }}
+            {% if obj_usuario_sessao.tipo_colab == 'L' %}
+                (Líder).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'M' %}
+                (Master).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'H' %}
+                (Head).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'G' %}
+                (Gerente).
+            {% endif %}
+            Bem vindo!
+        </span>
         <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
     </div>
 
@@ -29,7 +45,7 @@
 
 
             <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_contas">
-                <div class="loader" id="loader_frm_cad_ideias_comitec">
+                <div class="loader" id="loader_princ_frm_cad_ideias_comitec">
                     <div class="loader-inner">
                         <div class="loader-block"></div>
                         <div class="loader-block"></div>
@@ -191,7 +207,7 @@
                                 <div class="d-flex flex-column w-100">
                                     <label>
                                         Número Chamado que orignou a idéia
-                                        <input type="text" id="num_chamado_ideia_comitec" class="form-control cl_valida_campo_obgo"
+                                        <input type="text" id="num_chamado_ideia_comitec" class="form-control"
                                                name="num_chamado_ideia_comitec">
                                     </label>
                                 </div>
@@ -207,10 +223,7 @@
                                             <label>Nota G(Gravidade)
                                                 <button type='button' name='btn_abre_modal_add_nota_gut_g'
                                                     id='btn_abre_modal_add_nota_gut_g'
-                                                    class='btn btn-rounded btn-space' value="G"
-                                                        {% if obj_usuario_sessao.tipo_colab == 'L' or obj_usuario_sessao.tipo_colab == 'M' %}
-                                                            disabled
-                                                        {% endif %}
+                                                    class='btn btn-rounded btn-space' value="G" disabled
                                                     title='Lançar pesos que meçam a (G)Gravidade do problema'>
                                                     <i class="fa-regular fa-flag" style="color: #f46424; width: 40px;"></i>
                                                 </button>
@@ -220,10 +233,7 @@
                                             <label>Nota U(Urgência)
                                                 <button type='button' name='btn_abre_modal_add_nota_gut_u'
                                                     id='btn_abre_modal_add_nota_gut_u'
-                                                    class='btn btn-rounded btn-space' value="U"
-                                                        {% if obj_usuario_sessao.tipo_colab == 'L' or obj_usuario_sessao.tipo_colab == 'M' %}
-                                                            disabled
-                                                        {% endif %}
+                                                    class='btn btn-rounded btn-space' value="U" disabled
                                                     title='Lançar pesos que meçam a (U)Urgência do problema'>
                                                     <i class="fa-regular fa-flag" style="color: #f46424; width: 40px;"></i>
                                                 </button>
@@ -233,10 +243,7 @@
                                             <label>Nota T(Tendência)
                                                 <button type='button' name='btn_abre_modal_add_nota_gut_t'
                                                     id='btn_abre_modal_add_nota_gut_t'
-                                                    class='btn btn-rounded btn-space' value="T"
-                                                        {% if obj_usuario_sessao.tipo_colab == 'L' or obj_usuario_sessao.tipo_colab == 'M' %}
-                                                            disabled
-                                                        {% endif %}
+                                                    class='btn btn-rounded btn-space' value="T" disabled
                                                     title='Lançar pesos que meçam a (T)Tendência do problema'>
                                                     <i class="fa-regular fa-flag" style="color: #f46424; width: 40px;"></i>
                                                 </button>
@@ -309,7 +316,11 @@
                                             style="color: #999999; font-size: 20px; height: 54.65px"
                                             data-live-search="true" title="Informe o dono pela idéia">
                                             {% for usu in lista_usu_owners %}
-                                                <option value="{{usu.cod_usu}}">
+                                                <option value="{{usu.cod_usu}}"
+                                                    {% if obj_usuario_sessao.cod_usu == usu.cod_usu %}
+                                                        selected
+                                                    {% endif %}
+                                                >
                                                     {{ usu.login_usu }}
                                                 </option>
                                             {% endfor %}
@@ -331,21 +342,21 @@
                                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
                                     <label>
                                         Estimativa de Ganhos em R$
-                                        <input type="text" id="val_ganhos_ideia_comitec" class="form-control cl_valida_campo_obgo"
-                                               name="val_ganhos_ideia_comitec">
+                                        <input type="text" id="val_ganhos_ideia_comitec" class="form-control class_mask_campo_val"
+                                               name="val_ganhos_ideia_comitec" placeholder="0,00">
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
                                     <label>
                                         Estimativa de Despesas em R$
-                                        <input type="text" id="val_despesas_ideia_comitec" class="form-control cl_valida_campo_obgo"
-                                               name="val_despesas_ideia_comitec">
+                                        <input type="text" id="val_despesas_ideia_comitec" class="form-control class_mask_campo_val"
+                                               name="val_despesas_ideia_comitec" placeholder="0,00">
                                     </label>
                                 </div>
                                 <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
                                     <label>
                                         Estimativa de Ganhos em horas
-                                        <input type="text" id="txt_horas_ganho_ideia_comitec" class="form-control cl_valida_campo_obgo"
+                                        <input type="text" id="txt_horas_ganho_ideia_comitec" class="form-control"
                                                name="txt_horas_ganho_ideia_comitec">
                                     </label>
                                 </div>
@@ -364,8 +375,19 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;
+                                <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
+                                    <div class="loader" id="loader_frm_cad_ideias_comitec">
+                                        <div class="loader-inner">
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                 </div>
@@ -394,13 +416,17 @@
                                     <label>Usuário Master Idéia
                                         <select class="selectpicker form-control cl_campo_master" id="cb_usu_master_ideia_comitec"
                                             name="cb_usu_master_ideia_comitec"
-                                                {% if obj_usuario_sessao.tipo_colab != 'H' or obj_usuario_sessao.tipo_colab != 'G' %}
+                                                {% if obj_usuario_sessao.tipo_colab == 'L' %}
                                                     disabled
                                                 {% endif %}
                                             style="color: #999999; font-size: 20px; height: 54.65px"
                                             data-live-search="true" title="Informe o usuário responsável pela execução da idéia">
                                             {% for usu in lista_usu_masters %}
-                                                <option value="{{usu.cod_usu}}">
+                                                <option value="{{usu.cod_usu}}"
+                                                    {% if obj_usuario_sessao.tipo_colab == 'M' and obj_usuario_sessao.cod_usu == usu.cod_usu%}
+                                                        selected
+                                                    {% endif %}
+                                                >
                                                     {{ usu.login_usu }}
                                                 </option>
                                             {% endfor %}
@@ -432,8 +458,19 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;
+                                <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
+                                    <div class="loader" id="loader_frm_parecer_master_ideias_comitec">
+                                        <div class="loader-inner">
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                 </div>
@@ -487,9 +524,7 @@
                                         Nota do Head
                                         <input type="text" class="form-control cl_campo_head" id="txt_nota_usu_head_ideia_comitec"
                                                name="txt_nota_usu_head_ideia_comitec"
-                                               {% if obj_usuario_sessao.tipo_colab != 'H' %}
-                                                    disabled
-                                                {% endif %}>
+                                               disabled
                                     </label>
                                 </div>
                             </div>
@@ -499,9 +534,7 @@
                                     <label>
                                       Avaliação Usuário Head
                                     <textarea class="form-control cl_campo_head" id="txt_obs_usu_head"
-                                              {% if obj_usuario_sessao.tipo_colab != 'H' %}
-                                                    disabled
-                                                {% endif %}
+                                              disabled
                                               name="txt_obs_usu_head"
                                             autocomplete="off" rows="3" cols="33" style="text-align: left;">
                                     </textarea>
@@ -510,8 +543,19 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;
+                                <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
+                                    <div class="loader" id="loader_frm_parecer_head_ideias_comitec">
+                                        <div class="loader-inner">
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                 </div>
@@ -520,9 +564,7 @@
                                 <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
                                     <button type="button" name="btn_add_aval_usu_head_ideia_comitec"
                                           id="btn_add_aval_usu_head_ideia_comitec"
-                                            {% if obj_usuario_sessao.tipo_colab != 'H' %}
-                                                    disabled
-                                                {% endif %}
+                                            disabled
                                           class="btn btn-primary btn-rounded botaoPrincipal">
                                     <i class="fa-solid fa-check" style="color: #FFFFFF;"></i>
                                       Confirmar Parecer Head

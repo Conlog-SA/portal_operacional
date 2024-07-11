@@ -2099,6 +2099,18 @@ function atualiza_form_dados_conta(tipo_return, cod_conta) {
         },
         //dataType: 'json',
         success: function (dados) {
+            let let_logo_conlog = '';
+            let let_logo_deep = '';
+            if(dados.dic_conta.conlog_usa == 'S'){
+                let_logo_conlog = `
+                    <img src="../static/img/logo_conlog_laranja.png" width="150rem;"
+                         height="30rem;" style="margin-top: 0.2rem;"/>
+                `;
+            }
+            if(dados.dic_conta.deep_usa == 'S'){
+                let_logo_deep = `<img src="../static/img/logo-deep.png" width="90rem;" height="50rem;"/>`;
+            }
+            $("#div_img_empresas_da_conta").html(let_logo_conlog + `&nbsp;&nbsp;&nbsp;&nbsp;` + let_logo_deep);
             $("#txt_desc_conta").val(dados.dic_conta.desc_conta);
 
             $("#tx_handle_conta_cp").val(dados.dic_conta.handle_benner_cp);
@@ -2944,6 +2956,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 function limpa_campos_form_cad_contas(){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
+    $("#div_img_empresas_da_conta").html('');
     $("#txt_desc_conta").val("");
 
     $("#tx_handle_conta_cp").val("");
