@@ -57,42 +57,68 @@ $(document).on('change', '.textarea-check-post', function(){
     });
 });
 
-$(document).on('change','.file-check-post' , function(event){
+async function compressImage(file) {
+  console.log('originalFile instanceof Blob', file instanceof Blob); // true
+  console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
+
+  const options = {
+    maxSizeMB: 1,
+    //maxWidthOrHeight: 1920,
+    useWebWorker: true
+  };
+
+  try {
+    const compressedFile = await imageCompression(file, options);
+    console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); // true
+    console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+    return compressedFile;
+  } catch (error) {
+    console.error('Compression error:', error);
+    return file;
+  }
+}
+
+$(document).on('change','.file-check-post' , async function(event){
     let file = event.target.files[0];
     element = $(this).siblings().eq(0);
+
     if (file) {
-        console.log(element)
+        let compressedFile = await compressImage(file);
         element.css("background-color", "#f46424");
         element.addClass("clickable");
-        element.attr("value", URL.createObjectURL(file))
+        element.attr("value", URL.createObjectURL(compressedFile));
+
+            let name =  $(this).attr("name").split('@')
+
+        let cod_item_check = name[0];
+        let cod_check_aplicado = name[1];
+
+        var formDataImg = new FormData();
+        //formDataImg.append("file", $(this)[0].files[0]);
+        formDataImg.append("file", compressedFile, compressedFile.name);
+        formDataImg.append("tipo_input", 'image');
+        formDataImg.append("cod_item_check", cod_item_check);
+        formDataImg.append("cod_check_aplicado", cod_check_aplicado);
+
+        $.ajax({
+            type: 'POST',
+            enctype: "multipart/form-data; charset=utf-8",
+            url: '/safety_checks_aplicados_app/item_aplicado',
+            data: formDataImg,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (dados) {
+                $(this).attr("value", "");
+            }
+        });
     }
     else {
         element.css("background-color", "#9fa3a7");
         element.removeClass("clickable");
-        element.attr("value", '')
+        element.attr("value", '');
     }
-    let name =  $(this).attr("name").split('@')
 
-    let cod_item_check = name[0];
-    let cod_check_aplicado = name[1];
-
-    var formDataImg = new FormData();
-    formDataImg.append("file", $(this)[0].files[0]);
-    formDataImg.append("tipo_input", 'image');
-    formDataImg.append("cod_item_check", cod_item_check);
-    formDataImg.append("cod_check_aplicado", cod_check_aplicado);
-
-    $.ajax({
-        type: 'POST',
-        enctype: "multipart/form-data; charset=utf-8",
-        url: '/safety_checks_aplicados_app/item_aplicado',
-        data: formDataImg,
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function (dados) {
-        }
-    });
 });
 
 $(document).on('click','.btn-voltar-menu-safety' , function(){
