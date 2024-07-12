@@ -97,6 +97,17 @@
     width: 95%;*/
   }
 
+ .cl_div_abas_paginas{
+    font-size:12px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    opacity: 1;
+}
+
 
 .cl_div_loader{
     padding-top: 1rem;

@@ -153,3 +153,11 @@
 .cl_div_txt_obs_efet_pag_terc_financ{
     padding-bottom: 0.5rem;
 }
+
+
+.input_pesq_column_icon {
+    width: 120px;
+    padding: 1px;
+    border-radius: 0.1rem 0.1rem 0.1rem 0.1rem;
+    box-sizing: border-box;
+}

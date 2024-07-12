@@ -1197,6 +1197,7 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                 obj_2art_terc_financ = Registro2ArtTerceirosFinanceiro.objects.filter(
                     cod_reg_2art__cod_reg_2art=id_obj_2art).first()
                 msg = ''
+
                 if obj_2art_terc_financ is not None and obj_2art_terc_financ.status_financeiro_2art_terc_financ == 'A':
                     lanc = LancamentosRegistro2ArtTerceirosFinanceiro(
                         mapa_ocorrencia=reg.mapa_ocorrencia,

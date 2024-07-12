@@ -35,7 +35,7 @@ from proj_portal_operacional.settings import BASE_DIR
 
 class Form_Imp_Cad_Conta_View(View):
     def get(self, request):
-        #lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
+        # lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
@@ -44,17 +44,27 @@ class Form_Imp_Cad_Conta_View(View):
         lista_usuarios_contabil = (Usuario
                                    .objects
                                    .filter(sala='CON',
-                                           cod_filial__cod_empresa = obj_usuario_sessao.cod_filial.cod_empresa))
+                                           cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
         lista_filiais = Filial.objects.filter(cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
                                               cod_reduzido__isnull=False)
 
-        #diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
-        nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
+        # diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
+        nome_pasta_empresa = ''
+        # qtd_arquivos_postados = 0
         if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
             nome_pasta_empresa = 'Deep_Anexos_Pendentes'
-        diretorio_arquivos_postados = os.path.join(BASE_DIR, f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}')
+        elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
+            nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
+        diretorio_arquivos_postados = os.path.join(BASE_DIR,
+                                                   f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
-        qtd_arquivos_postados = len(lista_arquivos)
+        qtd_arquivos_postados = 0
+        for arq in lista_arquivos:
+            if '.pdf' in arq or '.PDF' in arq:
+                qtd_arquivos_postados += 1
+
+        # if len(lista_arquivos) > 0:
+        #    qtd_arquivos_postados = len(lista_arquivos)
 
         lista_usuarios_contabil = (Usuario.objects
                                    .filter(sala='CON',
@@ -426,6 +436,18 @@ class Form_Cad_Conta_View(View):
 
         tipo_return_form = request.GET['tipo_return']
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)
+
+        empresas_usam_conta = (Responsaveis_Conta
+                               .objects
+                               .filter(cod_conta=obj_conta_pesq).values('cod_empresa__cod_empresa')
+                               .distinct())
+        conlog_usa = 'N'
+        deep_usa = 'N'
+        for emp in empresas_usam_conta:
+            if emp['cod_empresa__cod_empresa'] == 12:
+                conlog_usa = 'S'
+            elif emp['cod_empresa__cod_empresa'] == 17:
+                deep_usa = 'S'
         data_ini_atv = None
         if obj_conta_pesq.data_ini_atividade != None:
             data_ini_atv = datetime.strftime(obj_conta_pesq.data_ini_atividade, '%Y-%m-%d')
@@ -448,7 +470,9 @@ class Form_Cad_Conta_View(View):
             'data_ini_atividade': data_ini_atv,
             'data_fim_atividade': data_fim_atv,
             'status_comp': obj_conta_pesq.status_comp,
-            'cod_pacote_conta': nome_pacote
+            'cod_pacote_conta': nome_pacote,
+            'conlog_usa': conlog_usa,
+            'deep_usa': deep_usa
         }
 
 
@@ -1484,14 +1508,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         val_dif = float(conta_auditada.val_diferenca)
 
 
-                    cod_anexo_competencia = 0
-                    obj_anexo_competencia = (Anexos_Contrato.objects
+                    #cod_anexo_competencia = 0
+                    lista_anexos_competencia = list(Anexos_Contrato.objects
                                              .filter(cod_conta=obj_conta,
                                                      data_competencia=datetime.strptime(competencia_form + '-01','%Y-%m-%d'),
-                                                     cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                             .first())
-                    if obj_anexo_competencia != None:
-                        cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                     cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                                     eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+                    '''if obj_anexo_competencia != None:
+                        cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
                     linha = []
                     linha.append(obj_conta.cod_conta) #0
@@ -1499,7 +1523,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     linha.append(locale.currency(round(val_composicao,2), grouping=True, symbol=None)) #2
                     linha.append(locale.currency(round(val_balancete,2), grouping=True, symbol=None)) #3
                     linha.append(locale.currency(round(val_dif,2), grouping=True, symbol=None)) #4
-                    linha.append(cod_anexo_competencia) #5
+                    linha.append(lista_anexos_competencia) #5
                     linha.append(obj_conta.cod_red_conta_contabil_cp) #6
                     linha.append(obj_conta.cod_estrut_cp) #7
                     lista_contas_conciliacao.append(linha)
@@ -1552,14 +1576,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         else:
                             val_df_tt_comp_bal = val_tt_comp - val_tt_bal
 
-                        cod_anexo_competencia = 0
-                        obj_anexo_competencia = (Anexos_Contrato.objects
+                        #cod_anexo_competencia = 0
+                        lista_anexos_competencia = list(Anexos_Contrato.objects
                                                  .filter(cod_contrato=contrato,
                                                          data_competencia=datetime.strptime(competencia_form+'-01', '%Y-%m-%d'),
-                                                         cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                                 .first())
-                        if obj_anexo_competencia != None:
-                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                         cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                                         eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+                        '''if obj_anexo_competencia != None:
+                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
                         linha = []
                         linha.append(conta.cod_conta) #0
@@ -1591,7 +1615,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         linha.append(locale.currency(round(val_tt_comp, 2), grouping=True, symbol=None)) #10
                         linha.append(locale.currency(round(val_tt_bal, 2), grouping=True, symbol=None)) #11
                         linha.append(locale.currency(round(val_df_tt_comp_bal, 2), grouping=True, symbol=None)) #12
-                        linha.append(cod_anexo_competencia) #13
+                        linha.append(lista_anexos_competencia) #13
                         lista_contas_conciliacao.append(linha)
 
         elif tipo_visualizacao_form == 'D':
@@ -1723,14 +1747,15 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         val_balancete = float(conta_auditada.val_balancete)
                         val_dif = float(conta_auditada.val_diferenca)
 
-                    cod_anexo_competencia = 0
-                    obj_anexo_competencia = Anexos_Contrato.objects.filter(cod_conta=obj_conta,
+                    #cod_anexo_competencia = 0
+                    lista_anexos_competencia = list(Anexos_Contrato.objects.filter(cod_conta=obj_conta,
                                                                            data_competencia=datetime.strptime(
                                                                                competencia_form + '-01',
                                                                                '%Y-%m-%d'),
-                                                                           cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).first()
-                    if obj_anexo_competencia != None:
-                        cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                                           cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                                                           eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+                    '''if obj_anexo_competencia != None:
+                        cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
 
                     '''Verifica se há status da conta na competencia'''
@@ -1755,7 +1780,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     linha.append(locale.currency(round(val_dif, 2), grouping=True, symbol=None)) #6
                     linha.append(cod_status_auditoria_comp) #7
                     linha.append(obs_status_auditoria_comp) #8
-                    linha.append(cod_anexo_competencia) #9
+                    linha.append(lista_anexos_competencia) #9
                     lista_contas_conciliacao.append(linha) #10
 
             elif cod_modelo_selecionado_form == '3':
@@ -1787,13 +1812,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                 cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
                     for reg in lista_composicao:
-                        cod_anexo_competencia = 0
-                        obj_anexo_competencia = (Anexos_Contrato.objects
+                        #cod_anexo_competencia = 0
+                        lista_anexos_competencia = list(Anexos_Contrato.objects
                                                  .filter(cod_conta=obj_conta,
                                                          data_competencia=datetime.strptime(competencia_form + '-01','%Y-%m-%d'),
-                                                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa ).first())
-                        if obj_anexo_competencia != None:
-                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                                         eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+                        '''if obj_anexo_competencia != None:
+                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
                         linha = []
                         linha.append(obj_conta.cod_conta)  # 0
@@ -1803,7 +1829,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         linha.append(locale.currency(round(reg.val_composicao, 2), grouping=True, symbol=None))  # 4
                         linha.append(locale.currency(round(reg.val_balancete, 2), grouping=True, symbol=None))  # 5
                         linha.append(locale.currency(round(reg.val_diferenca, 2), grouping=True, symbol=None))  # 6
-                        linha.append(cod_anexo_competencia)  # 7
+                        linha.append(lista_anexos_competencia)  # 7
                         lista_contas_conciliacao.append(linha)
 
             elif cod_modelo_selecionado_form == '3':
@@ -1826,14 +1852,15 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
 
 
-                        cod_anexo_competencia = 0
-                        obj_anexo_competencia = Anexos_Contrato.objects.filter(cod_contrato=reg.cod_contrato,
+                        #cod_anexo_competencia = 0
+                        lista_anexos_competencia = list(Anexos_Contrato.objects.filter(cod_contrato=reg.cod_contrato,
                                                                                data_competencia=datetime.strptime(
                                                                                    competencia_form + '-01',
                                                                                    '%Y-%m-%d'),
-                                                                               cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).first()
-                        if obj_anexo_competencia != None:
-                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                                               cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                                                               eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+                        '''if obj_anexo_competencia != None:
+                            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
                         linha = []
                         linha.append(obj_conta.cod_conta)  # 0
@@ -1847,7 +1874,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         linha.append(locale.currency(round(reg.val_balancete, 2), grouping=True, symbol=None))  # 8
                         linha.append(locale.currency(round(reg.val_diferenca, 2), grouping=True, symbol=None))  # 9
                         linha.append(reg.tipo_prazo)  # 10
-                        linha.append(cod_anexo_competencia)  # 11
+                        linha.append(lista_anexos_competencia)  # 11
                         lista_contas_conciliacao.append(linha)
 
 
@@ -2012,13 +2039,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
 
 
-        cod_anexo_competencia = 0
-        obj_anexo_competencia = Anexos_Contrato.objects.filter(cod_contrato=contrato,
+        #cod_anexo_competencia = 0
+        lista_anexos_competencia = list(Anexos_Contrato.objects.filter(cod_contrato=contrato,
                                                                data_competencia=datetime.strptime(
                                                                    competencia + '-01', '%Y-%m-%d'),
-                                                               cod_contrato__cod_empresa=contrato.cod_empresa.cod_empresa).first()
-        if obj_anexo_competencia != None:
-            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato
+                                                               cod_contrato__cod_empresa=contrato.cod_empresa.cod_empresa,
+                                                               eh_anexo_principal_competencia='S').values('cod_anexo_contrato', 'desc_anexo'))
+        '''if obj_anexo_competencia != None:
+            cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
         linha = []
         linha.append(conta.cod_conta) #0
@@ -2034,7 +2062,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         linha.append(tipo_prazo) #10
         linha.append(cod_status_auditoria_comp) #11
         linha.append(obs_status_auditoria_comp) #12
-        linha.append(cod_anexo_competencia) #13
+        linha.append(lista_anexos_competencia) #13
 
         return linha
 
@@ -2050,6 +2078,8 @@ class Form_Anexos_Conta_View(View):
         competencia_doc_form = request.POST['competencia_doc']
         cod_conta_form = request.POST['cod_conta']
         cod_contrato_form = request.POST['cod_contrato']
+        desc_arq_anexo_frm = request.POST['desc_arq_anexo']
+        eh_anexo_principal_frm = request.POST['eh_anexo_principal']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -2057,7 +2087,8 @@ class Form_Anexos_Conta_View(View):
 
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)
         msg = self.anexa_arq_conta(obj_usuario_sessao, obj_conta_pesq, cod_contrato_form,
-                                   competencia_doc_form, file_form, file_form.name)
+                                   competencia_doc_form, file_form, file_form.name,eh_anexo_principal_frm,
+                                   desc_arq_anexo_frm)
 
 
 
@@ -2070,7 +2101,7 @@ class Form_Anexos_Conta_View(View):
 
 
     def anexa_arq_conta(self, obj_usuario, obj_conta_pesq, cod_contrato_form, competencia_doc_form, file_form,
-                        desc_doc_form):
+                        desc_doc_form, eh_anexo_principal_competencia, desc_arq_anexo_frm):
         msg = ''
         obj_contrato_pesq = None
         ordem_max = 0
@@ -2084,33 +2115,33 @@ class Form_Anexos_Conta_View(View):
                 .filter(cod_contrato=obj_contrato_pesq, cod_contrato__cod_empresa=obj_usuario.cod_filial.cod_empresa) \
                 .aggregate(max_odem_anexo=Max('ordem_anexo'))
 
-            obj_anexo_conta_pesq = Anexos_Contrato.objects.filter(cod_contrato=obj_contrato_pesq,
+            '''obj_anexo_conta_pesq = Anexos_Contrato.objects.filter(cod_contrato=obj_contrato_pesq,
                                                                   data_competencia=datetime.strptime(
                                                                       competencia_doc_form + '-01', '%Y-%m-%d'),
-                                                                  cod_contrato__cod_empresa=obj_usuario.cod_filial.cod_empresa).first()
+                                                                  cod_contrato__cod_empresa=obj_usuario.cod_filial.cod_empresa).first()'''
             if ordem_max['max_odem_anexo'] != None:
                 ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
 
             novo_nome_arq = (str(obj_conta_pesq.cod_conta) + '_' + str(obj_contrato_pesq.num_contrato) + '_' +
                              str(ultimo_anexo_conta) + '_' + competencia_doc_form.split('-')[1] + '_' +
-                             competencia_doc_form.split('-')[0] + '.pdf')
+                             competencia_doc_form.split('-')[0] + '_' + eh_anexo_principal_competencia + '.pdf')
         else:
 
             ordem_max = Anexos_Contrato.objects \
                 .filter(cod_conta=obj_conta_pesq, cod_usu__cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa) \
                 .aggregate(max_odem_anexo=Max('ordem_anexo'))
 
-            obj_anexo_conta_pesq = (Anexos_Contrato.objects
+            '''obj_anexo_conta_pesq = (Anexos_Contrato.objects
                                     .filter(cod_conta=obj_conta_pesq,
                                             data_competencia=datetime.strptime(competencia_doc_form + '-01', '%Y-%m-%d'),
-                                            cod_usu__cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa).first())
+                                            cod_usu__cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa).first())'''
 
             if ordem_max['max_odem_anexo'] != None:
                 ultimo_anexo_conta = ordem_max['max_odem_anexo'] + 1
 
             novo_nome_arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
                              str(ultimo_anexo_conta) + '_' + competencia_doc_form.split('-')[1] + '_' +
-                             competencia_doc_form.split('-')[0] + '.pdf')
+                             competencia_doc_form.split('-')[0] + '_' + eh_anexo_principal_competencia +'.pdf')
 
         fs = FileSystemStorage()
         nome_arquivo = ''
@@ -2119,17 +2150,19 @@ class Form_Anexos_Conta_View(View):
         if obj_usuario.cod_filial.cod_empresa.cod_empresa == 17:
             anexo_emp = 'Deep'
 
-        if obj_anexo_conta_pesq != None:
+        '''if obj_anexo_conta_pesq != None:
             arquivo_anterior_a_deletar = str(obj_anexo_conta_pesq.caminho_anexo).replace('/', '\\')
-            os.remove(arquivo_anterior_a_deletar)
+            os.remove(arquivo_anterior_a_deletar)'''
 
         if type(file_form) == str:
-            arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
+            '''arq = (str(obj_conta_pesq.cod_conta) + '_X_' +
+                   str(ultimo_anexo_conta) + '_' +
                    competencia_doc_form.split('-')[1] + '_' +
-                   competencia_doc_form.split('-')[0] + '.pdf')
+                   competencia_doc_form.split('-')[0] + '_' +
+                   eh_anexo_principal_competencia +'.pdf')'''
 
             caminho_arq_importado = os.path.join(BASE_DIR,
-                                                 f'media\\docs\\contabil_composicao_app\\anexos_conta\\{anexo_emp}\\' + arq)
+                                                 f'media\\docs\\contabil_composicao_app\\anexos_conta\\{anexo_emp}\\' + novo_nome_arq)
             # caminho_arq_importado = f'docs/contabil_composicao_app/anexos_conta/{anexo_emp}/' + arq
 
             nome_arquivo = desc_doc_form
@@ -2144,7 +2177,24 @@ class Form_Anexos_Conta_View(View):
             uploaded_file_url = fs.url(filename)
         msg = ''
 
-        if obj_anexo_conta_pesq == None:
+        desc_arq_validado = desc_arq_anexo_frm
+        if desc_arq_validado == None or desc_arq_validado == '':
+            desc_arq_validado = novo_nome_arq
+
+
+        obj_anexo_conta = Anexos_Contrato(
+            desc_anexo=desc_arq_validado,
+            data_competencia=competencia_doc_form + '-01',
+            caminho_anexo=caminho_arq_importado,
+            cod_contrato=obj_contrato_pesq,
+            cod_conta=obj_conta_pesq,
+            ordem_anexo=ultimo_anexo_conta,
+            eh_anexo_principal_competencia=eh_anexo_principal_competencia,
+            cod_usu=obj_usuario
+        ).save()
+        msg = 'Doc anexado com sucesso !'
+
+        '''if obj_anexo_conta_pesq == None:
             obj_anexo_conta = Anexos_Contrato(
                 desc_anexo=nome_arquivo,
                 data_competencia=competencia_doc_form + '-01',
@@ -2164,7 +2214,7 @@ class Form_Anexos_Conta_View(View):
             obj_anexo_conta_pesq.ordem_anexo = ultimo_anexo_conta
             obj_anexo_conta_pesq.cod_usu=obj_usuario
             obj_anexo_conta_pesq.save()
-            msg = 'Registro atualizado com sucesso!'
+            msg = 'Registro atualizado com sucesso!'''
         return msg
 
     def get(self, request):
@@ -2180,13 +2230,14 @@ class Form_Anexos_Conta_View(View):
             lista_anexos = list(Anexos_Contrato.objects\
                 .filter(cod_conta = obj_conta,
                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)\
-                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia'))
+                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia', 'eh_anexo_principal_competencia'))
         elif obj_conta.tipo_modelo == 3:
             lista_contratos = list(Contrato.objects.filter(cod_conta=obj_conta).values('cod_contrato', 'num_contrato'))
             lista_anexos = list(Anexos_Contrato.objects\
                 .filter(cod_contrato__cod_conta = obj_conta,
                         cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)\
-                .values('cod_contrato__num_contrato', 'cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia'))
+                .values('cod_contrato__num_contrato', 'cod_anexo_contrato', 'desc_anexo', 'caminho_anexo',
+                        'data_competencia', 'eh_anexo_principal_competencia'))
 
 
 
@@ -2227,6 +2278,28 @@ class Form_Visualiza_Doc_Contrato_View(View):
         }'''
         #return render(request, 'contabil_composicao_app/pag_exibe_doc_contrato.html', dados)
         return JsonResponse(obj_anexo_contrato.caminho_anexo, safe=False)
+
+    def post(self, request):
+        cod_anexo_contrato_frm = request.POST['cod_anexo_contrato']
+        status_anexo_frm = request.POST['status_anexo']
+
+        obj_anexo_contrato = Anexos_Contrato.objects.get(pk=cod_anexo_contrato_frm)
+        obj_anexo_contrato.eh_anexo_principal_competencia = status_anexo_frm
+        obj_anexo_contrato.save()
+        
+        msg = ''
+        if status_anexo_frm == 'S':
+            msg = 'Anexo selecionado para visualização na composição'
+        else:
+            msg = 'Anexo selecionado como secundário'
+        
+        data = dict()
+        data = {
+            'cod_conta': obj_anexo_contrato.cod_conta.cod_conta,
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
 
 class Form_Status_Contrato_Composicao_View(View):
     def get(self, request):
@@ -3511,6 +3584,33 @@ class Form_Vincula_Resp_Contas_View(View):
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
 
+
+    def post(self, request):
+        lista_nome_responsavel_frm = request.POST['lista_nome_responsavel']
+        lista_cod_contas_frm = request.POST['lista_cod_contas']
+        dt_fim_atividade_frm = request.POST['dt_fim_atividade']
+        msg = ''
+        try:
+            lista_resp = (Responsaveis_Conta.objects
+                                .filter((Q(resp_composicao__in=lista_nome_responsavel_frm.split(',')) |
+                                         Q(resp_validacao__in=lista_nome_responsavel_frm.split(','))),
+                                        data_fim_atividade__isnull=True,
+                                        cod_conta__cod_conta__in=lista_cod_contas_frm.split(',')))
+            for reg in lista_resp:
+                reg.data_fim_atividade = dt_fim_atividade_frm
+                reg.save()
+            msg = 'Contas desativadas com sucesso!'
+        except Exception as e:
+            msg = f'Algo interrompeu o processo. Conta o Adm. {e}'
+
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+
 class Importa_Anexos_Contas_View(View):
     def post(self, request):
         cod_usuario_sessao = request.session['cod_usuario_logado']
@@ -3522,8 +3622,14 @@ class Importa_Anexos_Contas_View(View):
         #diretorio_arquivos_postados = f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}'
                                       #f'media/docs/contabil_composicao_app/anexos_pendentes_importacao/{nome_pasta_empresa}/'
         diretorio_arquivos_postados = os.path.join(BASE_DIR, f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
-        lista_arquivos = os.listdir(diretorio_arquivos_postados)
-        qtd_arquivos_postados = len(lista_arquivos)
+        lista_todos_arquivos = os.listdir(diretorio_arquivos_postados)
+        qtd_arquivos_postados = 0
+        lista_arquivos = []
+        for arq in lista_todos_arquivos:
+            if '.pdf' in arq or '.PDF' in arq:
+                lista_arquivos.append(arq)
+                qtd_arquivos_postados += 1
+        #qtd_arquivos_postados = len(lista_arquivos)
 
         msg = ''
         for arq in lista_arquivos:
@@ -3532,22 +3638,53 @@ class Importa_Anexos_Contas_View(View):
             #cod_conta = arq.split('_')[0]
             cod_red_conta_contabil = arq.split('_')[0]
             cod_contrato = arq.split('_')[1]
-            competencia_str = arq.split('_')[3].split('.')[0] + '-' + arq.split('_')[2]
+            competencia_str = arq.split('_')[3] + '-' + arq.split('_')[2]
+            competencia_str_dt = arq.split('_')[3] + '-' + arq.split('_')[2] + '-01'
+            ordem_arq = 0
+            desc_arq = ''
+            if len(arq.split('_')) == 5:
+                ordem_arq = arq.split('_')[4].split('.')[0]
+            elif len(arq.split('_')) > 5:
+                ordem_arq = arq.split('_')[4]
+                desc_arq = arq.split('_')[5].split('.')[0]
+
             #obj_conta = Conta.objects.get(pk=cod_conta)
             obj_conta = Conta.objects.filter(
                 (Q(cod_red_conta_contabil_cp=cod_red_conta_contabil) | Q(cod_red_conta_contabil_lp=cod_red_conta_contabil))).first()
             obj_contrato = None
             cod_contrato_param = ''
+            eh_arquivo_principal_comp = 'N'
             if obj_conta.tipo_modelo == 1:
                 cod_contrato_param = cod_contrato
+                if ordem_arq == '1':
+                    eh_arquivo_principal_comp = 'S'
+                    '''obj_anexo_principal_da_conta = (Anexos_Contrato.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            data_competencia=competencia_str_dt,
+                                                            eh_anexo_principal_competencia='S')).first()
+                    if obj_anexo_principal_da_conta != None:
+                        obj_anexo_principal_da_conta.eh_anexo_principal_competencia='N'
+                        obj_anexo_principal_da_conta.save()'''
             else:
                 obj_contrato = (Contrato.objects
                                 .filter(cod_conta=obj_conta, num_contrato=cod_contrato,
                                         cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).first())
                 cod_contrato_param = obj_contrato.cod_contrato
+                if ordem_arq == '1':
+                    eh_arquivo_principal_comp = 'S'
+                    obj_anexo_principal_da_conta = (Anexos_Contrato.objects
+                                                    .filter(cod_conta=obj_conta,
+                                                            cod_contrato=obj_contrato,
+                                                            data_competencia=competencia_str_dt,
+                                                            eh_anexo_principal_competencia='S')).first()
+                    '''if obj_anexo_principal_da_conta != None:
+                        obj_anexo_principal_da_conta.eh_anexo_principal_competencia = 'N'
+                        obj_anexo_principal_da_conta.save()'''
             obj_form_anexos_conta_view = Form_Anexos_Conta_View()
+
             msg = obj_form_anexos_conta_view.anexa_arq_conta(obj_usuario_sessao,obj_conta, cod_contrato_param,
-                                                             competencia_str,caminho_arq, arq)
+                                                             competencia_str,caminho_arq, arq,
+                                                             eh_arquivo_principal_comp,desc_arq)
             #os.remove(os.path.join(diretorio_arquivos_postados, arq))
 
 
@@ -4867,6 +5004,13 @@ class Form_Contas_Resp_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
         dic_lista_contas_resp = []
+        lista_pacotes_resp = []
+        lista_pacotes_resp = list(Responsaveis_Conta.objects
+                                  .filter((Q(resp_composicao__in=lista_cod_usuarios.split(',')) | Q(resp_validacao__in=lista_cod_usuarios.split(','))),
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                          cod_conta__status_comp='A')
+                                  .values('cod_conta__cod_pacote_conta__cod_pacote_conta',
+                                          'cod_conta__cod_pacote_conta__desc_pacote_conta').distinct())
         for nome_usu in lista_cod_usuarios.split(','):
             lista_contas_resp = (Responsaveis_Conta.objects
                                  .filter( (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)),
@@ -4877,7 +5021,10 @@ class Form_Contas_Resp_View(View):
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp',
                                          'cod_conta__tipo_modelo',
                                          'resp_composicao', 'resp_validacao', 'data_ini_atividade',
-                                         'data_fim_atividade'))
+                                         'data_fim_atividade', 'cod_conta__cod_pacote_conta__cod_pacote_conta'))
+
+
+
             for reg in lista_contas_resp:
                 if reg['data_ini_atividade'] != None:
                     reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
@@ -4886,7 +5033,8 @@ class Form_Contas_Resp_View(View):
                 dic_lista_contas_resp.append(reg)
         data = dict()
         data = {
-            'dic_lista_contas_resp': dic_lista_contas_resp
+            'dic_lista_contas_resp': dic_lista_contas_resp,
+            'lista_pacotes_resp': lista_pacotes_resp
         }
         return JsonResponse(data, safe=False)
 
@@ -5029,11 +5177,12 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
                 verifica_se_contrato_auditada = (Auditoria_Status_Composicao_Competencia.objects
                                                  .filter(cod_conta=parcela.cod_contrato.cod_conta,
                                                          cod_contrato=parcela.cod_contrato,
-                                                         data_competencia=competencia_aud))
+                                                         data_competencia=competencia_aud, status=1))
 
                 if len(verifica_se_contrato_auditada) == 0:
                     conexao_benner = ConexaoBancoBenner()
-                    lista_parcelas_atualizadas = conexao_benner.atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm)
+                    lista_parcelas_atualizadas = (conexao_benner
+                                                  .atualiza_parcelas_data_corte(parcela.handle_parcela, data_corte_frm))
 
                     for parc in lista_parcelas_atualizadas:
                         obj_parcela = Parcela_Contrato.objects.filter(handle_parcela=parc['handle_parc']).first()
@@ -5106,5 +5255,23 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
         data = dict()
         data = {
             'lista_parcelas_atualizados': lista_parcelas_atualizadas_form
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Comp_Contas_Resp_View(View):
+    def get(self, request):
+        lista_nome_responsavel_frm = request.GET['lista_nome_responsavel']
+        lista_cod_pacote_frm = request.GET['lista_cod_pacote']
+
+        lista_contas = list(Responsaveis_Conta.objects
+                        .filter((Q(resp_composicao__in=lista_nome_responsavel_frm.split(',')) |
+                                 Q(resp_validacao__in=lista_nome_responsavel_frm.split(','))),
+                                cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_cod_pacote_frm.split(','))
+                        .values('cod_conta__cod_conta', 'cod_conta__desc_conta','cod_conta__cod_red_conta_contabil_cp',
+                                'cod_conta__cod_red_conta_contabil_lp').distinct())
+        data = dict()
+        data = {
+            'lista_contas': lista_contas
         }
         return JsonResponse(data, safe=False)

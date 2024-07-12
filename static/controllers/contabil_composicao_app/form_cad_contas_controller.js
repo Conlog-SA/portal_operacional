@@ -72,99 +72,7 @@ function atualiza_dados_conta_acao_cb_contas(){
     $("#div_visualizacao_anexo_conta").html("");
 }
 
-/*
-$(document).on('change', '#cb_pacote_conta', function(){
-    let let_cod_conta = $("#btn_cadastra_nova_conta").val();
-    let let_cod_pacote_conta = $(this).val();
-    $.ajax({
-        type: 'GET',
-        url: '/contabil_composicao_app/acessa_form_doc_contas_modelo_1',
-        data: {
-            'cod_pacote_conta'   :   let_cod_pacote_conta,
-            'cod_conta'          :   let_cod_conta
-        },
-        dataType: 'json',
-        success: function (dados) {
 
-            let let_table_layout_contas_mod_1 = $("<table/>");
-            let_table_layout_contas_mod_1.attr({
-            id: 'tab_doc_contas_modelo_1',
-                class: 'display wrap w-100 cl_tab_principal_pagina'
-            });
-
-            let let_thead = $("<thead/>");
-            let let_tr = $("<tr/>");
-
-            dados.lista_campos_layout_tab.forEach( camp => {
-                let let_th = $("<th/>");
-                let_th.attr({
-                    scope: 'col'
-                });
-                let_th.html(camp.cod_campo__desc_campo);
-                let_tr.append(let_th);
-            });
-            let_thead.append(let_tr)
-            let_table_layout_contas_mod_1.append(let_thead);
-
-            let let_body = $("<body/>");
-            let_table_layout_contas_mod_1.append(let_body)
-
-            $("#div_tab_doc_contas_modelo_1").append(let_table_layout_contas_mod_1);
-            $("#tab_doc_contas_modelo_1").DataTable( {
-                "bJQueryUI": true,
-                "destroy": true,
-                "fixedHeader": true,
-                "scrollY": "50vh", //770px
-                "scrollX": true,
-                "scrollCollapse": true,
-                "paging": false,
-                //"pageLength": 7,
-                "searching": true,
-                "dom": 'Bfrtip',
-                "buttons": [
-                    'copyHtml5'
-                ],
-                "oLanguage": {
-                    "sProcessing":   "Processando...",
-                    "sLengthMenu":   "Mostrar _MENU_ registros",
-                    "sZeroRecords":  "Não foram encontrados resultados",
-                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                    "sInfoFiltered": "",
-                    "sInfoPostFix":  "",
-                    "sSearch":       "Pesquisar:",
-                    "sUrl":          "",
-                    "oPaginate": {
-                        "sFirst":    "Primeiro",
-                        "sPrevious": "Anterior",
-                        "sNext":     "Proximo",
-                        "sLast":     "Último"
-                    },
-                    "buttons":{
-                        "copyTitle": 'Dados Copiados',
-                        "copySuccess": {
-                            _: '%d linhas copiadas',
-                            1: '1 linha copiada'
-                        }
-                    }
-                }
-                } );
-
-
-
-        },
-        error: function (request, status, error) {
-            $.gritter.add({
-                title: 'Atenção!',
-                text: error,
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
-            });
-      }
-    });
-});
-*/
 
 $(document).on('click','button', function(){
 	let let_nome_btn = $(this).attr('name');
@@ -568,18 +476,22 @@ $(document).on('click','button', function(){
                                     <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
                                 </button>
                             `;
-                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                                title='Não há Documento Anexado'></i>`;
-                            if( data.lista_contas_conciliacao[i][5] != '0') {
-                                let_btn_visualiza_doc = `
-                                    <button type='button' name='btn_visualiza_doc_contrato'
-                                        id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][0]}'
-                                        class='btn btn-rounded btn-space'
-                                        value='${data.lista_contas_conciliacao[i][5]}' title='Visualizar Documento Anexado'>
-                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                    </button>
-                                `;
-
+                            let let_btn_visualiza_doc = ``;
+                            if( data.lista_contas_conciliacao[i][5].length > 0 ) {
+                                for (var j = 0; j < data.lista_contas_conciliacao[i][5].length; j++) {
+                                    let_btn_visualiza_doc += `
+                                        <button type='button' name='btn_visualiza_doc_contrato'
+                                            id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][5][j].cod_anexo_contrato}'
+                                            class='btn btn-rounded btn-space'
+                                            value='${data.lista_contas_conciliacao[i][5][j].cod_anexo_contrato}'
+                                            title='Click para ver o anexo: ${data.lista_contas_conciliacao[i][5][j].desc_anexo}'>
+                                            <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                        </button>
+                                    `;
+                                }
+                            } else {
+                                let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                    title='Não há Documento Anexado'></i>`;
                             }
 
                             let_reg = [
@@ -604,18 +516,22 @@ $(document).on('click','button', function(){
                                     <i class="fa-solid fa-magnifying-glass" style="color: #f46424;"></i>
                                 </button>
                             `;
-                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                                title='Não há Documento Anexado'></i>`;
-                            if( data.lista_contas_conciliacao[i][13] != '0') {
-                                let_btn_visualiza_doc = `
-                                    <button type='button' name='btn_visualiza_doc_contrato'
-                                        id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][0]}'
-                                        class='btn btn-rounded btn-space'
-                                        value='${data.lista_contas_conciliacao[i][13]}' title='Visualizar Documento Anexado'>
-                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                    </button>
-                                `;
-
+                            let let_btn_visualiza_doc = ``;
+                            if( data.lista_contas_conciliacao[i][13].length > 0) {
+                                for (var j = 0; j < data.lista_contas_conciliacao[i][13].length; j++) {
+                                    let_btn_visualiza_doc += `
+                                        <button type='button' name='btn_visualiza_doc_contrato'
+                                            id='btn_visualiza_doc_conta_${data.lista_contas_conciliacao[i][13][j].cod_anexo_contrato}'
+                                            class='btn btn-rounded btn-space'
+                                            value='${data.lista_contas_conciliacao[i][13][j].cod_anexo_contrato}'
+                                            title='Click para ver o anexo: ${data.lista_contas_conciliacao[i][13][j].desc_anexo}'>
+                                            <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                        </button>
+                                    `;
+                                }
+                            } else {
+                                let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                    title='Não há Documento Anexado'></i>`;
                             }
 
                             let_reg = [
@@ -792,78 +708,23 @@ $(document).on('click','button', function(){
                 });
             }
         });
-        /*
-        let let_cod_conta = let_val_btn;
-        let let_radio1 = $("#rd_modelo_conta_conc_comp_benner_1").prop('checked');
-        let let_radio2 = $("#rd_modelo_conta_conc_comp_benner_2").prop('checked');
-        let let_radio3 = $("#rd_modelo_conta_conc_comp_benner_3").prop('checked');
-        let let_cod_modelo_conta_selecionado = 0;
-        if ( let_radio1 == true ){
-            let_cod_modelo_conta_selecionado = 1;
-        } else if ( let_radio2 == true ){
-            let_cod_modelo_conta_selecionado = 2;
-        } else if ( let_radio3 == true ){
-            let_cod_modelo_conta_selecionado = 3;
-        }
-        $.ajax({
-            type: 'GET',
-            url: '/contabil_composicao_app/retorna_dados_conta_cadastrada',
-            data: {
-                'tipo_return' :    'R',
-                'cod_conta'   :    let_cod_conta,
-                'cod_modelo_conta_selecionado': let_cod_modelo_conta_selecionado
-            },
-            success: function(dados){
-                $("#main_menu").html(dados);
-                $('.selectpicker').selectpicker();
-                if(let_cod_modelo_conta_selecionado == 1){
-                    $("#rd_modelo_conta_1").prop('checked', true);
-                } else if(let_cod_modelo_conta_selecionado == 2){
-                    $("#rd_modelo_conta_2").prop('checked', true);
-                } else if(let_cod_modelo_conta_selecionado == 3){
-                    $("#rd_modelo_conta_3").prop('checked', true);
-                }
-                desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta_selecionado);
 
-
-
-                atualiza_form_dados_conta('J', let_cod_conta)
-                if(let_cod_modelo_conta_selecionado == 1) {
-                    atualiza_doc_contas_modelo_1(let_cod_conta);
-                } else if(let_cod_modelo_conta_selecionado == 3) {
-                    atualiza_tab_contratos_conta(let_cod_conta);
-                }
-
-                atualiza_tabela_resp_conta(let_cod_conta);
-                atualiza_tab_anexos_conta(let_cod_conta);
-                atualiza_tab_status_contrato_composicao(let_cod_conta);
-
-                $("#cb_contas").val(let_cod_conta);
-                //$("#cb_contas").selectpicker('refresh');
-
-
-            },
-            error: function(request, status, error){
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-        });
-        */
     }
     else if (let_nome_btn == "btn_fecha_modal_detalhes_contas_composicao"){
         $("#modal_detalhes_contas_composicao").hide();
     }
     else if(let_nome_btn == 'btn_anexa_doc_contrato') {
         let let_cod_conta = $(this).val();
+        let let_eh_anexo_principal = 'N';
+        if($("#ck_eh_anexo_principal").prop('checked') == true){
+            let_eh_anexo_principal = 'S';
+        }
         if(let_cod_conta != "0"){
             var formDataImg = new FormData();
             formDataImg.append("file", $('input[type=file]')[0].files[0]);
             formDataImg.append("cod_conta", let_cod_conta);
+            formDataImg.append("desc_arq_anexo", $("#txt_desc_anexo_contrato").val());
+            formDataImg.append("eh_anexo_principal", let_eh_anexo_principal);
             formDataImg.append("cod_contrato", $("#list_contratos_conta_anexo").val());
             formDataImg.append("competencia_doc", $("#dt_competencia_anexo_doc_contrato").val());
             $.ajax({
@@ -2163,6 +2024,50 @@ $(document).on('change','input', function(){
         $("#div_tab_conciliacao_composicao_benner_aud").empty();
 
     }
+    else if ( let_nome_inp == "ck_eh_anexo_principal_tab") {
+        let let_status_anexo = 'N';
+        if($("#"+let_id_inp).prop('checked') == true){
+            let_status_anexo = 'S';
+        }
+        let let_cod_anexo_contrato = let_id_inp.split('_')[5];
+        let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        let_loader_frm_cad_contas.style.display = "flex";
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/altera_status_anexo_conta_ver_na_composicao',
+            data: {
+                'cod_anexo_contrato'    :  let_cod_anexo_contrato,
+                'status_anexo'          :  let_status_anexo
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_anexos_conta(dados.cod_conta);
+                let_loader_frm_cad_contas.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_cad_contas.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+          }
+        });
+
+
+
+    }
 
 
 });
@@ -2194,6 +2099,18 @@ function atualiza_form_dados_conta(tipo_return, cod_conta) {
         },
         //dataType: 'json',
         success: function (dados) {
+            let let_logo_conlog = '';
+            let let_logo_deep = '';
+            if(dados.dic_conta.conlog_usa == 'S'){
+                let_logo_conlog = `
+                    <img src="../static/img/logo_conlog_laranja.png" width="150rem;"
+                         height="30rem;" style="margin-top: 0.2rem;"/>
+                `;
+            }
+            if(dados.dic_conta.deep_usa == 'S'){
+                let_logo_deep = `<img src="../static/img/logo-deep.png" width="90rem;" height="50rem;"/>`;
+            }
+            $("#div_img_empresas_da_conta").html(let_logo_conlog + `&nbsp;&nbsp;&nbsp;&nbsp;` + let_logo_deep);
             $("#txt_desc_conta").val(dados.dic_conta.desc_conta);
 
             $("#tx_handle_conta_cp").val(dados.dic_conta.handle_benner_cp);
@@ -2485,9 +2402,15 @@ function atualiza_tab_anexos_conta(cod_conta){
                     doc.data_competencia.split('-')[1] + '-' +
                     doc.data_competencia.split('-')[0]
 
+                let let_chk_anexo_main = 'unchecked';
+                if ( doc.eh_anexo_principal_competencia == 'S' ) {
+                    let_chk_anexo_main = 'checked';
+                }
+
 
                 reg = [
-                    ` <i class="fa-solid fa-paperclip" style="color: #f46424"></i>`,
+                    ` <input type="checkbox" class="checkbox" id="ck_eh_anexo_principal_tab_${doc.cod_anexo_contrato}"
+                    name="ck_eh_anexo_principal_tab" ${let_chk_anexo_main}>`,
                     let_num_contrato,
                     let_competencia,
                     doc.desc_anexo,
@@ -2500,14 +2423,14 @@ function atualiza_tab_anexos_conta(cod_conta){
                 "bJQueryUI": true,
                 "pageLength": 5,
                 "destroy": true,
-                "searching": false,
+                "searching": true,
                 "paging": true,
                 "data":var_lista_docs,
                 "columns": [
-                    { title: "" },
+                    { title: "Ver na composição ?" },
                     { title: "Contrato" },
                     { title: "Competencia" },
-                    { title: "Descrição" },
+                    { title: "Nome do arquivo" },
                     { title: "Visualizar" },
                     { title: "Excluir" }
                 ],
@@ -2565,6 +2488,8 @@ function atualiza_tab_anexos_conta(cod_conta){
         }
     });
 }
+
+
 
 
 function atualiza_tab_status_contrato_composicao(cod_conta){
@@ -3031,6 +2956,7 @@ function importa_contratos_parcela_conta(tipo_pesq, cod_conta, num_contrato){
 function limpa_campos_form_cad_contas(){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
+    $("#div_img_empresas_da_conta").html('');
     $("#txt_desc_conta").val("");
 
     $("#tx_handle_conta_cp").val("");
@@ -3165,69 +3091,22 @@ function gera_conciliacao_comp_benner_detalhado(){
                             </button>
 
                         `;
-                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                            title='Não há Documento Anexado'></i>`;
-                        if(data.lista_contas_conciliacao[i][9] != '0'){
-                            let_btn_visualiza_doc = `
-                                <button type='button' name='btn_visualiza_doc_contrato'
-                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][9]}'
-                                    class='btn btn-rounded btn-space'
-                                    value='${data.lista_contas_conciliacao[i][9]}' title='Visualizar Documento Anexado'>
-                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                </button>
-                            `;
+                        let let_btn_visualiza_doc = ``;
+                        if(data.lista_contas_conciliacao[i][9].length > 0){
+                              for (var j = 0; j < data.lista_contas_conciliacao[i][9].length; j++) {
+                                let_btn_visualiza_doc += `
+                                    <button type='button' name='btn_visualiza_doc_contrato'
+                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][9][j].cod_anexo_contrato}'
+                                        class='btn btn-rounded btn-space'
+                                        value='${data.lista_contas_conciliacao[i][9][j].cod_anexo_contrato}' title='Clique para ver o anexo: ${data.lista_contas_conciliacao[i][9][j].desc_anexo}'>
+                                        <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                    </button>
+                                `;
+                              }
+                        } else {
+                            let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                title='Não há Documento Anexado'></i>`;
                         }
-                        /*
-                        let_btn_status = `
-                            <div class="btn-group dropleft" >
-                              <button type="button" class="btn btn-rounded btn-space"
-                                id="btn_status_comp_m1_${data.lista_contas_conciliacao[i][0]}"
-                                name="btn_status_comp"
-                                aria-haspopup="true" aria-expanded="false"
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
-                                ` + let_desc_status_comp + `>
-                                <i class="fa-solid fa-caret-down" style="color: #f46424;"></i>
-                              </button>
-                              <div class="dropdown-menu" style="box-shadow: 2px 2px 2px 1px rgba(0, 0, 0.7, 0.7); background:#f46424;">
-                              <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 0.75rem; color: #ffffff;">
-                                    Status composição
-                                    <i class="fa-solid fa-thumbtack fa-sm" style="color: #ffffff;margin-top: 0.1rem;margin-right: 0.3rem;"></i>
-                                </div>
-                                <form id="frm_status_conciliacao" name="frm_status_conciliacao"  method="POST"
-                                class="d-flex flex-column align-items-center justify-content-between">
-                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
-                                        <select class="form-select form-select-sm" id="cb_status_conciliacao_m1_${data.lista_contas_conciliacao[i][0]}"
-                                            name="cb_status_conciliacao"
-                                            style="color: #000000; font-size: 11px">
-                                                <option value="0" `+ option_0 +`>Selecione o status</option>
-                                                <option value="1" `+ option_1 +`>OK</option>
-                                                <option value="2" `+ option_2 +`>Com diferença</option>
-                                                <option value="3" `+ option_3 +`>Falta analisar</option>
-                                                <option value="4" `+ option_4 +`>Falta compor</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
-                                        <input type="text" class="form-control" id="ta_obs_status_conciliacao_m1_${data.lista_contas_conciliacao[i][0]}"
-                                            style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
-                                            name="ta_obs_status_conciliacao"
-                                            autocomplete="off" placeholder="Observação" rows="3"
-                                            value="${data.lista_contas_conciliacao[i][8]}">
-
-                                    </div>
-                                    <div class="d-flex justify-content-end w-100 mr-3 cl_div_conf_status_comp" >
-                                        <button type='button' name='btn_confirma_status_composicao'
-                                            id='btn_confirma_status_composicao_m1_${data.lista_contas_conciliacao[i][0]}'
-                                            class='btn btn-rounded btn-space cl_btn_conf_status_comp'
-                                            value='m1_${data.lista_contas_conciliacao[i][0]}' title='${data.lista_contas_conciliacao[i][3]}'>
-                                            <i class="fa-solid fa-check" style="color: #ffffff;"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                              </div>
-                            </div>
-                        `;
-                        */
-
                         let_reg = [
                             /* 0 */ let_input_check,
                             /* 1 */ let_img_btn_status,
@@ -3282,69 +3161,23 @@ function gera_conciliacao_comp_benner_detalhado(){
                             </button>
 
                         `;
-                        let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                            title='Não há Documento Anexado'></i>`;
-                        if(data.lista_contas_conciliacao[i][13] != '0'){
-                            let_btn_visualiza_doc = `
-                                <button type='button' name='btn_visualiza_doc_contrato'
-                                    id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][13]}'
-                                    class='btn btn-rounded btn-space'
-                                    value='${data.lista_contas_conciliacao[i][13]}' title='Visualizar Documento Anexado'>
-                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                </button>
-                            `;
-                        }
-                        /*
-                        let_btn_status = `
-                            <div class="btn-group dropleft" >
-                              <button type="button" class="btn btn-rounded btn-space"
-                                id="btn_status_comp_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
-                                name="btn_status_comp"
-                                aria-haspopup="true" aria-expanded="false"
-                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false"
-                                ` + let_desc_status_comp + `>
-                                <i class="fa-solid fa-caret-down" style="color: #f46424;"></i>
-                              </button>
-                              <div class="dropdown-menu" style="box-shadow: 2px 2px 2px 1px rgba(0, 0, 0.7, 0.7); background:#f46424;">
-                              <div class="d-flex justify-content-between align-items-between w-100" style="font-size: 0.75rem; color: #ffffff;">
-                                    Status composição
-                                    <i class="fa-solid fa-thumbtack fa-sm" style="color: #ffffff;margin-top: 0.1rem;margin-right: 0.3rem;"></i>
-                                </div>
-                                <form id="frm_status_conciliacao" name="frm_status_conciliacao"  method="POST"
-                                class="d-flex flex-column align-items-center justify-content-between">
-                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
-                                        <select class="form-select form-select-sm" id="cb_status_conciliacao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
-                                            name="cb_status_conciliacao"
-                                            style="color: #000000; font-size: 11px">
-                                                <option value="0" `+ option_0 +`>Selecione o status</option>
-                                                <option value="1" `+ option_1 +`>OK</option>
-                                                <option value="2" `+ option_2 +`>Com diferença</option>
-                                                <option value="3" `+ option_3 +`>Falta analisar</option>
-                                                <option value="4" `+ option_4 +`>Falta compor</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-between w-100 cl_comp_drop_status_comp">
-                                        <input type="text" class="form-control" id="ta_obs_status_conciliacao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
-                                            style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
-                                            name="ta_obs_status_conciliacao"
-                                            autocomplete="off" placeholder="Observação" rows="3"
-                                            value="${data.lista_contas_conciliacao[i][12]}">
+                        let let_btn_visualiza_doc = ``;
+                        if(data.lista_contas_conciliacao[i][13].length > 0){
+                            for (var j = 0; j < data.lista_contas_conciliacao[i][13].length; j++) {
+                                let_btn_visualiza_doc += `
+                                    <button type='button' name='btn_visualiza_doc_contrato'
+                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][13][j].cod_anexo_contrato}'
+                                        class='btn btn-rounded btn-space'
+                                        value='${data.lista_contas_conciliacao[i][13][j].cod_anexo_contrato}' title='Clique para ver o anexo: ${data.lista_contas_conciliacao[i][13][j].desc_anexo}'>
+                                        <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                    </button>
+                                `;
 
-                                    </div>
-                                    <div class="d-flex justify-content-end w-100 mr-3 cl_div_conf_status_comp" >
-                                        <button type='button' name='btn_confirma_status_composicao'
-                                            id='btn_confirma_status_composicao_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}'
-                                            class='btn btn-rounded btn-space cl_btn_conf_status_comp'
-                                            value='${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}'
-                                            title='${data.lista_contas_conciliacao[i][3]}-${data.lista_contas_conciliacao[i][10]}'>
-                                            <i class="fa-solid fa-check" style="color: #ffffff;"></i>
-                                        </button>
-                                    </div>
-                                </form>
-                              </div>
-                            </div>
-                        `;
-                        */
+                            }
+                        } else {
+                            let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                title='Não há Documento Anexado'></i>`;
+                        }
 
                         let_reg = [
                             /* 0 */ let_input_check,
@@ -3857,17 +3690,21 @@ function gera_conciliacao_comp_benner_auditoria(){
                                 </button>
 
                             `;
-                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                                title='Não há Documento Anexado'></i>`;
-                            if(data.lista_contas_conciliacao[i][7] != '0'){
-                                let_btn_visualiza_doc = `
-                                    <button type='button' name='btn_visualiza_doc_contrato'
-                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][7]}'
-                                        class='btn btn-rounded btn-space'
-                                        value='${data.lista_contas_conciliacao[i][7]}' title='Visualizar Documento Anexado'>
-                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                    </button>
-                                `;
+                            let let_btn_visualiza_doc = ``;
+                            if(data.lista_contas_conciliacao[i][7].length > 0){
+                                for (var j = 0; j < data.lista_contas_conciliacao[i][7].length; j++) {
+                                    let_btn_visualiza_doc += `
+                                        <button type='button' name='btn_visualiza_doc_contrato'
+                                            id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][7][j].cod_anexo_contrato}'
+                                            class='btn btn-rounded btn-space'
+                                            value='${data.lista_contas_conciliacao[i][7][j].cod_anexo_contrato}' title='Clique para ver o anexo: ${data.lista_contas_conciliacao[i][7][j].desc_anexo}'>
+                                            <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                        </button>
+                                    `;
+                                }
+                            } else {
+                                let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                    title='Não há Documento Anexado'></i>`;
                             }
 
                             let_reg = [
@@ -3894,17 +3731,21 @@ function gera_conciliacao_comp_benner_auditoria(){
                                 </button>
 
                             `;
-                            let let_btn_visualiza_doc = `<i class="fa-solid fa-eye-slash" style="color: #f46424;"
-                                title='Não há Documento Anexado'></i>`;
-                            if(data.lista_contas_conciliacao[i][11] != '0'){
-                                let_btn_visualiza_doc = `
-                                    <button type='button' name='btn_visualiza_doc_contrato'
-                                        id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11]}'
-                                        class='btn btn-rounded btn-space'
-                                        value='${data.lista_contas_conciliacao[i][11]}' title='Visualizar Documento Anexado'>
-                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                    </button>
-                                `;
+                            let let_btn_visualiza_doc = ``;
+                            if(data.lista_contas_conciliacao[i][11].length > 0){
+                                for (var j = 0; j < data.lista_contas_conciliacao[i][11].length; j++) {
+                                    let_btn_visualiza_doc += `
+                                        <button type='button' name='btn_visualiza_doc_contrato'
+                                            id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11][j].cod_anexo_contrato}'
+                                            class='btn btn-rounded btn-space'
+                                            value='${data.lista_contas_conciliacao[i][11][j].cod_anexo_contrato}' title='Clique para ver o anexo: ${data.lista_contas_conciliacao[i][11][j].desc_anexo}'>
+                                            <i class="fa-solid fa-file" style="color: #f46424;"></i>
+                                        </button>
+                                    `;
+                                }
+                            } else {
+                                let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
+                                    title='Não há Documento Anexado'></i>`;
                             }
 
                             let_reg = [

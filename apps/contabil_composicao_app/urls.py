@@ -156,6 +156,12 @@ urlpatterns = [
          name='povoa_cb_pac_contas_comp_detalhado'),
     path('renegociar_contrato', views.Form_Renegociacao_Contrato_View.as_view(),
          name='renegociar_contrato'),
+    path('altera_status_anexo_conta_ver_na_composicao', views.Form_Visualiza_Doc_Contrato_View.as_view(),
+         name='altera_status_anexo_conta_ver_na_composicao'),
+    path('atualiza_cb_contas_responsaveis_contas', views.Comp_Contas_Resp_View.as_view(),
+         name='atualiza_cb_contas_responsaveis_contas'),
+    path('desativa_resp_contas_em_lote', views.Form_Vincula_Resp_Contas_View.as_view(),
+         name='desativa_resp_contas_em_lote'),
 
 ]
 

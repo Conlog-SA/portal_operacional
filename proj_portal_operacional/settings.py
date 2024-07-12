@@ -82,7 +82,8 @@ INSTALLED_APPS = [
     'apps.gente_gestao_rateio_unimed_app',
     'apps.safety_login_colaboradores_app',
     'apps.frota_vendas_veic_app',
-    'apps.dre_app'
+    'apps.dre_app',
+    'apps.ti_comitec_app',
 ]
 
 MIDDLEWARE = [

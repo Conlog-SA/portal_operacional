@@ -81,12 +81,9 @@ $(document).ready(function(){
             { title: "Perfil Veículo" },
             { title: "Região" },
             { title: "Qtd. Entregas" },
-            { title: "Tipo Imposto" },
-            { title: "Perc. Imposto" },
             { title: "Val. Frete" },
             { title: "Val. Calculado" },
             { title: "Diferença" },
-            { title: "Val. Faturado" },
             { title: "Descontos" },
             { title: "Acréscimos" },
             { title: "Val. á Pagar" },
@@ -98,9 +95,9 @@ $(document).ready(function(){
             { title: "Ativa/Desativa" }
         ],
         "columnDefs": [
-            {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9,10,20,21,22,23,24]},
-            {"className": "dt-left", "targets": [5]},
-            {"className": "dt-right", "targets": [11,12,13,14,15,16,17,18,19]}
+            {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9, 17,18,19,20,21]},
+            {"className": "dt-left", "targets": []},
+            {"className": "dt-right", "targets": [1,5,11,10,11,12,13,14,15,16]}
         ],
         "language": {
             "decimal": ",",
@@ -142,175 +139,155 @@ $(document).ready(function(){
                         i : 0;
             };
 
-            // Total over all pages
+
+
+            // Total over all pages - Val. Frete
             total_frete = api
-                .column( 12 )
+                .column( 10 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Total over this page
+            // Total over this page - Val. Frete
             pageTotal_frete = api
+                .column( 10, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer - Val. Frete
+            $( api.column( 10 ).footer() ).html(
+                pageTotal_frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+            );
+
+
+            // Total over all pages - Val. Calculado
+            total_calculado = api
+                .column( 11 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Total over this page - Val. Calculado
+            pageTotal_calculado = api
+                .column( 11, { page: 'current'} )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+
+            // Update footer - Val. Calculado
+            $( api.column( 11 ).footer() ).html(
+                pageTotal_calculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+            );
+
+
+             // Total over all pages - Diferença
+             total_diferenca = api
+             .column( 12 )
+             .data()
+             .reduce( function (a, b) {
+                 return intVal(a) + intVal(b);
+             }, 0 );
+
+            // Total over this page - Diferença
+            pageTotal_diferenca = api
                 .column( 12, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            // Update footer - Diferença
             $( api.column( 12 ).footer() ).html(
-                pageTotal_frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                pageTotal_diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
             );
 
 
-            // Total over all pages
-            total_calculado = api
+            // Total over all pages - Descontos
+            total_descontos = api
                 .column( 13 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Total over this page
-            pageTotal_calculado = api
+            // Total over this page - Descontos
+            pageTotal_descontos = api
                 .column( 13, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            // Update footer - Descontos
             $( api.column( 13 ).footer() ).html(
-                pageTotal_calculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
+                pageTotal_descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
             );
 
+            // Total over all pages - Acréscimos
+            total_acrescimos = api
+                .column( 14 )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
 
-             // Total over all pages
-             total_diferenca = api
-             .column( 14 )
-             .data()
-             .reduce( function (a, b) {
-                 return intVal(a) + intVal(b);
-             }, 0 );
-
-            // Total over this page
-            pageTotal_diferenca = api
+            // Total over this page - Acréscimos
+            pageTotal_acrescimos = api
                 .column( 14, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            // Update footer - Acréscimos
             $( api.column( 14 ).footer() ).html(
-                pageTotal_diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                pageTotal_acrescimos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
             );
 
-
-            // Total over all pages
-            total_faturado = api
+            // Total over all pages - Val. á Pagar
+            total_val_pagar = api
                 .column( 15 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Total over this page
-            pageTotal_faturado = api
+            // Total over this page - Val. á Pagar
+            pageTotal_val_pagar = api
                 .column( 15, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            // Update footer - Val. á Pagar
             $( api.column( 15 ).footer() ).html(
-                pageTotal_faturado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                pageTotal_val_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
             );
 
-
-            // Total over all pages
-            total_descontos = api
+            //Val. CONLOG
+            total_val_conlog = api
                 .column( 16 )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Total over this page
-            pageTotal_descontos = api
+            // Total over this page - Val. CONLOG
+            pageTotal_val_conlog = api
                 .column( 16, { page: 'current'} )
                 .data()
                 .reduce( function (a, b) {
                     return intVal(a) + intVal(b);
                 }, 0 );
 
-            // Update footer
+            // Update footer - Val. CONLOG
             $( api.column( 16 ).footer() ).html(
-                pageTotal_descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-            );
-
-            // Total over all pages
-            total_acrescimos = api
-                .column( 17 )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Total over this page
-            pageTotal_acrescimos = api
-                .column( 17, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Update footer
-            $( api.column( 17 ).footer() ).html(
-                pageTotal_acrescimos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) 
-            );
-
-            // Total over all pages
-            total_val_pagar = api
-                .column( 18 )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Total over this page
-            pageTotal_val_pagar = api
-                .column( 18, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Update footer
-            $( api.column( 18 ).footer() ).html(
-                pageTotal_val_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-            );
-
-
-            total_val_conlog = api
-                .column( 19 )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Total over this page
-            pageTotal_val_conlog = api
-                .column( 19, { page: 'current'} )
-                .data()
-                .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
-                }, 0 );
-
-            // Update footer
-            $( api.column( 19 ).footer() ).html(
                 pageTotal_val_conlog.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
             );
             // teste footer
@@ -321,6 +298,8 @@ $(document).ready(function(){
         }
 
   });
+
+
 
 });
 
@@ -336,7 +315,7 @@ $(document).on('click','button', function(){
         let let_indice_lista_dados_cad_lanc_2art_terc = let_val_btn
         let let_mapa = let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][2];
         $("#p_msg_ativa_desativa").html("Você Tem certeza que deseja DESATIVAR o mapa "+let_mapa+"?");
-        $("#hd_cod_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][25]);
+        $("#hd_cod_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][22]);
         $("#hd_status_2art_financ").val("N");
         $("#ta_justificativa_acao_mapa_2art_terc").val("");
         $("#modal_ativa_desativa_mapa_terc").show();
@@ -366,7 +345,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
-                povoa_tab_mapas_terceitos_2art();
+                /* povoa_tab_mapas_terceitos_2art(); */
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -383,7 +362,7 @@ $(document).on('click','button', function(){
         let let_indice_lista_dados_cad_lanc_2art_terc = let_val_btn
         let let_mapa = let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][2];
         $("#p_msg_ativa_desativa").html("Você Tem certeza que deseja ATIVAR o mapa "+let_mapa+" ?");
-        $("#hd_cod_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][25]);
+        $("#hd_cod_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][22]);
         $("#hd_status_2art_financ").val("S");
         $("#ta_justificativa_acao_mapa_2art_terc").val("");
         $("#modal_ativa_desativa_mapa_terc").show();
@@ -778,7 +757,7 @@ $(document).on('click','button', function(){
         $("#txt_placa_lanc_2art_terc").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][3]
             .split("-")[0].replace(' ',''));
         $("#txt_data_ocorrencia_lanc_2art_terc").val("");
-        $("#txt_valor_lanc_2art_terc").val("0,00");
+        $("#txt_valor_lanc_2art_terc").val("");
         $("#txt_obs_lanc_2art_terc").val("");
         $("#tab_lanc_2art_terc").DataTable().clear().draw();
 
@@ -797,12 +776,12 @@ $(document).on('click','button', function(){
 
         $("#div_modal_header_modal_lanc_2art_terc").html(let_cabecalho_form);
 
-        $("#hd_cod_reg_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][25]);
-        let let_cod_reg_2art_terc_financ = let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][25];
+        $("#hd_cod_reg_2art_terc_financ").val(let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][22]);
+        let let_cod_reg_2art_terc_financ = let_lista_dados_2art_terceiros[let_indice_lista_dados_cad_lanc_2art_terc][22];
 
         povoa_tab_lanc_acres_desc_do_mapa(let_cod_reg_2art_terc_financ);
 
-        $("input[type=text][name=txt_valor_lanc_2art_terc]").mask('999,99', {placeholder: "0,00"});
+        $("input[type=text][name=txt_valor_lanc_2art_terc]").mask('###0,00', {reverse: true});
 
         $("#modal_lanc_2art_terc").show();
 
@@ -816,7 +795,7 @@ $(document).on('click','button', function(){
         $("#txt_obs_lanc_2art_terc").val("");
         $("#modal_lanc_2art_terc").hide();
 
-        povoa_tab_mapas_terceitos_2art();
+        /* povoa_tab_mapas_terceitos_2art(); */
 
 
     }
@@ -912,15 +891,15 @@ $(document).on('click','button', function(){
         let let_total_pagar = 0;
         let let_total_conlog = 0;
         for (let i = 0; i < let_lista_dados_2art_terceiros.length; i++) {
-            if  ( let_lista_dados_2art_terceiros[i][26] == 'A' ) {
-                let_total_frete_pag += let_lista_dados_2art_terceiros[i][12].split(' ')[0].replace('.','').replace(',','.') * 1.00;
-                let_total_calc_pag += let_lista_dados_2art_terceiros[i][13].replace('.','').replace(',','.') * 1.00;
-                let_total_dif_pag += let_lista_dados_2art_terceiros[i][14].replace('R$','').replace('.','').replace(',','.') * 1.00;
-                let_total_faturado_pag += let_lista_dados_2art_terceiros[i][15].split(' ')[0].replace('.','').replace(',','.') * 1.00;
-                let_total_acresc_pag += let_lista_dados_2art_terceiros[i][17].replace('.','').replace(',','.') * 1.00;
-                let_total_desc_pag += let_lista_dados_2art_terceiros[i][16].replace('.','').replace(',','.') * 1.00;
-                let_total_pagar += let_lista_dados_2art_terceiros[i][18].replace('.','').replace(',','.') * 1.00;
-                let_total_conlog += let_lista_dados_2art_terceiros[i][19].replace('.','').replace(',','.') * 1.00;
+            if  ( let_lista_dados_2art_terceiros[i][23] == 'A' ) {
+                let_total_frete_pag += let_lista_dados_2art_terceiros[i][10].split(' ')[0].replace('.','').replace(',','.') * 1.00;
+                let_total_calc_pag += let_lista_dados_2art_terceiros[i][11].replace('.','').replace(',','.') * 1.00;
+                let_total_dif_pag += let_lista_dados_2art_terceiros[i][12].replace('R$','').replace('.','').replace(',','.') * 1.00;
+                //let_total_faturado_pag += let_lista_dados_2art_terceiros[i][15].split(' ')[0].replace('.','').replace(',','.') * 1.00;
+                let_total_acresc_pag += let_lista_dados_2art_terceiros[i][14].replace('.','').replace(',','.') * 1.00;
+                let_total_desc_pag += let_lista_dados_2art_terceiros[i][13].replace('.','').replace(',','.') * 1.00;
+                let_total_pagar += let_lista_dados_2art_terceiros[i][15].replace('.','').replace(',','.') * 1.00;
+                let_total_conlog += let_lista_dados_2art_terceiros[i][16].replace('.','').replace(',','.') * 1.00;
             }
         }
         $("#div_nome_beneficiario_efet_pag_terc_financ").html("Beneficiário<br/>"+let_nome_beneficiario_pag);
@@ -957,7 +936,7 @@ $(document).on('click','button', function(){
         var varIndiceListaDadosCadLanc2ArtTerc = let_val_btn
         var varMapa = let_lista_dados_2art_terceiros[varIndiceListaDadosCadLanc2ArtTerc][2];
         $("#pMsglAtualizaDadosMapaTerc").html("Você tem certeza que deseja ATUALIZAR o mapa "+varMapa+" ?");
-        $("#hiddenCod2ArtTercFinanc").val(let_lista_dados_2art_terceiros[varIndiceListaDadosCadLanc2ArtTerc][25]);
+        $("#hiddenCod2ArtTercFinanc").val(let_lista_dados_2art_terceiros[varIndiceListaDadosCadLanc2ArtTerc][22]);
 
         $("#modalAtualizaDadosMapaTerc").show();
 
@@ -1343,33 +1322,33 @@ function povoa_tab_mapas_terceitos_2art(){
                     `;
                 }
             let let_dado_2art_terc = [
-                  let_img,
-                  data.tab_mapas_terceiros[i].data,
-                  data.tab_mapas_terceiros[i].mapa,
-                  data.tab_mapas_terceiros[i].placa_reg_terc+" "+let_placa_diferente,
-                  data.tab_mapas_terceiros[i].tipo_entrega_reg_terc+" "+let_tipo_entrega_diferente,
-                  let_dados_beneficiario,
-                  let_tipo_pessoa,
-                  data.tab_mapas_terceiros[i].perfil_veic_reg_terc+" "+let_perfil_veic_diferente,
-                  data.tab_mapas_terceiros[i].regiao_reg_terc+" "+let_regiao_diferente,
-                  data.tab_mapas_terceiros[i].qtd_entr_reg_terc+" "+let_qtd_entrega_diferente,
-                  data.tab_mapas_terceiros[i].tipo_imp_reg_terc+" "+let_tipo_imp_diferente,
-                  data.tab_mapas_terceiros[i].perc_imposto_reg_terc.toLocaleString('pt-BR')+" "+let_perc_imp_diferente,
-                  data.tab_mapas_terceiros[i].val_frete_reg_terc.toLocaleString('pt-BR')+" "+let_val_frete_diferente,
-                  data.tab_mapas_terceiros[i].val_calculado.toLocaleString('pt-BR'),
-                  data.tab_mapas_terceiros[i].diferenca.toLocaleString('pt-BR'),
-                  data.tab_mapas_terceiros[i].val_faturado_reg_terc.toLocaleString('pt-BR')+let_val_faturado_diferente,
-                  data.tab_mapas_terceiros[i].desconto.toLocaleString('pt-BR'),
-                  data.tab_mapas_terceiros[i].acrescimo.toLocaleString('pt-BR'),
-                  data.tab_mapas_terceiros[i].val_pagar.toLocaleString('pt-BR'),
-                  data.tab_mapas_terceiros[i].val_conlog.toLocaleString('pt-BR'),
-                  let_btn_lancamentos_mapa,
-                  let_btn_status_pagamento_mapa,
-                  data.tab_mapas_terceiros[i].id_pagamento_serial,
-                  let_status_validacao,
-                  let_btn_ativa_desativa_mapa,
-                  data.tab_mapas_terceiros[i].cod_idreg2arttercfinanc,
-                  data.tab_mapas_terceiros[i].status_financeiro
+                  /* 0 */let_img,
+                  /* 1 */data.tab_mapas_terceiros[i].data,
+                  /* 2 */data.tab_mapas_terceiros[i].mapa,
+                  /* 3 */data.tab_mapas_terceiros[i].placa_reg_terc+" "+let_placa_diferente,
+                  /* 4 */data.tab_mapas_terceiros[i].tipo_entrega_reg_terc+" "+let_tipo_entrega_diferente,
+                  /* 5 */let_dados_beneficiario,
+                  /* 6 */let_tipo_pessoa,
+                  /* 7 */data.tab_mapas_terceiros[i].perfil_veic_reg_terc+" "+let_perfil_veic_diferente,
+                  /* 8 */data.tab_mapas_terceiros[i].regiao_reg_terc+" "+let_regiao_diferente,
+                  /* 9 */data.tab_mapas_terceiros[i].qtd_entr_reg_terc+" "+let_qtd_entrega_diferente,
+                          /* 10 data.tab_mapas_terceiros[i].tipo_imp_reg_terc+" "+let_tipo_imp_diferente, tirado em 05/07
+                             11 data.tab_mapas_terceiros[i].perc_imposto_reg_terc.toLocaleString('pt-BR')+" "+let_perc_imp_diferente, tirado em 05/07*/
+                  /* 12 => 10 */data.tab_mapas_terceiros[i].val_frete_reg_terc.toLocaleString('pt-BR')+" "+let_val_frete_diferente,
+                  /* 13 => 11 */data.tab_mapas_terceiros[i].val_calculado.toLocaleString('pt-BR'),
+                  /* 14 => 12 */data.tab_mapas_terceiros[i].diferenca.toLocaleString('pt-BR'),
+                           /* 15 data.tab_mapas_terceiros[i].val_faturado_reg_terc.toLocaleString('pt-BR')+let_val_faturado_diferente, tirado em 05/07*/
+                  /* 16 => 13 */data.tab_mapas_terceiros[i].desconto.toLocaleString('pt-BR'),
+                  /* 17 => 14 */data.tab_mapas_terceiros[i].acrescimo.toLocaleString('pt-BR'),
+                  /* 18 => 15 */data.tab_mapas_terceiros[i].val_pagar.toLocaleString('pt-BR'),
+                  /* 19 => 16 */data.tab_mapas_terceiros[i].val_conlog.toLocaleString('pt-BR'),
+                  /* 20 => 17 */let_btn_lancamentos_mapa,
+                  /* 21 => 18 */let_btn_status_pagamento_mapa,
+                  /* 22 => 19 */data.tab_mapas_terceiros[i].id_pagamento_serial,
+                  /* 23 => 20 */let_status_validacao,
+                  /* 24 => 21 */let_btn_ativa_desativa_mapa,
+                  /* 25 => 22 */data.tab_mapas_terceiros[i].cod_idreg2arttercfinanc,
+                  /* 26 => 23 */data.tab_mapas_terceiros[i].status_financeiro
               ];
 
               let_lista_dados_2art_terceiros.push(let_dado_2art_terc);
@@ -1389,6 +1368,77 @@ function povoa_tab_mapas_terceitos_2art(){
                 "buttons": [
                     'copyHtml5'
                 ],
+                "searching": true,
+                "initComplete": function () {
+                    this.api()
+                    .columns([1,2,3,4,5,7,8])
+                    .every(function () {
+                        let let_div = document.createElement('div');
+                        let column = this;
+                        let title = column.header().textContent;
+                        // Create input element
+                        let input = document.createElement('input');
+                        input.classList.add('input_pesq_column_icon');
+                        input.style.borderRadius = '0.2rem 0.2rem 0.2rem 0.2rem';
+                        input.style.padding = '2px';
+                        input.style.width = '120px';
+                        input.placeholder = title;
+
+                        let let_icon_input = document.createElement('i');
+                        let_icon_input.classList.add('fa-solid');
+                        let_icon_input.style.color = '#696969';
+                        let_icon_input.classList.add('fa-magnifying-glass');
+
+                        let_div.appendChild(let_icon_input);
+                        let_div.appendChild(input);
+
+
+                        column.header().replaceChildren(let_div);
+
+                        // Event listener for user input
+                        input.addEventListener('keyup', () => {
+                            if (column.search() !== this.value) {
+                                column.search(input.value).draw();
+                            }
+                        });
+                    });
+
+                    this.api()
+                    .columns([0])
+                    .every(function() {
+                        let column = this;
+
+                        let let_icon_input = document.createElement('i');
+                        let_icon_input.classList.add('fa-solid');
+                        let_icon_input.style.color = '#f46424';
+                        let_icon_input.classList.add('fa-eraser');
+
+                        let let_btn_limpar = document.createElement('button');
+                        let_btn_limpar.classList.add('btn');
+                        let_btn_limpar.title = 'Limpar pesquisa';
+                        let_btn_limpar.classList.add('btn-rounded');
+                        let_btn_limpar.classList.add('btn-space');
+                        let_btn_limpar.appendChild(let_icon_input)
+
+                        column.header().replaceChildren(let_btn_limpar);
+
+                        let let_ev_enter = new Event('keyup');
+
+                        // Event listener for user input
+                        let_btn_limpar.addEventListener('click', () => {
+                            let let_inputs = document.getElementsByClassName('input_pesq_column_icon');
+
+                            for(let i = 0; i < let_inputs.length; i++) {
+                                let_inputs[i].value = null;
+
+
+                                // Despacha o evento para o campo de entrada
+                                let_inputs[i].dispatchEvent(let_ev_enter);
+                            }
+                        });
+
+                    });
+                },
                 "data":let_lista_dados_2art_terceiros,
                 "columns": [
                     { title: "" },
@@ -1401,12 +1451,12 @@ function povoa_tab_mapas_terceitos_2art(){
                     { title: "Perfil Veículo" },
                     { title: "Região" },
                     { title: "Qtd. Entregas" },
-                    { title: "Tipo Imposto" },
-                    { title: "Perc. Imposto" },
+                                /* { title: "Tipo Imposto" },
+                                { title: "Perc. Imposto" }, tirados em 05/07*/
                     { title: "Val. Frete" },
                     { title: "Val. Calculado" },
                     { title: "Diferença" },
-                    { title: "Val. Faturado" },
+                                /* { title: "Val. Faturado" }, tirado em 05/07*/
                     { title: "Descontos" },
                     { title: "Acréscimos" },
                     { title: "Val. á Pagar" },
@@ -1418,9 +1468,9 @@ function povoa_tab_mapas_terceitos_2art(){
                     { title: "Ativa/Desativa" }
                 ],
                 "columnDefs": [
-                    {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9,10,20,21,22,23,24]},
-                    {"className": "dt-left", "targets": [5]},
-                    {"className": "dt-right", "targets": [11,12,13,14,15,16,17,18,19]}
+                    {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9, 17,18,19,20,21]},
+                    {"className": "dt-left", "targets": []},
+                    {"className": "dt-right", "targets": [1,5,11,10,11,12,13,14,15,16]}
                 ],
                 "language": {
                     "decimal": ",",
@@ -1462,175 +1512,154 @@ function povoa_tab_mapas_terceitos_2art(){
                                 i : 0;
                     };
 
-                    // Total over all pages
+                    // Total over all pages - Val Frete
                     total_frete = api
-                        .column( 12 )
+                        .column( 10 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Total over this page
+                    // Total over this page - Val Frete
                     pageTotal_frete = api
+                        .column( 10, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    // Update footer - Val Frete
+                    $( api.column( 10 ).footer() ).html(
+                        pageTotal_frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                    );
+
+
+                    // Total over all pages - Val Calculado
+                    total_calculado = api
+                        .column( 11 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    // Total over this page - Val Calculado
+                    pageTotal_calculado = api
+                        .column( 11, { page: 'current'} )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
+
+                    // Update footer - Val Calculado
+                    $( api.column( 11 ).footer() ).html(
+                        pageTotal_calculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                    );
+
+
+                     // Total over all pages - Diferenca
+                     total_diferenca = api
+                     .column( 12 )
+                     .data()
+                     .reduce( function (a, b) {
+                         return intVal(a) + intVal(b);
+                     }, 0 );
+
+                    // Total over this page - Diferenca
+                    pageTotal_diferenca = api
                         .column( 12, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Update footer
+                    // Update footer - Diferenca
                     $( api.column( 12 ).footer() ).html(
-                        pageTotal_frete.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        pageTotal_diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                     );
 
 
-                    // Total over all pages
-                    total_calculado = api
+                    // Total over all pages - Desconto
+                    total_descontos = api
                         .column( 13 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Total over this page
-                    pageTotal_calculado = api
+                    // Total over this page - Desconto
+                    pageTotal_descontos = api
                         .column( 13, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Update footer
+                    // Update footer - Desconto
                     $( api.column( 13 ).footer() ).html(
-                        pageTotal_calculado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        pageTotal_descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                     );
 
+                    // Total over all pages - Acrescimos
+                    total_acrescimos = api
+                        .column( 14 )
+                        .data()
+                        .reduce( function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0 );
 
-                     // Total over all pages
-                     total_diferenca = api
-                     .column( 14 )
-                     .data()
-                     .reduce( function (a, b) {
-                         return intVal(a) + intVal(b);
-                     }, 0 );
-
-                    // Total over this page
-                    pageTotal_diferenca = api
+                    // Total over this page - Acrescimos
+                    pageTotal_acrescimos = api
                         .column( 14, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Update footer
+                    // Update footer - Acrescimos
                     $( api.column( 14 ).footer() ).html(
-                        pageTotal_diferenca.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        pageTotal_acrescimos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                     );
 
-
-                    // Total over all pages
-                    total_faturado = api
+                    // Total over all pages - Val a Pagar
+                    total_val_pagar = api
                         .column( 15 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Total over this page
-                    pageTotal_faturado = api
+                    // Total over this page - Val a Pagar
+                    pageTotal_val_pagar = api
                         .column( 15, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Update footer
+                    // Update footer - Val a Pagar
                     $( api.column( 15 ).footer() ).html(
-                        pageTotal_faturado.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        pageTotal_val_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                     );
 
 
-                    // Total over all pages
-                    total_descontos = api
+                    //Val Conlog
+                    total_val_conlog = api
                         .column( 16 )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Total over this page
-                    pageTotal_descontos = api
+                    // Total over this page - Val Conlog
+                    pageTotal_val_conlog = api
                         .column( 16, { page: 'current'} )
                         .data()
                         .reduce( function (a, b) {
                             return intVal(a) + intVal(b);
                         }, 0 );
 
-                    // Update footer
+                    // Update footer - Val Conlog
                     $( api.column( 16 ).footer() ).html(
-                        pageTotal_descontos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                    );
-
-                    // Total over all pages
-                    total_acrescimos = api
-                        .column( 17 )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Total over this page
-                    pageTotal_acrescimos = api
-                        .column( 17, { page: 'current'} )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Update footer
-                    $( api.column( 17 ).footer() ).html(
-                        pageTotal_acrescimos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                    );
-
-                    // Total over all pages
-                    total_val_pagar = api
-                        .column( 18 )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Total over this page
-                    pageTotal_val_pagar = api
-                        .column( 18, { page: 'current'} )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Update footer
-                    $( api.column( 18 ).footer() ).html(
-                        pageTotal_val_pagar.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                    );
-
-
-                    total_val_conlog = api
-                        .column( 19 )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Total over this page
-                    pageTotal_val_conlog = api
-                        .column( 19, { page: 'current'} )
-                        .data()
-                        .reduce( function (a, b) {
-                            return intVal(a) + intVal(b);
-                        }, 0 );
-
-                    // Update footer
-                    $( api.column( 19 ).footer() ).html(
                         pageTotal_val_conlog.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                     );
                 }

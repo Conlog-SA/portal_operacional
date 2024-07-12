@@ -166,6 +166,109 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == 'btn_marcar_contas_vincula_resp'){
         $("#sl_contas_vincula_resp").selectpicker('selectAll');
+    } else if (let_nome_btn == 'btn_desmarcar_cb_contas_responsaveis_contas'){
+        $("#cb_contas_responsaveis_contas").selectpicker('deselectAll');
+    }
+    else if (let_nome_btn == 'btn_marcar_cb_contas_responsaveis_contas'){
+        $("#cb_contas_responsaveis_contas").selectpicker('selectAll');
+    }
+    else if (let_nome_btn == 'btn_desativa_contas_responsaveis_contas'){
+        let let_lista_nome_responsavel = $("#cb_responsaveis_contas").val().toString();
+        let let_lista_cod_contas = $("#cb_contas_responsaveis_contas").val().toString();
+        let let_dt_fim_atividade = $("#dt_fim_atv_contas_responsaveis_contas").val();
+        if(let_lista_nome_responsavel == '' || let_lista_cod_contas == '' || let_dt_fim_atividade == '' || let_dt_fim_atividade == null){
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Informe o responsável, conta e a data de fim da atividade!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        } else {
+            let let_loader_frm_contas_responsaveis = document.getElementById("loader_frm_contas_responsaveis");
+            let_loader_frm_contas_responsaveis.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                data:{
+                    'lista_nome_responsavel'    :   let_lista_nome_responsavel,
+                    'lista_cod_contas'          :   let_lista_cod_contas,
+                    'dt_fim_atividade'          :   let_dt_fim_atividade
+                },
+                url: '/contabil_composicao_app/desativa_resp_contas_em_lote',
+                dataType: 'json',
+                success: function(dados){
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let_loader_frm_contas_responsaveis.style.display = "none";
+                    atualiza_tab_resp_contas();
+                },
+                error: function(request, status, error){
+                    let_loader_frm_contas_responsaveis.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+
+        }
+    }
+
+
+});
+
+
+$(document).on('change', '#cb_pacotes_responsaveis_contas', function(){
+    let let_lista_nome_responsavel = $("#cb_responsaveis_contas").val().toString();
+    let let_lista_cod_pacote = $(this).val().toString();
+    if(let_lista_cod_pacote != ''){
+        let let_loader_frm_contas_responsaveis = document.getElementById("loader_frm_contas_responsaveis");
+        let_loader_frm_contas_responsaveis.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data:{
+                'lista_nome_responsavel'     :   let_lista_nome_responsavel,
+                'lista_cod_pacote'          :   let_lista_cod_pacote
+            },
+            url: '/contabil_composicao_app/atualiza_cb_contas_responsaveis_contas',
+            dataType: 'json',
+            success: function(dados){
+                $("#cb_contas_responsaveis_contas option").remove();
+                dados.lista_contas.forEach(conta => {
+                    $("#cb_contas_responsaveis_contas").append("<option value='"+
+                    conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+ " - " + conta.cod_conta__desc_conta+
+                    " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                    " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+                });
+                $("#cb_contas_responsaveis_contas").val('');
+                $("#cb_contas_responsaveis_contas").selectpicker('refresh');
+                let_loader_frm_contas_responsaveis.style.display = "none";
+            },
+            error: function(request, status, error){
+                let_loader_frm_contas_responsaveis.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+    }
+    else {
+        $("#cb_contas_responsaveis_contas option").remove();
+        $("#cb_contas_responsaveis_contas").val('');
+        $("#cb_contas_responsaveis_contas").selectpicker('refresh');
+
     }
 
 
@@ -191,7 +294,20 @@ function atualiza_tab_resp_contas(){
         dataType: 'json',
         success: function (dados) {
             let let_lista_reg = [];
+            let let_dic_pacotes = []
+
+            $("#cb_pacotes_responsaveis_contas option").remove();
+            dados.lista_pacotes_resp.forEach(pac => {
+                $("#cb_pacotes_responsaveis_contas").append(`
+                    <option value='${pac.cod_conta__cod_pacote_conta__cod_pacote_conta}'>
+                        ${pac.cod_conta__cod_pacote_conta__desc_pacote_conta}</option>`);
+            });
+            $("#cb_pacotes_responsaveis_contas").selectpicker("");
+            $("#cb_pacotes_responsaveis_contas").selectpicker('refresh');
+
+
             dados.dic_lista_contas_resp.forEach(reg => {
+
                 let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
 
                 let let_desc_conta = ''
@@ -237,15 +353,18 @@ function atualiza_tab_resp_contas(){
 
             $("#tab_resp_vinculados").DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 5,
                 "destroy": true,
-                "searching": false,
+                "fixedHeader": true,
+                "scrollY": true,
+                "scrollX": true,
+                "scrollCollapse": true,
                 "paging": true,
-                "data":let_lista_reg,
+                "pageLength": 6,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'
                 ],
+                "data":let_lista_reg,
                 "columns": [
                     { title: "" },
                     { title: "Pacote" },
