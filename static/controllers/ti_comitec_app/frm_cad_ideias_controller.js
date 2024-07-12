@@ -527,13 +527,19 @@ $(document).on('click','button', function(){
                         campo.disabled = false;
                     });
                 }
-                else if(dados.obj_usu_dic.tipo_colab_comitec == 'M'){
+                else if(dados.obj_usu_dic.tipo_colab_comitec == 'M' ){
                     $("#btn_abre_modal_add_nota_gut_g").prop('disabled', true);
                     $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
                     $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
-                    let_elem_owner_array.forEach(campo => {
-                        campo.disabled = false;
-                    });
+                    if( dados.obj_usu_dic.cod_usu_master == dados.obj_usu_dic.cod_usu_owner ){
+                        et_elem_owner_array.forEach(campo => {
+                            campo.disabled = false;
+                        });
+                    } else {
+                        let_elem_owner_array.forEach(campo => {
+                            campo.disabled = true;
+                        });
+                    }
 
                     let_elem_master_array.forEach(campo => {
                         campo.disabled = true;
@@ -548,13 +554,20 @@ $(document).on('click','button', function(){
                     $("#btn_abre_modal_add_nota_gut_g").prop('disabled', false);
                     $("#btn_abre_modal_add_nota_gut_u").prop('disabled', false);
                     $("#btn_abre_modal_add_nota_gut_t").prop('disabled', false);
-                    let_elem_owner_array.forEach(campo => {
-                        campo.disabled = true;
-                    });
 
-                    let_elem_master_array.forEach(campo => {
-                        campo.disabled = true;
-                    });
+                    if( dados.obj_usu_dic.cod_usu_head == dados.obj_usu_dic.cod_usu_owner ){
+                        let_elem_owner_array.forEach(campo => {
+                            campo.disabled = false;
+                        });
+                    } else {
+                         let_elem_owner_array.forEach(campo => {
+                            campo.disabled = true;
+                        });
+
+                    }
+
+                    $("#cb_usu_master_ideia_comitec").prop('disabled', false);
+                    $("#txt_obs_usu_master").prop('disabled', true);
 
                     let_elem_head_array.forEach(campo => {
                         campo.disabled = false;

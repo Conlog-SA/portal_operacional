@@ -1,11 +1,6 @@
 {% load static %}
 
-{% block link_static_css %} 
-  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/frota_app/importa_2art.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
-{% endblock %}
+
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
@@ -66,11 +61,12 @@
                     <thead>
                         <tr>
                             <th scope="col">Status</th>
-                            <th scope="col">Mapa/Data</th>
+                            <th scope="col">Mapa</th>
+                            <th scope="col">MSG</th>
                         </tr>
                     </thead>
 
-                    <tbody id="tBody2Art">
+                    <tbody>
 
                     </tbody>
 

@@ -35,9 +35,9 @@ $(document).on('change','input', function(){
     let let_val_input = $(this).attr('value');
 
     if ( let_nome_input == 'fl_campo_arquivo_2art') {
-        let loader_imp_2art = document.getElementById("loader_imp_2art")
         let let_frm_data = new FormData();
 		let_frm_data.append("file", $('input[type=file]')[0].files[0]);
+		let loader_imp_2art = document.getElementById("loader_imp_2art");
 		loader_imp_2art.style.display = "flex";
 		$.ajax({
 		    type: 'POST',
@@ -50,24 +50,23 @@ $(document).on('change','input', function(){
             cache: false,
             success: function(data){
                 let let_lista_dados_2art = [];
-                data.tab_mapas_nao_importados_2art.forEach( mapa => {
+                data.tab_mapas_nao_importados_2art.forEach( reg => {
                     let let_dado_2art = [
 						`<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>`,
-						mapa,
-
+						reg.mapa,
+						reg.msg
 					];
 					let_lista_dados_2art.push(let_dado_2art);
                 });
-
-				$('#tab_mapas_nao_importados_2art').DataTable( {
+                $('#tab_mapas_nao_importados_2art').DataTable( {
 				    "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": "770px",
+                    "scrollY": true,
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": true,
-                    "pageLength": 7,
+                    "pageLength": 6,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
@@ -75,12 +74,11 @@ $(document).on('change','input', function(){
 			  		"data":let_lista_dados_2art,
 			  		"columns": [
 			  		    { title: "Status" },
-                        { title: "Mapa/Data" }
+			  		    { title: "Mapa" },
+                        { title: "Msg" }
                     ],
                     "columnDefs": [
-                        { "width": "10%", "targets": 0 },
-                        {"className": "dt-left", "targets": [0]},
-                        {"className": "dt-left", "targets": [1]}
+                        {"className": "dt-left", "targets": [0,1]}
                     ],
                     "oLanguage": {
                         "sProcessing":   "Processando...",
@@ -107,6 +105,13 @@ $(document).on('change','input', function(){
                         }
                     }
 				});
+                alert('Fez');
+                loader_imp_2art.style.display = "none";
+                /*
+
+
+
+
 				let let_msg = `
 				    Total Registros : ${data.qtd_total_reg}<br/>
 				    Novos Mapas : ${data.qtd_reg_imp}<br/>
@@ -119,16 +124,18 @@ $(document).on('change','input', function(){
                     sticky: false,
                     time: '',
                 });
-                loader_imp_2art.style.display = "none"
+                loader_imp_2art.style.display = "none";
+                */
+
 
 
 			},
 			error: function (request, status, error) {
-			    loader_imp_2art.style.display = "none"
+			    loader_imp_2art.style.display = "none";
 			    $.gritter.add({
                     title: 'Atenção!',
                     text: "Erro na importação, contate o adm.",
-                    image: '../../icons/triangle-exclamation-solid.svg',
+                    image: '/static/icons/triangle-exclamation-solid.svg',
                     sticky: false,
                     time: '',
                 });

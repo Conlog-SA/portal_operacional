@@ -296,14 +296,22 @@ class Form_Importa_2art_View(View):
                         obj_registro_2art.save()
                         count_reg_up += 1
                 except Exception as e:
-                    tab_mapas_nao_importados_2art.append('Mapa: '+str(int(row['Mapa']))+', Data: '+data_mapa_str_sql+
-                                                         '.Erro: '+ str(e))
+                    reg = {
+                        'mapa': str(int(row['Mapa'])),
+                        'msg': 'Mapa: '+str(int(row['Mapa']))+', Data: '+data_mapa_str_sql+
+                                                         '.Erro: '+ str(e)
+                    }
+                    tab_mapas_nao_importados_2art.append(reg)
             else:
                 tipo_entrega = str(row['Entrega'])
                 tipo_frota = str(row['Frota'])
-                tab_mapas_nao_importados_2art.append('Mapa: ' + str(int(row['Mapa'])) + ', Data: ' + data_mapa_str_sql +
+                reg = {
+                    'mapa': str(int(row['Mapa'])),
+                    'msg': 'Mapa: ' + str(int(row['Mapa'])) + ', Data: ' + data_mapa_str_sql +
                                                      f'.Erro: Projeto não identificado. Tipo de Entrega {tipo_entrega} '
-                                                     f'e Frota {tipo_frota} não foram mapeados! Verifique com o Adm.')
+                                                     f'e Frota {tipo_frota} não foram mapeados! Verifique com o Adm.'
+                }
+                tab_mapas_nao_importados_2art.append(reg)
         arquivo_2art.qtd_registros = conteudo_arq_2art.shape[0]
         arquivo_2art.qtd_importados = count_reg_imp
         arquivo_2art.qtd_atualizados = count_reg_up
@@ -315,5 +323,5 @@ class Form_Importa_2art_View(View):
             'qtd_reg_imp': count_reg_imp,
             'qtd_reg_up': count_reg_up
         }
-        return JsonResponse(data)
+        return JsonResponse(data, safe=False)
 

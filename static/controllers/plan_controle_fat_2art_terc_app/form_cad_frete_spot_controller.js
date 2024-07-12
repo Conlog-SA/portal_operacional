@@ -235,7 +235,7 @@ $(document).on('click','button', function(){
             success: function(dados){ 
                 $("#modalCadFreteSpot").hide(); 
                 /* $("#tabCadFreteTerceitos").DataTable().clear().draw(); */
-                povoa_tab_fretes_terc();
+                /* povoa_tab_fretes_terc(); */
                 $.gritter.add({
                     title: 'Atenção!',
                     text: dados.msg,
