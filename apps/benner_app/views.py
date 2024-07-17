@@ -396,6 +396,15 @@ class ConexaoBancoBenner():
                             ELSE 0
                         END  							AS	val_corrigido,
                         
+                        COALESCE(( 
+                            SELECT	sum(fn_mov_pag_parcial.VALORTOTAL)
+                              FROM  FN_MOVIMENTACOES fn_mov_pag_parcial (NOLOCK)                              
+                             WHERE  fn_mov_pag_parcial.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_pag_parcial.tipomovimento in (1)
+                               AND  fn_mov_pag_parcial.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_pag_parcial.DATA AS DATE) <= '{data_corte}'),0)                     
+                               							AS  pag_parcial,
+                        
                         (SELECT MAX(lan_principal.VALOR)
                            FROM FN_LANCAMENTOS lan_principal (NOLOCK)
                            LEFT JOIN FN_CONTAS con_principal (NOLOCK)
@@ -515,6 +524,7 @@ class ConexaoBancoBenner():
                     'valor_conta': row.val_conta,
                     'data_vencimento': row.data_vencimento,
                     'data_liquidacao': row.data_liquidacao,
+                    'pag_parcial': row.pag_parcial,
                     'valor_corrigido': row.val_corrigido,
                     'val_total_pago': row.val_corrigido,
                     'val_principal': (row.val_fn_principal - val_acres_princ) + val_desc_princ,

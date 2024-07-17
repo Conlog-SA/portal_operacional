@@ -516,15 +516,15 @@ $(document).on('click','button', function(){
                     $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
                     $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
                     let_elem_owner_array.forEach(campo => {
-                        campo.disabled = true;
+                        campo.disabled = false;
                     });
 
                     let_elem_master_array.forEach(campo => {
-                        campo.disabled = false;
+                        campo.disabled = true;
                     });
 
                     let_elem_head_array.forEach(campo => {
-                        campo.disabled = false;
+                        campo.disabled = true;
                     });
                 }
                 else if(dados.obj_usu_dic.tipo_colab_comitec == 'M' ){
@@ -532,7 +532,7 @@ $(document).on('click','button', function(){
                     $("#btn_abre_modal_add_nota_gut_u").prop('disabled', true);
                     $("#btn_abre_modal_add_nota_gut_t").prop('disabled', true);
                     if( dados.obj_usu_dic.cod_usu_master == dados.obj_usu_dic.cod_usu_owner ){
-                        et_elem_owner_array.forEach(campo => {
+                        let_elem_owner_array.forEach(campo => {
                             campo.disabled = false;
                         });
                     } else {
@@ -542,12 +542,32 @@ $(document).on('click','button', function(){
                     }
 
                     let_elem_master_array.forEach(campo => {
-                        campo.disabled = true;
+                        campo.disabled = false
                     });
 
                     let_elem_head_array.forEach(campo => {
-                        campo.disabled = false;
+                        campo.disabled = true;
                     });
+
+                     let let_img_btn_atualizar_ideia = `
+                        <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
+                        Atualizar dados da minha idéia
+                    `;
+                    $("#btn_add_nova_ideia_comitec").val(dados.ideia_dic.cod_ideia);
+                    $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
+
+                    let btn_limpar_campos = `
+                        <button type="button" name="btn_limpa_campos_frm_ideia_comitec"
+                                  id="btn_limpa_campos_frm_ideia_comitec"
+                                  class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-regular fa-lightbulb" style="color: #FFFFFF;"></i>
+                              Registrar Nova Idéia
+                          </button>
+                    `;
+                    $("#div_btn_nova_ideia").html(btn_limpar_campos);
+
+                    $("#btn_add_aval_usu_master_ideia_comitec").val(dados.ideia_dic.cod_ideia);
+                    $("#btn_add_aval_usu_head_ideia_comitec").val(dados.ideia_dic.cod_ideia);
 
                 }
                 else if(dados.obj_usu_dic.tipo_colab_comitec == 'H' || dados.obj_usu_dic.tipo_colab_comitec == 'G'){
