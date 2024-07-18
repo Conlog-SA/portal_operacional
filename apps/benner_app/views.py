@@ -378,11 +378,21 @@ class ConexaoBancoBenner():
                         fn_parc.PARCELADIGITADA		    AS	ordem_parcela,
                         fn_parc.VALOR 					AS	val_conta,
                         
-                        CASE 
-                            WHEN CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' 
-                            THEN CAST(fn_parc.VCTOPRORROGADO AS DATE)
-                            ELSE CAST(fn_parc.DATAVENCIMENTO AS DATE)
-                        END                             AS data_vencimento,                        		
+                        COALESCE(
+                        	(SELECT	TOP 1 
+                        			CAST(fn_mov_ocor.VENCIMENTO AS DATE)
+							  FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+							  left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+							    on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+							 WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+							   AND  fn_mov_ocor.tipomovimento in (7)
+							   AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+							   AND  CAST(fn_mov_ocor.DATA AS DATE) <= '{data_corte}'
+							   AND	ocorr.NOME = 'PRORROGAÇÃO  DE VENCIMENTO'
+							 ORDER	BY ocorr.HANDLE desc	),
+							
+							CAST(fn_parc.DATAVENCIMENTO AS DATE)                       	
+                        )								AS	data_vencimento,                        		
                                                         
                         CASE 
                             WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}' 
