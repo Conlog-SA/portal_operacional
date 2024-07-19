@@ -1921,13 +1921,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date]) \
-                    .aggregate(sum_principal=Sum('val_principal'))
+                    .aggregate(sum_principal=Sum('val_principal'), sum_val_pago=Sum('val_pago'))
 
 
-                parcelas = Parcela_Contrato.objects \
+                '''parcelas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
-                                                    ultimo_dia_data_competencia_mais_12_meses_date])
+                                                    ultimo_dia_data_competencia_mais_12_meses_date])'''
 
 
                 val_parcelas_atrasadas = Parcela_Contrato.objects \
@@ -1936,22 +1936,26 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
                     .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'))
 
-                val_parc_atrasadas = Parcela_Contrato.objects \
+                '''val_parc_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  # val_pago=0
                             data_vencimento__lte=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
-
+'''
 
 
                 val_composicao_ano = 0
                 if val_composicao_ano_dic['sum_principal'] != None:
                     val_composicao_ano = val_composicao_ano_dic['sum_principal']
 
+                val_pago = 0
+                if val_composicao_ano_dic['sum_val_pago'] != None:
+                    val_pago = val_composicao_ano_dic['sum_val_pago']
+
                 if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
                     val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas']
 
 
-                val_composicao = val_composicao_ano
+                val_composicao = val_composicao_ano - val_pago
 
                 val_balancete = ConexaoBancoBenner() \
                                     .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
@@ -1996,14 +2000,18 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 val_composicao_ano_dic = (Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato, data_vencimento__gt=ultimo_dia_data_competencia_mais_12_meses_date)
                                           .exclude(tipo_prazo='PG') \
-                    .aggregate(sum_principal=Sum('val_principal')))
+                    .aggregate(sum_principal=Sum('val_principal'), sum_val_pago=Sum('val_pago')))
 
                 val_composicao_ano = 0
                 if val_composicao_ano_dic['sum_principal'] != None:
                     val_composicao_ano = val_composicao_ano_dic['sum_principal']
 
+                val_pago = 0
+                if val_composicao_ano_dic['sum_val_pago'] != None:
+                    val_pago = val_composicao_ano_dic['sum_val_pago']
 
-                val_composicao = val_composicao_ano
+
+                val_composicao = val_composicao_ano - val_pago
                 '''if val_composicao < 0:
                     val_composicao *= -1'''
 
@@ -5203,9 +5211,18 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
                             obj_parcela.tipo_prazo = 'PG'
                             obj_parcela.data_liquidacao = parc['data_liquidacao']
 
+                        val_pago = 0.00
+                        val_pago_bd = 0.00
+                        if parc['valor_corrigido'] > 0:
+                            val_pago = locale.currency(round(parc['valor_corrigido'], 2), grouping=True, symbol=None)
+                            val_pago_bd = parc['val_total_pago']
+                        else:
+                            val_pago = locale.currency(round(parc['pag_parcial'], 2), grouping=True, symbol=None)
+                            val_pago_bd = parc['pag_parcial']
+
                         obj_parcela.data_vencimento = parc['data_vencimento']
                         obj_parcela.val_corrigido = parc['valor_corrigido']
-                        obj_parcela.val_pago = parc['val_total_pago']
+                        obj_parcela.val_pago = val_pago_bd
                         obj_parcela.val_principal = parc['val_principal']
                         obj_parcela.val_taxas = parc['val_taxas']
                         obj_parcela.val_fundo = parc['val_fundo']
@@ -5218,9 +5235,6 @@ class Form_Atualiza_Parcelas_Data_Corte(View):
                         obj_parcela.obs_parcela = f'''/Atualização realizada em {parc['data_ultima_atualizacao']}.Por {obj_usuario_sessao.login_usu}.Principal estava em R$ {val_principal_anterior} e R$ Taxas {val_taxa_anterior}/ '''
                         obj_parcela.save()
 
-                        val_pago = 0.00
-                        if parc['valor_corrigido'] != None:
-                            val_pago = locale.currency(round(parc['valor_corrigido'], 2), grouping=True, symbol=None)
 
                         val_principal = 0.00
                         if parc['val_principal'] != None:

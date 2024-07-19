@@ -378,11 +378,21 @@ class ConexaoBancoBenner():
                         fn_parc.PARCELADIGITADA		    AS	ordem_parcela,
                         fn_parc.VALOR 					AS	val_conta,
                         
-                        CASE 
-                            WHEN CAST(fn_parc.VCTOPRORROGADO AS DATE) <= '{data_corte}' 
-                            THEN CAST(fn_parc.VCTOPRORROGADO AS DATE)
-                            ELSE CAST(fn_parc.DATAVENCIMENTO AS DATE)
-                        END                             AS data_vencimento,                        		
+                        COALESCE(
+                        	(SELECT	TOP 1 
+                        			CAST(fn_mov_ocor.VENCIMENTO AS DATE)
+							  FROM  FN_MOVIMENTACOES fn_mov_ocor (NOLOCK) 
+							  left  join FN_OCORRENCIAS ocorr (NOLOCK) 
+							    on  (ocorr.HANDLE = fn_mov_ocor.OCORRENCIA)
+							 WHERE  fn_mov_ocor.PARCELA = fn_parc.HANDLE
+							   AND  fn_mov_ocor.tipomovimento in (7)
+							   AND  fn_mov_ocor.AUTORIZACAOPAGAMENTO IS NOT NULL
+							   AND  CAST(fn_mov_ocor.DATA AS DATE) <= '{data_corte}'
+							   AND	ocorr.NOME = 'PRORROGAÇÃO  DE VENCIMENTO'
+							 ORDER	BY ocorr.HANDLE desc	),
+							
+							CAST(fn_parc.DATAVENCIMENTO AS DATE)                       	
+                        )								AS	data_vencimento,                        		
                                                         
                         CASE 
                             WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}' 
@@ -395,6 +405,15 @@ class ConexaoBancoBenner():
                             THEN sum(fn_mov.VALORTOTAL)
                             ELSE 0
                         END  							AS	val_corrigido,
+                        
+                        COALESCE(( 
+                            SELECT	sum(fn_mov_pag_parcial.VALORTOTAL)
+                              FROM  FN_MOVIMENTACOES fn_mov_pag_parcial (NOLOCK)                              
+                             WHERE  fn_mov_pag_parcial.PARCELA = fn_parc.HANDLE
+                               AND  fn_mov_pag_parcial.tipomovimento in (1)
+                               AND  fn_mov_pag_parcial.AUTORIZACAOPAGAMENTO IS NOT NULL
+                               AND  CAST(fn_mov_pag_parcial.DATA AS DATE) <= '{data_corte}'),0)                     
+                               							AS  pag_parcial,
                         
                         (SELECT MAX(lan_principal.VALOR)
                            FROM FN_LANCAMENTOS lan_principal (NOLOCK)
@@ -515,6 +534,7 @@ class ConexaoBancoBenner():
                     'valor_conta': row.val_conta,
                     'data_vencimento': row.data_vencimento,
                     'data_liquidacao': row.data_liquidacao,
+                    'pag_parcial': row.pag_parcial,
                     'valor_corrigido': row.val_corrigido,
                     'val_total_pago': row.val_corrigido,
                     'val_principal': (row.val_fn_principal - val_acres_princ) + val_desc_princ,
