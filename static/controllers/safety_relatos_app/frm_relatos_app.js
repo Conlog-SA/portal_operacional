@@ -24,6 +24,7 @@ $(document).on('change','.selectpicker',function(){
                 url: '/safety_login_colaboradores_app/lista_colaboradores',
                 data: {
                     'cod_unidade'   :   let_cod_unidade,
+                    'tipo_check'    :   '2'
                 },
                 dataType: 'json',
                 success: function (dados) {

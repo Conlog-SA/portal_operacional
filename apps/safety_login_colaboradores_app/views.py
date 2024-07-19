@@ -62,19 +62,25 @@ class Menu_Safe(View):
             url = 'empilhadeira_check'
         elif tipo_check == '1':
             url = 'relatos_check'
+        elif tipo_check == '2':
+            url = 'gsdpq_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):
     @csrf_exempt
     def get(self, request):
+        tipo_check = request.GET['tipo_check']
         cod_unidade = request.GET['cod_unidade']
 
-        lista_colaboradores = (Colaborador.objects.filter(cod_filial=cod_unidade)).order_by('nome_colaborador')
+        lista_colaboradores = ((Colaborador.objects.filter(cod_filial=cod_unidade, situacao=1, ))
+                               .order_by('nome_colaborador'))
         #                       | Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
+        if tipo_check == '1':
+            lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='op')
+            lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='empilhadeira')
         dict_colaboradores_options = []
         for colaborador in lista_colaboradores:
             dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador, 'desc_cargo': colaborador.desc_cargo}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
-
         data = {
             'lista_colaboradores': dict_colaboradores_options
         }
