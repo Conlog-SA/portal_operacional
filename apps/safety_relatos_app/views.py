@@ -68,6 +68,7 @@ class Form_Gerar_Relatos_Check(View):
             colaborador = Colaborador(
                 nome_colaborador=nome_relatado,
                 cod_filial=unidade_relato,
+                situacao=0
             )
             colaborador.save()
 

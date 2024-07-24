@@ -77,6 +77,7 @@ class Form_Gerar_Gab_Emp(View):
                 nome_colaborador=usuario_informado,
                 cpf=documento_usuario_informado,
                 cod_filial=filial_colaborador,
+                situacao=0
             )
             colaborador.save()
 
