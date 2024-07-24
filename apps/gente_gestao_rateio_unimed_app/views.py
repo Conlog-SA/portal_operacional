@@ -76,7 +76,7 @@ class Form_Importa_Plan_Despesas_View(View):
         for index, row in conteudo_arq_plan_unimed.iterrows():
             nome_beneficiario = str(row['NOME']).strip()
             tipo_depencencia = str(row['DEPENDENCIA']).strip()
-            nome_titular = str((row['NOME_TITULAR'])).strip()
+            nome_titular = str(row['NOME_TITULAR']).strip()
             desc_despesa = str(row['DESC_DESPESA']).strip()
             valor = float(row['VL_FATURADO'])
             cpf_beneficiario = str(row['CPF']).strip()

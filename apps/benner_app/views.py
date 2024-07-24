@@ -226,7 +226,7 @@ class ConexaoBancoBenner():
                 'val_liquido': row.val_liquido,
                 'fornecedor': row.fornecedor,
                 'handle_operacao': row.handle_operacao,
-                'nome_operacao':    row.nome_operacao,
+                'nome_operacao':  row.nome_operacao,
                 'cod_red_operacao': row.cod_red_operacao,
                 'doc_contabil': row.doc_contabil,
                 'cod_empresa': row.cod_empresa,

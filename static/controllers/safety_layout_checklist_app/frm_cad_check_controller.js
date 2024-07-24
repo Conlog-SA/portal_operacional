@@ -785,7 +785,6 @@ $(document).on('click','.btn-novo-colab' , function(){
         msg_erro += 'Informe a filial do colaborador!<br>';
     }
 
-
     if (msg_erro == '') {
         $.ajax({
             type: 'POST',
