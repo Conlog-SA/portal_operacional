@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 
 from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect
@@ -6,6 +6,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_layout_checklist_app.models import Libera_Filial_Check
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usu_Menu
 
@@ -44,10 +45,64 @@ class Menu_Safe(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(pk=cod_colaborador)
         primeiro_nome_colaborador = colaborador.nome_colaborador.split(' ')[0].upper()
-        desc_filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial).desc_filial
+        filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
+        desc_filial_colaborador = filial_colaborador.desc_filial
+
+
+        data_atual = datetime.now()
+        str_menu_colaborador = ''
+        if colaborador.perfil_usu == 'U':
+            check_ativo = Libera_Filial_Check.objects.filter(cod_check__data_desativacao__gte=date(data_atual.year,
+                                                                                                   data_atual.month,
+                                                                                                   data_atual.day),
+                                                             cod_check__data_inicio__lte=date(data_atual.year,
+                                                                                              data_atual.month,
+                                                                                              data_atual.day),
+                                                             cod_filial=filial_colaborador).order_by(
+                '-cod_check__data_desativacao')
+
+            if check_ativo.filter(cod_check__tipo_check=1).first() != None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Empilhadeiras</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=2).first() != None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Relatos</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=3).first() != None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">GSDPQ</b>
+                                            </div>
+                                        '''
+        elif colaborador.perfil_usu == 'G':
+            str_menu_colaborador += '''
+                                        <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
+                                            <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
+                                            <b style="color:white;">Empilhadeiras</b>
+                                        </div>
+                                        <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Relatos</b>
+                                        </div>
+                                        <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">GSDPQ</b>
+                                        </div>
+                                    '''
+
+
         context = {
             'nome_colaborador': primeiro_nome_colaborador,
-            'desc_filial_colaborador': desc_filial_colaborador
+            'desc_filial_colaborador': desc_filial_colaborador,
+            'str_menu_colaborador': str_menu_colaborador,
         }
         return render(request, 'safety_login_colaboradores_app/safe_main_menu.html', context)
 

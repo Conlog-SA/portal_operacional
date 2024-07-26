@@ -17,7 +17,7 @@ from apps.usuario_app.models import Usuario
 class Form_Seguranca_Check(View):
     @csrf_exempt
     def get(self, request):
-        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos'}
+        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0

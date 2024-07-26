@@ -188,6 +188,13 @@ html, body {
     color:white;
 }
 
+.icon-gsdpq {
+    /* color:var(--cor_empresa); */
+    font-size:3rem;
+    margin-right:1.5rem;
+    color:white;
+}
+
 .safety-container-menu {
     display:flex;
     flex-direction:column;

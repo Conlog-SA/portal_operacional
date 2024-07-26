@@ -43,6 +43,7 @@ urlpatterns = [
     path('dre_app/', include('apps.dre_app.urls')),
     path('gente_gestao_rateio_unimed_app/', include('apps.gente_gestao_rateio_unimed_app.urls')),
     path('ti_comitec_app/', include('apps.ti_comitec_app.urls')),
+    path('safety_gsdpq_app/', include('apps.safety_gsdpq_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

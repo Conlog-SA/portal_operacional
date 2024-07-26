@@ -13,14 +13,9 @@
                 <i style="font-size:11px;">{{desc_filial_colaborador}}</i>
             </div>
         </div>
-        <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-            <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
-            <b style="color:white;">Empilhadeiras</b>
-        </div>
-        <div class="safety-container-app safety-app-relatos">
-            <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
-            <b style="color:white;">Relatos</b>
-        </div>
+        {% autoescape off %}
+            {{str_menu_colaborador}}
+        {% endautoescape %}
     </div>
     <div style="width:50%;display:flex;justify-content:flex-end">
         <button class="btn btn-space btn-sair-safety">
