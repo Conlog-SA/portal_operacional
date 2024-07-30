@@ -29,7 +29,6 @@ class Form_Gerar_Gab_Emp(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
         nome_colaborador = colaborador.nome_colaborador
-        filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
 
         #lista_modelos_emp = Modelo_Emp.objects.all()
         #lista_modelos_emp_dict = []
@@ -51,7 +50,7 @@ class Form_Gerar_Gab_Emp(View):
 
             lista_empilhadeiras = Empilhadeira.objects.all()
             lista_empilhadeiras = lista_empilhadeiras.exclude(cod_filial__desc_filial__contains="AMBEV")
-            lista_empilhadeiras = lista_empilhadeiras.filter(cod_empresa=filial_usuario.cod_empresa, cod_filial__cod_filial__in=check_ativo.values('cod_filial').distinct())
+            lista_empilhadeiras = lista_empilhadeiras.filter(cod_filial__cod_filial__in=check_ativo.values('cod_filial').distinct())
 
             lista_filiais = lista_empilhadeiras.values('cod_filial__cod_filial', 'cod_filial__desc_filial').distinct()
             str_options_select_unidade = ''
