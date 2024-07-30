@@ -74,8 +74,8 @@ $(document).on('click','.safety-app-empilhadeiras' , function(){
         },
         success: function (dados) {
             $('#main_container_safety').html(dados);
-            $('#main_container_safety').removeClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
-            $('#main_container_safety').addClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
+            $('#main_container_safety').removeClass('safety-container-screen homeApp_loginContainer');
+            $('#main_container_safety').addClass('text-center conteudoPrincipal');
             $('#main_container_safety').css("margin-left","0px");
             $('#main_container_safety').css('width', '100%');
 

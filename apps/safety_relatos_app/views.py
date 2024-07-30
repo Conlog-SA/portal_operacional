@@ -55,6 +55,10 @@ class Form_Gerar_Relatos_Check(View):
             'options_select_processo': str_options_select_processo,
             'lista_categorias': lista_categorias_ato_inseguro
         }
+
+        if "Visitante" in colaborador.nome_colaborador:
+            return render(request, 'safety_relatos_app/relatos_form_gerar_check_visitante.html', context)
+
         return render(request, 'safety_relatos_app/relatos_form_gerar_check.html', context)
 
     @csrf_exempt

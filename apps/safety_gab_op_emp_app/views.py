@@ -39,7 +39,7 @@ class Form_Gerar_Gab_Emp(View):
         if colaborador.perfil_usu == 'G':
 
             data_atual = datetime.now()
-            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2,
+            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1,
                                                              cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                    data_atual.month,
                                                                                                    data_atual.day),
@@ -50,7 +50,7 @@ class Form_Gerar_Gab_Emp(View):
 
             lista_empilhadeiras = Empilhadeira.objects.all()
             lista_empilhadeiras = lista_empilhadeiras.exclude(cod_filial__desc_filial__contains="AMBEV")
-            lista_empilhadeiras = lista_empilhadeiras.filter(cod_filial__cod_filial__in=check_ativo.values('cod_filial').distinct())
+            lista_empilhadeiras = lista_empilhadeiras.filter(cod_empresa=colaborador.cod_filial.cod_empresa, cod_filial__cod_filial__in=check_ativo.values('cod_filial').distinct())
 
             lista_filiais = lista_empilhadeiras.values('cod_filial__cod_filial', 'cod_filial__desc_filial').distinct()
             str_options_select_unidade = ''

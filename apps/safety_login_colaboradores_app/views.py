@@ -14,6 +14,12 @@ from apps.usuario_app.models import Usu_Menu
 class Login_Colaborador(View):
     @csrf_exempt
     def get(self, request):
+        id_visitante = request.GET.get('id_visitante')
+        if id_visitante is not None:
+            colaborador = Colaborador.objects.get(cod_colaborador=id_visitante)
+            if "Visitante" in colaborador.nome_colaborador:
+                request.session['cod_colaborador'] = id_visitante
+                return redirect('relatos_check')
         return render(request, 'safety_login_colaboradores_app/safe_base_container.html')
 
     @csrf_exempt
