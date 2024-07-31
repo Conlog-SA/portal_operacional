@@ -38,7 +38,7 @@ class Form_Gerar_Relatos_Check(View):
 
             for filial in filiais:
                 str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
-        elif colaborador.perfil_usu == 'U':
+        elif colaborador.perfil_usu == 'U' or colaborador.perfil_usu == 'V':
             str_options_select_unidade += f'<option selected value="{filial_usuario.cod_filial}">{filial_usuario.desc_filial}</option>'
 
         str_options_select_processo = ''

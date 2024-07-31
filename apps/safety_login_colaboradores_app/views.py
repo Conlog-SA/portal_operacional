@@ -48,12 +48,20 @@ class Login_Colaborador_Deep(View):
 class Menu_Safe(View):
     @csrf_exempt
     def get(self, request):
+
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(pk=cod_colaborador)
         primeiro_nome_colaborador = colaborador.nome_colaborador.split(' ')[0].upper()
         filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
         desc_filial_colaborador = filial_colaborador.desc_filial
 
+        if colaborador.perfil_usu == 'V':
+            context = {
+                'nome_colaborador': primeiro_nome_colaborador,
+                'desc_filial_colaborador': desc_filial_colaborador,
+            }
+
+            return render(request, 'safety_login_colaboradores_app/safe_visitante_submit.html', context)
 
         data_atual = datetime.now()
         str_menu_colaborador = ''
