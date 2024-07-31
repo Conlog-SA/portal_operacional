@@ -18,52 +18,65 @@ $(document).on('change','.selectpicker',function(){
 
     if (nome_select == "situacao_envolvido") {
         let let_cod_unidade = $('#unidade').val();
-        if ($(this).val() == '1') {
-            $.ajax({
-                type: 'GET',
-                url: '/safety_login_colaboradores_app/lista_colaboradores',
-                data: {
-                    'cod_unidade'   :   let_cod_unidade,
-                    'tipo_check'    :   '2'
-                },
-                dataType: 'json',
-                success: function (dados) {
-                    console.log(dados);
-                    $('#nome_relatado option').remove();
-                    dados.lista_colaboradores.forEach(operacao => {
-                        $("#nome_relatado").append("<option value='"+
-                        operacao.cod_colaborador+"'>"+operacao.nome_colaborador+" (" + operacao.desc_cargo+")</option>");
-                    });
-                    if ($('#nome_relatado option').length == 0) {
-                        $('#situacao_envolvido').val("4");
-                        $('#situacao_envolvido').selectpicker('refresh');
-                        $('#situacao_envolvido').trigger('change');
-
-                        $.gritter.add({
-                            title: 'Erro!',
-                            text: 'Não foram encontrados colaboradores para a unidade selecionada!',
-                            image: '/static/icons/triangle-exclamation-solid.svg',
-                            sticky: false,
-                            time: '',
+        if (let_cod_unidade != '') {
+            if ($(this).val() == '1') {
+                $.ajax({
+                    type: 'GET',
+                    url: '/safety_login_colaboradores_app/lista_colaboradores',
+                    data: {
+                        'cod_unidade'   :   let_cod_unidade,
+                        'tipo_check'    :   '2'
+                    },
+                    dataType: 'json',
+                    success: function (dados) {
+                        console.log(dados);
+                        $('#nome_relatado option').remove();
+                        dados.lista_colaboradores.forEach(operacao => {
+                            $("#nome_relatado").append("<option value='"+
+                            operacao.cod_colaborador+"'>"+operacao.nome_colaborador+" (" + operacao.desc_cargo+")</option>");
                         });
-                    } else {
-                        $('#nome_relatado').prop('disabled',false);
-                        $('#div_relatado').removeClass('hidden-div');
-                        $('#nome_relatado').selectpicker('refresh');
-                        $('#div_relatado_terceiro').addClass('hidden-div');
-                        $('#nome_relatado_terceiro').val('');
-                    };
-                }
+                        if ($('#nome_relatado option').length == 0) {
+                            $('#situacao_envolvido').val("4");
+                            $('#situacao_envolvido').selectpicker('refresh');
+                            $('#situacao_envolvido').trigger('change');
+
+                            $.gritter.add({
+                                title: 'Erro!',
+                                text: 'Não foram encontrados colaboradores para a unidade selecionada!',
+                                image: '/static/icons/triangle-exclamation-solid.svg',
+                                sticky: false,
+                                time: '',
+                            });
+                        } else {
+                            $('#nome_relatado').prop('disabled',false);
+                            $('#div_relatado').removeClass('hidden-div');
+                            $('#nome_relatado').selectpicker('refresh');
+                            $('#div_relatado_terceiro').addClass('hidden-div');
+                            $('#nome_relatado_terceiro').val('');
+                        };
+                    }
+                });
+            }
+        }
+        else {
+            $('#situacao_envolvido').val('');
+            $('#situacao_envolvido').selectpicker('refresh');
+
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Selecione a unidade primeiro!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
             });
         }
+
         if ($(this).val() == '2' || $(this).val() == '3' || $(this).val() == '4') {
             $('#div_relatado_terceiro').removeClass('hidden-div');
             $('#div_relatado').addClass('hidden-div');
             $('#nome_relatado').val('');
             $('#nome_relatado').selectpicker('refresh');
         }
-
-        let cod_unidade = $('#unidade').val();
     }
 
     if (nome_select == "processo_relato") {
