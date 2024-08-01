@@ -112,7 +112,6 @@ class Menu_Safe(View):
                                         </div>
                                     '''
 
-
         context = {
             'nome_colaborador': primeiro_nome_colaborador,
             'desc_filial_colaborador': desc_filial_colaborador,

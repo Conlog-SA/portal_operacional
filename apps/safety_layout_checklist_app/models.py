@@ -15,6 +15,7 @@ class Layout_Check(models.Model):
     periodicidade = models.CharField(max_length=1, blank=True, null=True)
     medida_periodicidade = models.IntegerField(blank=False, null=False)
     tipo_check = models.CharField(max_length=30, blank=False, null=False)
+    ativo=models.IntegerField(default=1)
 
     class Meta:
         managed = True

@@ -22,7 +22,7 @@ class Form_Seguranca_Check(View):
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
         if usuario.corporativo == 'S':
-            lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa)
+            lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa, ativo=1)
             #lista_filiais = Filial.objects.all()
             flag_corporativo = 1
         elif usuario.corporativo == 'N':
@@ -45,11 +45,11 @@ class Lista_Check(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         if usuario.corporativo == 'S':
-            lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
+            lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo, ativo=1))
         elif usuario.corporativo == 'N':
             checks_liberados_filial_usu = Libera_Filial_Check.objects.filter(cod_filial=usuario.cod_filial)
 
-            lista_checks = Layout_Check.objects.filter(tipo_check=cod_tipo,cod_usu__cod_filial=usuario.cod_filial)
+            lista_checks = Layout_Check.objects.filter(tipo_check=cod_tipo,cod_usu__cod_filial=usuario.cod_filial, ativo=1)
             lista_checks = lista_checks.union(Layout_Check.objects.filter(cod_check__in=checks_liberados_filial_usu))
 
         lista_checks_dict = []
@@ -138,9 +138,12 @@ class Form_Cadastro_Check(View):
 class Form_Filial_Check(View):
     @csrf_exempt
     def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+
         cod_check = request.GET['cod_check']
         lista_filiais_check = []
-        filiais_check = list(Libera_Filial_Check.objects.filter(cod_check=cod_check))
+        filiais_check = list(Libera_Filial_Check.objects.filter(cod_check=cod_check, cod_filial__ativo=1, cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa))
 
         for filial_check in filiais_check:
             filial = Filial.objects.get(cod_filial=filial_check.cod_filial.cod_filial)
@@ -149,7 +152,7 @@ class Form_Filial_Check(View):
             else:
                 lista_filiais_check.append({'cod_filial': filial.cod_filial, 'desc_filial': filial.desc_filial, 'cod_empresa': '', 'desc_empresa' : ''})
 
-        lista_filiais_object = list(Filial.objects.all().values('cod_filial', 'desc_filial', 'cod_empresa', 'cod_empresa__desc_empresa'))
+        lista_filiais_object = list(Filial.objects.filter(ativo=1, cod_empresa=obj_usuario.cod_filial.cod_empresa).values('cod_filial', 'desc_filial', 'cod_empresa', 'cod_empresa__desc_empresa'))
         lista_filiais = []
         for filial in lista_filiais_object:
             lista_filiais.append({'cod_filial': filial['cod_filial'], 'desc_filial': filial['desc_filial'], 'cod_empresa': filial['cod_empresa'], 'desc_empresa': filial['cod_empresa__desc_empresa']})
@@ -168,9 +171,11 @@ class Form_Filial_Check(View):
         return JsonResponse(data, safe=False)
     @csrf_exempt
     def post(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+
         cod_check = request.POST['cod_check']
         filiais_check_form = request.POST['filiais_check'][2:-2]
-        print(filiais_check_form)
         filiais_check_form = filiais_check_form.split('","')
         lista_filiais_select = []
         if filiais_check_form != ['']:
@@ -185,7 +190,7 @@ class Form_Filial_Check(View):
              #       else:
              #           filial_get = Filial.objects.get(desc_filial=filial_string)
 
-        lista_filiais_checks = Libera_Filial_Check.objects.filter(cod_check=cod_check)
+        lista_filiais_checks = Libera_Filial_Check.objects.filter(cod_check=cod_check, cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa)
         lista_filiais_old = []
         for filial_check in lista_filiais_checks:
             filial = Filial.objects.get(cod_filial=filial_check.cod_filial.cod_filial)

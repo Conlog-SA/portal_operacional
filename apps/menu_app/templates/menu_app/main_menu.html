@@ -16,6 +16,10 @@
 
   <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
   <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+
+  <style>
+    body {background-image: url('../../../static/img/{{str_bg}}');
+  </style>
 {% endblock %}
 
 {% block conteudo %}
@@ -37,7 +41,12 @@
       <div class="offcanvas-header justify-content-between" style="padding-top: 5px;padding-bottom: 5px">
         <div class="d-flex align-items-center">
           <div class="flex-column">
-            <img class="iconeEmpresaMenu" src="{% static 'icons/logo-laranja.png'%}" alt=""/>
+            {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17 %}
+              <img class="iconeEmpresaMenu" src="{% static 'icons/logo-small-deep.png'%}" alt=""/>
+            {% else %}
+              <img class="iconeEmpresaMenu" src="{% static 'icons/logo-laranja.png'%}" alt=""/>
+            {% endif %}
+
             <b>Portal Operacional</b><br/>
             <span style="font-size: 0.8rem;margin-left: 0px;padding-left: 2.8rem;">
               <b>Usuário - </b>{{obj_usuario_sessao.login_usu}}  <b>Perfil - </b>
