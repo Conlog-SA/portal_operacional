@@ -104,11 +104,17 @@ $(document).on('change','.selectpicker',function(){
     if (nome_select == "tipo_relato") {
         if ($(this).val() == 1) {
             $('#div_ato_inseguro_categorias').removeClass('hidden-div');
+            $('#div_condicao_insegura_categorias').addClass('hidden-div');
+        }
+        else if ($(this).val() == 2) {
+            $('#div_condicao_insegura_categorias').removeClass('hidden-div');
+            $('#div_ato_inseguro_categorias').addClass('hidden-div');
         }
         else {
             $('#ato_inseguro_categoria').val('');
             $('#ato_inseguro_categoria').selectpicker('refresh');
             $('#div_ato_inseguro_categorias').addClass('hidden-div');
+            $('#div_condicao_insegura_categorias').addClass('hidden-div');
         }
 
     }

@@ -62,8 +62,16 @@
                                             <div id="div_ato_inseguro_categorias" class="form-group hidden-div">
                                                 <label class="responsive-font" for="nome_relatado_terceiro">Categoria do ato:</label>
                                                 <select class="selectpicker form-control responsive-font" id="ato_inseguro_categoria" name="ato_inseguro_categoria" placeholder="Escolha a categoria" data-live-search="true">
-                                                    {% for categoria in lista_categorias %}
-                                                    <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                    {% for categoria in lista_categorias_ato_inseguro %}
+                                                        <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="div_condicao_insegura_categorias" class="form-group hidden-div">
+                                                <label class="responsive-font" for="nome_relatado_terceiro">Categoria da condição:</label>
+                                                <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" placeholder="Escolha a categoria" data-live-search="true">
+                                                    {% for categoria in lista_categorias_condicao_insegura %}
+                                                        <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
                                                     {% endfor %}
                                                 </select>
                                             </div>
