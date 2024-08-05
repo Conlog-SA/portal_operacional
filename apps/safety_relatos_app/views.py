@@ -47,13 +47,15 @@ class Form_Gerar_Relatos_Check(View):
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
         lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3)
+        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4)
 
         context = {
             'cod_usuario': nome_colaborador,
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade,
             'options_select_processo': str_options_select_processo,
-            'lista_categorias': lista_categorias_ato_inseguro
+            'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
+            'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura
         }
 
         if "Visitante" in colaborador.nome_colaborador:
@@ -139,6 +141,8 @@ class Form_Gerar_Relatos_Check(View):
             categoria=categoria_relato
         )
         check_cabecalho.save()
+
+        request.session['cod_relato'] = check_cabecalho.cod_relato_check
 
         context = {
             'lista_itens' : lista_itens_dict,
