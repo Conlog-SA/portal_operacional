@@ -166,13 +166,17 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                     $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
                     $('#main_container_safety').css('width', '85%');
 
-                    $.gritter.add({
-                        title: 'Sucesso!',
-                        text: 'Check preenchido com sucesso',
-                        image: '/static/icons/triangle-exclamation-solid.svg',
-                        sticky: false,
-                        time: '',
-                    });
+                    flag_visitante = $('#button_flag_visitante').val();
+                    if (flag_visitante != "True") {
+                        $.gritter.add({
+                            title: 'Sucesso!',
+                            text: 'Check preenchido com sucesso',
+                            image: '/static/icons/triangle-exclamation-solid.svg',
+                            sticky: false,
+                            time: '',
+                        });
+                    }
+
                 }
             });
         }
