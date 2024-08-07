@@ -380,7 +380,8 @@ class Form_Cadastro_Colaborador(View):
                 cpf=cpf_colab,
                 data_nascimento=dt_nasc_colab,
                 cod_filial=filial_cad_colab,
-                perfil_usu='U'
+                perfil_usu='U',
+                situacao=0
             )
             novo_colab.save()
 
