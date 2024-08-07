@@ -73,16 +73,19 @@ class Form_Gerar_Relatos_Check(View):
         atividade_relato = request.POST['atividade_relato']
         processo_relato = request.POST['processo_relato']
         unidade_relato = request.POST['unidade_relato']
-        categoria_relato = request.POST['categoria_relato']
+        categoria_ato_inseguro = request.POST['categoria_ato_inseguro']
+        categoria_condicao_insegura = request.POST['categoria_condicao_insegura']
 
-        if categoria_relato == '':
-            categoria_relato = None
+        if categoria_ato_inseguro == '':
+            categoria_ato_inseguro = None
+        if categoria_condicao_insegura == '':
+            categoria_condicao_insegura = None
 
         colaborador = None
         if situacao_envolvido == '1':
             colaborador = Colaborador.objects.get(pk=int(nome_relatado))
 
-        elif situacao_envolvido == '2' or situacao_envolvido == '3' or situacao_envolvido == '4':
+        elif (situacao_envolvido == '2' or situacao_envolvido == '3' or situacao_envolvido == '4') and tipo_relato != '2':
 
             colaborador = Colaborador(
                 nome_colaborador=nome_relatado,
@@ -130,6 +133,9 @@ class Form_Gerar_Relatos_Check(View):
                                      'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
                                      'obrigatorio': item.obrigatorio})
 
+        if tipo_relato == '2':
+            situacao_envolvido = None
+
         check_cabecalho = Relato(
             cod_tipo_relato=tipo_relato,
             situacao_envolvido=situacao_envolvido,
@@ -138,7 +144,8 @@ class Form_Gerar_Relatos_Check(View):
             processo_relato=processo_relato,
             atividade_relato=atividade_relato,
             cod_check_aplicado=check_aplicado,
-            categoria=categoria_relato
+            categoria_ato_inseguro=categoria_ato_inseguro,
+            categoria_condicao_insegura=categoria_condicao_insegura
         )
         check_cabecalho.save()
 

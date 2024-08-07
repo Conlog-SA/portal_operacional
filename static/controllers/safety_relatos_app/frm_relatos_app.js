@@ -102,19 +102,41 @@ $(document).on('change','.selectpicker',function(){
     }
 
     if (nome_select == "tipo_relato") {
+
         if ($(this).val() == 1) {
             $('#div_ato_inseguro_categorias').removeClass('hidden-div');
+            $('#div_relatado').removeClass('hidden-div');
+            $('#div_situacao_relatado').removeClass('hidden-div');
             $('#div_condicao_insegura_categorias').addClass('hidden-div');
+            $('#condicao_insegura_categoria').val('');
+            $('#condicao_insegura_categoria').selectpicker('refresh');
+
         }
         else if ($(this).val() == 2) {
             $('#div_condicao_insegura_categorias').removeClass('hidden-div');
             $('#div_ato_inseguro_categorias').addClass('hidden-div');
+            $('#div_situacao_relatado').addClass('hidden-div');
+            $('#div_relatado').addClass('hidden-div');
+            $('#situacao_envolvido').val('');
+            $('#situacao_envolvido').selectpicker('refresh');
+            $('#nome_relatado').val('');
+            $('#nome_relatado').selectpicker('refresh');
+            $('#nome_relatado_terceiro').val('');
+            $('#nome_relatado_terceiro').selectpicker('refresh');
+            $('#ato_inseguro_categoria').val('');
+            $('#ato_inseguro_categoria').selectpicker('refresh');
         }
         else {
             $('#ato_inseguro_categoria').val('');
             $('#ato_inseguro_categoria').selectpicker('refresh');
+            $('#div_situacao_relatado').removeClass('hidden-div');
+            $('#div_relatado').removeClass('hidden-div');
             $('#div_ato_inseguro_categorias').addClass('hidden-div');
             $('#div_condicao_insegura_categorias').addClass('hidden-div');
+            $('#condicao_insegura_categoria').val('');
+            $('#condicao_insegura_categoria').selectpicker('refresh');
+            $('#ato_inseguro_categoria').val('');
+            $('#ato_inseguro_categoria').selectpicker('refresh');
         }
 
     }
@@ -124,22 +146,27 @@ $(document).on('change','.selectpicker',function(){
 $(document).on('click','.create-check-relatos' , function(){
     let let_unidade_relato = $('#unidade').val();
     let let_tipo_relato = $('#tipo_relato').val();
-    let let_situacao_envolvido = $('#situacao_envolvido').val();
     let let_local_relato = $('#local_relato').val();
     let let_turno_relato = $('#turno_relato').val();
     let let_atividade_relato = $('#atividade_relato').val();
     let let_processo_relato = $('#processo_relato').val();
     let let_descricao_situacao = $('#descricao_situacao').val();
-    let let_categoria_relato = $('#ato_inseguro_categoria').val();
+    let let_categoria_ato_inseguro = $('#ato_inseguro_categoria').val();
+    let let_categoria_condicao_insegura = $('#condicao_insegura_categoria').val();
     let let_nome_relatado = "";
+    let let_situacao_envolvido = "";
 
-    if (let_situacao_envolvido == '1') {
-        let_nome_relatado = $('#nome_relatado').val();
-        console.log('entrou no 1');
-    }
-    else if (let_situacao_envolvido == '2' || let_situacao_envolvido == '3' || let_situacao_envolvido == '4') {
-        let_nome_relatado = $('#nome_relatado_terceiro').val();
-        console.log('entrou no 2');
+    if (let_tipo_relato != '2') {
+        let_situacao_envolvido = $('#situacao_envolvido').val();
+        if (let_situacao_envolvido == '1') {
+            let_nome_relatado = $('#nome_relatado').val();
+        }
+        else if (let_situacao_envolvido == '2' || let_situacao_envolvido == '3' || let_situacao_envolvido == '4') {
+            let_nome_relatado = $('#nome_relatado_terceiro').val();
+        }
+    } else {
+        let_situacao_envolvido = null;
+        let_nome_relatado = '';
     }
 
     msg_erro = '';
@@ -149,10 +176,16 @@ $(document).on('click','.create-check-relatos' , function(){
     if (let_tipo_relato == '') {
         msg_erro += 'Selecione um tipo de relato!<br>';
     }
-    if (let_situacao_envolvido == '' || let_situacao_envolvido == null) {
+    if (let_categoria_ato_inseguro == '' && let_tipo_relato == '1') {
+        msg_erro += 'Selecione uma categoria de ato inseguro!<br>';
+    }
+    if (let_categoria_condicao_insegura == '' && let_tipo_relato == '2') {
+        msg_erro += 'Selecione uma categoria de condição insegura!<br>';
+    }
+    if ((let_situacao_envolvido == '' || let_situacao_envolvido == null) && let_tipo_relato != '2') {
         msg_erro += 'Informe a situação do relatado!<br>';
     }
-    if (let_nome_relatado == '' || let_nome_relatado == null) {
+    if ((let_nome_relatado == '' || let_nome_relatado == null) && let_tipo_relato != '2') {
         msg_erro += 'Informe o nome do relatado!<br>';
     }
     if (let_local_relato == '') {
@@ -184,7 +217,8 @@ $(document).on('click','.create-check-relatos' , function(){
                 'turno_relato'   :   let_turno_relato,
                 'processo_relato' : let_processo_relato,
                 'atividade_relato' : let_atividade_relato,
-                'categoria_relato' : let_categoria_relato
+                'categoria_ato_inseguro' : let_categoria_ato_inseguro,
+                'categoria_condicao_insegura' : let_categoria_condicao_insegura
             },
             success: function (dados) {
                 $("#div_corpo_relatos").html(dados);
