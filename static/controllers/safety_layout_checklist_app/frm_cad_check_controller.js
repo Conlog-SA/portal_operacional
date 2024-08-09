@@ -141,7 +141,7 @@ $(document).on('click','button', function(){
         $('#btn_new_item').val('');
     }
 
-    if ( nomeDoButton == 'btn_new_item' ) {
+    else if ( nomeDoButton == 'btn_new_item' ) {
 
         let valItemExistente = $(this).val();
         let valPickerCheckExistente = $("#modelos_existentes").val();
@@ -592,8 +592,8 @@ $(document).on('change','.selectpicker',function(){
     }
 });
 
-$(document).on('change','select.filial-check-aplicado' , function(event){
-    let cod_filial =  $(this).val();
+$(document).on('click','button.busca-checks-aplicados' , function(event){
+    let cod_filial =  $('#filial_check_aplicado').val();
     let tipo_check = $("#tipo_check").val();
     /*
     let data_ini = new Date($('#dt_periodo_check_ini').val());
