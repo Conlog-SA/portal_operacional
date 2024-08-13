@@ -13,9 +13,10 @@ from django.views.decorators.csrf import csrf_exempt
 from pyhtml2pdf import converter
 
 from apps.estrut_org_app.models import Filial
-from apps.safety_checks_aplicados_app.models import Check_Aplicado, Colaborador, Item_Check_Aplicados, \
-    Item_Fotos_Texto_Check_Aplicado
-from apps.safety_layout_checklist_app.models import Item_Check, Libera_Filial_Check
+from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
+    Item_Fotos_Texto_Check_Aplicado, Plano_Acao
+from apps.safety_layout_checklist_app.models import Item_Check
+from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
 
@@ -35,9 +36,11 @@ class Check_Aplicado_View(View):
         for check in lista_checks_aplicados:
             count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
             count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
+            count_respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=check)
+            count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').count()
             obj_layout_check = check.cod_layout_check
             total_itens_layout = Item_Check.objects.filter(cod_check=obj_layout_check).count()
-            count_respostas_nao_respondidos = total_itens_layout - (count_respostas_ok + count_respostas_nok)
+            count_respostas_nao_respondidos = total_itens_layout - (count_respostas_ok + count_respostas_nok + count_respostas_texto)
 
             nome_colaborador_avaliador = 'N/A'
             if check.cod_colaborador_avaliado != None:
@@ -45,7 +48,7 @@ class Check_Aplicado_View(View):
             lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_check_aplicado, 'nome_colaborador_avaliado': nome_colaborador_avaliador,
                                      'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador, 'data_registro': (check.data_registro).strftime("%d/%m/%Y %H:%M"), 'cod_layout_check': check.cod_layout_check.cod_check,
                                      'desc_check': check.cod_layout_check.desc_check, 'qtd_ok': str(count_respostas_ok), 'qtd_nok': str(count_respostas_nok), 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
-                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:grey"></i>', 'editar': f'<i class="fa-solid fa-file-pdf pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:grey"></i>'})
+                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:#f46424"></i>', 'editar': f'<i class="fa-solid fa-helmet-safety pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:#f46424"></i>'})
 
         return JsonResponse(lista_checks_aplicados_dict, safe=False)
 
@@ -237,3 +240,44 @@ class Item_Check_Aplicado(View):
         msg = 'Imagem enviada com sucesso.'
 
         return msg
+
+class Acao_Check_Aplicado(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_check_aplicado = request.GET['cod_check_aplicado']
+        relato_aplicado = Relato.objects.filter(cod_check_aplicado=cod_check_aplicado).first()
+        if relato_aplicado.acao is None:
+            relato_aplicado.acao = ''
+
+        context = {
+            'acao': relato_aplicado.acao,
+            'status': relato_aplicado.status
+        }
+
+        return JsonResponse(context)
+
+    @csrf_exempt
+    def post(self, request):
+        tipo_check = request.POST['tipo_check']
+        tipo_input = request.POST['tipo_input']
+        cod_check_aplicado = request.POST['cod_check_aplicado']
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+
+        plano_acao_object = Plano_Acao.objects.filter(cod_check_aplicado=cod_check_aplicado).first()
+
+        if tipo_input == 'txt':
+            plano_acao = request.POST['acao']
+
+            plano_acao_object.plano_acao = plano_acao
+
+        elif tipo_input == 'btn':
+            status = request.POST['status']
+
+            plano_acao_object.status_plano = status
+
+        plano_acao_object.user_id = cod_usuario_sessao
+        plano_acao_object.data_registro = datetime.now()
+        plano_acao_object.save()
+        retorno = 'Registro feito.'
+
+        return HttpResponse(retorno)

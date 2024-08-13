@@ -139,7 +139,7 @@ $(document).on('change','#unidade_operador',function(){
 
 });
 
-$(document).on('change','#tipo_operador',function(){
+$(document).on('change','#nome_operador',function(){
     $('#documento_operador').val('');
     let cod_colaborador = $('#nome_operador').val();
     $.ajax({
@@ -157,7 +157,6 @@ $(document).on('change','#tipo_operador',function(){
 
 
 });
-
 
 $(document).on('click','.create-check' , function(){
     let let_unidade_operador = $('#unidade_operador').val();

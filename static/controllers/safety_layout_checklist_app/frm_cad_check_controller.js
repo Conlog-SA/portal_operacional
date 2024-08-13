@@ -777,6 +777,7 @@ $(document).on('click','.editar-check' , function(){
 	        success: function(response) {
                 $('#modalEditarCheckAplicadoBody').html(response);
                 $('#unidade').selectpicker('refresh');
+                $('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#tipo_relato').selectpicker('refresh');
                 $('#ato_inseguro_categoria').selectpicker('refresh');
                 $('#condicao_insegura_categoria').selectpicker('refresh');
@@ -879,33 +880,38 @@ $(document).on('click','.status-button-check',function(){
     element.removeClass("selected");
 
     let resposta_check = $(this).val();
-    let cod_relato_check = $(this).attr('name');
+    let tipo_check = $('#tipo_check').val();
+    let cod_check_aplicado = $(this).attr('name');
 
     $.ajax({
         type: 'POST',
-        url: '/safety_relatos_app/acao_check_aplicado',
+        url: '/safety_checks_aplicados_app/acao_check_aplicado',
         data: {
             'status'     :   resposta_check,
-            'cod_relato_check' : cod_relato_check,
+            'cod_check_aplicado' : cod_check_aplicado,
             'tipo_input'   :   'btn',
+            'tipo_check'   :   tipo_check
         },
         success: function (dados) {
+
         }
     });
 });
 
 $(document).on('change', '.textarea-check-aplicado', function(){
-    let cod_relato_check =  $(this).attr("name")
+    let cod_check_aplicado =  $(this).attr("name")
 
     let resposta_check = $(this).val();
+    let tipo_check = $('#tipo_check').val();
 
     $.ajax({
         type: 'POST',
-        url: '/safety_relatos_app/acao_check_aplicado',
+        url: '/safety_checks_aplicados_app/acao_check_aplicado',
         data: {
             'acao'     :   resposta_check,
-            'cod_relato_check' : cod_relato_check,
+            'cod_check_aplicado' : cod_check_aplicado,
             'tipo_input': 'txt',
+            'tipo_check'   :   tipo_check
         },
         success: function (dados) {
         }

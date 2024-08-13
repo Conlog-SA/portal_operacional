@@ -7,7 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
-    Item_Fotos_Texto_Check_Aplicado
+    Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.safety_relatos_app.models import Relato
@@ -428,30 +428,29 @@ class Check_Aplicado_Editar(View):
             relato_aplicado = Relato.objects.filter(cod_check_aplicado=check_aplicado).first()
             processo = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_componente=relato_aplicado.processo_relato).first()
             atividade = Itens_Componentes.objects.filter(cod_componente=relato_aplicado.atividade_relato).first()
-            print(relato_aplicado.cod_tipo_relato)
             if relato_aplicado.cod_tipo_relato == 1:
-                print(relato_aplicado.cod_tipo_relato)
                 categoria_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_componente=relato_aplicado.categoria_ato_inseguro).first()
 
-                str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
-                                                    <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
-                                                    <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
-                                                        <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
-                                                    </select>
-                                                </div>'''
+                if categoria_ato_inseguro is not None:
+                    str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
+                                                        <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                                        <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
+                                                            <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
             else:
                 str_categoria_ato_inseguro = ''
 
             if relato_aplicado.cod_tipo_relato == 2:
                 categoria_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
 
-
-                str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
-                                                    <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
-                                                    <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
-                                                        <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
-                                                    </select>
-                                                </div>'''
+                if categoria_condicao_insegura is not None:
+                    str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
+                                                        <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
+                                                        <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
+                                                            <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
             else:
                 str_categoria_condicao_insegura = ''
 
@@ -480,6 +479,7 @@ class Check_Aplicado_Editar(View):
             else:
                 str_relatado = ''
 
+            print(relato_aplicado.cod_tipo_relato)
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
                                         <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
                                             <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
@@ -495,9 +495,9 @@ class Check_Aplicado_Editar(View):
                                                                 <div class="form-group">
                                                                    <label for="tipo_relato">Tipo de Relato:</label>
                                                                    <select class="selectpicker form-control responsive-font" id="tipo_relato" name="tipo_relato" value="{relato_aplicado.cod_tipo_relato}" disabled>
-                                                                       <option value="1">Ato inseguro</option>
-                                                                       <option value="2">Condição insegura</option>
-                                                                       <option value="3">Abordagem positiva</option>
+                                                                       <option value="1" selected="{'selected' if relato_aplicado.cod_tipo_relato == 1 else ''}">Ato inseguro</option>
+                                                                       <option value="2" selected="{'selected' if relato_aplicado.cod_tipo_relato == 2 else ''}">Condição insegura</option>
+                                                                       <option value="3" selected="{'selected' if relato_aplicado.cod_tipo_relato == 3 else ''}">Abordagem positiva</option>
                                                                    </select>
                                                                 </div>
                                                                 {str_categoria_ato_inseguro}
@@ -562,6 +562,10 @@ class Check_Aplicado_Editar(View):
                         if respostas_texto_fotos_check_aplicado is not None:
                             if respostas_texto_fotos_check_aplicado.comentario is not None:
                                 str_comentario = respostas_texto_fotos_check_aplicado.comentario
+                            else:
+                                str_comentario = ''
+                        else:
+                            str_comentario = ''
 
                         html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                     <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black;">{item.desc_check}</p>
@@ -572,7 +576,7 @@ class Check_Aplicado_Editar(View):
                                                         <button name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>NOK</button>
                                                     </div>
                                                     <div class="responsive-div" style="display:flex;justify-content:flex-start;margin:1rem 0.5rem 1rem 0.5rem">
-                                                        <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                        <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
                                                     </div>
                                                 </div>'''
                 elif item.tipo_resposta == 2:
@@ -582,13 +586,18 @@ class Check_Aplicado_Editar(View):
                     if respostas_texto_fotos_check_aplicado is not None:
                         if respostas_texto_fotos_check_aplicado.comentario is not None:
                             str_comentario = respostas_texto_fotos_check_aplicado.comentario
+                        else:
+                            str_comentario = ''
+                    else:
+                        str_comentario = ''
+
                     if item.campo_obs_img == 0:
                         html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                 <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">{item.desc_check}</p>
                                                 <input type="hidden" class="identifier" value="{item.ordem_item}">
                                                 <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
                                                 <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
-                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
                                                 </div>
                                             </div>'''
                     elif item.campo_obs_img == 1:
@@ -597,13 +606,24 @@ class Check_Aplicado_Editar(View):
                                                 <input type="hidden" class="identifier" value="{item.ordem_item}">
                                                 <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
                                                 <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
-                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
                                                 </div>
                                             </div>'''
             html_check_editar += '</div>'
 
-        if relato_aplicado.acao is None:
-            relato_aplicado.acao = ''
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+        plano_acao = Plano_Acao.objects.filter(cod_check_aplicado=check_aplicado).first()
+        if plano_acao is None:
+            plano_acao = Plano_Acao(
+                cod_check_aplicado=check_aplicado,
+                user_id=obj_usuario.cod_usu,
+                data_registro=datetime.now(),
+                status_plano=0,
+            )
+            plano_acao.save()
+        if plano_acao.plano_acao is None:
+            plano_acao.plano_acao = ''
 
         check_html_recebido = f'''
         <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex" style="flex-direction:column;">
@@ -622,15 +642,15 @@ class Check_Aplicado_Editar(View):
                                 <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                     <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">Qual o plano de ação para tratar a ocorrência?</p>
                                     <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
-                                        <textarea name="{relato_aplicado.cod_relato_check}" class="responsive-font responsive-w-100 textarea-check-aplicado" style="width:60%;height:6rem;margin-right:1.2rem">{relato_aplicado.acao}</textarea>
+                                        <textarea name="{check_aplicado.cod_check_aplicado}" class="responsive-font responsive-w-100 textarea-check-aplicado" style="width:90%;height:8rem;margin-right:1.2rem">{plano_acao.plano_acao}</textarea>
                                     </div>
                                 </div>
                                 <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                     <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">Qual o status da tratativa?</p>
                                     <div style="display:flex;justify-content:center;padding-bottom:10px">
-                                        <button name="{relato_aplicado.cod_relato_check}" class="responsive-font pending-button-check status-button-check {'selected' if relato_aplicado.status_acao == 0 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="0">PENDENTE</button>
-                                        <button name="{relato_aplicado.cod_relato_check}" class="responsive-font in-progress-button-check status-button-check {'selected' if relato_aplicado.status_acao == 1 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="1">ANDAMENTO</button>
-                                        <button name="{relato_aplicado.cod_relato_check}" class="responsive-font finished-button-check status-button-check {'selected' if relato_aplicado.status_acao == 2 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="2">CONCLUIDA</button>
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font pending-button-check status-button-check {'selected' if plano_acao.status_plano == 0 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="0">PENDENTE</button>
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font in-progress-button-check status-button-check {'selected' if plano_acao.status_plano == 1 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="1">ANDAMENTO</button>
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font finished-button-check status-button-check {'selected' if plano_acao.status_plano == 2 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="2">CONCLUIDA</button>
                                     </div>
                                 </div>
                             </div>

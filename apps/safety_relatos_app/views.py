@@ -172,39 +172,3 @@ class Lista_Atividades(View):
         }
         return JsonResponse(data)
 
-class Acao_Relato_Aplicado(View):
-    @csrf_exempt
-    def get(self, request):
-        cod_check_aplicado = request.GET['cod_check_aplicado']
-        relato_aplicado = Relato.objects.filter(cod_check_aplicado=cod_check_aplicado).first()
-        if relato_aplicado.acao is None:
-            relato_aplicado.acao = ''
-
-        context = {
-            'acao': relato_aplicado.acao,
-            'status': relato_aplicado.status
-        }
-
-        return JsonResponse(context)
-
-    @csrf_exempt
-    def post(self, request):
-        tipo_input = request.POST['tipo_input']
-        cod_relato_check = request.POST['cod_relato_check']
-        relato_aplicado = Relato.objects.filter(cod_relato_check=cod_relato_check).first()
-
-        if tipo_input == 'txt':
-            plano_acao = request.POST['acao']
-
-            relato_aplicado.acao = plano_acao
-            relato_aplicado.save()
-
-        elif tipo_input == 'btn':
-            status = request.POST['status']
-
-            relato_aplicado.status_acao = status
-            relato_aplicado.save()
-
-        retorno = 'Registro feito.'
-
-        return HttpResponse(retorno)

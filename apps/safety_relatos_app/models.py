@@ -16,8 +16,6 @@ class Relato(models.Model):
     categoria_condicao_insegura = models.IntegerField(blank=True, null=True)
     cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
                                          null=True)
-    acao = models.CharField(max_length=300, blank=True, null=True)
-    status_acao = models.IntegerField(blank=True, null=True) # 0- PENDENTE, 1- ANDAMENTO, 2- CONCLUIDO
 
     class Meta:
         managed = True
