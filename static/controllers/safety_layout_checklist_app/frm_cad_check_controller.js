@@ -651,7 +651,8 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
                         reg.qtd_ok,
                         reg.qtd_nok,
                         reg.qtd_nao_respondidos,
-                        reg.pdf
+                        reg.pdf,
+                        reg.editar
                     ]
                     lista_checks_aplicados.push(let_checks_aplicados)
                 });
@@ -675,6 +676,7 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
                             { title: "Qtd. NOK" },
                             { title: "Qtd. s/ resposta" },
                             { title: "PDF" },
+                            { title: "Ação" },
                         ],
                 //    "columnDefs": [
                 //    //{
@@ -761,6 +763,36 @@ $(document).on('click','.check-preenchido-element' , function(){
     });
 });
 
+$(document).on('click','.editar-check' , function(){
+    let let_cod_check_aplicado = $(this).attr('name');
+    console.log(let_cod_check_aplicado)
+
+     $.ajax({
+	        type: 'GET',
+	        data: {
+                'cod_check_aplicado'   :   let_cod_check_aplicado,
+            },
+            dataType : "html",
+	        url: '/safety_layout_checklist_app/edita_check',
+	        success: function(response) {
+                $('#modalEditarCheckAplicadoBody').html(response);
+                $('#unidade').selectpicker('refresh');
+                $('#tipo_relato').selectpicker('refresh');
+                $('#ato_inseguro_categoria').selectpicker('refresh');
+                $('#condicao_insegura_categoria').selectpicker('refresh');
+                $('#situacao_envolvido').selectpicker('refresh');
+                $('#nome_relatado').selectpicker('refresh');
+                $('#processo_relato').selectpicker('refresh');
+                $('#atividade_relato').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
+            }
+    });
+});
+
+$(document).on('click','.fecha-modal-editar-check-aplicado' , function(){
+    $('#modalEditarCheckAplicado').css("display", "none");
+});
+
 $(document).on('click','.btn-novo-colab' , function(){
     let let_nome_colab = $('#nome_colab').val();
     let let_cpf_colab = $('#cpf_colab').val();
@@ -837,6 +869,47 @@ $(document).on('click','.a_tab_new_check',function(){
 
 $(document).on('click','.arrow-go-back' , function(){
     $('#lista_checks_aplicados').html(html_old)
+});
+
+$(document).on('click','.status-button-check',function(){
+    $(this).addClass("selected");
+    element = $(this).siblings().eq(0);
+    element.removeClass("selected");
+    element = $(this).siblings().eq(1);
+    element.removeClass("selected");
+
+    let resposta_check = $(this).val();
+    let cod_relato_check = $(this).attr('name');
+
+    $.ajax({
+        type: 'POST',
+        url: '/safety_relatos_app/acao_check_aplicado',
+        data: {
+            'status'     :   resposta_check,
+            'cod_relato_check' : cod_relato_check,
+            'tipo_input'   :   'btn',
+        },
+        success: function (dados) {
+        }
+    });
+});
+
+$(document).on('change', '.textarea-check-aplicado', function(){
+    let cod_relato_check =  $(this).attr("name")
+
+    let resposta_check = $(this).val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/safety_relatos_app/acao_check_aplicado',
+        data: {
+            'acao'     :   resposta_check,
+            'cod_relato_check' : cod_relato_check,
+            'tipo_input': 'txt',
+        },
+        success: function (dados) {
+        }
+    });
 });
 
 function Popular_Itens(cod_check) {

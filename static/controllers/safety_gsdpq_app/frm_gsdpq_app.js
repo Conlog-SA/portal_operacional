@@ -1,55 +1,55 @@
-$(document).on('change','.selectpicker',function(){
-    let nome_select = $(this).attr('name');
-
-    if (nome_select == "tipo_operador") {
-        let cod_resposta = $(this).val();
-        let let_unidade = $('#unidade_operador').val();
-        console.log(let_unidade)
-        if (let_unidade == "") {
-            $('#tipo_operador').val('');
+$(document).on('change','#tipo_operador',function(){
+    let cod_resposta = $(this).val();
+    let let_unidade = $('#unidade_operador').val();
+    console.log(let_unidade)
+    if (let_unidade == "") {
+        $('#tipo_operador').val('');
+        $('#tipo_operador').selectpicker('refresh');
+        $.gritter.add({
+            title: 'Erro!',
+            text: 'Selecione uma filial!',
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+    }
+    else if (cod_resposta == 1) {
+        if ($('#nome_operador option').length == 1) {
+            $('#tipo_operador').val("2");
             $('#tipo_operador').selectpicker('refresh');
+            $('#tipo_operador').trigger('change');
+
             $.gritter.add({
                 title: 'Erro!',
-                text: 'Selecione uma filial!',
+                text: 'Não foram encontrados colaboradores para a unidade selecionada!',
                 image: '/static/icons/triangle-exclamation-solid.svg',
                 sticky: false,
                 time: '',
             });
-        }
-        else if (cod_resposta == 1) {
-            if ($('#nome_operador option').length == 1) {
-                $('#tipo_operador').val("2");
-                $('#tipo_operador').selectpicker('refresh');
-                $('#tipo_operador').trigger('change');
-
-                $.gritter.add({
-                    title: 'Erro!',
-                    text: 'Não foram encontrados colaboradores para a unidade selecionada!',
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            } else {
-                $('#div_operador').removeClass('hidden-div');
-                $('#div_operador_terceiro').addClass('hidden-div');
-                $('#nome_operador_terceiro').val('');
-                $('#nome_operador').prop('disabled',false);
-                $('#nome_operador').selectpicker('refresh');
-
-                $('#documento_operador').val('');
-                $('#documento_operador').prop('disabled',true);
-            }
-        }
-        else if (cod_resposta == 2) {
-            $('#div_operador').addClass('hidden-div');
-            $('#div_operador_terceiro').removeClass('hidden-div');
-            $('#nome_operador').val('');
+        } else {
+            $('#div_operador').removeClass('hidden-div');
+            $('#div_operador_terceiro').addClass('hidden-div');
+            $('#nome_operador_terceiro').val('');
+            $('#nome_operador').prop('disabled',false);
             $('#nome_operador').selectpicker('refresh');
 
             $('#documento_operador').val('');
-            $('#documento_operador').prop('disabled',false);
+            $('#documento_operador').prop('disabled',true);
         }
     }
+    else if (cod_resposta == 2) {
+        $('#div_operador').addClass('hidden-div');
+        $('#div_operador_terceiro').removeClass('hidden-div');
+        $('#nome_operador').val('');
+        $('#nome_operador').selectpicker('refresh');
+
+        $('#documento_operador').val('');
+        $('#documento_operador').prop('disabled',false);
+    }
+
+});
+
+$(document).on('change','#modelo_empilhadeira',function(){
     if (nome_select == "modelo_empilhadeira") {
         let cod_empilhadeira = $(this).val();
             $.ajax({
@@ -70,6 +70,9 @@ $(document).on('change','.selectpicker',function(){
                 }
             });
     }
+});
+
+$(document).on('change','#unidade_operador',function(){
     if (nome_select == "unidade_operador") {
         let cod_unidade = $(this).val();
         $.ajax({
@@ -130,6 +133,9 @@ $(document).on('change','.selectpicker',function(){
             }
         });
     }
+});
+
+$(document).on('change','#nome_operador',function(){
     if (nome_select == "nome_operador") {
         $('#documento_operador').val('');
         let cod_colaborador = $('#nome_operador').val();

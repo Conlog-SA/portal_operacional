@@ -11,4 +11,6 @@ urlpatterns = [
     path('registra_item', csrf_exempt(views.Form_Item_Check.as_view()), name='registra_item'),
     path('sortable', csrf_exempt(views.Sortable_View.as_view()), name='sortable'),
     path('cadastro_colaborador', csrf_exempt(views.Form_Cadastro_Colaborador.as_view()), name='cadastro_colaborador'),
+    path('edita_check', csrf_exempt(views.Check_Aplicado_Editar.as_view()), name='edita_check'),
+
 ]

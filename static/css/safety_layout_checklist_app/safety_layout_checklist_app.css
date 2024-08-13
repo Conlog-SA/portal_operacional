@@ -15,7 +15,6 @@ label[for="liberado_filiais"] {
 .btn-cadastro{
     background-color: #ef7814 !important;
     border-color: #ef7814 !important;
-
 }
 
 label{
@@ -60,4 +59,28 @@ label{
     padding:1px 3px 1px 5rem;
     margin-bottom:2px;
     font-size:1.1rem;
+}
+
+.finished-button-check{
+    transition: all 0.3s ease;
+}
+
+.in-progress-button-check{
+    transition: all 0.3s ease;
+}
+
+.pending-button-check{
+    transition: all 0.3s ease;
+}
+
+.pending-button-check.selected{
+    background-color:yellow;
+}
+
+.in-progress-button-check.selected{
+    background-color:#B0F0F8;
+}
+
+.finished-button-check.selected{
+    background-color:#BFF39D;
 }

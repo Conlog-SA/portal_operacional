@@ -69,7 +69,6 @@ class Form_Gerar_Relatos_Check(View):
         situacao_envolvido = request.POST['situacao_envolvido']
         nome_relatado = request.POST['nome_relatado']
         local_relato = request.POST['local_relato']
-        turno_relato = request.POST['turno_relato']
         atividade_relato = request.POST['atividade_relato']
         processo_relato = request.POST['processo_relato']
         unidade_relato = request.POST['unidade_relato']
@@ -140,7 +139,6 @@ class Form_Gerar_Relatos_Check(View):
             cod_tipo_relato=tipo_relato,
             situacao_envolvido=situacao_envolvido,
             local_relato=local_relato,
-            turno_relato=turno_relato,
             processo_relato=processo_relato,
             atividade_relato=atividade_relato,
             cod_check_aplicado=check_aplicado,
@@ -173,3 +171,40 @@ class Lista_Atividades(View):
             'lista_atividades': dict_atividades_options
         }
         return JsonResponse(data)
+
+class Acao_Relato_Aplicado(View):
+    @csrf_exempt
+    def get(self, request):
+        cod_check_aplicado = request.GET['cod_check_aplicado']
+        relato_aplicado = Relato.objects.filter(cod_check_aplicado=cod_check_aplicado).first()
+        if relato_aplicado.acao is None:
+            relato_aplicado.acao = ''
+
+        context = {
+            'acao': relato_aplicado.acao,
+            'status': relato_aplicado.status
+        }
+
+        return JsonResponse(context)
+
+    @csrf_exempt
+    def post(self, request):
+        tipo_input = request.POST['tipo_input']
+        cod_relato_check = request.POST['cod_relato_check']
+        relato_aplicado = Relato.objects.filter(cod_relato_check=cod_relato_check).first()
+
+        if tipo_input == 'txt':
+            plano_acao = request.POST['acao']
+
+            relato_aplicado.acao = plano_acao
+            relato_aplicado.save()
+
+        elif tipo_input == 'btn':
+            status = request.POST['status']
+
+            relato_aplicado.status_acao = status
+            relato_aplicado.save()
+
+        retorno = 'Registro feito.'
+
+        return HttpResponse(retorno)

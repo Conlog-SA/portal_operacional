@@ -45,7 +45,7 @@ class Check_Aplicado_View(View):
             lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_check_aplicado, 'nome_colaborador_avaliado': nome_colaborador_avaliador,
                                      'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador, 'data_registro': (check.data_registro).strftime("%d/%m/%Y %H:%M"), 'cod_layout_check': check.cod_layout_check.cod_check,
                                      'desc_check': check.cod_layout_check.desc_check, 'qtd_ok': str(count_respostas_ok), 'qtd_nok': str(count_respostas_nok), 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
-                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:grey"></i>'})
+                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:grey"></i>', 'editar': f'<i class="fa-solid fa-file-pdf pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:grey"></i>'})
 
         return JsonResponse(lista_checks_aplicados_dict, safe=False)
 
