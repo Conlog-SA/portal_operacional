@@ -38,6 +38,7 @@ class Filial(models.Model):
     cod_filial_tracking = models.IntegerField(null=True)
     ativo = models.IntegerField(default=1)
     regiao = models.CharField(max_length=30, null=True, blank=True)
+    tem_calculo_rv = models.IntegerField(null=True, blank=True, default=0)
     handle_gn_proj_benner = models.IntegerField(null=True, blank=True, default=0)
     class Meta:
         managed = True

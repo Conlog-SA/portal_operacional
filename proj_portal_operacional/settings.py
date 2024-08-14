@@ -84,6 +84,10 @@ INSTALLED_APPS = [
     'apps.frota_vendas_veic_app',
     'apps.dre_app',
     'apps.ti_comitec_app',
+    'apps.conecta_rota_app',
+    'apps.conecta_as_app',
+    'apps.conecta_vans_app',
+    'apps.conecta_rv_app',
 ]
 
 MIDDLEWARE = [

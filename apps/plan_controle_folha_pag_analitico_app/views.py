@@ -112,15 +112,12 @@ class Cad_Liberacao_Comp_Fecha_Folha_View(View):
 class Form_Rel_Folha_Pagamento_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
-
         obj_usuario = Usuario.objects.get(pk=id_usu_session)
         #lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario, status_proj_usu_folha_pag='S')
-        lista_projetos = Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usuario, ativo_app_folha_pagamento='S')
         lista_periodos_liberados = Confirma_Periodo_Fechamento_Folha.objects.filter(ativa='S')
         context = {
             'lista_periodos_liberados': lista_periodos_liberados,
             'desc_menu_principal' : 'Rel. Folha Pagamento',
-            'lista_projetos' : lista_projetos,
             'id_menu_pai' : 58
         }
         return render(request, 'plan_controle_folha_pag_analitico_app/form_rel_folha_pagamento.html', context)
@@ -129,16 +126,18 @@ class Gera_Rel_Folha_Pagamento_View(View):
     def get(self, request):
         cod_comp_form = request.GET['cod_competencia']
         lista_handle_proj_form = request.GET['lista_handle_proj']
+        cod_empresa_frm = request.GET['cod_empresa']
+
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
         id_usu_session = request.session['cod_usuario_logado']
-        #obj_usuario = Usuario.objects.get(pk=id_usu_session)
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
         obj_competencia = Confirma_Periodo_Fechamento_Folha.objects.get(pk=cod_comp_form)
         str_data_ref = str(obj_competencia.ano_competencia_periodo) + '/' + \
             str(obj_competencia.mes_competencia_periodo) + \
             '/1'
         dados_folha = []
-        df_dados_folha_pag = Conexao_Senior_BD().retorna_df_folha_pagamento(str_data_ref, lista_handle_proj_form)
+        df_dados_folha_pag = Conexao_Senior_BD(cod_empresa_frm).retorna_df_folha_pagamento(str_data_ref, lista_handle_proj_form)
         for index, row in df_dados_folha_pag.iterrows():
                 if df_dados_folha_pag.loc[index, 'mat_colab'] != None:
                     reg = Registro_Folha_Pagamento(
@@ -168,13 +167,13 @@ class Form_Libera_Proj_Usu_View(View):
         lista_usuarios_ativos = Usuario.objects.filter(status_usu='A')
         lista_empresas_benner = ConexaoBancoBenner().retornaEmpresasBenner()
         lista_operacoes_benner = ConexaoBancoBenner().retornaTodasOperacoesBenner()
-        lista_filiais_benner = ConexaoBancoBenner().retornaTodasFilialBenner()
+        #lista_filiais_benner = ConexaoBancoBenner().retornaTodasFilialBenner()
         lista_projetos_benner = ConexaoBancoBenner().retornaTodosProjetosBenner()
         context = {
             'lista_usuarios_ativos': lista_usuarios_ativos,
             'lista_empresas_benner': lista_empresas_benner,
             'lista_operacoes_benner': lista_operacoes_benner,
-            'lista_filiais_benner': lista_filiais_benner,
+            #'lista_filiais_benner': lista_filiais_benner,
             'lista_projetos_benner': lista_projetos_benner,
             'desc_menu_principal' : 'Libera Projetos x Usuários',
             'id_menu_pai' : 58
@@ -285,6 +284,24 @@ class Form_Libera_Proj_Usu_Tab_Proj_View(View):
             'msg': msg,
         }
         return JsonResponse(data, safe=False)
+
+
+class Comp_Select_Empresa_View(View):
+    def get(self, request):
+        cod_empresa_frm = request.GET['cod_empresa']
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=id_usu_session)
+
+        lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
+                              .filter(cod_usu=obj_usuario,ativo_app_folha_pagamento='S',cod_empresa=cod_empresa_frm)
+                              .values('handle_benner', 'desc_proj_benner'))
+        data = dict()
+        data = {
+            'lista_projetos': lista_projetos
+        }
+        return JsonResponse(data, safe=False)
+
+
 
 
 

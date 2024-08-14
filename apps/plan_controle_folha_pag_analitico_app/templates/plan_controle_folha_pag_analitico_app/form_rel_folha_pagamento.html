@@ -26,7 +26,7 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;margin-top: 0.85rem;">
                     <label for="cb_competencia_folha_pag">Competência</label>
                     <select class="selectpicker form-control" id="cb_competencia_folha_pag"
@@ -67,6 +67,24 @@
 
                 </div>
 
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.85rem;">
+                    <div class="d-flex w-100">
+                        <label for="cb_emp_folha_pag">
+                            Empresa
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100">
+                        <select class="selectpicker form-control" id="cb_emp_folha_pag"
+                                name="cb_emp_folha_pag"
+                                data-live-search="true"
+                                title="Selecione a empresa">
+                            <option value="12">Conlog</option>
+                            <option value="17">Deep</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
                     <div class="d-flex w-100">
                         <label for="cb_proj_folha_pag">Projetos
@@ -87,13 +105,10 @@
                     <div class="d-flex flex-column w-100">
                         <select class="selectpicker form-control" id="cb_proj_folha_pag"
                                 name="cb_proj_folha_pag"
-                                multiple data-selected-text-format="count > 3"
+                                multiple data-selected-text-format="count > 0"
                                 data-live-search="true"
                                 title="Selecione o projeto">
-                            {% for p in lista_projetos %}
-                                <option value="{{ p.handle_benner }}">{{ p.handle_benner }} - {{ p.desc_proj_benner }}
-                                </option>
-                            {% endfor %}
+
                         </select>
                     </div>
                 </div>

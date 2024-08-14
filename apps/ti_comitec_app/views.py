@@ -221,46 +221,46 @@ class Frm_Edit_Ideia_View(View):
         if obj_ideia.cod_usu_master != None:
             cod_usu_master =  obj_ideia.cod_usu_master.cod_usu
             obs_usu_master = obj_ideia.obs_usu_master
+            obs_usu_head = ''
+            if obj_ideia.cod_usu_head != None:
+                cod_usu_head = obj_ideia.cod_usu_head.cod_usu
+                nota_head =  obj_ideia.nota_head
+                obs_usu_head =  obj_ideia.obs_usu_head
+
+            ideia_dic = {
+                'flag_gut_g': flag_gut_g,
+                'color_gut_g': color_gut_g,
+                'peso_gut_g': peso_gut_g,
+
+                'flag_gut_u': flag_gut_u,
+                'color_gut_u': color_gut_u,
+                'peso_gut_u': peso_gut_u,
+
+                'flag_gut_t': flag_gut_t,
+                'color_gut_t': color_gut_t,
+                'peso_gut_t': peso_gut_t,
+
+                'nota_gut_tt': peso_gut_g + peso_gut_u + peso_gut_t,
+                'cod_ideia': obj_ideia.cod_ideia,
+                'cod_chamado': obj_ideia.cod_chamado,
+                'desc_ideia': obj_ideia.desc_ideia,
+                'resumo_ideia': obj_ideia.resumo_ideia,
+                'cod_atividade': obj_ideia.cod_atividade.cod_atividade,
+                'cod_usu_owner': obj_ideia.cod_usu_owner.cod_usu,
+                'data_lancamento_idea': obj_ideia.data_lancamento_idea,
+                'val_ganhos': obj_ideia.val_ganhos,
+                'val_despesas': obj_ideia.val_despesas,
+                'horas_ganhas': obj_ideia.horas_ganhas,
+                'obs_usu_owner': obj_ideia.obs_usu_owner,
+                'cod_usu_master': cod_usu_master,
+                'obs_usu_master': obs_usu_master,
+                'cod_usu_head': cod_usu_head,
+                'nota_head': nota_head,
+                'obs_usu_head': obs_usu_head
+            }
 
         cod_usu_head = 0
         nota_head = 0
-        obs_usu_head = ''
-        if obj_ideia.cod_usu_head != None:
-            cod_usu_head = obj_ideia.cod_usu_head.cod_usu
-            nota_head =  obj_ideia.nota_head
-            obs_usu_head =  obj_ideia.obs_usu_head
-
-        ideia_dic = {
-            'flag_gut_g': flag_gut_g,
-            'color_gut_g': color_gut_g,
-            'peso_gut_g': peso_gut_g,
-
-            'flag_gut_u': flag_gut_u,
-            'color_gut_u': color_gut_u,
-            'peso_gut_u': peso_gut_u,
-
-            'flag_gut_t': flag_gut_t,
-            'color_gut_t': color_gut_t,
-            'peso_gut_t': peso_gut_t,
-
-            'nota_gut_tt': peso_gut_g + peso_gut_u + peso_gut_t,
-            'cod_ideia': obj_ideia.cod_ideia,
-            'cod_chamado': obj_ideia.cod_chamado,
-            'desc_ideia': obj_ideia.desc_ideia,
-            'resumo_ideia': obj_ideia.resumo_ideia,
-            'cod_atividade': obj_ideia.cod_atividade.cod_atividade,
-            'cod_usu_owner': obj_ideia.cod_usu_owner.cod_usu,
-            'data_lancamento_idea': obj_ideia.data_lancamento_idea,
-            'val_ganhos': obj_ideia.val_ganhos,
-            'val_despesas': obj_ideia.val_despesas,
-            'horas_ganhas': obj_ideia.horas_ganhas,
-            'obs_usu_owner': obj_ideia.obs_usu_owner,
-            'cod_usu_master': cod_usu_master,
-            'obs_usu_master': obs_usu_master,
-            'cod_usu_head': cod_usu_head,
-            'nota_head': nota_head,
-            'obs_usu_head': obs_usu_head
-        }
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)

@@ -400,11 +400,13 @@ class ConexaoBancoBenner():
                             ELSE Null
                         END                             AS	data_liquidacao,
                         
-                        CASE 
-                            WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}'  
-                            THEN sum(fn_mov.VALORTOTAL)
-                            ELSE 0
-                        END  							AS	val_corrigido,
+                        COALESCE(
+                            (CASE 
+                                WHEN CAST(fn_parc.DATALIQUIDACAO AS DATE) <= '{data_corte}'  
+                                THEN sum(fn_mov.VALORTOTAL)
+                                ELSE 0
+                            END) , 
+                        0) 							    AS	val_corrigido,
                         
                         COALESCE(( 
                             SELECT	sum(fn_mov_pag_parcial.VALORTOTAL)

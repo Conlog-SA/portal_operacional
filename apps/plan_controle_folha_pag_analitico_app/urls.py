@@ -23,5 +23,7 @@ urlpatterns = [
          name='pesquisa_usu_liberados_do_projeto'),
     path('libera_bloqueia_proj_usu_tab_proj', views.Form_Libera_Proj_Usu_Tab_Proj_View.as_view(),
          name='libera_bloqueia_proj_usu_tab_proj'),
+    path('pesq_projetos_by_emp', views.Comp_Select_Empresa_View.as_view(),
+         name='pesq_projetos_by_emp'),
 
 ]

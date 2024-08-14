@@ -18,6 +18,32 @@
 
     <div class="containerApp">
         <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
+                <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
+                    <div class="loader" id="loader_libera_proj_usu_folha_pag">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2rem;">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2rem;">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2rem;">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
             <div class="col-md-12 w-100 h-100">
                 <nav class="nav nav-tabs" id="myTab" role="tablist">
                     <button class="nav-link active" id="a_tab_usuario" data-bs-toggle="tab" data-bs-target="#div_form_usuario"
@@ -36,7 +62,7 @@
                 <div class="tab-content" style="border-radius:0 0 10px 10px;">
                     <div class="tab-pane active" id="div_form_usuario" role="tabpanel" aria-labelledby="a_tab_usuario">
                         <form class="d-flex flex-column align-items-center justify-content-between">
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <label for="sel_usuarios_folha_pag_tab_usu">Usuário</label>
                                     <select class="selectpicker form-control" id="sel_usuarios_folha_pag_tab_usu"
@@ -47,6 +73,24 @@
                                                 {{ u.nome_usu }}</option>
                                         {% endfor %}
                                     </select>
+                                </div>
+
+                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                    <div class="d-flex w-100">
+                                        <label for="cb_emp_libera_proj_usu_folha_pag">
+                                            Empresa
+                                        </label>
+                                    </div>
+
+                                    <div class="d-flex flex-column w-100">
+                                        <select class="selectpicker form-control" id="cb_emp_libera_proj_usu_folha_pag"
+                                                name="cb_emp_libera_proj_usu_folha_pag"
+                                                data-live-search="true"
+                                                title="Selecione a empresa">
+                                            <option value="12">Conlog</option>
+                                            <option value="17">Deep</option>
+                                        </select>
+                                    </div>
                                 </div>
 
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
@@ -101,7 +145,25 @@
                     <div class="tab-pane" id="div_form_projeto" role="tabpanel" aria-labelledby="a_tab_projeto">
                         <form class="d-flex flex-column align-items-center justify-content-between">
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                    <div class="d-flex w-100">
+                                        <label for="sel_empresa_folha_pag_tab_proj">
+                                            Empresa
+                                        </label>
+                                    </div>
+
+                                    <div class="d-flex flex-column w-100">
+                                        <select class="selectpicker form-control" id="sel_empresa_folha_pag_tab_proj"
+                                                name="sel_empresa_folha_pag_tab_proj"
+                                                data-live-search="true"
+                                                title="Selecione a empresa">
+                                            <option value="12">Conlog</option>
+                                            <option value="17">Deep</option>
+                                        </select>
+                                    </div>
+                                </div>
+
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <label for="sel_projetos_folha_pag_tab_proj">Projeto</label>
                                     <select class="selectpicker form-control" id="sel_projetos_folha_pag_tab_proj"

@@ -124,6 +124,82 @@ $(document).on('click','button', function(){
 
 });
 
+
+$(document).on('change', '#cb_emp_libera_proj_usu_folha_pag', function(){
+    let let_cod_empresa = $(this).val();
+    let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
+    let_loader_libera_proj_usu_folha_pag.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        data: {
+            'cod_empresa'         : let_cod_empresa
+        },
+        url:"/plan_controle_folha_pag_analitico_app/pesq_projetos_by_emp",
+        success: function(dados){
+            $("#sel_projetos_folha_pag_tab_usu option").remove();
+            dados.lista_projetos.forEach(proj => {
+                $("#sel_projetos_folha_pag_tab_usu").append("<option value='"+
+                proj.handle_benner+"'>"+proj.desc_proj_benner+"</option>");
+
+            });
+            $("#sel_projetos_folha_pag_tab_usu").selectpicker('refresh');
+
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
+
+
+        },
+        error: function (request, status, error) {
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+});
+
+$(document).on('change', '#sel_empresa_folha_pag_tab_proj', function(){
+    let let_cod_empresa = $(this).val();
+    let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
+    let_loader_libera_proj_usu_folha_pag.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        data: {
+            'cod_empresa'         : let_cod_empresa
+        },
+        url:"/plan_controle_folha_pag_analitico_app/pesq_projetos_by_emp",
+        success: function(dados){
+            $("#sel_projetos_folha_pag_tab_proj option").remove();
+            dados.lista_projetos.forEach(proj => {
+                $("#sel_projetos_folha_pag_tab_proj").append("<option value='"+
+                proj.handle_benner+"'>"+proj.desc_proj_benner+"</option>");
+
+            });
+            $("#sel_projetos_folha_pag_tab_proj").selectpicker('refresh');
+
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
+
+
+        },
+        error: function (request, status, error) {
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+});
+
+
 $(document).on('change', '#sel_usuarios_folha_pag_tab_usu', function(){
     var var_cod_usuario = $(this).val();
     if (var_cod_usuario == 0 || var_cod_usuario == null ) {
@@ -135,7 +211,7 @@ $(document).on('change', '#sel_usuarios_folha_pag_tab_usu', function(){
             time: '',
         });
     } else {
-        atualiza_tab_liberacoes_usuario(var_cod_usuario)
+        atualiza_tab_liberacoes_usuario(var_cod_usuario);
     }
 });
 
@@ -245,8 +321,8 @@ $(document).on('click','input', function(){
 });
 
 function atualiza_tab_liberacoes_usuario(cod_usuario) {
-    let let_loader_libera_periodo_fech_folha = document.getElementById("loader_libera_periodo_fech_folha");
-    let_loader_libera_periodo_fech_folha.style.display = "flex";
+    let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
+    let_loader_libera_proj_usu_folha_pag.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -344,11 +420,11 @@ function atualiza_tab_liberacoes_usuario(cod_usuario) {
                 }
             });
 
-            let_loader_libera_periodo_fech_folha.style.display = "none";
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
 
         },
         error: function (request, status, error) {
-            let_loader_libera_periodo_fech_folha.style.display = "none";
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
               $.gritter.add({
                 title: 'Atenção!',
                 text: error,
@@ -362,8 +438,8 @@ function atualiza_tab_liberacoes_usuario(cod_usuario) {
 }
 
 function atualiza_tab_liberacoes_projeto(handle_projeto) {
-    let let_loader_libera_periodo_fech_folha = document.getElementById("loader_libera_periodo_fech_folha");
-    let_loader_libera_periodo_fech_folha.style.display = "flex";
+    let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
+    let_loader_libera_proj_usu_folha_pag.style.display = "flex";
     $.ajax({
         type: "GET",
         data: {
@@ -460,11 +536,11 @@ function atualiza_tab_liberacoes_projeto(handle_projeto) {
                     }
                 }
             });
-            let_loader_libera_periodo_fech_folha.style.display = "none";
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
 
         },
         error: function (request, status, error) {
-            let_loader_libera_periodo_fech_folha.style.display = "none";
+            let_loader_libera_proj_usu_folha_pag.style.display = "none";
               $.gritter.add({
                     title: 'Atenção!',
                     text: error,

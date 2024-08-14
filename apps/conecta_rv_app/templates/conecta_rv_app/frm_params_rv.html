@@ -1,0 +1,768 @@
+{% load static %}
+
+{% block link_static_css %}
+
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+<link rel="stylesheet" href="{% static 'css/conecta_rv_app/frm_params_rv.css' %}" />
+
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-tag fa-2xl" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+
+    <div class="containerApp">
+        <form id="frm_params_rv" name="frm_params_rv"  method="POST"
+            class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+
+
+            <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_contas">
+                <div class="loader" id="loader_princ_frm_params_rv">
+                    <div class="loader-inner">
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                        <div class="loader-block"></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <!-- style="position:relative; z-index:-1;" -->
+        <div class="form-group cl_div_abas_paginas w-100" >
+            <div class="col-md-12 w-100 h-100">
+                <div class="mt-3 d-flex flex-column w-100" style="margin-bottom: 1rem;">
+                    <div class="d-flex justify-content-start w-100">
+                        <label>
+                            Informe a filial
+                            <select class="selectpicker form-control" id="sl_filial_param_rv"
+                                name="sl_filial_param_rv"
+                                data-live-search="true"
+                                title="Selecione o projeto">
+                                {% for f in lista_filiais_calculo_rv %}
+                                    <option value="{{ f.cod_filial }}">{{ f.desc_filial }}({{f.cod_empresa.desc_empresa}})</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <nav>
+                    <div class="nav nav-tabs" id="myTab" role="tablist">
+                        <button class="nav-link active" id="a_tab_params_rv_rota" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_params_rv_rota" type="button" role="tab"
+                                aria-controls="div_tab_params_rv_rota" aria-selected="true">
+                            <i class="fa-solid fa-truck" style="color: #f46424;"></i>
+                            Rota
+                        </button>
+                        <button class="nav-link" id="a_tab_params_rv_as" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_params_rv_as" type="button" role="tab"
+                                aria-controls="div_tab_params_rv_as" aria-selected="false">
+                            <i class="fa-solid fa-truck-moving" style="color: #f46424;"></i>
+                            AS
+                        </button>
+                        <button class="nav-link" id="a_tab_params_rv_vans" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_params_rv_vans" type="button" role="tab"
+                                aria-controls="div_tab_params_rv_vans" aria-selected="false">
+                            <i class="fa-solid fa-van-shuttle" style="color: #f46424;"></i>
+                            Vans
+                        </button>
+                        <button class="nav-link" id="a_tab_params_rv_devolucao" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_params_rv_devolucao" type="button" role="tab"
+                                aria-controls="div_tab_params_rv_devolucao" aria-selected="false">
+                            <i class="fa-solid fa-handshake-slash" style="color: #f46424;"></i>
+                            Bônus de Devolução
+                        </button>
+                        <button class="nav-link" id="a_tab_verba_rv" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_verba_rv" type="button" role="tab"
+                                aria-controls="div_tab_verba_rv" aria-selected="false">
+                            <i class="fa-solid fa-handshake-slash" style="color: #f46424;"></i>
+                            Verbas importação Senior
+                        </button>
+                    </div>
+                </nav>
+
+                <div class="tab-content" style="border-radius:0 0 10px 10px;">
+
+                    <div class="tab-pane active" id="div_tab_params_rv_rota" name="div_tab_params_rv_rota"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_params_rv_rota">
+
+                        <form id="frm_param_rv_rota" name="frm_param_rv_rota"
+                              method="POST"
+                              class="d-flex flex-column align-items-between justify-content-between cl_frm_topo_paginas">
+                            {% csrf_token %}
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100">
+                                    <label>
+                                        Vigência inícial
+                                        <input type="date" class="form-control" name="dt_ini_vig_param_rv_rota"
+                                           id="dt_ini_vig_param_rv_rota" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>
+                                        Vigência final
+                                        <input type="date" class="form-control" name="dt_fim_vig_param_rv_rota"
+                                           id="dt_fim_vig_param_rv_rota" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Cargo
+                                        <select class="selectpicker form-control" id="sl_cargo_param_rv_rota"
+                                                name="sl_cargo_param_rv_rota"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Motorista</option>
+                                            <option value="2">Ajudante</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        Fator
+                                        <select class="selectpicker form-control" id="sl_fator_param_rv_rota"
+                                                name="sl_fator_param_rv_rota"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="0">0 Ajudante</option>
+                                            <option value="1">1 Ajudante</option>
+                                            <option value="2">2 Ajudantes</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por caixa
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_caixa_param_rv_rota"
+                                               name="txt_val_caixa_param_rv_rota">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por entrega
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_entrega_param_rv_rota"
+                                               name="txt_val_entrega_param_rv_rota">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Tipo de Recarga
+                                        <select class="selectpicker form-control" id="sl_tipo_recarga_param_rv_rota"
+                                                name="sl_tipo_recarga_param_rv_rota"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Fixa</option>
+                                            <option value="2">Caixa</option>
+                                            <option value="3">NA</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ Recarga
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_recarga_param_rv_rota"
+                                               name="txt_val_recarga_param_rv_rota">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-top: 1rem;">
+                                    <button type="button" name="btn_salva_param_rv_rota" id="btn_salva_param_rv_rota"
+                                            class="btn btn-primary btn-rounded botaoPrincipal">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Gerar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group  cl_div_tabela_principal_pagina w-100" style="margin-top: 1rem;">
+                                <table id="tab_frm_param_rv_rota"  class="display wrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Cargo</th>
+                                            <th scope="col">Fator</th>
+                                            <th scope="col">R$/Caixa</th>
+                                            <th scope="col">R$/Entrega</th>
+                                            <th scope="col">Tipo Recarga</th>
+                                            <th scope="col">R$ Recarga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+                        </form>
+
+
+                    </div>
+
+                    <div class="tab-pane" id="div_tab_params_rv_as" role="tabpanel" aria-labelledby="a_tab_params_rv_as">
+
+                        <form id="frm_param_rv_as" name="frm_param_rv_as"
+                              method="POST"
+                              class="d-flex flex-column align-items-between justify-content-between cl_frm_topo_paginas">
+                            {% csrf_token %}
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100">
+                                    <label>
+                                        Vigência inícial
+                                        <input type="date" class="form-control" name="dt_ini_vig_param_rv_as"
+                                           id="dt_ini_vig_param_rv_as" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>
+                                        Vigência final
+                                        <input type="date" class="form-control" name="dt_fim_vig_param_rv_as"
+                                           id="dt_fim_vig_param_rv_as" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Cargo
+                                        <select class="selectpicker form-control" id="sl_cargo_param_rv_as"
+                                                name="sl_cargo_param_rv_as"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="0">Motorista</option>
+                                            <option value="1">Ajudante</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        Fator
+                                        <select class="selectpicker form-control" id="sl_fator_param_rv_as"
+                                                name="sl_fator_param_rv_as"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="0">0 Ajudante</option>
+                                            <option value="1">1 Ajudante</option>
+                                            <option value="2">2 Ajudantes</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por caixa
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_caixa_param_rv_as"
+                                               name="txt_val_caixa_param_rv_as">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por entrega
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_entrega_param_rv_as"
+                                               name="txt_val_entrega_param_rv_as">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Tipo de Recarga
+                                        <select class="selectpicker form-control" id="sl_tipo_recarga_param_rv_as"
+                                                name="sl_tipo_recarga_param_rv_as"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Fixa</option>
+                                            <option value="2">Caixa</option>
+                                            <option value="3">NA</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ Recarga
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_recarga_param_rv_as"
+                                               name="txt_val_recarga_param_rv_as">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-top: 1rem;">
+                                    <button type="button" name="btn_salva_param_rv_as" id="btn_salva_param_rv_as"
+                                            class="btn btn-primary btn-rounded botaoPrincipal">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Gerar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group  cl_div_tabela_principal_pagina w-100" style="margin-top: 1rem;">
+                                <table id="tab_frm_param_rv_as"  class="display wrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Cargo</th>
+                                            <th scope="col">Fator</th>
+                                            <th scope="col">R$/Caixa</th>
+                                            <th scope="col">R$/Entrega</th>
+                                            <th scope="col">Tipo Recarga</th>
+                                            <th scope="col">R$ Recarga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+                        </form>
+
+                    </div>
+
+
+                    <div class="tab-pane" id="div_tab_params_rv_vans" role="tabpanel" aria-labelledby="a_tab_params_rv_vans">
+                        <form id="frm_param_rv_van" name="frm_param_rv_van"
+                              method="POST"
+                              class="d-flex flex-column align-items-between justify-content-between cl_frm_topo_paginas">
+                            {% csrf_token %}
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100">
+                                    <label>
+                                        Vigência inícial
+                                        <input type="date" class="form-control" name="dt_ini_vig_param_rv_van"
+                                           id="dt_ini_vig_param_rv_van" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>
+                                        Vigência final
+                                        <input type="date" class="form-control" name="dt_fim_vig_param_rv_van"
+                                           id="dt_fim_vig_param_rv_van" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Cargo
+                                        <select class="selectpicker form-control" id="sl_cargo_param_rv_van"
+                                                name="sl_cargo_param_rv_van"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Motorista</option>
+                                            <option value="2">Ajudante</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        Fator
+                                        <select class="selectpicker form-control" id="sl_fator_param_rv_van"
+                                                name="sl_fator_param_rv_van"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="0">0 Ajudante</option>
+                                            <option value="1">1 Ajudante</option>
+                                            <option value="2">2 Ajudantes</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por caixa
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_caixa_param_rv_van"
+                                               name="txt_val_caixa_param_rv_van">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    <label>
+                                        R$ por entrega
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_entrega_param_rv_van"
+                                               name="txt_val_entrega_param_rv_van">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Tipo de Recarga
+                                        <select class="selectpicker form-control" id="sl_tipo_recarga_param_rv_van"
+                                                name="sl_tipo_recarga_param_rv_van"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Fixa</option>
+                                            <option value="2">Caixa</option>
+                                            <option value="3">NA</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ Recarga
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_recarga_param_rv_van"
+                                               name="txt_val_recarga_param_rv_van">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-top: 1rem;">
+                                    <button type="button" name="btn_salva_param_rv_van" id="btn_salva_param_rv_van"
+                                            class="btn btn-primary btn-rounded botaoPrincipal">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Gerar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group  cl_div_tabela_principal_pagina w-100" style="margin-top: 1rem;">
+                                <table id="tab_frm_param_rv_van"  class="display wrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Cargo</th>
+                                            <th scope="col">Fator</th>
+                                            <th scope="col">R$/Caixa</th>
+                                            <th scope="col">R$/Entrega</th>
+                                            <th scope="col">Tipo Recarga</th>
+                                            <th scope="col">R$ Recarga</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+                        </form>
+                    </div>
+
+
+                    <div class="tab-pane" id="div_tab_params_rv_devolucao" role="tabpanel" aria-labelledby="a_tab_params_rv_devolucao">
+                        <form id="frm_param_rv_bonus_devolucao" name="frm_param_rv_bonus_devolucao"
+                              method="POST"
+                              class="d-flex flex-column align-items-between justify-content-between cl_frm_topo_paginas">
+                            {% csrf_token %}
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100">
+                                    <label>
+                                        Vigência inícial
+                                        <input type="date" class="form-control" name="dt_ini_vig_param_rv_bonus_devolucao"
+                                           id="dt_ini_vig_param_rv_bonus_devolucao" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>
+                                        Vigência final
+                                        <input type="date" class="form-control" name="dt_fim_vig_param_rv_bonus_devolucao"
+                                           id="dt_fim_vig_param_rv_bonus_devolucao" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Cargo
+                                        <select class="selectpicker form-control" id="sl_cargo_param_rv_bonus_devolucao"
+                                                name="sl_cargo_param_rv_bonus_devolucao"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Motorista</option>
+                                            <option value="2">Ajudante</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        % Meta
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_perc_meta_bonus_devolucao"
+                                               name="txt_val_caixa_param_rv_bonus_devolucao">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        R$ Colaborador
+                                        <input type="text" class="form-control class_mask_campo_val" id="txt_val_param_rv_bonus_devolucao"
+                                               name="txt_val_param_rv_bonus_devolucao">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-top: 1rem;">
+                                    <button type="button" name="btn_salva_param_rv_bonus_devolucao" id="btn_salva_param_rv_bonus_devolucao"
+                                            class="btn btn-primary btn-rounded botaoPrincipal">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Gerar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group  cl_div_tabela_principal_pagina w-100" style="margin-top: 1rem;">
+                                <table id="tab_frm_param_rv_bonus_devolucao"  class="display wrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Cargo</th>
+                                            <th scope="col">% Meta</th>
+                                            <th scope="col">R$ Bônus</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+                        </form>
+                    </div>
+
+                    <div class="tab-pane" id="div_tab_verba_rv" role="tabpanel" aria-labelledby="a_tab_verba_rv">
+                        <form id="frm_verba_senior_rv" name="frm_verba_senior_rv"
+                              method="POST"
+                              class="d-flex flex-column align-items-between justify-content-between cl_frm_topo_paginas">
+                            {% csrf_token %}
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100">
+                                    <label>
+                                        Vigência inícial
+                                        <input type="date" class="form-control" name="dt_ini_vig_verba_senior_rv"
+                                           id="dt_ini_vig_verba_senior_rv" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>
+                                        Vigência final
+                                        <input type="date" class="form-control" name="dt_fim_vig_verba_senior_rv"
+                                           id="dt_fim_vig_verba_senior_rv" autocomplete="off"/>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                    <label>
+                                        Tipo Verba
+                                        <select class="selectpicker form-control" id="sl_tipo_verba_senior_rv"
+                                                name="sl_tipo_verba_senior_rv"
+                                                data-live-search="true"
+                                                title="Selecione o projeto">
+                                            <option value="1">Rota</option>
+                                            <option value="2">AS</option>
+                                            <option value="3">Vans</option>
+                                            <option value="4">Recarga</option>
+                                            <option value="5">Adicional</option>
+                                            <option value="6">Bônus</option>
+                                        </select>
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    <label>
+                                        Código verba
+                                        <input type="text" class="form-control" id="txt_cod_verba_senior_rv"
+                                               name="txt_cod_verba_senior_rv">
+                                    </label>
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100" style="margin-top: 1rem;">
+                                    <button type="button" name="btn_salva_verba_senior_rv" id="btn_salva_verba_senior_rv"
+                                            class="btn btn-primary btn-rounded botaoPrincipal">
+                                        <i class="fa-solid fa-bolt"></i>
+                                        Salvar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-group  cl_div_tabela_principal_pagina w-100" style="margin-top: 1rem;">
+                                <table id="tab_frm_verba_senior_rv"  class="display wrap w-100">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">Início</th>
+                                            <th scope="col">Fim</th>
+                                            <th scope="col">Tipo verba</th>
+                                            <th scope="col">Código verba</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+
+                        </form>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+</div>

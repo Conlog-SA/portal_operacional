@@ -43,6 +43,7 @@ class Proj_Usu(models.Model):
 class Liberacao_Usuario_Projeto_Benner(models.Model):
     cod_libera_usu_proj = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     handle_benner = models.IntegerField(blank=False, null=False)
+    cod_empresa = models.IntegerField(blank=False, null=False)
     desc_proj_benner = models.CharField(max_length=80, blank=False, null=False)
     ativo_app_folha_pagamento = models.CharField(max_length=1, default='S')
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')

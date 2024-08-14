@@ -36,6 +36,7 @@ $(document).on('click', 'button', function(){
         let let_loader_folha_pagamento = document.getElementById("loader_folha_pagamento");
         var var_cod_competencia = $("#cb_competencia_folha_pag").val();
         var var_lista_handle_proj = $("#cb_proj_folha_pag").val().toString();
+        let let_cod_empresa = $("#cb_emp_folha_pag").val();
 
         if(var_cod_competencia == "0" || (var_lista_handle_proj == "0" && var_lista_handle_proj.length == 1) ||
             var_lista_handle_proj == null || var_lista_handle_proj == '' ) {
@@ -52,8 +53,9 @@ $(document).on('click', 'button', function(){
                 $.ajax({
                     type: 'GET',
                     data: {
-                        cod_competencia         : var_cod_competencia,
-                        lista_handle_proj       : var_lista_handle_proj
+                        'cod_competencia'         : var_cod_competencia,
+                        'lista_handle_proj'       : var_lista_handle_proj,
+                        'cod_empresa'             :   let_cod_empresa
                     },
                     url:"/plan_controle_folha_pag_analitico_app/pesquisa_folha_pag",
                     success: function(dados){
@@ -167,5 +169,44 @@ $(document).on('click', 'button', function(){
     } else if (nomeDoButton == 'btn_seleciona_todas_proj_folha_pag') {
         $("#cb_proj_folha_pag").selectpicker('selectAll');
     }
+
+});
+
+$(document).on('change', '#cb_emp_folha_pag', function(){
+    let let_cod_empresa = $(this).val();
+    let let_loader_folha_pagamento = document.getElementById("loader_folha_pagamento");
+    let_loader_folha_pagamento.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        data: {
+            'cod_empresa'         : let_cod_empresa
+        },
+        url:"/plan_controle_folha_pag_analitico_app/pesq_projetos_by_emp",
+        success: function(dados){
+            $("#cb_proj_folha_pag option").remove();
+            dados.lista_projetos.forEach(proj => {
+                $("#cb_proj_folha_pag").append("<option value='"+
+                proj.handle_benner+"'>"+proj.desc_proj_benner+"</option>");
+
+            });
+            $("#cb_proj_folha_pag").selectpicker('refresh');
+
+
+
+            let_loader_folha_pagamento.style.display = "none";
+
+
+        },
+        error: function (request, status, error) {
+            let_loader_folha_pagamento.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
 
 });

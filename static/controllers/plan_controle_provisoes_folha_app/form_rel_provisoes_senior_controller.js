@@ -37,6 +37,7 @@ $(document).on('click', 'button', function(){
 	    var var_tipo_provisao = $("#cb_tipo_prov_senior").val();
 	    var var_cod_competencia = $("#cb_competencia_prov_senior").val();
         var var_lista_handle_proj = $("#cb_proj_prov_senior").val().toString();
+        let let_cod_empresa = $("#cb_emp_prov_senior").val();
 
         if(var_tipo_provisao == "0" || var_cod_competencia == "0" || (var_lista_handle_proj == "0" && var_lista_handle_proj.length == 1) ||
             var_lista_handle_proj == null || var_lista_handle_proj == '' ) {
@@ -56,7 +57,8 @@ $(document).on('click', 'button', function(){
                 data: {
                     cod_tipo_provisao   :   var_tipo_provisao,
                     cod_competencia     :   var_cod_competencia,
-                    lista_handle_proj   :   var_lista_handle_proj
+                    lista_handle_proj   :   var_lista_handle_proj,
+                    cod_empresa         :   let_cod_empresa
                 },
                 url:"/plan_controle_provisoes_folha_app/gera_dados_provisoes_senior",
                 success: function(dados){
@@ -83,6 +85,8 @@ $(document).on('click', 'button', function(){
                             "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>",
                             "<b>"+reg.mat_fun+"</b>",
                             "<b>"+reg.nome_fun+"</b>",
+                            reg.nome_filial,
+                            reg.desc_ccu,
                             var_data_adm,
                             reg.desc_cargo,
                             reg.desc_prov,
@@ -117,6 +121,8 @@ $(document).on('click', 'button', function(){
                             { title: "" },
                             { title: "Matrícula" },
                             { title: "Colaborador" },
+                            { title: "Filial" },
+                            { title: "Projeto" },
                             { title: "Admissão" },
                             { title: "Cargo" },
                             { title: "Item" },
@@ -362,6 +368,45 @@ $(document).on('click', 'button', function(){
     else if (nomeDoButton == 'btn_desmarcar_projetos_prov_senior'){
         $("#cb_proj_prov_senior").selectpicker('deselectAll');
     }
+
+});
+
+$(document).on('change', '#cb_emp_prov_senior', function(){
+    let let_cod_empresa = $(this).val();
+    let let_loader_prov_senior = document.getElementById("loader_prov_senior");
+    let_loader_prov_senior.style.display = "flex";
+    $.ajax({
+        type: 'GET',
+        data: {
+            'cod_empresa'         : let_cod_empresa
+        },
+        url:"/plan_controle_folha_pag_analitico_app/pesq_projetos_by_emp",
+        success: function(dados){
+            $("#cb_proj_prov_senior option").remove();
+            dados.lista_projetos.forEach(proj => {
+                $("#cb_proj_prov_senior").append("<option value='"+
+                proj.handle_benner+"'>"+proj.desc_proj_benner+"</option>");
+
+            });
+            $("#cb_proj_prov_senior").selectpicker('refresh');
+
+
+
+            let_loader_prov_senior.style.display = "none";
+
+
+        },
+        error: function (request, status, error) {
+            let_loader_prov_senior.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
 
 });
 

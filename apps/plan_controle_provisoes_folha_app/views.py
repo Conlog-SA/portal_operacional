@@ -34,6 +34,7 @@ class Gera_Rel_Prov_Sernior_View(View):
         cod_tipo_prov_form = request.GET['cod_tipo_provisao']
         cod_comp_form = request.GET['cod_competencia']
         lista_handle_proj_form = request.GET['lista_handle_proj']
+        cod_empresa_frm = request.GET['cod_empresa']
         desc_tipo_proevento_pesq = 'Férias'
         if cod_tipo_prov_form == 2:
             desc_tipo_proevento_pesq = '13º Salário'
@@ -46,7 +47,7 @@ class Gera_Rel_Prov_Sernior_View(View):
                        str(obj_competencia.mes_competencia_periodo) + \
                        '-1'
 
-        df_dados_proeventos = Conexao_Senior_BD().retorna_df_provisao_folha_senior(str_data_ref, lista_handle_proj_form, cod_tipo_prov_form)
+        df_dados_proeventos = Conexao_Senior_BD(cod_empresa_frm).retorna_df_provisao_folha_senior(str_data_ref, lista_handle_proj_form, cod_tipo_prov_form)
 
         df_dados_proeventos_total_item = df_dados_proeventos[['desc_prov','val_base_prov','perc_dias_prov',
                                                               'val_anterior_prov','val_transf_prov','val_ajuste_prov',

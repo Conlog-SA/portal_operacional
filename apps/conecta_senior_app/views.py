@@ -9,13 +9,22 @@ from django.views import View
 
 
 class Conexao_Senior_BD():
-    def __init__(self):
-        self.__conn = pyodbc.connect(
-            'Driver={SQL Server};'
-            'Server=itjm-srv-018;'
-            'Database=vetorh;'
-            'UID=servico.portais;'
-            'PWD=qm@WHpAWwb')
+    empresa = None
+    def __init__(self, empresa):
+        if empresa == '12':
+            self.__conn = pyodbc.connect(
+                'Driver={SQL Server};'
+                'Server=itjm-srv-018;'
+                'Database=vetorh;'
+                'UID=servico.portais;'
+                'PWD=qm@WHpAWwb')
+        elif empresa == '17':
+            self.__conn = pyodbc.connect(
+                'Driver={SQL Server};'
+                'Server=itjm-srv-018;'
+                'Database=vetorh_deep;'
+                'UID=servico.portais;'
+                'PWD=qm@WHpAWwb')
 
     def listar_colaboradores_filial(self, id_empresa_senior, id_filial_senior):
         lista_colabs = {}

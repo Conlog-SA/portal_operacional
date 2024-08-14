@@ -105,11 +105,6 @@ $(document).on('change','input', function(){
                         }
                     }
 				});
-                alert('Fez');
-                loader_imp_2art.style.display = "none";
-                /*
-
-
 
 
 				let let_msg = `
@@ -125,7 +120,7 @@ $(document).on('change','input', function(){
                     time: '',
                 });
                 loader_imp_2art.style.display = "none";
-                */
+
 
 
 
