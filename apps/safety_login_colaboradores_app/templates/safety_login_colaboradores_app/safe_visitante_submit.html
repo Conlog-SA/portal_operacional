@@ -1,9 +1,9 @@
 <div style="height:100%;width:100%;padding:1rem;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end">
-    <div class="safety-container-menu">
+    <div class="safety-container-menu" style="height:0%">
         <div style="display:flex;justify-content:space-between;align-items:center">
             <h1 class="homeApp__tituloPortal">Safety</h1>
             <div>
-                <i>Bem vindo, </i>
+                <i>Obrigado, </i>
                 <b>{{nome_colaborador}}</b>
             </div>
         </div>
@@ -13,16 +13,13 @@
                 <i style="font-size:11px;">{{desc_filial_colaborador}}</i>
             </div>
         </div>
-        {% autoescape off %}
-            {{str_menu_colaborador}}
-        {% endautoescape %}
+    </div>
+    <div style="margin-right:5vw">
+        <p style="width:100%;display:flex;justify-content:center;font-size:5vw;color:var(--cor_empresa);margin-bottom:0px">Relato realizado com sucesso!</p>
+        <p style="width:100%;display:flex;justify-content:center;font-size:5vw;margin-bottom:0px;">Cód. do relato:</p>
+        <p style="width:100%;display:flex;justify-content:center;font-size:7vw;">#{{id_relato}}#</p>
+        <button id="button_flag_visitante" hidden style="display:hidden" value="{{flag_visitante}}"></button>
     </div>
     <div style="width:50%;display:flex;justify-content:flex-end">
-        <button class="btn btn-space btn-sair-safety">
-            <div style="display:flex;flex-direction:column">
-                <i class="fa-solid fa-arrow-right-from-bracket" style="color:#f46424;font-size:32px"></i>
-                <b style="color:white;font-size:17px">Sair</b>
-            </div>
-        </button>
     </div>
 </div>

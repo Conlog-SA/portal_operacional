@@ -6,9 +6,11 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
-from apps.safety_checks_aplicados_app.models import Check_Aplicado
+from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
+    Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
+from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 
 
@@ -17,12 +19,12 @@ from apps.usuario_app.models import Usuario
 class Form_Seguranca_Check(View):
     @csrf_exempt
     def get(self, request):
-        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos'}
+        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
         if usuario.corporativo == 'S':
-            lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa)
+            lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa, ativo=1)
             #lista_filiais = Filial.objects.all()
             flag_corporativo = 1
         elif usuario.corporativo == 'N':
@@ -45,11 +47,11 @@ class Lista_Check(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         if usuario.corporativo == 'S':
-            lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo))
+            lista_checks = list(Layout_Check.objects.filter(tipo_check=cod_tipo, ativo=1))
         elif usuario.corporativo == 'N':
             checks_liberados_filial_usu = Libera_Filial_Check.objects.filter(cod_filial=usuario.cod_filial)
 
-            lista_checks = Layout_Check.objects.filter(tipo_check=cod_tipo,cod_usu__cod_filial=usuario.cod_filial)
+            lista_checks = Layout_Check.objects.filter(tipo_check=cod_tipo,cod_usu__cod_filial=usuario.cod_filial, ativo=1)
             lista_checks = lista_checks.union(Layout_Check.objects.filter(cod_check__in=checks_liberados_filial_usu))
 
         lista_checks_dict = []
@@ -138,9 +140,12 @@ class Form_Cadastro_Check(View):
 class Form_Filial_Check(View):
     @csrf_exempt
     def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+
         cod_check = request.GET['cod_check']
         lista_filiais_check = []
-        filiais_check = list(Libera_Filial_Check.objects.filter(cod_check=cod_check))
+        filiais_check = list(Libera_Filial_Check.objects.filter(cod_check=cod_check, cod_filial__ativo=1, cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa))
 
         for filial_check in filiais_check:
             filial = Filial.objects.get(cod_filial=filial_check.cod_filial.cod_filial)
@@ -149,7 +154,7 @@ class Form_Filial_Check(View):
             else:
                 lista_filiais_check.append({'cod_filial': filial.cod_filial, 'desc_filial': filial.desc_filial, 'cod_empresa': '', 'desc_empresa' : ''})
 
-        lista_filiais_object = list(Filial.objects.all().values('cod_filial', 'desc_filial', 'cod_empresa', 'cod_empresa__desc_empresa'))
+        lista_filiais_object = list(Filial.objects.filter(ativo=1, cod_empresa=obj_usuario.cod_filial.cod_empresa).values('cod_filial', 'desc_filial', 'cod_empresa', 'cod_empresa__desc_empresa'))
         lista_filiais = []
         for filial in lista_filiais_object:
             lista_filiais.append({'cod_filial': filial['cod_filial'], 'desc_filial': filial['desc_filial'], 'cod_empresa': filial['cod_empresa'], 'desc_empresa': filial['cod_empresa__desc_empresa']})
@@ -168,9 +173,11 @@ class Form_Filial_Check(View):
         return JsonResponse(data, safe=False)
     @csrf_exempt
     def post(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+
         cod_check = request.POST['cod_check']
         filiais_check_form = request.POST['filiais_check'][2:-2]
-        print(filiais_check_form)
         filiais_check_form = filiais_check_form.split('","')
         lista_filiais_select = []
         if filiais_check_form != ['']:
@@ -185,7 +192,7 @@ class Form_Filial_Check(View):
              #       else:
              #           filial_get = Filial.objects.get(desc_filial=filial_string)
 
-        lista_filiais_checks = Libera_Filial_Check.objects.filter(cod_check=cod_check)
+        lista_filiais_checks = Libera_Filial_Check.objects.filter(cod_check=cod_check, cod_filial__cod_empresa=obj_usuario.cod_filial.cod_empresa)
         lista_filiais_old = []
         for filial_check in lista_filiais_checks:
             filial = Filial.objects.get(cod_filial=filial_check.cod_filial.cod_filial)
@@ -375,7 +382,8 @@ class Form_Cadastro_Colaborador(View):
                 cpf=cpf_colab,
                 data_nascimento=dt_nasc_colab,
                 cod_filial=filial_cad_colab,
-                perfil_usu='U'
+                perfil_usu='U',
+                situacao=0
             )
             novo_colab.save()
 
@@ -400,5 +408,258 @@ class Comportamentos_Sortable():
             item.ordem_item = i
             item.save()
             i += 1
+
+class Check_Aplicado_Editar(View):
+    @csrf_exempt
+    def get(self, request):
+        id_check_aplicado = request.GET['cod_check_aplicado']
+        check_aplicado = Check_Aplicado.objects.filter(cod_check_aplicado=id_check_aplicado).first()
+        layout_check = Layout_Check.objects.filter(cod_check=check_aplicado.cod_layout_check.cod_check).first()
+        itens_layout_check = Item_Check.objects.filter(cod_check=layout_check)
+        filial = Filial.objects.filter(cod_filial=check_aplicado.cod_filial).first()
+        if check_aplicado.cod_colaborador_avaliado is not None:
+            relatado = Colaborador.objects.filter(cod_colaborador=check_aplicado.cod_colaborador_avaliado.cod_colaborador).first()
+        else:
+            relatado = None
+        html_check_editar = ''
+        str_categoria_condicao_insegura = ''
+
+        if check_aplicado.cod_layout_check.tipo_check == 2:
+            relato_aplicado = Relato.objects.filter(cod_check_aplicado=check_aplicado).first()
+            processo = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_componente=relato_aplicado.processo_relato).first()
+            atividade = Itens_Componentes.objects.filter(cod_componente=relato_aplicado.atividade_relato).first()
+            if relato_aplicado.cod_tipo_relato == 1:
+                categoria_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_componente=relato_aplicado.categoria_ato_inseguro).first()
+
+                if categoria_ato_inseguro is not None:
+                    str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
+                                                        <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                                        <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
+                                                            <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
+            else:
+                str_categoria_ato_inseguro = ''
+
+            if relato_aplicado.cod_tipo_relato == 2:
+                categoria_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
+
+                if categoria_condicao_insegura is not None:
+                    str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
+                                                        <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
+                                                        <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
+                                                            <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
+            else:
+                str_categoria_condicao_insegura = ''
+
+            if relatado is not None:
+                str_relatado = f'''<div id="div_situacao_relatado" class="form-group">
+                                      <label class="responsive-font" for="situacao_envolvido">Quem foi que gerou esta condição?</label>
+                                      <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" value="{relato_aplicado.situacao_envolvido}" disabled>
+                                          <option value="1">Funcionario Conlog/Deep</option>
+                                          <option value="2">Funcionario Ambev</option>
+                                          <option value="3">Freteiro</option>
+                                          <option value="4">Terceiros</option>
+                                      </select>
+                                   </div>'''
+                if relato_aplicado.situacao_envolvido == 1:
+                    str_relatado += f'''<div id="div_relatado" class="form-group">
+                                                <label class="responsive-font" for="nome_relatado">Nome do relatado:</label>
+                                                <select class="selectpicker form-control responsive-font" id="nome_relatado" name="nome_relatado" value="nome_operador" value="{relatado.cod_colaborador}" disabled>
+                                                    <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                                </select>
+                                            </div>'''
+                else:
+                    str_relatado += f'''<div id="div_relatado_terceiro" class="form-group">
+                                                <label class="responsive-font" for="nome_relatado_terceiro">Nome do relatado:</label>
+                                                <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro" value="{relatado.nome_colaborador}">
+                                            </div>'''
+            else:
+                str_relatado = ''
+
+            print(relato_aplicado.cod_tipo_relato)
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                   <label for="tipo_relato">Tipo de Relato:</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="tipo_relato" name="tipo_relato" value="{relato_aplicado.cod_tipo_relato}" disabled>
+                                                                       <option value="1" selected="{'selected' if relato_aplicado.cod_tipo_relato == 1 else ''}">Ato inseguro</option>
+                                                                       <option value="2" selected="{'selected' if relato_aplicado.cod_tipo_relato == 2 else ''}">Condição insegura</option>
+                                                                       <option value="3" selected="{'selected' if relato_aplicado.cod_tipo_relato == 3 else ''}">Abordagem positiva</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_categoria_ato_inseguro}
+                                                                {str_categoria_condicao_insegura}
+                                                                {str_relatado}
+                                                                <div class="form-group">
+                                                                   <label for="local_relato">Local do relato:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato" value="{relato_aplicado.local_relato}" disabled>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                    <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
+                                                                    <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
+                                                                        <option value="{processo.cod_componente}">{processo.desc_componente}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                   <label for="atividade_relato">Que atividade estava sendo realizada?</label>
+                                                                    <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
+                                                                        <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        html_check_editar += '<div class="background-check-preenchido" style="width:100%;display:flex;justify-content:center">'
+
+        for item in itens_layout_check:
+            str_nome_botoes = str(item.cod_item_check) + '@' + str(id_check_aplicado)
+            if item.tipo_item == 2:
+                html_check_editar += f'<b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{item.desc_check}</b>'
+            if item.tipo_item == 1:
+                if item.tipo_resposta == 1:
+                    resposta_ok_nok_check_aplicado = Item_Check_Aplicados.objects.filter(
+                        cod_check_aplicado=check_aplicado, cod_item_check=item).first()
+
+                    if resposta_ok_nok_check_aplicado is not None:
+                        if resposta_ok_nok_check_aplicado.resp_item == 0:
+                            str_botao_ok = 'background-color:green'
+                            str_botao_nok = ''
+                        elif resposta_ok_nok_check_aplicado.resp_item == 1:
+                            str_botao_ok = ''
+                            str_botao_nok = 'background-color:red'
+                    if item.campo_obs_img == 0:
+
+                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black;">{item.desc_check}</p>
+                                                <input type="hidden" class="identifier" value="{item.ordem_item}">
+                                                <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
+                                                <div style="display:flex;justify-content:center;padding:4px">
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>OK</button>
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>NOK</button>
+                                                </div>
+                                            </div>'''
+                    if item.campo_obs_img == 1:
+                        respostas_texto_fotos_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+                            cod_check_aplicado=check_aplicado, cod_item_check=item).first()
+
+                        if respostas_texto_fotos_check_aplicado is not None:
+                            if respostas_texto_fotos_check_aplicado.comentario is not None:
+                                str_comentario = respostas_texto_fotos_check_aplicado.comentario
+                            else:
+                                str_comentario = ''
+                        else:
+                            str_comentario = ''
+
+                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                    <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black;">{item.desc_check}</p>
+                                                    <input type="hidden" class="identifier" value="{item.ordem_item}">
+                                                    <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
+                                                    <div style="display:flex;justify-content:center;">
+                                                        <button name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>OK</button>
+                                                        <button name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>NOK</button>
+                                                    </div>
+                                                    <div class="responsive-div" style="display:flex;justify-content:flex-start;margin:1rem 0.5rem 1rem 0.5rem">
+                                                        <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                    </div>
+                                                </div>'''
+                elif item.tipo_resposta == 2:
+                    respostas_texto_fotos_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+                        cod_check_aplicado=check_aplicado, cod_item_check=item).first()
+
+                    if respostas_texto_fotos_check_aplicado is not None:
+                        if respostas_texto_fotos_check_aplicado.comentario is not None:
+                            str_comentario = respostas_texto_fotos_check_aplicado.comentario
+                        else:
+                            str_comentario = ''
+                    else:
+                        str_comentario = ''
+
+                    if item.campo_obs_img == 0:
+                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">{item.desc_check}</p>
+                                                <input type="hidden" class="identifier" value="{item.ordem_item}">
+                                                <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
+                                                <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                </div>
+                                            </div>'''
+                    elif item.campo_obs_img == 1:
+                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">{item.desc_check}</p>
+                                                <input type="hidden" class="identifier" value="{item.ordem_item}">
+                                                <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
+                                                <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
+                                                </div>
+                                            </div>'''
+            html_check_editar += '</div>'
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=cod_usuario_sessao)
+        plano_acao = Plano_Acao.objects.filter(cod_check_aplicado=check_aplicado).first()
+        if plano_acao is None:
+            plano_acao = Plano_Acao(
+                cod_check_aplicado=check_aplicado,
+                user_id=obj_usuario.cod_usu,
+                data_registro=datetime.now(),
+                status_plano=0,
+            )
+            plano_acao.save()
+        if plano_acao.plano_acao is None:
+            plano_acao.plano_acao = ''
+
+        check_html_recebido = f'''
+        <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex" style="flex-direction:column;">
+            <div class="form-group form_div_check w-100" >
+                <div class="col-md-12 w-100 h-100">
+                    <form id="form_preenche_check" name="form_preenche_check">
+                        <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
+                            <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div style="text-align:left;">
+                                    {html_check_editar}
+                                </div>
+                                <div class="d-flex justify-content-between align-items-between w-100" style="color:black;margin-top:30px;">
+                                    <hr style="width:100%;margin-top:0 !important;opacity:0.7;">
+                                </div>
+                                
+                                <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                    <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">Qual o plano de ação para tratar a ocorrência?</p>
+                                    <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                        <textarea name="{check_aplicado.cod_check_aplicado}" class="responsive-font responsive-w-100 textarea-check-aplicado" style="width:90%;height:8rem;margin-right:1.2rem">{plano_acao.plano_acao}</textarea>
+                                    </div>
+                                </div>
+                                <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                    <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">Qual o status da tratativa?</p>
+                                    <div style="display:flex;justify-content:center;padding-bottom:10px">
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font pending-button-check status-button-check {'selected' if plano_acao.status_plano == 0 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="0">PENDENTE</button>
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font in-progress-button-check status-button-check {'selected' if plano_acao.status_plano == 1 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="1">ANDAMENTO</button>
+                                        <button name="{check_aplicado.cod_check_aplicado}" class="responsive-font finished-button-check status-button-check {'selected' if plano_acao.status_plano == 2 else ''}" type="button" style="padding:7px;border-width:1px;border-radius:5px;" value="2">CONCLUIDA</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>'''
+
+        return HttpResponse(check_html_recebido)
 
 

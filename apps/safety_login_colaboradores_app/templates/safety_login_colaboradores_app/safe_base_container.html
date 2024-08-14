@@ -26,7 +26,11 @@
           <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
           <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
 
-        <h1 class="homeApp__tituloPortal">Safety</h1>
+        <div style="display:flex">
+            <i class="fa-solid fa-helmet-safety" style="font-size:40px;color:#f46424"></i>
+            &nbsp;
+            <h1 class="homeApp__tituloPortal">Safety</h1>
+        </div>
 
         <div class="form__group field">
           <input required="" placeholder="CPF" class="form__field" type="input" id="input_cpf"
@@ -61,11 +65,16 @@
   <script src="{% static 'controllers/safety_gab_op_emp_app/frm_gab_op_emp_app.js' %}"
           type="text/javascript">
   </script>
-  <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
   <script src="{% static 'controllers/safety_relatos_app/frm_relatos_app.js' %}"
           type="text/javascript">
   </script>
-  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}"
+  <script src="{% static 'controllers/safety_gsdpq_app/frm_gsdpq_app.js' %}"
+          type="text/javascript">
+  </script>
+ <script src="{% static 'libs/browser-image-compression/browser-image-compression.js' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}?v='1.0' %}"
           type="text/javascript">
   </script>
 {% endblock %}

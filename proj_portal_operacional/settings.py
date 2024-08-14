@@ -17,7 +17,7 @@ load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
+VERSAO_ATUAL = '1.0'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -84,10 +84,14 @@ INSTALLED_APPS = [
     'apps.frota_vendas_veic_app',
     'apps.dre_app',
     'apps.ti_comitec_app',
+<<<<<<< HEAD
     'apps.conecta_rota_app',
     'apps.conecta_as_app',
     'apps.conecta_vans_app',
     'apps.conecta_rv_app',
+=======
+    'apps.safety_gsdpq_app',
+>>>>>>> faed07da580547bc5094f290cdd9e7459850321f
 ]
 
 MIDDLEWARE = [

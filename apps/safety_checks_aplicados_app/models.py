@@ -43,3 +43,17 @@ class Item_Fotos_Texto_Check_Aplicado(models.Model):
     class Meta:
         managed = True
         db_table = 'op_safe_itens_fotos_texto_checks_aplicados'
+
+class Plano_Acao(models.Model):
+    cod_plano_acao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado',
+                                           blank=False,
+                                           null=False)
+    plano_acao = models.CharField(max_length=300, blank=True, null=True)
+    status_plano = models.IntegerField(blank=False, null=False)  # 0- PENDENTE, 1- ANDAMENTO, 2- CONCLUIDO
+    user_id = models.IntegerField(blank=True, null=True)
+    data_registro = models.DateTimeField(blank=True, null=True)
+
+    class Meta:
+        managed = True
+        db_table = 'op_safe_plano_acao'

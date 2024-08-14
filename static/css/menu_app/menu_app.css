@@ -9,7 +9,7 @@ body {
     /* background-image: url(../../img/background2.jpg); */
     /* background-image: linear-gradient(90deg, rgba(113,113,113,1) 0%, rgba(52,53,55,1) 100%); */
     /* imagem tela interna */
-    background-image: url('../../img/background.jpg');
+    /*background-image: url('../../img/background.jpg');*/
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center center;
