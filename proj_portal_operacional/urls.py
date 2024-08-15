@@ -48,6 +48,7 @@ urlpatterns = [
     path('conecta_vans_app/', include('apps.conecta_vans_app.urls')),
     path('conecta_rv_app/', include('apps.conecta_rv_app.urls')),
     path('safety_gsdpq_app/', include('apps.safety_gsdpq_app.urls')),
+    path('safety_blitz_trajeto_carro_app/', include('apps.safety_blitz_trajeto_carro_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

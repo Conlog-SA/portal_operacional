@@ -118,6 +118,10 @@ class Menu_Safe(View):
                                                 <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">GSDPQ</b>
                                         </div>
+                                        <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                        </div>
                                     '''
 
         context = {
@@ -140,6 +144,8 @@ class Menu_Safe(View):
             url = 'relatos_check'
         elif tipo_check == '2':
             url = 'gsdpq_check'
+        elif tipo_check == '3':
+            url = 'blitz_trajeto_carro_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):

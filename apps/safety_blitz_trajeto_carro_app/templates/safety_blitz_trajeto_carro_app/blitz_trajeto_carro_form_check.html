@@ -1,0 +1,94 @@
+{% load static %}
+
+<div class="form-group form_div_check w-100" >
+    <div class="col-md-12 w-100 h-100">
+        <form id="form_preenche_check" name="form_preenche_check">
+                    <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
+                        <div class="tab-pane active" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div style="text-align:left;">
+                                    <div>
+                                        <div class="d-flex align-items-between" style="padding-right:20px;justify-content:right;background-color:rgba(33,37,41,0.7)">
+                                            <p style="display:flex;justify-content:right;padding:right:0.5rem;responsive-font;font-size:20px;margin-bottom:0px">Check nº{{cod_check_aplicado}}</p>
+                                        </div>
+                                    </div>
+                                    {% for item in lista_itens %}
+                                        <div class="background-check-preenchido" style="width:100%;display:flex;justify-content:center">
+                                            {% if item.tipo_item == 2 %}
+                                                <b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{{item.desc_check}}</b>
+                                            {% endif %}
+                                            {% if item.tipo_item == 1 %}
+                                                {% if item.tipo_resposta == 1 %}
+                                                    {% if item.campo_obs_img == 0 %}
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                            <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
+                                                            <input type="hidden" class="identifier" value="{{item.ordem_item}}">
+                                                            <input type="hidden" class="obrigatorio" name="obrigatorio" value="{{item.obrigatorio}}">
+                                                            <div style="display:flex;justify-content:center;padding:4px">
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;">OK</button>
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;">NOK</button>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if item.campo_obs_img == 1 %}
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                            <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
+                                                            <input type="hidden" class="identifier" value="{{item.ordem_item}}">
+                                                            <input type="hidden" class="obrigatorio" name="obrigatorio" value="{{item.obrigatorio}}">
+                                                            <div style="display:flex;justify-content:center;">
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;">OK</button>
+                                                                <button name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;">NOK</button>
+                                                            </div>
+                                                            <div class="responsive-div" style="display:flex;justify-content:flex-start;margin:1rem 0.5rem 1rem 0.5rem">
+                                                                <textarea name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem"></textarea>
+                                                                <div class="responsive-w-100" style="display:flex;width:40%;padding:4px;border-radius:0.5rem">
+                                                                    <input name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font file-check-post input-item relatos" type="file" style="color:#444;font-size:0.85rem;border:0;width:80%;max-width:100%" accept="image/png, image/gif, image/jpeg"></input>
+                                                                    <i style="width:20%;height:45px;display:flex;justify-content:center;align-items:center;font-size:18px;margin-left:5px;background-color:#9fa3a7;border-radius:0.5rem" class="fa-solid fa-eye"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                                {% if item.tipo_resposta == 2 %}
+                                                    {% if item.campo_obs_img == 0 %}
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                            <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
+                                                            <input type="hidden" class="identifier" value="{{item.ordem_item}}">
+                                                            <input type="hidden" class="obrigatorio" name="obrigatorio" value="{{item.obrigatorio}}">
+                                                            <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                                                <textarea name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem"></textarea>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                    {% if item.campo_obs_img == 1 %}
+                                                        <div style="width:90%;border-style:dashed;border-color:rgba(255, 255, 255, 0.5);margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                                            <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;">{{item.desc_check}}</p>
+                                                            <input type="hidden" class="identifier" value="{{item.ordem_item}}">
+                                                            <input type="hidden" class="obrigatorio" name="obrigatorio" value="{{item.obrigatorio}}">
+                                                            <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                                                <textarea name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:60%;height:6rem;margin-right:1.2rem"></textarea>
+                                                                <div class="responsive-w-100" style="display:flex;width:40%;padding:4px;">
+                                                                    <input name="{{item.cod_item_check}}@{{cod_check_aplicado}}" class="responsive-font file-check-post input-item relatos" type="file" style="width:80%;color:#444;font-size:0.85rem;border:0;max-width:100%" accept="image/png, image/gif, image/jpeg"></input>
+                                                                    <i style="width:20%;height:45px;display:flex;justify-content:center;align-items:center;font-size:18px;margin-left:5px;background-color:#9fa3a7;border-radius:0.5rem" class="fa-solid fa-eye eye-icon"></i>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+                                                {% endif %}
+                                            {% endif %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <div class="background-check-preenchido" style="display:flex;justify-content:flex-end;padding-top:2rem;padding-bottom:2rem;margin-bottom:1rem;padding-right:2rem;">
+                                    <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                        <div style="display:flex;flex-direction:column">
+                                            <i class="fa-solid fa-thumbs-up" style="color:#f46424;font-size:32px"></i>
+                                            <b style="color:white;font-size:17px">Finalizar</b>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div style="height:1rem;"></div>
+                        </div>
+                    </div>
+        </form>
+    </div>
+</div>

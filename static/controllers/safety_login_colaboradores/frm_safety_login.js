@@ -127,6 +127,26 @@ $(document).on('click','.safety-app-gsdpq' , function(){
     });
 });
 
+$(document).on('click','.safety-app-blitz-trajeto-carro' , function(){
+
+    $.ajax({
+        type: 'POST',
+        url: '/safety_login_colaboradores_app/safe_main_menu',
+        data: {
+            'tipo_check'   :   3,
+        },
+        success: function (dados) {
+            $('#main_container_safety').html(dados);
+            $('#main_container_safety').removeClass('text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
+            $('#main_container_safety').addClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
+            $('#main_container_safety').css("margin-left","0px");
+            $('#main_container_safety').css('width', '100%');
+
+            $('.selectpicker').selectpicker();
+        }
+    });
+});
+
 $(document).on('click','.btn-sair-safety' , function(){
 
     $.ajax({

@@ -6,13 +6,12 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_blitz_trajeto_carro_app.models import Blitz_Trajeto_Carro
 from apps.safety_checks_aplicados_app.models import Check_Aplicado
-from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
 from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Item_Check
 from apps.safety_login_colaboradores_app.models import Colaborador
 
-
-class Form_Gerar_Check_Gsdpq(View):
+class Form_Gerar_Check_Blitz_Trajeto_Carro(View):
     @csrf_exempt
     def get(self, request):
         cod_colaborador = request.session['cod_colaborador']
@@ -24,7 +23,7 @@ class Form_Gerar_Check_Gsdpq(View):
         if colaborador.perfil_usu == 'G':
 
             data_atual = datetime.now()
-            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=3,
+            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=4,
                                                              cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                    data_atual.month,
                                                                                                    data_atual.day),
@@ -44,18 +43,16 @@ class Form_Gerar_Check_Gsdpq(View):
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade
         }
-        return render(request, 'safety_gsdpq_app/gsdpq_form_gerar_check.html', context)
+        return render(request, 'safety_blitz_trajeto_carro_app/blitz_trajeto_carro_form_gerar_check.html', context)
 
     @csrf_exempt
     def post(self, request):
-        filial_colaborador = request.POST['unidade_freteiro']
-        nome_freteiro = request.POST['nome_freteiro']
-        cpf_freteiro = request.POST['cpf_freteiro']
-        placa_caminhao = request.POST['placa_caminhao']
+        filial_colaborador = request.POST['unidade_avaliado']
+        nome_avaliado = request.POST['nome_avaliado']
+        placa_carro = request.POST['placa_carro']
 
         colaborador = Colaborador(
-            nome_colaborador=nome_freteiro,
-            cpf=cpf_freteiro,
+            nome_colaborador=nome_avaliado,
             cod_filial=filial_colaborador,
             situacao=0
         )
@@ -66,7 +63,7 @@ class Form_Gerar_Check_Gsdpq(View):
         cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=3, cod_filial=colaborador.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=4, cod_filial=colaborador.cod_filial,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),
@@ -76,7 +73,7 @@ class Form_Gerar_Check_Gsdpq(View):
             '-cod_check__data_desativacao').first()
 
         if (check_ativo == None):
-            return HttpResponse('Não há check de empilhadeiras ativo atualmente para essa filial', status=404)
+            return HttpResponse('Não há check de blitz ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
             cod_filial=cod_filial_usuario_sessao,
@@ -109,8 +106,8 @@ class Form_Gerar_Check_Gsdpq(View):
                                      'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
                                      'desc_resposta': desc_resposta_botao, 'obrigatorio': item.obrigatorio})
 
-        check_cabecalho = Gabarito_GSDPQ(
-            placa_caminhao=placa_caminhao,
+        check_cabecalho = Blitz_Trajeto_Carro(
+            placa=placa_carro,
             cod_check_aplicado=check_aplicado,
         )
         check_cabecalho.save()
