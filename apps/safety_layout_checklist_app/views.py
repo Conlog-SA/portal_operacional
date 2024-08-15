@@ -465,6 +465,8 @@ class Check_Aplicado_Editar(View):
                                                             <option value="{categoria_comportamento_seguro.cod_componente}">{categoria_comportamento_seguro.desc_componente}</option>
                                                         </select>
                                                     </div>'''
+                else:
+                    str_categoria_comportamento_seguro = ''
             else:
                 str_categoria_comportamento_seguro = ''
 
