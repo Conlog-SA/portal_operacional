@@ -458,7 +458,7 @@ class Check_Aplicado_Editar(View):
             if relato_aplicado.cod_tipo_relato == 3 and empresa_colaborador_aplicante == 17:
                 categoria_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
 
-                if categoria_condicao_insegura is not None:
+                if categoria_comportamento_seguro is not None:
                     str_categoria_comportamento_seguro = f'''<div id="div_comportamento_seguro_categorias" class="form-group">
                                                         <label class="responsive-font" for="comportamento_seguro_categoria">Qual tipo de condição insegura ocorreu?</label>
                                                         <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" value="{categoria_comportamento_seguro.cod_componente}" disabled>
