@@ -14,6 +14,7 @@ class Relato(models.Model):
     processo_relato = models.IntegerField(blank=False, null=False)
     categoria_ato_inseguro = models.IntegerField(blank=True, null=True)
     categoria_condicao_insegura = models.IntegerField(blank=True, null=True)
+    categoria_comportamento_seguro = models.IntegerField(blank=True, null=True)
     cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
                                          null=True)
 

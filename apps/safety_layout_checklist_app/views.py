@@ -433,7 +433,7 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_ato_inseguro is not None:
                     str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
-                                                        <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                                        <label class="responsive-font" for="ato_inseguro_categoria">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
                                                         <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
                                                             <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
                                                         </select>
@@ -446,13 +446,27 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_condicao_insegura is not None:
                     str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
-                                                        <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
+                                                        <label class="responsive-font" for="condicao_insegura_categoria">Qual tipo de condição insegura ocorreu?</label>
                                                         <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
                                                             <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
                                                         </select>
                                                     </div>'''
             else:
                 str_categoria_condicao_insegura = ''
+
+            empresa_colaborador_aplicante = Filial.objects.filter(cod_filial=check_aplicado.cod_colaborador_aplicante.cod_filial).first().cod_empresa.cod_empresa
+            if relato_aplicado.cod_tipo_relato == 3 and empresa_colaborador_aplicante == 17:
+                categoria_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
+
+                if categoria_condicao_insegura is not None:
+                    str_categoria_comportamento_seguro = f'''<div id="div_comportamento_seguro_categorias" class="form-group">
+                                                        <label class="responsive-font" for="comportamento_seguro_categoria">Qual tipo de condição insegura ocorreu?</label>
+                                                        <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" value="{categoria_comportamento_seguro.cod_componente}" disabled>
+                                                            <option value="{categoria_comportamento_seguro.cod_componente}">{categoria_comportamento_seguro.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
+            else:
+                str_categoria_comportamento_seguro = ''
 
             if relatado is not None:
                 str_relatado = f'''<div id="div_situacao_relatado" class="form-group">
@@ -479,6 +493,26 @@ class Check_Aplicado_Editar(View):
             else:
                 str_relatado = ''
 
+            if processo is not None:
+                str_processo = f'''<div class="form-group">
+                                       <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
+                                       <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
+                                           <option value="{processo.cod_componente}">{processo.desc_componente}</option>
+                                       </select>
+                                   </div>'''
+            else:
+                str_processo = ''
+
+            if atividade is not None:
+                str_atividade = f'''<div class="form-group">
+                                       <label for="atividade_relato">Que atividade estava sendo realizada?</label>
+                                        <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
+                                            <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
+                                        </select>
+                                    </div>'''
+            else:
+                str_atividade = ''
+
             print(relato_aplicado.cod_tipo_relato)
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
                                         <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
@@ -502,23 +536,14 @@ class Check_Aplicado_Editar(View):
                                                                 </div>
                                                                 {str_categoria_ato_inseguro}
                                                                 {str_categoria_condicao_insegura}
+                                                                {str_categoria_comportamento_seguro}
                                                                 {str_relatado}
                                                                 <div class="form-group">
                                                                    <label for="local_relato">Local do relato:</label>
                                                                    <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato" value="{relato_aplicado.local_relato}" disabled>
                                                                 </div>
-                                                                <div class="form-group">
-                                                                    <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
-                                                                    <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
-                                                                        <option value="{processo.cod_componente}">{processo.desc_componente}</option>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                   <label for="atividade_relato">Que atividade estava sendo realizada?</label>
-                                                                    <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
-                                                                        <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
-                                                                    </select>
-                                                                </div>
+                                                                {str_processo}
+                                                                {str_atividade}
                                                             </div>
                                                         </div>
                                                 </div>

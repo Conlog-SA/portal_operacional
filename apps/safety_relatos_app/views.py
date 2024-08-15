@@ -48,6 +48,7 @@ class Form_Gerar_Relatos_Check(View):
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
         lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
 
         if filial_usuario.cod_empresa.cod_empresa == 17:
             flag_deep = True
@@ -61,7 +62,8 @@ class Form_Gerar_Relatos_Check(View):
             'options_select_unidade': str_options_select_unidade,
             'options_select_processo': str_options_select_processo,
             'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
-            'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura
+            'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura,
+            'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro
         }
 
         if "Visitante" in colaborador.nome_colaborador:
@@ -80,11 +82,18 @@ class Form_Gerar_Relatos_Check(View):
         unidade_relato = request.POST['unidade_relato']
         categoria_ato_inseguro = request.POST['categoria_ato_inseguro']
         categoria_condicao_insegura = request.POST['categoria_condicao_insegura']
+        comportamento_seguro_categoria = request.POST['comportamento_seguro_categoria']
 
         if categoria_ato_inseguro == '':
             categoria_ato_inseguro = None
         if categoria_condicao_insegura == '':
             categoria_condicao_insegura = None
+        if comportamento_seguro_categoria == '':
+            comportamento_seguro_categoria = None
+        if processo_relato == '':
+            processo_relato = None
+        if atividade_relato == '':
+            atividade_relato = None
 
         colaborador = None
         if situacao_envolvido == '1':
@@ -149,7 +158,8 @@ class Form_Gerar_Relatos_Check(View):
             atividade_relato=atividade_relato,
             cod_check_aplicado=check_aplicado,
             categoria_ato_inseguro=categoria_ato_inseguro,
-            categoria_condicao_insegura=categoria_condicao_insegura
+            categoria_condicao_insegura=categoria_condicao_insegura,
+            categoria_comportamento_seguro=comportamento_seguro_categoria
         )
         check_cabecalho.save()
 

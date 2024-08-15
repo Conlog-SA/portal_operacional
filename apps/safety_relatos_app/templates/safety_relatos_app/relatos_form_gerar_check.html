@@ -56,6 +56,14 @@
                                                 {% endfor %}
                                             </select>
                                         </div>
+                                        <div id="div_comportamento_seguro_categorias" class="form-group hidden-div">
+                                            <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de comportamento seguro ocorreu?</label>
+                                            <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" placeholder="Escolha a categoria" data-live-search="true">
+                                                {% for categoria in lista_categorias_comportamento_seguro %}
+                                                    <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                         <div id="div_situacao_relatado" class="form-group">
                                            <label class="responsive-font" for="situacao_envolvido">Quem foi que gerou esta condição?</label>
                                            <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" placeholder="Escolha a situação">
