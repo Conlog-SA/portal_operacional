@@ -43,14 +43,11 @@ urlpatterns = [
     path('dre_app/', include('apps.dre_app.urls')),
     path('gente_gestao_rateio_unimed_app/', include('apps.gente_gestao_rateio_unimed_app.urls')),
     path('ti_comitec_app/', include('apps.ti_comitec_app.urls')),
-<<<<<<< HEAD
     path('conecta_rota_app/', include('apps.conecta_rota_app.urls')),
     path('conecta_as_app/', include('apps.conecta_as_app.urls')),
     path('conecta_vans_app/', include('apps.conecta_vans_app.urls')),
     path('conecta_rv_app/', include('apps.conecta_rv_app.urls')),
-=======
     path('safety_gsdpq_app/', include('apps.safety_gsdpq_app.urls')),
->>>>>>> faed07da580547bc5094f290cdd9e7459850321f
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

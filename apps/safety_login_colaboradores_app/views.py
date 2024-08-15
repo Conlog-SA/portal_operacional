@@ -76,39 +76,46 @@ class Menu_Safe(View):
                                                              cod_filial=filial_colaborador).order_by(
                 '-cod_check__data_desativacao')
 
-            if check_ativo.filter(cod_check__tipo_check=1).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=1).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Empilhadeiras</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=2).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=2).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Relatos</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=3).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=3).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">GSDPQ</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app icon-menu-safety" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Carro</b>
                                             </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
             str_menu_colaborador += '''
                                         <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-                                            <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
+                                            <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
                                             <b style="color:white;">Empilhadeiras</b>
                                         </div>
                                         <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Relatos</b>
                                         </div>
                                         <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">GSDPQ</b>
                                         </div>
                                     '''

@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block conteudo %}
-  <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
+  <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex homeApp_loginContainer safety-container-screen">
     <form class="d-flex justify-content-center align-items-center flex-column">
         {% csrf_token %}
           <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">

@@ -10,7 +10,7 @@ class Relato(models.Model):
     cod_tipo_relato = models.IntegerField(blank=False, null=False)
     situacao_envolvido = models.IntegerField(blank=True, null=True)
     local_relato = models.CharField(max_length=70, blank=False, null=False)
-    atividade_relato = models.IntegerField(blank=False, null=False)
+    atividade_relato = models.IntegerField(blank=True, null=True)
     processo_relato = models.IntegerField(blank=False, null=False)
     categoria_ato_inseguro = models.IntegerField(blank=True, null=True)
     categoria_condicao_insegura = models.IntegerField(blank=True, null=True)

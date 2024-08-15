@@ -86,7 +86,7 @@
                                                 {% endautoescape %}
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div id="div_atividade" class="form-group hidden-div">
                                            <label for="atividade_relato">Que atividade estava sendo realizada?</label>
                                             <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled data-live-search="true">
                                             </select>
@@ -114,3 +114,15 @@
         </div>
     </div>
 </div>
+<script>
+    var flag_deep = null;
+    if ("{{flag_deep}}" == "False") {
+        console.log('sim');
+        flag_deep = false;
+    }
+    else if ("{{flag_deep}}" == "True") {
+        console.log('sim');
+        flag_deep = true;
+    }
+
+</script>

@@ -43,14 +43,20 @@ class Form_Gerar_Relatos_Check(View):
 
         str_options_select_processo = ''
         #if filial_usuario.cod_empresa.cod_empresa == 12:
-        processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1)
+        processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
-        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3)
-        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4)
+        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+
+        if filial_usuario.cod_empresa.cod_empresa == 17:
+            flag_deep = True
+        else:
+            flag_deep = False
 
         context = {
             'cod_usuario': nome_colaborador,
+            'flag_deep': flag_deep,
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade,
             'options_select_processo': str_options_select_processo,
@@ -158,6 +164,12 @@ class Form_Gerar_Relatos_Check(View):
 class Lista_Atividades(View):
     @csrf_exempt
     def get(self, request):
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
+        filial_colaborador = Filial.objects.filter(cod_filial=colaborador.cod_filial).first()
+        if filial_colaborador.cod_empresa.cod_empresa != 12:
+            data = []
+            return JsonResponse(data, safe=False)
         cod_processo = request.GET['cod_processo']
 
         lista_atividades = Itens_Componentes.objects.filter(cod_pai=cod_processo)
