@@ -9,6 +9,7 @@ from apps.estrut_org_app.models import Filial
 from apps.safety_layout_checklist_app.models import Libera_Filial_Check
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usu_Menu
+from proj_portal_operacional.settings import VERSAO_SAFETY
 
 
 class Login_Colaborador(View):
@@ -20,7 +21,10 @@ class Login_Colaborador(View):
             if "Visitante" in colaborador.nome_colaborador:
                 request.session['cod_colaborador'] = id_visitante
                 return redirect('relatos_check')
-        return render(request, 'safety_login_colaboradores_app/safe_base_container.html')
+        context = {
+            'VERSAO_SAFETY': VERSAO_SAFETY,
+        }
+        return render(request, 'safety_login_colaboradores_app/safe_base_container.html', context)
 
     @csrf_exempt
     def post(self, request):
