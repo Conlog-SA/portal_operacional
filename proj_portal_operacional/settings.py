@@ -90,6 +90,7 @@ INSTALLED_APPS = [
     'apps.conecta_rv_app',
     'apps.safety_gsdpq_app',
     'apps.safety_blitz_trajeto_carro_app',
+    'apps.safety_blitz_trajeto_moto_app',
 ]
 
 MIDDLEWARE = [

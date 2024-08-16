@@ -99,9 +99,16 @@ class Menu_Safe(View):
                                         '''
             if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
                 str_menu_colaborador += '''
-                                            <div class="safety-container-app icon-menu-safety" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=5).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Moto</b>
                                             </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
@@ -121,6 +128,10 @@ class Menu_Safe(View):
                                         <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                        </div>
+                                        <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Moto</b>
                                         </div>
                                     '''
 
@@ -146,6 +157,8 @@ class Menu_Safe(View):
             url = 'gsdpq_check'
         elif tipo_check == '3':
             url = 'blitz_trajeto_carro_check'
+        elif tipo_check == '4':
+            url = 'blitz_trajeto_moto_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):
