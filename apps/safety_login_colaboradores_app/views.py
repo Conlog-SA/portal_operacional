@@ -130,7 +130,7 @@ class Menu_Safe(View):
                                         </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
-            str_menu_colaborador += ''' <div style="height:60%;overflow:scroll">
+            str_menu_colaborador += ''' <div style="height:70%;overflow:scroll">
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Empilhadeiras</b>
