@@ -110,7 +110,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Carro(View):
         check_cabecalho = Blitz_Trajeto_Carro(
             placa=placa_carro,
             cod_check_aplicado=check_aplicado,
-            situacao_avaliado=situacao_colaborador
+            situacao_colaborador=situacao_colaborador
         )
         check_cabecalho.save()
 
