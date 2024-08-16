@@ -91,6 +91,8 @@ INSTALLED_APPS = [
     'apps.safety_gsdpq_app',
     'apps.safety_blitz_trajeto_carro_app',
     'apps.safety_blitz_trajeto_moto_app',
+    'apps.safety_blitz_trajeto_bicicleta_app',
+    'apps.safety_blitz_trajeto_outros_meios_app',
 ]
 
 MIDDLEWARE = [

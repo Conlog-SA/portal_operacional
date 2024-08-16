@@ -13,8 +13,10 @@ from django.views.decorators.csrf import csrf_exempt
 from pyhtml2pdf import converter
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_blitz_trajeto_bicicleta_app.models import Blitz_Trajeto_Bicicleta
 from apps.safety_blitz_trajeto_carro_app.models import Blitz_Trajeto_Carro
 from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
+from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
@@ -52,6 +54,12 @@ class Check_Aplicado_View(View):
         if tipo_check_aplicado == '5':
             #validacao_blitz_moto_existentes
             validacao_checks_existentes = Blitz_Trajeto_Moto.objects.all().values('cod_check_aplicado')
+        if tipo_check_aplicado == '6':
+            #validacao_blitz_bicicleta_existentes
+            validacao_checks_existentes = Blitz_Trajeto_Bicicleta.objects.all().values('cod_check_aplicado')
+        if tipo_check_aplicado == '7':
+            #validacao_blitz_bicicleta_existentes
+            validacao_checks_existentes = Blitz_Trajeto_Outros_Meios.objects.all().values('cod_check_aplicado')
 
         lista_checks_aplicados = lista_checks_aplicados.filter(cod_check_aplicado__in=validacao_checks_existentes)
 

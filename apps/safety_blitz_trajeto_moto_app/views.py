@@ -50,6 +50,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Moto(View):
         filial_colaborador = request.POST['unidade_avaliado']
         nome_avaliado = request.POST['nome_avaliado']
         placa_moto = request.POST['placa_moto']
+        situacao_avaliado = request.POST['situacao_avaliado']
 
         colaborador = Colaborador(
             nome_colaborador=nome_avaliado,
@@ -109,6 +110,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Moto(View):
         check_cabecalho = Blitz_Trajeto_Moto(
             placa=placa_moto,
             cod_check_aplicado=check_aplicado,
+            situacao_colaborador=situacao_colaborador
         )
         check_cabecalho.save()
 
