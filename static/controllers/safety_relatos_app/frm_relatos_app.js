@@ -55,9 +55,6 @@ $(document).on('click','.create-check-relatos' , function(){
     if (let_categoria_condicao_insegura == '' && let_tipo_relato == '2') {
         msg_erro += 'Selecione uma categoria de condição insegura!<br>';
     }
-    if (let_comportamento_seguro_categoria == '' && let_tipo_relato == '3') {
-        msg_erro += 'Selecione uma categoria de comportamento seguro!<br>';
-    }
     if ((let_situacao_envolvido == '' || let_situacao_envolvido == null) && let_tipo_relato != '2') {
         msg_erro += 'Informe a situação do relatado!<br>';
     }
