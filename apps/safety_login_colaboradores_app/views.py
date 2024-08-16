@@ -130,34 +130,35 @@ class Menu_Safe(View):
                                         </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
-            str_menu_colaborador += '''
-                                        <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-                                            <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
-                                            <b style="color:white;">Empilhadeiras</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Relatos</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">GSDPQ</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Blitz de Trajeto - Carro</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Blitz de Trajeto - Moto</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+            str_menu_colaborador += ''' <div style="height:60%;overflow:scroll">
+                                            <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Empilhadeiras</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Relatos</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">GSDPQ</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Moto</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+                                            </div>
                                         </div>
                                     '''
 

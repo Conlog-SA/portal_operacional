@@ -125,7 +125,6 @@ class Itens_Check_Aplicado(View):
                                                             'caminho_imagem' : item.caminho_imagem, 'comentario' : item.comentario,
                                                             'desc_item_check': item.cod_item_check.desc_check})
 
-        print(lista_itens_check_aplicado_dict)
         html_check_aplicado = f'<div style="width:100%;margin-top:3rem;display:flex;justify-content:flex-start"><i class="fa-solid fa-arrow-left arrow-go-back"></i></div><p>{check_aplicado.cod_layout_check.desc_check}</p>'
         for item_aplicado in lista_itens_check_aplicado_dict:
             html_check_aplicado += f'<p style="margin-top:1rem">{item_aplicado["desc_item_check"]}</p>'

@@ -53,12 +53,19 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
         meio_transporte = request.POST['meio_transporte']
         situacao_colaborador = request.POST['situacao_avaliado']
 
-        colaborador = Colaborador(
-            nome_colaborador=nome_avaliado,
-            cod_filial=filial_colaborador,
-            situacao=0
-        )
-        colaborador.save()
+        colaborador = None
+        if situacao_colaborador == '1':
+            colaborador = Colaborador.objects.get(pk=int(nome_avaliado))
+
+        elif situacao_colaborador == '2' or situacao_colaborador == '3' or situacao_colaborador == '4':
+
+            colaborador = Colaborador(
+                nome_colaborador=nome_avaliado,
+                cod_filial=filial_colaborador,
+                situacao=0
+            )
+            colaborador.save()
+
 
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
