@@ -11,14 +11,14 @@ from django.views import View
 class Conexao_Senior_BD():
     empresa = None
     def __init__(self, empresa):
-        if empresa == '12':
+        if empresa == 12:
             self.__conn = pyodbc.connect(
                 'Driver={SQL Server};'
                 'Server=itjm-srv-018;'
                 'Database=vetorh;'
                 'UID=servico.portais;'
                 'PWD=qm@WHpAWwb')
-        elif empresa == '17':
+        elif empresa == 17:
             self.__conn = pyodbc.connect(
                 'Driver={SQL Server};'
                 'Server=itjm-srv-018;'
@@ -294,7 +294,7 @@ class Conexao_Senior_BD():
     
                 ''' +
                 " AND cal.perref = '" + data_ref + "' " +
-                " AND cc.usu_handle in (" + lista_handle_proj.replace('[', '').replace(']', '') + ") " +
+                " AND cc.usu_handle in (" + str(lista_handle_proj).replace('[', '').replace(']', '') + ") " +
                 '''           
                     ORDER BY 4, 17 DESC
                 '''
@@ -400,7 +400,7 @@ class Conexao_Senior_BD():
                     ''' AND prov_mestre.TIPPRV = ''' + cod_tipo_provisao +
                     ''' AND prov_mestre.MESANO = ''' + " '" + data_ref + "' " +
                     ''' AND  fun.DATADM <= ''' + " '" + data_ref_fim_str + "' " +
-                      " AND ccu.usu_handle in (" + lista_handle_proj.replace('[', '').replace(']', '') + ") " +
+                      " AND ccu.usu_handle in (" + str(lista_handle_proj).replace('[', '').replace(']', '') + ") " +
                     ''' AND EXISTS (SELECT 1 
                                  FROM R038HFI TAB2 
                                  WHERE TAB2.NUMEMP = fun.NUMEMP 
