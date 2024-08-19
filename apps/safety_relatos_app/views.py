@@ -50,8 +50,13 @@ class Form_Gerar_Relatos_Check(View):
         lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
 
+        str_options_select_local = ''
         if filial_usuario.cod_empresa.cod_empresa == 17:
             flag_deep = True
+            locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6,
+                                                         cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            for local in locais:
+                str_options_select_local += f'<option value="{local.cod_componente}">{local.desc_componente}</option>'
         else:
             flag_deep = False
 
@@ -61,9 +66,10 @@ class Form_Gerar_Relatos_Check(View):
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade,
             'options_select_processo': str_options_select_processo,
+            'options_select_local': str_options_select_local,
             'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
             'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura,
-            'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro
+            'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro,
         }
 
         if "Visitante" in colaborador.nome_colaborador:
@@ -110,6 +116,12 @@ class Form_Gerar_Relatos_Check(View):
 
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
+        filial_colaborador_envio = Filial.objects.get(pk=colaborador_envio.cod_filial)
+
+        if filial_colaborador_envio.cod_empresa.cod_empresa == 17:
+
+            local_relato = Itens_Componentes.objects.filter(pk=int(local_relato)).first().desc_componente
+
         filial = Filial.objects.get(pk=unidade_relato)
 
         data_atual = datetime.now()

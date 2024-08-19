@@ -82,10 +82,22 @@
                                             <label class="responsive-font" for="nome_relatado_terceiro">Nome do relatado:</label>
                                             <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro">
                                         </div>
-                                        <div class="form-group">
-                                           <label for="local_relato">Local do relato:</label>
-                                           <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato">
-                                        </div>
+                                        {% if flag_deep == False %}
+                                            <div class="form-group">
+                                               <label for="local_relato">Local do relato:</label>
+                                               <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato">
+                                            </div>
+                                        {% endif %}
+                                        {% if flag_deep == True %}
+                                            <div class="form-group">
+                                                <label class="responsive-font" for="local_relato">Local do relato:</label>
+                                                <select class="selectpicker form-control responsive-font" id="local_relato" name="local_relato" value="{{nome_operador}}" placeholder="Selecione o local" data-live-search="true">
+                                                    {% autoescape off %}
+                                                        {{options_select_local}}
+                                                    {% endautoescape %}
+                                                </select>
+                                            </div>
+                                        {% endif %}
                                         <div class="form-group">
                                             <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
                                             <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" placeholder="Selecione o processo" data-live-search="true">
