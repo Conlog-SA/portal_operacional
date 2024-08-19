@@ -1,6 +1,7 @@
 import locale
 from datetime import datetime
 
+import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -115,8 +116,11 @@ class Form_Rel_Folha_Pagamento_View(View):
         obj_usuario = Usuario.objects.get(pk=id_usu_session)
         #lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario, status_proj_usu_folha_pag='S')
         lista_periodos_liberados = Confirma_Periodo_Fechamento_Folha.objects.filter(ativa='S')
+        lista_projetos_pagina = Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usuario, ativo_app_folha_pagamento='S')
+
         context = {
             'lista_periodos_liberados': lista_periodos_liberados,
+            'lista_projetos_pagina': lista_projetos_pagina,
             'desc_menu_principal' : 'Rel. Folha Pagamento',
             'id_menu_pai' : 58
         }
@@ -126,7 +130,6 @@ class Gera_Rel_Folha_Pagamento_View(View):
     def get(self, request):
         cod_comp_form = request.GET['cod_competencia']
         lista_handle_proj_form = request.GET['lista_handle_proj']
-        cod_empresa_frm = request.GET['cod_empresa']
 
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
         id_usu_session = request.session['cod_usuario_logado']
@@ -137,7 +140,35 @@ class Gera_Rel_Folha_Pagamento_View(View):
             str(obj_competencia.mes_competencia_periodo) + \
             '/1'
         dados_folha = []
-        df_dados_folha_pag = Conexao_Senior_BD(cod_empresa_frm).retorna_df_folha_pagamento(str_data_ref, lista_handle_proj_form)
+        lista_handle_projetos_conlog = []
+        lista_handle_projetos_deep = []
+        for proj_emp in lista_handle_proj_form.split(','):
+            if proj_emp.split('_')[1] == '12':
+                lista_handle_projetos_conlog.append(proj_emp.split('_')[0])
+            elif proj_emp.split('_')[1] == '17':
+                lista_handle_projetos_deep.append(proj_emp.split('_')[0])
+
+        df_dados_folha_pag = None
+        df_dados_folha_pag_conlog = None
+        if len(lista_handle_projetos_conlog) > 0:
+            df_dados_folha_pag_conlog = (Conexao_Senior_BD(12)
+                                         .retorna_df_folha_pagamento(str_data_ref, lista_handle_projetos_conlog))
+
+        df_dados_folha_pag_deep = None
+        if len(lista_handle_projetos_deep) > 0:
+            df_dados_folha_pag_deep = (Conexao_Senior_BD(17)
+                                       .retorna_df_folha_pagamento(str_data_ref, lista_handle_projetos_deep))
+
+        df_dados_folha_pag = pd.concat([df_dados_folha_pag_conlog, df_dados_folha_pag_deep]).reset_index()
+
+        '''if df_dados_folha_pag_conlog != None and  df_dados_folha_pag_deep != None:
+            
+        elif df_dados_folha_pag_conlog != None and  df_dados_folha_pag_deep == None:
+            df_dados_folha_pag = df_dados_folha_pag_conlog
+        elif df_dados_folha_pag_conlog == None and  df_dados_folha_pag_deep != None:
+            df_dados_folha_pag = df_dados_folha_pag_deep'''
+
+
         for index, row in df_dados_folha_pag.iterrows():
                 if df_dados_folha_pag.loc[index, 'mat_colab'] != None:
                     reg = Registro_Folha_Pagamento(
@@ -164,17 +195,62 @@ class Gera_Rel_Folha_Pagamento_View(View):
 
 class Form_Libera_Proj_Usu_View(View):
     def get(self, request):
-        lista_usuarios_ativos = Usuario.objects.filter(status_usu='A')
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=id_usu_session)
+
+        lista_usuarios_ativos = (Usuario.objects
+                                 .filter(status_usu='A', cod_filial__cod_empresa = obj_usuario.cod_filial.cod_empresa))
         lista_empresas_benner = ConexaoBancoBenner().retornaEmpresasBenner()
         lista_operacoes_benner = ConexaoBancoBenner().retornaTodasOperacoesBenner()
         #lista_filiais_benner = ConexaoBancoBenner().retornaTodasFilialBenner()
-        lista_projetos_benner = ConexaoBancoBenner().retornaTodosProjetosBenner()
+        #lista_projetos_benner = ConexaoBancoBenner().retornaTodosProjetosBenner()
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario = Usuario.objects.get(pk=id_usu_session)
+        lista_projetos_pagina = []
+        if obj_usuario.cod_filial.cod_empresa.cod_empresa == 12:
+            lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
+                                  .filter(cod_empresa=12)
+                                  .values('handle_benner', 'desc_proj_benner').distinct())
+            for proj in lista_projetos:
+                reg = {
+                    'handle_benner': proj['handle_benner'],
+                    'desc_proj_benner': proj['desc_proj_benner']
+                }
+                lista_projetos_pagina.append(reg)
+        elif obj_usuario.cod_filial.cod_empresa.cod_empresa == 17:
+            lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
+                                  .filter(cod_empresa=17)
+                                  .values('handle_benner', 'desc_proj_benner').distinct())
+            for proj in lista_projetos:
+                reg = {
+                    'handle_benner': proj['handle_benner'],
+                    'desc_proj_benner': proj['desc_proj_benner']
+                }
+                lista_projetos_pagina.append(reg)
+            ''' 
+            910 - ADMINISTRATIVO - CAL
+            912 - OPERACIONAL - CAL
+            915 - ADMINISTRATIVO - UTS
+            916 - OPERACIONAL - UTS
+            143 - OPERACIONAL UEL - GLD
+            300 - ADMINISTRATIVO - GLD
+            1060 - OPERACIONAL RIO BRILHANTE - GLD
+            '''
+            lista_projetos_conlog = list(Liberacao_Usuario_Projeto_Benner.objects
+                                         .filter(handle_benner__in=[910, 912, 915, 916, 143, 300, 1060])
+                                         .values('handle_benner', 'desc_proj_benner').distinct())
+            for proj in lista_projetos_conlog:
+                reg = {
+                    'handle_benner': proj['handle_benner'],
+                    'desc_proj_benner': proj['desc_proj_benner']
+                }
+                lista_projetos_pagina.append(reg)
         context = {
             'lista_usuarios_ativos': lista_usuarios_ativos,
             'lista_empresas_benner': lista_empresas_benner,
             'lista_operacoes_benner': lista_operacoes_benner,
             #'lista_filiais_benner': lista_filiais_benner,
-            'lista_projetos_benner': lista_projetos_benner,
+            'lista_projetos_benner': lista_projetos_pagina,
             'desc_menu_principal' : 'Libera Projetos x Usuários',
             'id_menu_pai' : 58
         }
@@ -286,20 +362,16 @@ class Form_Libera_Proj_Usu_Tab_Proj_View(View):
         return JsonResponse(data, safe=False)
 
 
-class Comp_Select_Empresa_View(View):
+'''class Comp_Select_Empresa_View(View):
     def get(self, request):
         cod_empresa_frm = request.GET['cod_empresa']
-        id_usu_session = request.session['cod_usuario_logado']
-        obj_usuario = Usuario.objects.get(pk=id_usu_session)
+        
 
-        lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
-                              .filter(cod_usu=obj_usuario,ativo_app_folha_pagamento='S',cod_empresa=cod_empresa_frm)
-                              .values('handle_benner', 'desc_proj_benner'))
         data = dict()
         data = {
             'lista_projetos': lista_projetos
         }
-        return JsonResponse(data, safe=False)
+        return JsonResponse(data, safe=False)'''
 
 
 

@@ -124,7 +124,7 @@ $(document).on('click','button', function(){
 
 });
 
-
+/*
 $(document).on('change', '#cb_emp_libera_proj_usu_folha_pag', function(){
     let let_cod_empresa = $(this).val();
     let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
@@ -161,7 +161,8 @@ $(document).on('change', '#cb_emp_libera_proj_usu_folha_pag', function(){
     });
 
 });
-
+*/
+/*
 $(document).on('change', '#sel_empresa_folha_pag_tab_proj', function(){
     let let_cod_empresa = $(this).val();
     let let_loader_libera_proj_usu_folha_pag = document.getElementById("loader_libera_proj_usu_folha_pag");
@@ -198,7 +199,7 @@ $(document).on('change', '#sel_empresa_folha_pag_tab_proj', function(){
     });
 
 });
-
+*/
 
 $(document).on('change', '#sel_usuarios_folha_pag_tab_usu', function(){
     var var_cod_usuario = $(this).val();

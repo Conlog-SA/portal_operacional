@@ -57,8 +57,7 @@ $(document).on('click', 'button', function(){
                 data: {
                     cod_tipo_provisao   :   var_tipo_provisao,
                     cod_competencia     :   var_cod_competencia,
-                    lista_handle_proj   :   var_lista_handle_proj,
-                    cod_empresa         :   let_cod_empresa
+                    lista_handle_proj   :   var_lista_handle_proj
                 },
                 url:"/plan_controle_provisoes_folha_app/gera_dados_provisoes_senior",
                 success: function(dados){
@@ -370,7 +369,7 @@ $(document).on('click', 'button', function(){
     }
 
 });
-
+/*
 $(document).on('change', '#cb_emp_prov_senior', function(){
     let let_cod_empresa = $(this).val();
     let let_loader_prov_senior = document.getElementById("loader_prov_senior");
@@ -409,4 +408,5 @@ $(document).on('change', '#cb_emp_prov_senior', function(){
     });
 
 });
+*/
 

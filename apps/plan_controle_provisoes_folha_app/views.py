@@ -1,6 +1,6 @@
 import locale
 from datetime import datetime
-
+import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -34,7 +34,6 @@ class Gera_Rel_Prov_Sernior_View(View):
         cod_tipo_prov_form = request.GET['cod_tipo_provisao']
         cod_comp_form = request.GET['cod_competencia']
         lista_handle_proj_form = request.GET['lista_handle_proj']
-        cod_empresa_frm = request.GET['cod_empresa']
         desc_tipo_proevento_pesq = 'Férias'
         if cod_tipo_prov_form == 2:
             desc_tipo_proevento_pesq = '13º Salário'
@@ -47,7 +46,30 @@ class Gera_Rel_Prov_Sernior_View(View):
                        str(obj_competencia.mes_competencia_periodo) + \
                        '-1'
 
-        df_dados_proeventos = Conexao_Senior_BD(cod_empresa_frm).retorna_df_provisao_folha_senior(str_data_ref, lista_handle_proj_form, cod_tipo_prov_form)
+
+        lista_handle_projetos_conlog = []
+        lista_handle_projetos_deep = []
+        for proj_emp in lista_handle_proj_form.split(','):
+            if proj_emp.split('_')[1] == '12':
+                lista_handle_projetos_conlog.append(proj_emp.split('_')[0])
+            elif proj_emp.split('_')[1] == '17':
+                lista_handle_projetos_deep.append(proj_emp.split('_')[0])
+
+        dados_folha = []
+        df_dados_proeventos_conlog = None
+        if len(lista_handle_projetos_conlog) > 0:
+            df_dados_proeventos_conlog = (Conexao_Senior_BD(12)
+                                          .retorna_df_provisao_folha_senior(str_data_ref, lista_handle_projetos_conlog, cod_tipo_prov_form))
+
+        df_dados_proeventos_deep = None
+        if len(lista_handle_projetos_deep) > 0:
+            df_dados_proeventos_deep = (Conexao_Senior_BD(17)
+                                          .retorna_df_provisao_folha_senior(str_data_ref, lista_handle_projetos_deep,
+                                                                            cod_tipo_prov_form))
+
+        df_dados_proeventos = pd.concat([df_dados_proeventos_conlog, df_dados_proeventos_deep]).reset_index()
+
+
 
         df_dados_proeventos_total_item = df_dados_proeventos[['desc_prov','val_base_prov','perc_dias_prov',
                                                               'val_anterior_prov','val_transf_prov','val_ajuste_prov',
