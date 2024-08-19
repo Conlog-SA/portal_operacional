@@ -1,0 +1,79 @@
+{% load static %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/safety_blitz_trajeto_moto_app/safety_blitz_trajeto_moto_app.css' %}" />
+
+{% endblock %}
+
+<div class="d-flex flex-column align-items-center justify-content-start text-white w-95" style="margin-right:0px;width:100%;height:100svh">
+   <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;">
+       <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-motorcycle" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
+           <h1 class="titlePadraoMenu" style="margin-left:0px;">Blitz de Trajeto</h1>
+       </div>
+       <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+   </div>
+    <div id="div_corpo_relato_blitz_trajeto" class="containerApp w-95 h-100" style="border-radius:0rem 0rem 0.5rem 0.5rem;margin-bottom:1rem">
+        <div class="form-group form_div_check w-100 h-100" >
+            <div class="col-md-12 w-100 h-100">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px">
+                        <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                    <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                        <div class="form-group">
+                                           <label for="unidade_colaborador_moto"> Unidade: </label>
+                                            <select class="selectpicker form-control responsive-font" id="unidade_colaborador_moto" name="unidade_colaborador_moto" placeholder="Selecione a unidade" data-live-search="true">
+                                                {% autoescape off %}
+                                                    {{options_select_unidade}}
+                                                {% endautoescape %}
+                                            </select>
+                                        </div>
+                                        <div id="div_situacao_relatado" class="form-group">
+                                           <label class="responsive-font" for="situacao_avaliado_moto">Quem está sendo descrito?</label>
+                                           <select class="selectpicker form-control responsive-font" id="situacao_avaliado_moto" name="situacao_avaliado_moto" placeholder="Escolha a situação">
+                                               <option value="1">Funcionario Conlog/Deep</option>
+                                               <option value="2">Funcionario Ambev</option>
+                                               <option value="3">Freteiro</option>
+                                               <option value="4">Terceiros</option>
+                                           </select>
+                                        </div>
+                                        <div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_moto">Nome do avaliado:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado_moto" name="nome_avaliado_moto" placeholder="Selecione o operador" data-live-search="true" disabled>
+                                            </select>
+                                        </div>
+                                        <div id="div_avaliado_terceiro" class="form-group hidden-div">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro_moto">Nome do avaliado:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro_moto" name="nome_avaliado_terceiro_moto">
+                                        </div>
+                                        <div class="form-group">
+                                           <label for="placa_moto">Placa:</label>
+                                           <input type="text" class="form-control responsive-font" id="placa_moto" name="placa_moto">
+                                        </div>
+                                    </div>
+                                    <div class="w-100" style="justify-content:space-between;display:flex;padding-right:2rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
+                                        <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-arrow-left" style="color:#f46424;font-size:32px"></i>
+                                                <b style="color:white;font-size:17px">Voltar</b>
+                                            </div>
+                                        </button>
+                                        <button class="create-check-blitz-trajeto-moto" type="button" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-circle-plus" style="font-size:32px; margin-left:0px;color:#f46424;"></i>
+                                                <b style="color:white;font-size:17px">Gerar check</b>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

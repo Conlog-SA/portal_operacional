@@ -96,10 +96,18 @@ class Form_Gerar_Check_Gsdpq(View):
         lista_itens_dict = []
         str_itens_obrigatorios = []
         for item in lista_itens:
+            desc_resposta_botao = ''
+            if item.tipo_resposta == 1 or item.tipo_resposta == '1':
+                desc_resposta_botao = 'OK/NOK'.split('/')
+            if item.tipo_resposta == 3 or item.tipo_resposta == '3':
+                desc_resposta_botao = 'SIM/NÃO'.split('/')
+            if item.tipo_resposta == 4 or item.tipo_resposta == '4':
+                desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
+
             lista_itens_dict.append({'cod_item_check': item.cod_item_check, 'desc_check': item.desc_check,
                                      'tipo_resposta': item.tipo_resposta, 'campo_obs_img': item.campo_obs_img,
                                      'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
-                                     'obrigatorio': item.obrigatorio})
+                                     'desc_resposta': desc_resposta_botao, 'obrigatorio': item.obrigatorio})
 
         check_cabecalho = Gabarito_GSDPQ(
             placa_caminhao=placa_caminhao,
@@ -111,4 +119,4 @@ class Form_Gerar_Check_Gsdpq(View):
             'lista_itens': lista_itens_dict,
             'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }
-        return render(request, 'safety_gsdpq_app/gsdpq_form_check.html', context)
+        return render(request, 'safety_checks_aplicados_app/preencher_form_check.html', context)

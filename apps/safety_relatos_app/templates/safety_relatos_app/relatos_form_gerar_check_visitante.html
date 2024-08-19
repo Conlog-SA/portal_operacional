@@ -60,7 +60,7 @@
                                            </select>
                                         </div>
                                         <div id="div_ato_inseguro_categorias" class="form-group hidden-div">
-                                            <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                            <label class="responsive-font" for="ato_inseguro_categoria">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
                                             <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" placeholder="Escolha a categoria" data-live-search="true">
                                                 {% for categoria in lista_categorias_ato_inseguro %}
                                                     <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
@@ -68,9 +68,17 @@
                                             </select>
                                         </div>
                                         <div id="div_condicao_insegura_categorias" class="form-group hidden-div">
-                                            <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
+                                            <label class="responsive-font" for="condicao_insegura_categoria">Qual tipo de condição insegura ocorreu?</label>
                                             <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" placeholder="Escolha a categoria" data-live-search="true">
                                                 {% for categoria in lista_categorias_condicao_insegura %}
+                                                    <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                        <div id="div_comportamento_seguro_categorias" class="form-group hidden-div">
+                                            <label class="responsive-font" for="comportamento_seguro_categoria">Qual tipo de comportamento seguro ocorreu?</label>
+                                            <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" placeholder="Escolha a categoria" data-live-search="true">
+                                                {% for categoria in lista_categorias_comportamento_seguro %}
                                                     <option value="{{categoria.cod_componente}}">{{categoria.desc_componente}}</option>
                                                 {% endfor %}
                                             </select>
@@ -105,7 +113,7 @@
                                                 {% endautoescape %}
                                             </select>
                                         </div>
-                                        <div class="form-group">
+                                        <div id="div_atividade" class="form-group hidden-div">
                                            <label for="atividade_relato">Que atividade estava sendo realizada?</label>
                                             <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" placeholder="Selecione a atividade" disabled data-live-search="true">
                                             </select>

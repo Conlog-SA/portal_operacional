@@ -43,19 +43,27 @@ class Form_Gerar_Relatos_Check(View):
 
         str_options_select_processo = ''
         #if filial_usuario.cod_empresa.cod_empresa == 12:
-        processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1)
+        processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
-        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3)
-        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4)
+        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+
+        if filial_usuario.cod_empresa.cod_empresa == 17:
+            flag_deep = True
+        else:
+            flag_deep = False
 
         context = {
             'cod_usuario': nome_colaborador,
+            'flag_deep': flag_deep,
             'cod_filial_usuario': filial_usuario.desc_filial,
             'options_select_unidade': str_options_select_unidade,
             'options_select_processo': str_options_select_processo,
             'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
-            'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura
+            'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura,
+            'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro
         }
 
         if "Visitante" in colaborador.nome_colaborador:
@@ -74,11 +82,18 @@ class Form_Gerar_Relatos_Check(View):
         unidade_relato = request.POST['unidade_relato']
         categoria_ato_inseguro = request.POST['categoria_ato_inseguro']
         categoria_condicao_insegura = request.POST['categoria_condicao_insegura']
+        comportamento_seguro_categoria = request.POST['comportamento_seguro_categoria']
 
         if categoria_ato_inseguro == '':
             categoria_ato_inseguro = None
         if categoria_condicao_insegura == '':
             categoria_condicao_insegura = None
+        if comportamento_seguro_categoria == '':
+            comportamento_seguro_categoria = None
+        if processo_relato == '':
+            processo_relato = None
+        if atividade_relato == '':
+            atividade_relato = None
 
         colaborador = None
         if situacao_envolvido == '1':
@@ -127,10 +142,18 @@ class Form_Gerar_Relatos_Check(View):
                                                                       data_atual.day)).order_by('ordem_item')
         lista_itens_dict = []
         for item in lista_itens:
+            desc_resposta_botao = ''
+            if item.tipo_resposta == 1 or item.tipo_resposta == '1':
+                desc_resposta_botao = 'OK/NOK'.split('/')
+            if item.tipo_resposta == 3 or item.tipo_resposta == '3':
+                desc_resposta_botao = 'SIM/NÃO'.split('/')
+            if item.tipo_resposta == 4 or item.tipo_resposta == '4':
+                desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
+
             lista_itens_dict.append({'cod_item_check': item.cod_item_check, 'desc_check': item.desc_check,
                                      'tipo_resposta': item.tipo_resposta, 'campo_obs_img': item.campo_obs_img,
                                      'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
-                                     'obrigatorio': item.obrigatorio})
+                                     'desc_respostas': desc_resposta_botao, 'obrigatorio': item.obrigatorio})
 
         if tipo_relato == '2':
             situacao_envolvido = None
@@ -143,7 +166,8 @@ class Form_Gerar_Relatos_Check(View):
             atividade_relato=atividade_relato,
             cod_check_aplicado=check_aplicado,
             categoria_ato_inseguro=categoria_ato_inseguro,
-            categoria_condicao_insegura=categoria_condicao_insegura
+            categoria_condicao_insegura=categoria_condicao_insegura,
+            categoria_comportamento_seguro=comportamento_seguro_categoria
         )
         check_cabecalho.save()
 
@@ -153,11 +177,17 @@ class Form_Gerar_Relatos_Check(View):
             'lista_itens' : lista_itens_dict,
             'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }
-        return render(request, 'safety_relatos_app/relatos_form_check.html', context)
+        return render(request, 'safety_checks_aplicados_app/preencher_form_check.html', context)
 
 class Lista_Atividades(View):
     @csrf_exempt
     def get(self, request):
+        cod_colaborador = request.session['cod_colaborador']
+        colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
+        filial_colaborador = Filial.objects.filter(cod_filial=colaborador.cod_filial).first()
+        if filial_colaborador.cod_empresa.cod_empresa != 12:
+            data = []
+            return JsonResponse(data, safe=False)
         cod_processo = request.GET['cod_processo']
 
         lista_atividades = Itens_Componentes.objects.filter(cod_pai=cod_processo)

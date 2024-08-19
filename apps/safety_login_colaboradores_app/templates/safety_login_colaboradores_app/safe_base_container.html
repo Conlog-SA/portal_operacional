@@ -20,7 +20,7 @@
 {% endblock %}
 
 {% block conteudo %}
-  <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
+  <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex homeApp_loginContainer safety-container-screen">
     <form class="d-flex justify-content-center align-items-center flex-column">
         {% csrf_token %}
           <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
@@ -58,23 +58,35 @@
 {% endblock %}
 
 {% block link_static_js %}
-  <script src="{% static 'controllers/safety_login_colaboradores/frm_safety_login.js' %}"
+  <script src="{% static 'controllers/safety_login_colaboradores/frm_safety_login.js' %}?v='{{VERSAO_SAFETY}}' %}"
         type="text/javascript">
     </script>
   <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
-  <script src="{% static 'controllers/safety_gab_op_emp_app/frm_gab_op_emp_app.js' %}"
+  <script src="{% static 'controllers/safety_gab_op_emp_app/frm_gab_op_emp_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
-  <script src="{% static 'controllers/safety_relatos_app/frm_relatos_app.js' %}"
+  <script src="{% static 'controllers/safety_relatos_app/frm_relatos_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
-  <script src="{% static 'controllers/safety_gsdpq_app/frm_gsdpq_app.js' %}"
+  <script src="{% static 'controllers/safety_gsdpq_app/frm_gsdpq_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
- <script src="{% static 'libs/browser-image-compression/browser-image-compression.js' %}"
+  <script src="{% static 'controllers/safety_blitz_trajeto_carro_app/frm_blitz_trajeto_carro_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
-  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}?v='1.0' %}"
+  <script src="{% static 'controllers/safety_blitz_trajeto_moto_app/frm_blitz_trajeto_moto_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_blitz_trajeto_bicicleta_app/frm_blitz_trajeto_bicicleta_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_blitz_trajeto_outros_meios_app/frm_blitz_trajeto_outros_meios_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'libs/browser-image-compression/browser-image-compression.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
 {% endblock %}

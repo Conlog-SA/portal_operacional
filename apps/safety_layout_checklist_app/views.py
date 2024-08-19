@@ -6,6 +6,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
+from apps.safety_blitz_trajeto_bicicleta_app.models import Blitz_Trajeto_Bicicleta
+from apps.safety_blitz_trajeto_carro_app.models import Blitz_Trajeto_Carro
+from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
+from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
@@ -19,7 +23,9 @@ from apps.usuario_app.models import Usuario
 class Form_Seguranca_Check(View):
     @csrf_exempt
     def get(self, request):
-        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ'}
+        lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ',
+                       '4': 'Blitz - Carro', '5': 'Blitz - Moto', '6': 'Blitz - Bicicleta',
+                       '7': 'Blitz - Outros Meios'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
@@ -433,7 +439,7 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_ato_inseguro is not None:
                     str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
-                                                        <label class="responsive-font" for="nome_relatado_terceiro">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                                        <label class="responsive-font" for="ato_inseguro_categoria">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
                                                         <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
                                                             <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
                                                         </select>
@@ -446,13 +452,29 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_condicao_insegura is not None:
                     str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
-                                                        <label class="responsive-font" for="nome_relatado_terceiro">Qual tipo de condição insegura ocorreu?</label>
+                                                        <label class="responsive-font" for="condicao_insegura_categoria">Qual tipo de condição insegura ocorreu?</label>
                                                         <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
                                                             <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
                                                         </select>
                                                     </div>'''
             else:
                 str_categoria_condicao_insegura = ''
+
+            empresa_colaborador_aplicante = Filial.objects.filter(cod_filial=check_aplicado.cod_colaborador_aplicante.cod_filial).first().cod_empresa.cod_empresa
+            if relato_aplicado.cod_tipo_relato == 3 and empresa_colaborador_aplicante == 17:
+                categoria_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
+
+                if categoria_comportamento_seguro is not None:
+                    str_categoria_comportamento_seguro = f'''<div id="div_comportamento_seguro_categorias" class="form-group">
+                                                        <label class="responsive-font" for="comportamento_seguro_categoria">Qual tipo de condição insegura ocorreu?</label>
+                                                        <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" value="{categoria_comportamento_seguro.cod_componente}" disabled>
+                                                            <option value="{categoria_comportamento_seguro.cod_componente}">{categoria_comportamento_seguro.desc_componente}</option>
+                                                        </select>
+                                                    </div>'''
+                else:
+                    str_categoria_comportamento_seguro = ''
+            else:
+                str_categoria_comportamento_seguro = ''
 
             if relatado is not None:
                 str_relatado = f'''<div id="div_situacao_relatado" class="form-group">
@@ -474,10 +496,30 @@ class Check_Aplicado_Editar(View):
                 else:
                     str_relatado += f'''<div id="div_relatado_terceiro" class="form-group">
                                                 <label class="responsive-font" for="nome_relatado_terceiro">Nome do relatado:</label>
-                                                <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro" value="{relatado.nome_colaborador}">
+                                                <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                             </div>'''
             else:
                 str_relatado = ''
+
+            if processo is not None:
+                str_processo = f'''<div class="form-group">
+                                       <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
+                                       <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
+                                           <option value="{processo.cod_componente}">{processo.desc_componente}</option>
+                                       </select>
+                                   </div>'''
+            else:
+                str_processo = ''
+
+            if atividade is not None:
+                str_atividade = f'''<div class="form-group">
+                                       <label for="atividade_relato">Que atividade estava sendo realizada?</label>
+                                        <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
+                                            <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
+                                        </select>
+                                    </div>'''
+            else:
+                str_atividade = ''
 
             print(relato_aplicado.cod_tipo_relato)
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
@@ -486,6 +528,7 @@ class Check_Aplicado_Editar(View):
                                                 <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
                                                         <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
                                                                    <label for="unidade"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
@@ -502,23 +545,206 @@ class Check_Aplicado_Editar(View):
                                                                 </div>
                                                                 {str_categoria_ato_inseguro}
                                                                 {str_categoria_condicao_insegura}
+                                                                {str_categoria_comportamento_seguro}
                                                                 {str_relatado}
                                                                 <div class="form-group">
                                                                    <label for="local_relato">Local do relato:</label>
                                                                    <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato" value="{relato_aplicado.local_relato}" disabled>
                                                                 </div>
+                                                                {str_processo}
+                                                                {str_atividade}
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        if check_aplicado.cod_layout_check.tipo_check == 4:
+            blitz_carro_aplicado = Blitz_Trajeto_Carro.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            if blitz_carro_aplicado.situacao_colaborador == 1:
+                str_colaborador = f'''<div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
+                                                <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                            </select>
+                                        </div>'''
+            else:
+                str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
+                                        </div>'''
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                    <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
-                                                                    <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
-                                                                        <option value="{processo.cod_componente}">{processo.desc_componente}</option>
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
+                                                                <div id="div_situacao_colaborador" class="form-group">
+                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado" name="situacao_avaliado" value="{blitz_carro_aplicado.situacao_colaborador}" disabled>
+                                                                       <option value="1">Funcionario Conlog/Deep</option>
+                                                                       <option value="2">Funcionario Ambev</option>
+                                                                       <option value="3">Freteiro</option>
+                                                                       <option value="4">Terceiros</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_colaborador}
                                                                 <div class="form-group">
-                                                                   <label for="atividade_relato">Que atividade estava sendo realizada?</label>
-                                                                    <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
-                                                                        <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
+                                                                   <label for="placa_carro">Placa:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="placa_carro" name="placa_caminhao" value={blitz_carro_aplicado.placa} disabled>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        if check_aplicado.cod_layout_check.tipo_check == 5:
+            blitz_moto_aplicado = Blitz_Trajeto_Moto.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            if blitz_moto_aplicado.situacao_colaborador == 1:
+                str_colaborador = f'''<div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do relatado:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
+                                                <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                            </select>
+                                        </div>'''
+            else:
+                str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do relatado:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
+                                        </div>'''
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
+                                                                <div id="div_situacao_colaborador" class="form-group">
+                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_moto" name="situacao_avaliado_moto" value="{blitz_moto_aplicado.situacao_colaborador}" disabled>
+                                                                       <option value="1">Funcionario Conlog/Deep</option>
+                                                                       <option value="2">Funcionario Ambev</option>
+                                                                       <option value="3">Freteiro</option>
+                                                                       <option value="4">Terceiros</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_colaborador}
+                                                                <div class="form-group">
+                                                                   <label for="placa_carro">Placa:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="placa_moto" name="placa_moto" value={blitz_moto_aplicado.placa} disabled>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        if check_aplicado.cod_layout_check.tipo_check == 6:
+            blitz_bicicleta_aplicado = Blitz_Trajeto_Bicicleta.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            if blitz_bicicleta_aplicado.situacao_colaborador == 1:
+                str_colaborador = f'''<div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
+                                                <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                            </select>
+                                        </div>'''
+            else:
+                str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
+                                        </div>'''
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div id="div_situacao_colaborador" class="form-group">
+                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_bicicleta" name="situacao_avaliado_bicicleta" value="{blitz_bicicleta_aplicado.situacao_colaborador}" disabled>
+                                                                       <option value="1">Funcionario Conlog/Deep</option>
+                                                                       <option value="2">Funcionario Ambev</option>
+                                                                       <option value="3">Freteiro</option>
+                                                                       <option value="4">Terceiros</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_colaborador}
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        if check_aplicado.cod_layout_check.tipo_check == 7:
+            blitz_outros_meios_aplicado = Blitz_Trajeto_Outros_Meios.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            if blitz_outros_meios_aplicado.situacao_colaborador == 1:
+                str_colaborador = f'''<div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
+                                                <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                            </select>
+                                        </div>'''
+            else:
+                str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
+                                        </div>'''
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div id="div_situacao_colaborador" class="form-group">
+                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_moto" name="situacao_avaliado_outros_meios" value="{blitz_outros_meios_aplicado.situacao_colaborador}" disabled>
+                                                                       <option value="1">Funcionario Conlog/Deep</option>
+                                                                       <option value="2">Funcionario Ambev</option>
+                                                                       <option value="3">Freteiro</option>
+                                                                       <option value="4">Terceiros</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_colaborador}
                                                             </div>
                                                         </div>
                                                 </div>
@@ -533,10 +759,19 @@ class Check_Aplicado_Editar(View):
             if item.tipo_item == 2:
                 html_check_editar += f'<b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{item.desc_check}</b>'
             if item.tipo_item == 1:
-                if item.tipo_resposta == 1:
+                if item.tipo_resposta == 1 or item.tipo_resposta == 3 or item.tipo_resposta == 4:
+                    desc_resposta_botao = ''
+                    if item.tipo_resposta == 1 or item.tipo_resposta == '1':
+                        desc_resposta_botao = 'OK/NOK'.split('/')
+                    if item.tipo_resposta == 3 or item.tipo_resposta == '3':
+                        desc_resposta_botao = 'SIM/NÃO'.split('/')
+                    if item.tipo_resposta == 4 or item.tipo_resposta == '4':
+                        desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
                     resposta_ok_nok_check_aplicado = Item_Check_Aplicados.objects.filter(
                         cod_check_aplicado=check_aplicado, cod_item_check=item).first()
 
+                    str_botao_ok = ''
+                    str_botao_nok = ''
                     if resposta_ok_nok_check_aplicado is not None:
                         if resposta_ok_nok_check_aplicado.resp_item == 0:
                             str_botao_ok = 'background-color:green'
@@ -551,8 +786,8 @@ class Check_Aplicado_Editar(View):
                                                 <input type="hidden" class="identifier" value="{item.ordem_item}">
                                                 <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
                                                 <div style="display:flex;justify-content:center;padding:4px">
-                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>OK</button>
-                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>NOK</button>
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
                                                 </div>
                                             </div>'''
                     if item.campo_obs_img == 1:

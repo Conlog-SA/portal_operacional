@@ -9,6 +9,7 @@ from apps.estrut_org_app.models import Filial
 from apps.safety_layout_checklist_app.models import Libera_Filial_Check
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usu_Menu
+from proj_portal_operacional.settings import VERSAO_SAFETY
 
 
 class Login_Colaborador(View):
@@ -20,7 +21,10 @@ class Login_Colaborador(View):
             if "Visitante" in colaborador.nome_colaborador:
                 request.session['cod_colaborador'] = id_visitante
                 return redirect('relatos_check')
-        return render(request, 'safety_login_colaboradores_app/safe_base_container.html')
+        context = {
+            'VERSAO_SAFETY': VERSAO_SAFETY,
+        }
+        return render(request, 'safety_login_colaboradores_app/safe_base_container.html', context)
 
     @csrf_exempt
     def post(self, request):
@@ -76,40 +80,85 @@ class Menu_Safe(View):
                                                              cod_filial=filial_colaborador).order_by(
                 '-cod_check__data_desativacao')
 
-            if check_ativo.filter(cod_check__tipo_check=1).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=1).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Empilhadeiras</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=2).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=2).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Relatos</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=3).first() != None:
+            if check_ativo.filter(cod_check__tipo_check=3).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
+                                                <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">GSDPQ</b>
                                             </div>
                                         '''
+            if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=5).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Moto</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=6).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=7).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+                                        </div>
+                                        '''
         elif colaborador.perfil_usu == 'G':
-            str_menu_colaborador += '''
-                                        <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
-                                            <i class="fa-solid fa-dolly icon-empilhadeiras" style="margin-bottom:5px"></i>
-                                            <b style="color:white;">Empilhadeiras</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-file-signature icon-relatos" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Relatos</b>
-                                        </div>
-                                        <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-gsdpq" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">GSDPQ</b>
+            str_menu_colaborador += ''' <div style="height:70%;overflow:scroll">
+                                            <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Empilhadeiras</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Relatos</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">GSDPQ</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Carro</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Moto</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem">
+                                                    <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                                                    <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+                                            </div>
                                         </div>
                                     '''
 
@@ -133,6 +182,14 @@ class Menu_Safe(View):
             url = 'relatos_check'
         elif tipo_check == '2':
             url = 'gsdpq_check'
+        elif tipo_check == '3':
+            url = 'blitz_trajeto_carro_check'
+        elif tipo_check == '4':
+            url = 'blitz_trajeto_moto_check'
+        elif tipo_check == '5':
+            url = 'blitz_trajeto_bicicleta_check'
+        elif tipo_check == '6':
+            url = 'blitz_trajeto_outros_meios_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):

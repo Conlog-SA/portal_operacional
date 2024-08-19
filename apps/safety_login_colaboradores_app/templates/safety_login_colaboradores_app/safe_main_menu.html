@@ -1,13 +1,17 @@
 <div style="height:100%;width:100%;padding:1rem;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end">
-    <div class="safety-container-menu">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-            <h1 class="homeApp__tituloPortal">Safety</h1>
+    <div class="safety-container-menu" style="height:100%">
+        <div style="display:flex;justify-content:space-between;align-items:center;height:10%">
+            <div style="display:flex">
+                <i class="fa-solid fa-helmet-safety" style="font-size:40px;color:#f46424"></i>
+                &nbsp;
+                <h1 class="homeApp__tituloPortal">Safety</h1>
+            </div>
             <div>
                 <i>Bem vindo, </i>
                 <b>{{nome_colaborador}}</b>
             </div>
         </div>
-        <div style="margin-bottom:3rem;">
+        <div style="margin-bottom:5%;height:5%">
             <hr style="width:100%;margin:0px;margin-bottom:10px">
             <div style="display:flex;justify-content:flex-end;">
                 <i style="font-size:11px;">{{desc_filial_colaborador}}</i>
@@ -16,13 +20,14 @@
         {% autoescape off %}
             {{str_menu_colaborador}}
         {% endautoescape %}
+        <div style="display:flex;justify-content:flex-end;height:10%">
+            <button class="btn btn-space btn-sair-safety">
+                <div style="display:flex;flex-direction:column">
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="color:#f46424;font-size:32px"></i>
+                    <b style="color:white;font-size:17px">Sair</b>
+                </div>
+            </button>
+        </div>
     </div>
-    <div style="width:50%;display:flex;justify-content:flex-end">
-        <button class="btn btn-space btn-sair-safety">
-            <div style="display:flex;flex-direction:column">
-                <i class="fa-solid fa-arrow-right-from-bracket" style="color:#f46424;font-size:32px"></i>
-                <b style="color:white;font-size:17px">Sair</b>
-            </div>
-        </button>
-    </div>
+
 </div>

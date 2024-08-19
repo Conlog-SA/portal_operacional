@@ -3,7 +3,11 @@
 <form class="d-flex justify-content-center align-items-center flex-column" style="width:100%;">
         {% csrf_token %}
 
-        <h1 class="homeApp__tituloPortal">Safety</h1>
+        <div style="display:flex">
+            <i class="fa-solid fa-helmet-safety" style="font-size:40px;color:#f46424"></i>
+            &nbsp;
+            <h1 class="homeApp__tituloPortal">Safety</h1>
+        </div>
 
         <div class="form__group field">
           <input required="" placeholder="CPF" class="form__field" type="input" id="input_cpf"
