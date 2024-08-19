@@ -737,7 +737,7 @@ class Check_Aplicado_Editar(View):
                                                                 </div>
                                                                 <div id="div_situacao_colaborador" class="form-group">
                                                                    <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
-                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_moto" name="situacao_avaliado_outros_meios" value="{blitz_outros_meios_aplicado.situacao_colaborador}" disabled>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_outros_meios" name="situacao_avaliado_outros_meios" value="{blitz_outros_meios_aplicado.situacao_colaborador}" disabled>
                                                                        <option value="1">Funcionario Conlog/Deep</option>
                                                                        <option value="2">Funcionario Ambev</option>
                                                                        <option value="3">Freteiro</option>
@@ -745,6 +745,12 @@ class Check_Aplicado_Editar(View):
                                                                    </select>
                                                                 </div>
                                                                 {str_colaborador}
+                                                                <label class="responsive-font" for="meio_transporte">Meio de transporte:</label>
+                                                                <select class="selectpicker form-control responsive-font" id="meio_transporte" name="meio_transporte" value="{blitz_outros_meios_aplicado.meio_transporte}" disabled>
+                                                                    <option value="1">Transporte Público</option>
+                                                                    <option value="2">Carona</option>
+                                                                    <option value="3">Pé</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                 </div>

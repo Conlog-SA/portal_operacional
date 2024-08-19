@@ -777,7 +777,6 @@ $(document).on('click','.editar-check' , function(){
 	        success: function(response) {
                 $('#modalEditarCheckAplicadoBody').html(response);
                 let tipo_check = $('#identifica_tipo_check').val();
-                console.log(tipo_check)
                 if (tipo_check == 2) {
                     $('#unidade').selectpicker('refresh');
                     $('#tipo_relato').val($('#tipo_relato').attr('value'));
@@ -815,10 +814,11 @@ $(document).on('click','.editar-check' , function(){
                     $('#unidade').selectpicker('refresh');
                     //$('#tipo_relato').val($('#tipo_relato').attr('value'));
                     $('#situacao_avaliado_outros_meios').selectpicker('refresh');
+                    $('#meio_transporte').val($('#meio_transporte').attr('value'));
+                    $('#meio_transporte').selectpicker('refresh');
                     $('#nome_avaliado').selectpicker('refresh');
                     $('#modalEditarCheckAplicado').css("display", "block");
                 }
-
             }
     });
 });
