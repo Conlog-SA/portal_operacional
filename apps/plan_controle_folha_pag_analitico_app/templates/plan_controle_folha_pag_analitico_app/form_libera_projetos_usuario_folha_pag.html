@@ -62,7 +62,7 @@
                 <div class="tab-content" style="border-radius:0 0 10px 10px;">
                     <div class="tab-pane active" id="div_form_usuario" role="tabpanel" aria-labelledby="a_tab_usuario">
                         <form class="d-flex flex-column align-items-center justify-content-between">
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <label for="sel_usuarios_folha_pag_tab_usu">Usuário</label>
                                     <select class="selectpicker form-control" id="sel_usuarios_folha_pag_tab_usu"
@@ -74,7 +74,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-
+                                <!--
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <div class="d-flex w-100">
                                         <label for="cb_emp_libera_proj_usu_folha_pag">
@@ -92,6 +92,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                -->
 
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <input type="hidden" id="hd_acao_comp_proj_tab_usu" name="hd_acao_comp_proj_tab_usu"  value="S"/>
@@ -103,7 +104,7 @@
                                             title="Selecione o projeto">
                                         {% for p in lista_projetos_benner %}
                                             <option value="{{ p.handle_proj }}_{{ p.nome_proj }}">
-                                                {{ p.handle_proj }} - {{ p.nome_proj }}( {{ p.cod_emp }})
+                                                {{ p.handle_benner }} - {{ p.desc_proj_benner }}
                                             </option>
                                         {% endfor %}
                                     </select>
@@ -145,7 +146,8 @@
                     <div class="tab-pane" id="div_form_projeto" role="tabpanel" aria-labelledby="a_tab_projeto">
                         <form class="d-flex flex-column align-items-center justify-content-between">
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <!--
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <div class="d-flex w-100">
                                         <label for="sel_empresa_folha_pag_tab_proj">
@@ -163,6 +165,7 @@
                                         </select>
                                     </div>
                                 </div>
+                                -->
 
                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                                     <label for="sel_projetos_folha_pag_tab_proj">Projeto</label>
@@ -172,7 +175,7 @@
                                             title="Selecione o projeto">
                                         {% for p in lista_projetos_benner %}
                                             <option value="{{ p.handle_proj }}_{{ p.nome_proj }}" >
-                                                {{ p.handle_proj }} - {{ p.nome_proj }}( {{ p.cod_emp }})</option>
+                                                {{ p.handle_benner }} - {{ p.desc_proj_benner }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>

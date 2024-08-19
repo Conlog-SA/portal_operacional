@@ -36,7 +36,6 @@ $(document).on('click', 'button', function(){
         let let_loader_folha_pagamento = document.getElementById("loader_folha_pagamento");
         var var_cod_competencia = $("#cb_competencia_folha_pag").val();
         var var_lista_handle_proj = $("#cb_proj_folha_pag").val().toString();
-        let let_cod_empresa = $("#cb_emp_folha_pag").val();
 
         if(var_cod_competencia == "0" || (var_lista_handle_proj == "0" && var_lista_handle_proj.length == 1) ||
             var_lista_handle_proj == null || var_lista_handle_proj == '' ) {
@@ -54,8 +53,7 @@ $(document).on('click', 'button', function(){
                     type: 'GET',
                     data: {
                         'cod_competencia'         : var_cod_competencia,
-                        'lista_handle_proj'       : var_lista_handle_proj,
-                        'cod_empresa'             :   let_cod_empresa
+                        'lista_handle_proj'       : var_lista_handle_proj
                     },
                     url:"/plan_controle_folha_pag_analitico_app/pesquisa_folha_pag",
                     success: function(dados){
@@ -171,7 +169,7 @@ $(document).on('click', 'button', function(){
     }
 
 });
-
+/*
 $(document).on('change', '#cb_emp_folha_pag', function(){
     let let_cod_empresa = $(this).val();
     let let_loader_folha_pagamento = document.getElementById("loader_folha_pagamento");
@@ -210,3 +208,4 @@ $(document).on('change', '#cb_emp_folha_pag', function(){
     });
 
 });
+*/
