@@ -19,7 +19,6 @@ $(document).on('change','#unidade',function(){
 $(document).on('click','.create-check-relatos' , function(){
     let let_unidade_relato = $('#unidade').val();
     let let_tipo_relato = $('#tipo_relato').val();
-    let let_local_relato = $('#local_relato').val();
     let let_atividade_relato = $('#atividade_relato').val();
     let let_processo_relato = $('#processo_relato').val();
     let let_descricao_situacao = $('#descricao_situacao').val();
@@ -28,6 +27,7 @@ $(document).on('click','.create-check-relatos' , function(){
     let let_comportamento_seguro_categoria = $('#comportamento_seguro_categoria').val();
     let let_nome_relatado = "";
     let let_situacao_envolvido = "";
+    let let_local_relato = $('#local_relato').val();
 
     if (let_tipo_relato != '2') {
         let_situacao_envolvido = $('#situacao_envolvido').val();
