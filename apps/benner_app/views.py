@@ -1234,6 +1234,31 @@ class ConexaoBancoBenner():
         return lista_projetos
 
 
+    def retorna_projetos_by_empresa(self, cod_empresa):
+        cursor = self.__conn.cursor()
+        lista_projetos = []
+        sql_op = ("SELECT "+
+                  "         HANDLE, " +
+                  "         EMPRESA, " +
+                  "         ESTRUTURA, " +
+                  "         NOME,    " +
+                  "         SUBSTRING(estrutura, 1,1) AS ESTRUT_EMP, "
+                  "         SUBSTRING(estrutura, 1,4) AS ESTRUT_OP, "
+                  "         SUBSTRING(estrutura, 1,7) AS ESTRUT_FIL "
+                  "  FROM   GN_PROJETOS (NOLOCK) " +
+                  " WHERE   LEN(ESTRUTURA)= 11 " +
+                  "   AND   EMPRESA = " + str(cod_empresa))
+        cursor.execute(sql_op)
+        projetos_cursor = cursor.fetchall()
+        for row in projetos_cursor:
+            projeto = Projeto_Benner(row.HANDLE, row.EMPRESA, row.ESTRUT_EMP, row.ESTRUT_OP, row.ESTRUT_FIL,
+                                     row.ESTRUTURA, row.NOME)
+            lista_projetos.append(projeto)
+        cursor.close()
+        self.__conn.close()
+        return lista_projetos
+
+
     def retornaBenefTerceiroByProjeto(self, handle_projeto):
         cursor = self.__conn.cursor()
         lista_beneficiarios = []
@@ -1806,3 +1831,61 @@ class ConexaoBancoBenner():
 
         return lista_veiculos_venda
 
+    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_contas, ano_competencia, mes_competencia):
+        sql_razao_placas = (
+            f'''
+            SELECT  
+                    CAST(LAN.COMPETENCIA AS DATE)             
+                                                AS  COMPETENCIA,  
+                    CAST(LAN.DATA AS DATE)	    AS	DATA_LANC,  
+                    LAN_CC.PROJETO			    AS	HANDLE_PROJETO,  
+                    PROJ.NOME				    AS	NOME_PROJETO, 
+                    PROJ.K_NEGOCIOMAXYS			AS	COD_PROJ_PORTAL,
+                    PROJ.CODIGOREDUZIDO			as	COD_REDUZIDO_PROJETO,
+                    LAN.CONTA                   AS  HANDLE_CONTA,  
+                    CONTAS.NOME					AS	NOME_CONTA,
+                    (CASE LAN_CC.NATUREZA  
+                        WHEN 'D' THEN LAN_CC.VALOR * -1  
+                        ELSE LAN_CC.VALOR  
+                    END)                        AS  VAL_LANC,   
+                    FORNECEDOR.NOME			    AS	NOME_FORNECEDOR,  
+                    FN_DOC.DOCUMENTODIGITADO	AS	NUM_DOC,  
+                    CT.NOME						AS	PLACA,  
+                    LAN.COMPLEMENTO				AS	HISTORICO,  
+                    (CASE LAN_CC.NATUREZA  
+                        WHEN 'D' THEN 'Debito'  
+                        ELSE 'Credito'  
+                    END)                        AS  NATUREZA,
+                    CT.NIVELSUPERIOR,
+                    tipo_conta.NOME             AS  desc_tipo_veic
+            FROM	CT_LANCAMENTOS LAN (NOLOCK)  
+            LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
+              ON 	(LAN_CC.LANCAMENTO = LAN.HANDLE)  
+             AND	(LAN_CC.DOCUMENTO = LAN.DOCUMENTO)  
+            LEFT	JOIN GN_PROJETOS PROJ (NOLOCK)  
+              ON	(PROJ.HANDLE = LAN_CC.PROJETO)  
+             AND	(PROJ.EMPRESA = LAN.EMPRESA)  
+            LEFT	JOIN CT_CC CT (NOLOCK)  
+              ON	(CT.HANDLE = LAN_CC.CENTROCUSTO)  
+            LEFT	JOIN CT_CONTAS CONTAS (NOLOCK)  
+              ON	(CONTAS.HANDLE = LAN.CONTA)  
+            LEFT	JOIN FN_DOCUMENTOS FN_DOC (NOLOCK)  
+              ON	(FN_DOC.HANDLE = LAN.LANCAMENTOFINANCEIRO)  
+            LEFT	JOIN GN_PESSOAS FORNECEDOR (NOLOCK)  
+              ON	(FORNECEDOR.HANDLE = FN_DOC.PESSOA)
+            LEFT 	JOIN CT_CC tipo_conta (NOLOCK)
+              ON	(tipo_conta.HANDLE = CT.NIVELSUPERIOR)  
+            WHERE   LAN.LANCAMENTOGERADO = 'N'   		
+              AND   YEAR(LAN.COMPETENCIA) = {ano_competencia}
+              AND   MONTH(LAN.COMPETENCIA) = {mes_competencia}
+              AND	CT.NOME IS NOT NULL
+              AND	CT.NIVELSUPERIOR in ({lista_handle_contas})
+              AND	LAN_CC.PROJETO in ({lista_handle_proj})
+            ORDER   BY LAN.COMPETENCIA,  
+                    LAN.DATA,  
+                    LAN_CC.PROJETO;	
+        '''
+        )
+        df_razao_placas = pd.read_sql(sql_razao_placas, self.__conn)
+        self.__conn.close()
+        return df_razao_placas

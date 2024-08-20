@@ -1,0 +1,156 @@
+{% load static %}
+
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-chart-simple fa-2xl"style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Custos GLD</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+
+    <div class="containerApp">
+        <form id="frm_custos_placa" name="frm_custos_placa"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                    <div class="d-flex w-100">
+                        <label for="sl_proj_custos_placa">Projetos
+                            <button type='button' id="btn_seleciona_todas_proj_frm_custos_placa"
+                                name="btn_seleciona_todas_proj_frm_custos_placa"
+                                class="btn btn-rounded btn-space" title="Todos os projetos" >
+                                <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                            </button>
+                            &nbsp;&nbsp;
+                            <button type='button' id="btn_desmarcar_projetos_frm_custos_placa"
+                                name="btn_desmarcar_projetos_frm_custos_placa"
+                                class="btn btn-rounded btn-space" title="Limpar seleção">
+                                <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100">
+                        <select class="selectpicker form-control" id="sl_proj_custos_placa"
+                                name="sl_proj_custos_placa"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true"
+                                title="Selecione o projeto">
+                            {% for proj in lista_projetos_benner %}
+                                <option value="{{ proj.handle_proj }}">{{ proj.nome_proj }}</option>
+                            {% endfor %}
+
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                    <div class="d-flex w-100">
+                        <label for="sl_tipo_veic_equip_custos_placa">Tipo Veículo/Equipamento
+                            <button type='button' id="btn_seleciona_todas_tipo_veic_equip_frm_custos_placa"
+                                name="btn_seleciona_todas_tipo_veic_equip_frm_custos_placa"
+                                class="btn btn-rounded btn-space" title="Todos os projetos" >
+                                <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                            </button>
+                            &nbsp;&nbsp;
+                            <button type='button' id="btn_desmarcar_tipo_veic_equip_frm_custos_placa"
+                                name="btn_desmarcar_tipo_veic_equip_frm_custos_placa"
+                                class="btn btn-rounded btn-space" title="Limpar seleção">
+                                <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                            </button>
+                        </label>
+                    </div>
+
+                    <div class="d-flex flex-column w-100">
+                        <select class="selectpicker form-control" id="sl_tipo_veic_equip_custos_placa"
+                                name="sl_tipo_veic_equip_custos_placa"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true"
+                                title="Selecione o tipo de veículo/equipamento">
+                            {% if cod_empresa == 12 %}
+                                <option value="1267">VEICULOS PRÓPRIOS</option>
+                                <option value="2295">EQUIPAMENTOS</option>
+                                <option value="2442">VEICULOS DE AGREGADOS E TERCEIROS</option>
+                                <option value="6881">FROTA LEVE</option>
+                                <option value="7217">LOCADOS/COMODATADOS</option>
+                                <option value="11485">VEICULOS DE AGREGADOS E TERCEIROS (NOVO)</option>
+                            {% endif %}
+                            {% if cod_empresa == 17 %}
+                                <option value="5444">EQUIPAMENTOS</option>
+                                <option value="6922">VEICULOS PROPRIOS</option>
+                                <option value="7027">VEICULOS DE AGREGADOS E TERCEIROS</option>
+                                <option value="7085">FROTA LEVE ALUGADA</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;margin-top: 0.85rem;">
+                    <label for="dt_comp_frm_custos_placa">Período</label>
+                    <input type="month" class="form-control" name="dt_comp_frm_custos_placa"
+                           id="dt_comp_frm_custos_placa" autocomplete="off" />
+                </div>
+
+
+
+                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-top: 2.5rem;">
+                    <button type="button" name="btn_gera_dados_custos_placas_proj"
+                            id="btn_gera_dados_custos_placas_proj"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-filter"></i>
+                        Gerar Dados
+                    </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                <div class="d-flex align-items-end w-100">
+                    <div class="loader" id="loader_frm_custos_placa">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    &nbsp;&nbsp;
+                </div>
+
+                <div class="d-flex flex-column w-100"
+                     style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
+                     &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+
+                </div>
+            </div>
+
+        </form>
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div id="div_placas_frm_custos_placa" class="col-md-12 w-100 h-100">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
