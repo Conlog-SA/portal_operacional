@@ -270,6 +270,8 @@ class Form_Libera_Proj_Usu_Tab_Usu_View(View):
 
     def post(self, request):
         cod_liberacao_form = request.POST['cod_liberacao']
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
         msg = ''
         if cod_liberacao_form == '0':
             cod_usuario_form = request.POST['cod_usuario']
@@ -288,7 +290,8 @@ class Form_Libera_Proj_Usu_Tab_Usu_View(View):
                             handle_benner = handle,
                             desc_proj_benner = desc_proj,
                             ativo_app_folha_pagamento = 'S',
-                            cod_usu = obj_usuario
+                            cod_usu = obj_usuario,
+                            cod_empresa= obj_usuario_logado.cod_filial.cod_empresa.cod_empresa
                         )
                         nova_liberacao.save()
                     msg =  'Liberações efetuadas !!!'
@@ -322,12 +325,14 @@ class Form_Libera_Proj_Usu_Tab_Proj_View(View):
 
     def post(self, request):
         cod_liberacao_form = request.POST['cod_liberacao']
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
         msg = ''
         if cod_liberacao_form == '0':
             dados_proj_form = request.POST['dados_proj']
             lista_usuarios_form = request.POST['lista_usuarios'].split(',')
             for usu in lista_usuarios_form:
-                if usu != '0' and len(lista_usuarios_form) >1:
+                if usu != '0' and len(lista_usuarios_form) >0:
                     handle = dados_proj_form.split('_')[0]
                     desc_proj = dados_proj_form.split('_')[1]
                     obj_usuario = Usuario.objects.get(pk=usu)
@@ -340,7 +345,8 @@ class Form_Libera_Proj_Usu_Tab_Proj_View(View):
                             handle_benner = handle,
                             desc_proj_benner = desc_proj,
                             ativo_app_folha_pagamento = 'S',
-                            cod_usu = obj_usuario
+                            cod_usu = obj_usuario,
+                            cod_empresa=obj_usuario_logado.cod_filial.cod_empresa.cod_empresa
                         )
                         nova_liberacao.save()
                     msg =  'Liberações efetuadas !!!'

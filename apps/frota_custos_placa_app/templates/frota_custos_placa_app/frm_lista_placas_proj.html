@@ -1,400 +1,98 @@
 {% load static %}
 
-<div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_contratos">
-{% for ctr in lista_contratos %}
+
+
+<div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_tipo_veic">
+{% for tipo in dic_dados_razao %}
     <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
-        <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header" id="heading_{{ctr.handle_fn_doc}}">
+        <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header" id="heading_{{ tipo.cod_nivel_sup }}">
             <button class="accordion-button collapsed d-flex justify-content-between" type="button"
-                data-bs-toggle="collapse" data-bs-target="#collapse_{{ctr.handle_fn_doc}}"
-                aria-expanded="false" aria-controls="collapse_{{ctr.handle_fn_doc}}" style="font-size:12px;">
+                data-bs-toggle="collapse" data-bs-target="#collapse_{{tipo.cod_nivel_sup}}"
+                aria-expanded="false" aria-controls="collapse_{{tipo.cod_nivel_sup}}" style="font-size:12px;">
 
-                <div style="font-size:12px; width:80%">
-                    <div class="row" style="background-color:#f46424;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;padding-top: 0.5rem;padding-bottom: 0.5rem;">
-                    <div class="col-md-3">
-                        <i class="fa-solid fa-receipt" style="color: #000000;"></i>
-                        <strong>Contrato:</strong> {{ctr.num_contrato}}
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100">
+                        {{ tipo.desc_tipo_veic }}
                     </div>
-                    <div class="col-md-3">
-                        <strong>Empresa:</strong> {{ctr.nome_empresa}}
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
                     </div>
-                    <div class="col-md-3" id="div_status_atualiza_benner">
-                        Atualiza com o Benner ? <strong>{{ctr.atualiza_benner}}</strong>
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
                     </div>
-                </div>
-
-                    <div class="row" >
-                        <div class="col-md-12">
-                            <strong>Produto:</strong> {{ctr.fornecedor}}
-                        </div>
-                    </div>
-
-                    <div class="row" >
-                        <div class="col-md-3">
-                            <strong>Data emissão:</strong> {{ctr.data_emissao_contrato}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Doc. Contábil:</strong> {{ctr.doc_contabil}}
-                        </div>
-                        <div class="col-md-3">
-
-                        </div>
-                    </div>
-
-                    <div class="row" >
-                        <div class="col-md-12">
-                            <strong>Operação:</strong> {{ctr.nome_operacao}}
-                            <hr>
-                        </div>
-                    </div>
-
-                    <div class="row" style="margin-top: 0.5rem;">
-                        <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #f46424;"></i>
-                            <strong>CONTA EM CURTO PRAZO</strong>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_cp}}
-                            <strong>Val. total:</strong>{{ctr.val_tt_contrato_reajustado_cp}}
-                            <hr>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #f46424;"></i>
-                            <strong>CONTA EM LONGO PRAZO</strong>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_lp}}
-                            <strong>Val. total:</strong>{{ctr.val_tt_contrato_reajustado_lp}}
-                        </div>
-                    </div>
-
-                    <div class="row" style="background-color:#f46424;color:#FFFFFF;margin-top: 0.5rem;">
-                        <div class="col-md-12" style="margin-top: 0.5rem;">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FFFFFF;"></i>
-                            <strong>INFO TOTAIS CONTA</strong>
-                            <hr>
-                        </div>
-                    </div>
-                    <div class="row" style="background-color:#f46424; color:#FFFFFF;" >
-                        <div class="col-md-3">
-                            <strong>Valor Total Líquido:</strong> {{ctr.val_liquido}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Valor Total Reajustado:</strong> {{ctr.val_tt_contrato_reajustado}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Total Liquidado:</strong> {{ctr.total_pago}}
-                        </div>
-                    </div>
-
-                    <div class="row" style="background-color:#f46424;color:#FFFFFF;padding-bottom: 0.5rem;border-radius: 0rem 0rem 0.3rem 0.3rem;">
-                        <div class="col-md-3">
-                            <strong>Próxima parcela:</strong>{{ctr.proxima_parc_pendente}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Venc. próxima parcela:</strong>
-                            {{ctr.data_venc_proxima_parc_pendente}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Valor próxima parcela:</strong>{{ctr.val_proxima_parc_pendente}}
-                        </div>
+                    <div class="d-flex flex-column w-100">
+                        {{ tipo.val_lanc }}
                     </div>
                 </div>
 
             </button>
         </h2>
 
-        <div id="collapse_{{ctr.handle_fn_doc}}" class="accordion-collapse collapse"
-        aria-labelledby="heading_{{ctr.handle_fn_doc}}" data-bs-parent="#acc_contratos">
+        <div id="collapse_{{tipo.cod_nivel_sup}}" class="accordion-collapse collapse"
+        aria-labelledby="heading_{{tipo.cod_nivel_sup}}" data-bs-parent="#acc_tipo_veic">
             <div class="accordion-body d-flex flex-column">
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
-                <div class="d-flex flex-column w-100" style="margin-top: 0.5rem;">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <button type='button' id="btn_excluir_contrato_{{ctr.cod_contrato}}"
-                                name="btn_excluir_contrato"
-                                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}">
-                            <i class="fa-solid fa-trash"></i>
-                            <span>Excluir contrato</span>
-                        </button>
-                    {% endif %}
-                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                    <button type='button' id="btn_excluir_contrato_{{ctr.cod_contrato}}"
-                            name="btn_renegociar_contrato"
-                            class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                            value="{{ctr.cod_contrato}}" disabled>
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Excluir contrato</span>
-                    </button>
-                    {% endif %}
-                </div>
+            <div class="d-flex justify-content-between align-items-between w-100">
                 <div class="d-flex flex-column w-100">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
-                                name="btn_abre_modal_renegociacao_contrato"
-                                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}" style="margin-top: 0.5rem;margin-left: 0.5rem;">
-                            <i class="fa-solid fa-handshake"></i>
-                            <span>Contrato renegociado</span>
-                        </button>
-                    {% endif %}
-                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                        <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
-                                name="modal_renegociacao_contrato"
-                                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}" disabled style="margin-top: 0.5rem;margin-left: 0.5rem;">
-                            <i class="fa-solid fa-handshake"></i>
-                            <span>Contrato renegociado<</span>
-                        </button>
-                    </button>
-                    {% endif %}
 
-                </div>
-                <div class="d-flex flex-column w-100">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <label class="col-form-label text-left cursor-pointer"
-                               for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}"
-                               style="padding-top: 3px;padding-bottom: 3px;">
-                            Atualiza com o Benner ?
-                        </label>
-                        <div class="container">
-                            {% if ctr.atualiza_benner == 'SIM' %}
-                            <input type="checkbox" checked="checked" class="checkbox"
-                               name="chk_atualiza_dados_benner_contrato"
-                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                            {% endif %}
-                            {% if ctr.atualiza_benner == 'NÃO' %}
-                            <input type="checkbox" class="checkbox"
-                               name="chk_atualiza_dados_benner_contrato"
-                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                            {% endif %}
-                            <label class="switch"
-                                   for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                                <span class="slider"></span>
-                            </label>
+                    <!-- Comeca iteração placas -->
+                    <div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_placa">
+                    {% for placa in tipo.placas %}
+                        <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
+                            <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header" id="heading_{{ placa.placa }}">
+                                <button class="accordion-button collapsed d-flex justify-content-between" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse_{{ placa.placa }}"
+                                    aria-expanded="false" aria-controls="collapse_{{ placa.placa}}" style="font-size:12px;">
+
+                                    <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                        <div class="d-flex flex-column w-100">
+                                            {{ placa.placa }}
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            {{ placa.val_lan }}
+                                        </div>
+                                    </div>
+
+                                </button>
+                            </h2>
+
+                            <div id="collapse_{{ placa.placa }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading_{{ placa.placa }}" data-bs-parent="#acc_placa">
+                                <div class="accordion-body d-flex flex-column">
+
+                                <div class="d-flex justify-content-between align-items-between w-100">
+                                    <div class="d-flex flex-column w-100">
+                                        Teste
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
                         </div>
-                    {% endif %}
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-            </div>
 
+                        </div>
 
-            <div class="form-group cl_div_tabela_principal_pagina w-100" style="margin-top: 0.5rem;">
-                <table id="tab_parcelas_contrato"
-                       class="display wrap w-100 cl_tab_principal_pagina">
-                    <thead>
-                        <tr>
-                            <th scope="col" style="color: grey">Pagamento</th>
-                            <th scope="col" style="color: grey">Vencimento</th>
-                            <th scope="col" style="color: grey">Parcela</th>
-                            <th scope="col" style="color: grey">Prazo</th>
-                            <th scope="col" style="color: grey">AP</th>
-                            <th scope="col" style="color: grey">R$ Parcela</th>
-                            <th scope="col" style="color: grey">R$ Principal</th>
-                            <th scope="col" style="color: grey">R$ Taxas</th>
-                            <th scope="col" style="color: grey">R$ Fundo</th>
-                            <th scope="col" style="color: grey">R$ Total</th>
-                            <th scope="col" style="color: grey">R$ Pago</th>
-                            <th scope="col" style="color: grey">R$ Balancete</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for parc in ctr.lista_parcelas_contrato %}
-                        <tr>
-                            <td>
-                                {% if parc.tipo_prazo == 'RN' %}
-                                    &nbsp;&nbsp;
-                                    <i class="fa-solid fa-handshake fa-1xl" title="{{parc.obs_parcela}}"
-                                                style="color: #f46424;"></i>
-                                    &nbsp;&nbsp;&nbsp;
-
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP' %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <button type='button' name='btn_liquidar_parcela'
-                                                id='btn_liquidar_parcela_{{parc.handle_parc}}'
-                                                class='btn btn-rounded btn-space'
-                                                value='{{parc.handle_parc}}'>
-                                            <i class="fa-solid fa-receipt" style="color: #f46424;"
-                                               title="Liquidar"></i>
-                                        </button>
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <button type='button' name='btn_liquidar_parcela'
-                                                id='btn_liquidar_parcela_{{parc.handle_parc}}'
-                                                class='btn btn-rounded btn-space'
-                                                value='{{parc.handle_parc}}' disabled>
-                                            <i class="fa-solid fa-receipt" style="color: #f46424;"
-                                               title="Liquidar"></i>
-                                        </button>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'PG' %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <button type='button' name='btn_abre_modal_estornar_parc_ctr_contas_m3'
-                                                id='btn_abre_modal_estornar_parc_ctr_contas_m3_{{parc.handle_parc}}'
-                                                class='btn btn-rounded btn-space'
-                                                value='{{parc.handle_parc}}'>
-                                            <i class="fa-solid fa-receipt" style="color: #3CB371;"
-                                               title="Estornar Pagamento"></i>
-                                        </button>
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <button type='button' name='btn_abre_modal_estornar_parc_ctr_contas_m3'
-                                                id='btn_abre_modal_estornar_parc_ctr_contas_m3_{{parc.handle_parc}}'
-                                                class='btn btn-rounded btn-space'
-                                                value='{{parc.handle_parc}}' disabled>
-                                            <i class="fa-solid fa-receipt" style="color: #3CB371;"
-                                               title="Estornar Pagamento"></i>
-                                        </button>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}"
-                                           readonly value="{{parc.data_liquidacao}}">
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{parc.data_vencimento}}
-                            </td>
-                            <td>
-                                {{ parc.ordem_parcela }}
-                            </td>
-                            <td>
-                                {{ parc.tipo_prazo }}
-                            </td>
-                            <td>
-                                {{ parc.ap_parcela }}
-                            </td>
-                            <td>
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP' %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_conta_{{parc.handle_parc}}"
-                                               name="txt_val_conta" value="{{parc.valor_conta}}"
-                                               style="width: 87.2px;text-align:right;">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_conta_{{parc.handle_parc}}"
-                                               name="txt_val_conta" value="{{parc.valor_conta}}"
-                                               style="width: 87.2px;text-align:right;" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_conta_{{parc.handle_parc}}" readonly
-                                           name="txt_val_conta" value="{{parc.valor_conta}}"
-                                           style="width: 87.2px;text-align:right;">
-
-                                {% endif %}
-
-                            </td>
-                            <td>
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_principal_{{parc.handle_parc}}"
-                                               name="txt_val_principal" value="{{parc.valor_principal}}"
-                                               style="width: 87.2px;text-align:right;">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_principal_{{parc.handle_parc}}"
-                                               name="txt_val_principal" value="{{parc.valor_principal}}"
-                                               style="width: 87.2px;text-align:right;" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_principal_{{parc.handle_parc}}"   readonly
-                                           name="txt_val_principal" value="{{parc.valor_principal}}"
-                                           style="width: 87.2px;text-align:right;">
-
-                                {% endif %}
-
-                            </td>
-                            <td>
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_taxas_{{parc.handle_parc}}"
-                                               name="txt_val_taxas" value="{{parc.valor_taxas}}"
-                                               style="width: 87.2px;text-align:right;">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_taxas_{{parc.handle_parc}}"
-                                               name="txt_val_taxas" value="{{parc.valor_taxas}}"
-                                               style="width: 87.2px;text-align:right;" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_taxas_{{parc.handle_parc}}" readonly
-                                           name="txt_val_taxas" value="{{parc.valor_taxas}}"
-                                           style="width: 87.2px;text-align:right;">
-                                {% endif %}
-
-                            </td>
-                            <td>
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_fundo_{{parc.handle_parc}}"
-                                               name="txt_val_fundo" value="{{parc.valor_fundo}}"
-                                               style="width: 87.2px;text-align:right;">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_fundo_{{parc.handle_parc}}"
-                                               name="txt_val_fundo" value="{{parc.valor_fundo}}"
-                                               style="width: 87.2px;text-align:right;" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_fundo_{{parc.handle_parc}}" readonly
-                                           name="txt_val_fundo" value="{{parc.valor_fundo}}"
-                                           style="width: 87.2px;text-align:right;">
-                                {% endif %}
-
-                            </td>
-                            <td id="td_val_total_{{parc.handle_parc}}" >
-                                {{parc.valor_total}}
-                            </td>
-                            <td>
-                                {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
-                                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
-                                               value="{{parc.val_total_pago}}"
-                                               style="width: 87.2px;text-align:right;">
-                                    {% endif %}
-                                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
-                                               value="{{parc.val_total_pago}}"
-                                               style="width: 87.2px;text-align:right;" readonly>
-                                    {% endif %}
-                                {% endif %}
-                                {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
-                                           readonly value="{{parc.val_total_pago}}"
-                                           style="width: 87.2px;text-align:right;">
-
-                                {% endif %}
-                            </td>
-                            <td>
-                                {{ parc.val_balancete }}
-                            </td>
-                        </tr>
                     {% endfor %}
-                    </tbody>
-                </table>
+                    </div>
+                    <!-- Termina iteração placas -->
+
+
+
+
+                </div>
+
             </div>
 
-    </div>
+
+        </div>
     </div>
 
     </div>

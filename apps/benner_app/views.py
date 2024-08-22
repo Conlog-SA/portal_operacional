@@ -1856,7 +1856,7 @@ class ConexaoBancoBenner():
                         WHEN 'D' THEN 'Debito'  
                         ELSE 'Credito'  
                     END)                        AS  NATUREZA,
-                    CT.NIVELSUPERIOR,
+                    CT.NIVELSUPERIOR            AS  handle_nivel_superior,
                     tipo_conta.NOME             AS  desc_tipo_veic
             FROM	CT_LANCAMENTOS LAN (NOLOCK)  
             LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
