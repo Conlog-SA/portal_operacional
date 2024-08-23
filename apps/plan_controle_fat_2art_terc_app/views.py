@@ -1013,7 +1013,7 @@ class Tab_Cad_Fretes_Terc_View(View):
         return JsonResponse(data, safe=False)
 
     def post(self, request):
-        cod_registro_cad_frete_spot = request.GET.get('cod_registro_cad_frete_spot', None)
+        cod_registro_cad_frete_spot = request.POST['cod_registro_cad_frete_spot']
         qtd_mapas_vinculados = Registro2ArtTerceirosFinanceiro.objects.filter(
             cod_cad_frete_spot__cod_cad_frete_spot=cod_registro_cad_frete_spot,
             cod_pag_2art_terc_financ__isnull=False).count()
