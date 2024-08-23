@@ -374,8 +374,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
                               'val_disp_atual_menos_anterior', 'qtd_item', 'val_tt_item', 'nome_un_medida',
                               'val_disp_total'], axis=1)
         df_status_compra['status_compra'] = 'Avaliar'
-        df_status_compra.loc[df_status_compra[
-                                         'handle_compra_anterior'] == 0, 'status_compra'] = 'Sem Ocorrência'
+        df_status_compra.loc[df_status_compra['handle_compra_anterior'] == 0, 'status_compra'] = 'Sem Ocorrência'
 
         #df_status_compra.to_excel('df_status_compra.xlsx')
 

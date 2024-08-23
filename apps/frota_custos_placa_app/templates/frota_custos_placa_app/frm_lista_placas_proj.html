@@ -1,0 +1,101 @@
+{% load static %}
+
+
+
+<div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_tipo_veic">
+{% for tipo in dic_dados_razao %}
+    <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
+        <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header" id="heading_{{ tipo.cod_nivel_sup }}">
+            <button class="accordion-button collapsed d-flex justify-content-between" type="button"
+                data-bs-toggle="collapse" data-bs-target="#collapse_{{tipo.cod_nivel_sup}}"
+                aria-expanded="false" aria-controls="collapse_{{tipo.cod_nivel_sup}}" style="font-size:12px;">
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                    <div class="d-flex flex-column w-100">
+                        {{ tipo.desc_tipo_veic }}
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        {{ tipo.val_lanc }}
+                    </div>
+                </div>
+
+            </button>
+        </h2>
+
+        <div id="collapse_{{tipo.cod_nivel_sup}}" class="accordion-collapse collapse"
+        aria-labelledby="heading_{{tipo.cod_nivel_sup}}" data-bs-parent="#acc_tipo_veic">
+            <div class="accordion-body d-flex flex-column">
+
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column w-100">
+
+                    <!-- Comeca iteração placas -->
+                    <div class="d-flex flex-column align-items-between justify-content-between ml-2 w-100 accordion" id="acc_placa">
+                    {% for placa in tipo.placas %}
+                        <div class="d-flex flex-column align-items-start justify-content-start ml-2 w-100 accordion-item">
+                            <h2 class="d-flex flex-column align-items-start justify-content-start w-100 accordion-header" id="heading_{{ placa.placa }}">
+                                <button class="accordion-button collapsed d-flex justify-content-between" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#collapse_{{ placa.placa }}"
+                                    aria-expanded="false" aria-controls="collapse_{{ placa.placa}}" style="font-size:12px;">
+
+                                    <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                        <div class="d-flex flex-column w-100">
+                                            {{ placa.placa }}
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-flex flex-column w-100">
+                                            {{ placa.val_lan }}
+                                        </div>
+                                    </div>
+
+                                </button>
+                            </h2>
+
+                            <div id="collapse_{{ placa.placa }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading_{{ placa.placa }}" data-bs-parent="#acc_placa">
+                                <div class="accordion-body d-flex flex-column">
+
+                                <div class="d-flex justify-content-between align-items-between w-100">
+                                    <div class="d-flex flex-column w-100">
+                                        Teste
+
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                        </div>
+
+                    {% endfor %}
+                    </div>
+                    <!-- Termina iteração placas -->
+
+
+
+
+                </div>
+
+            </div>
+
+
+        </div>
+    </div>
+
+    </div>
+
+{% endfor %}
+</div>

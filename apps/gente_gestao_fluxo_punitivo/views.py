@@ -36,7 +36,7 @@ class Form_Fluxo_Punitivo(View):
         obj_filial = Filial.objects.get(pk=id_filial_form)
 
         cod_senior_colab = request.POST["codSeniorColaborador"]
-        info_senior_colab = Listar_Colaboradores.lista_dados_colab(cod_senior_colab)
+        info_senior_colab = Listar_Colaboradores.lista_dados_colab(cod_senior_colab, obj_filial.cod_empresa.cod_empresa)
         nome_colab = info_senior_colab[0]["nome_colab"]
         cod_tipo_penalidade = request.POST["codPenalidade"]
 
@@ -96,12 +96,14 @@ class Form_Fluxo_Punitivo(View):
 class Listar_Colaboradores(View):
     def get(self, request):
         info_buscada = request.GET['infoBuscada']
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
 
         if info_buscada == 'lista_colabs':
             id_filial = request.GET['id_filial']
             id_empresa_senior = Filial.objects.get(pk=id_filial).cod_empresa
             id_filial_senior = Filial.objects.get(pk=id_filial).cod_filial_senior
-            banco_senior = Conexao_Senior_BD()
+            banco_senior = Conexao_Senior_BD(id_empresa_senior.cod_empresa)
             lista_colaboradores = banco_senior.listar_colaboradores_filial(id_empresa_senior, id_filial_senior)
 
             data = {
@@ -112,7 +114,7 @@ class Listar_Colaboradores(View):
         elif info_buscada == 'dados_colab':
             id_senior_colab = request.GET['idColab']
 
-            banco_senior = Conexao_Senior_BD()
+            banco_senior = Conexao_Senior_BD(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa)
             dados_colab = banco_senior.listar_dados_colaborador(id_senior_colab)
 
             data = {
@@ -120,8 +122,8 @@ class Listar_Colaboradores(View):
             }
             return JsonResponse(data, safe=False)
 
-    def lista_dados_colab(matricula_senior):
-        banco_senior = Conexao_Senior_BD()
+    def lista_dados_colab(matricula_senior, cod_empresa):
+        banco_senior = Conexao_Senior_BD(cod_empresa)
         dados_colab = banco_senior.listar_dados_colaborador(matricula_senior)
         return dados_colab
 
