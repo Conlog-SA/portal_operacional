@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'apps.safety_blitz_trajeto_moto_app',
     'apps.safety_blitz_trajeto_bicicleta_app',
     'apps.safety_blitz_trajeto_outros_meios_app',
+    'apps.safety_gso_app',
 ]
 
 MIDDLEWARE = [

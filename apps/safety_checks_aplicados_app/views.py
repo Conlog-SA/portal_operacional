@@ -21,6 +21,7 @@ from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_A
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
+from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Item_Check
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
@@ -58,11 +59,13 @@ class Check_Aplicado_View(View):
             #validacao_blitz_bicicleta_existentes
             validacao_checks_existentes = Blitz_Trajeto_Bicicleta.objects.all().values('cod_check_aplicado')
         if tipo_check_aplicado == '7':
-            #validacao_blitz_bicicleta_existentes
+            #validacao_blitz_outros_meios_existentes
             validacao_checks_existentes = Blitz_Trajeto_Outros_Meios.objects.all().values('cod_check_aplicado')
+        if tipo_check_aplicado == '8':
+            #validacao_gso_existentes
+            validacao_checks_existentes = Gabarito_GSO.objects.all().values('cod_check_aplicado')
 
         lista_checks_aplicados = lista_checks_aplicados.filter(cod_check_aplicado__in=validacao_checks_existentes)
-
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:

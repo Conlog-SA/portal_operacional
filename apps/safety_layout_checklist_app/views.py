@@ -25,7 +25,7 @@ class Form_Seguranca_Check(View):
     def get(self, request):
         lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ',
                        '4': 'Blitz - Carro', '5': 'Blitz - Moto', '6': 'Blitz - Bicicleta',
-                       '7': 'Blitz - Outros Meios'}
+                       '7': 'Blitz - Outros Meios', '8': 'GSO'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
@@ -521,7 +521,6 @@ class Check_Aplicado_Editar(View):
             else:
                 str_atividade = ''
 
-            print(relato_aplicado.cod_tipo_relato)
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
                                         <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
                                             <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
