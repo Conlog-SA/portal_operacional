@@ -83,7 +83,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Carro(View):
             return HttpResponse('Não há check de blitz ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=cod_filial_usuario_sessao,
+            cod_filial=colaborador.cod_filial,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,

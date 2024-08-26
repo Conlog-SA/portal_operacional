@@ -77,7 +77,7 @@ class Form_Gerar_Check_Gso(View):
             return HttpResponse('Não há check ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=cod_filial_usuario_sessao,
+            cod_filial=colaborador.cod_filial,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,

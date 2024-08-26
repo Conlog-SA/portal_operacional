@@ -12,6 +12,7 @@ from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
 from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
+from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.safety_relatos_app.models import Relato
@@ -707,6 +708,58 @@ class Check_Aplicado_Editar(View):
 
         if check_aplicado.cod_layout_check.tipo_check == 7:
             blitz_outros_meios_aplicado = Blitz_Trajeto_Outros_Meios.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            if blitz_outros_meios_aplicado.situacao_colaborador == 1:
+                str_colaborador = f'''<div id="div_avaliado" class="form-group">
+                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
+                                                <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
+                                            </select>
+                                        </div>'''
+            else:
+                str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
+                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
+                                        </div>'''
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div id="div_situacao_colaborador" class="form-group">
+                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <select class="selectpicker form-control responsive-font" id="situacao_avaliado_outros_meios" name="situacao_avaliado_outros_meios" value="{blitz_outros_meios_aplicado.situacao_colaborador}" disabled>
+                                                                       <option value="1">Funcionario Conlog/Deep</option>
+                                                                       <option value="2">Funcionario Ambev</option>
+                                                                       <option value="3">Freteiro</option>
+                                                                       <option value="4">Terceiros</option>
+                                                                   </select>
+                                                                </div>
+                                                                {str_colaborador}
+                                                                <label class="responsive-font" for="meio_transporte">Meio de transporte:</label>
+                                                                <select class="selectpicker form-control responsive-font" id="meio_transporte" name="meio_transporte" value="{blitz_outros_meios_aplicado.meio_transporte}" disabled>
+                                                                    <option value="1">Transporte Público</option>
+                                                                    <option value="2">Carona</option>
+                                                                    <option value="3">Pé</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        if check_aplicado.cod_layout_check.tipo_check == 8:
+            gab_gso_aplicado = Gabarito_GSO.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             if blitz_outros_meios_aplicado.situacao_colaborador == 1:
                 str_colaborador = f'''<div id="div_avaliado" class="form-group">

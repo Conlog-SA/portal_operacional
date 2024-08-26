@@ -71,11 +71,12 @@ class Check_Aplicado_View(View):
         for check in lista_checks_aplicados:
             count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
             count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
+            respostas_button = Item_Check_Aplicados.objects.filter(cod_check_aplicado=check)
             count_respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=check)
-            count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').count()
+            count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').exclude(cod_check_aplicado__in=respostas_button.values('cod_check_aplicado'), cod_item_check__in=respostas_button.values('cod_item_check')).count()
             obj_layout_check = check.cod_layout_check
             total_itens_layout = Item_Check.objects.filter(cod_check=obj_layout_check).count()
-            count_respostas_nao_respondidos = total_itens_layout - (count_respostas_ok + count_respostas_nok + count_respostas_texto)
+            count_respostas_nao_respondidos = total_itens_layout - (respostas_button.count() + count_respostas_texto)
 
             nome_colaborador_avaliador = 'N/A'
             if check.cod_colaborador_avaliado != None:
