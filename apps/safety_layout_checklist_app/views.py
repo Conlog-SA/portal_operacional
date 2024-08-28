@@ -976,5 +976,3 @@ class Check_Aplicado_Editar(View):
         </main>'''
 
         return HttpResponse(check_html_recebido)
-
-

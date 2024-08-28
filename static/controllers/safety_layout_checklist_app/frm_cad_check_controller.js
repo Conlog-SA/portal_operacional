@@ -820,6 +820,7 @@ $(document).on('click','.editar-check' , function(){
                 }
                 else if (tipo_check == 8) {
                     $('#modalEditarCheckAplicado').css("display", "block");
+                    $('#unidade').selectpicker('refresh');
                 }
             }
     });
