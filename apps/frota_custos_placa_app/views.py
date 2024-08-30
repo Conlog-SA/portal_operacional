@@ -1,3 +1,4 @@
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -28,42 +29,38 @@ class Frm_Custos_Placa_Proj_View(View):
 
         df_custos_placas = ConexaoBancoBenner().retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_contas_frm,
                                                                         comp_frm.split('-')[0], comp_frm.split('-')[1])
-        df_custos_placas.to_excel('df_custos_placas.xlsx')
+        #df_custos_placas.to_excel('df_custos_placas.xlsx')
+        df_group_placas_contas = df_custos_placas[['PLACA', 'NOME_PROJETO', 'desc_tipo_conta', 'NOME_CONTA',
+                                                   'tipo_lancamento','NUM_DOC', 'num_doc_contabil', 'desc_tipo_doc',
+                                                   'HISTORICO', 'VAL_LANC', 'codigo_os', 'desc_os', 'desc_produto',
+                                                   'desc_cluster']].reset_index()
 
         dic_dados_razao = []
-        df_group_desc_tipo_placa = df_custos_placas.groupby(['handle_nivel_superior','desc_tipo_veic'])[['VAL_LANC']].sum().reset_index()
-        #df_group_desc_tipo_placa.to_excel('df_group_desc_tipo_placa.xlsx')
-        for index, row in df_group_desc_tipo_placa.iterrows():
-            tipo_veic = {
-                'cod_nivel_sup': df_group_desc_tipo_placa.loc[index, 'handle_nivel_superior'],
-                'desc_tipo_veic': df_group_desc_tipo_placa.loc[index, 'desc_tipo_veic'],
-                'val_lanc':df_group_desc_tipo_placa.loc[index, 'VAL_LANC']
+        for index, row in df_group_placas_contas.iterrows():
+            placa_razao = {
+                'placa': df_group_placas_contas.loc[index, 'PLACA'],
+                'nome_projeto': df_group_placas_contas.loc[index, 'NOME_PROJETO'],
+                'conta': df_group_placas_contas.loc[index, 'NOME_CONTA'],
+                'desc_tipo_conta': df_group_placas_contas.loc[index, 'desc_tipo_conta'],
+                'num_doc': df_group_placas_contas.loc[index, 'NUM_DOC'],
+                'num_doc_contabil': df_group_placas_contas.loc[index, 'num_doc_contabil'],
+                'tipo_lancamento': df_group_placas_contas.loc[index, 'tipo_lancamento'],
+                'desc_tipo_doc': df_group_placas_contas.loc[index, 'desc_tipo_doc'],
+                'val_lanc':df_group_placas_contas.loc[index, 'VAL_LANC'],
+                'obs': df_group_placas_contas.loc[index, 'HISTORICO'],
+                'codigo_os': df_group_placas_contas.loc[index, 'codigo_os'],
+                'desc_os': df_group_placas_contas.loc[index, 'desc_os'],
+                'desc_produto': df_group_placas_contas.loc[index, 'desc_produto'],
+                'desc_cluster': df_group_placas_contas.loc[index, 'desc_cluster']
             }
-            df_group_placas = df_custos_placas.loc[df_custos_placas['handle_nivel_superior'] == df_group_desc_tipo_placa.loc[index, 'handle_nivel_superior']].groupby(['handle_nivel_superior', 'desc_tipo_veic', 'PLACA'])[['VAL_LANC']].sum().reset_index()
-            #df_group_placas.to_excel('df_group_placas.xlsx')
-            dic_placas_razao = []
-            for i, r in df_group_placas.iterrows():
-                placa = {
-                    'cod_nivel_sup': df_group_placas.loc[i, 'handle_nivel_superior'],
-                    'placa': df_group_placas.loc[i, 'PLACA'],
-                    'val_lan': df_group_placas.loc[i, 'VAL_LANC']
-                }
-                dic_placas_razao.append(placa)
-            tipo_veic['placas'] = dic_placas_razao
-            dic_dados_razao.append(tipo_veic)
+            dic_dados_razao.append(placa_razao)
 
-
-        #df_group_placas_contas = df_custos_placas.groupby(['desc_tipo_veic', 'PLACA', 'HANDLE_CONTA', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index()
-        #df_group_placas_contas.to_excel('df_group_placas_contas.xlsx')
-
-
-        #for index, row in df_group_desc_tipo_placa.iterrows():
-
-
-        context = {
+        data = dict()
+        data = {
             'dic_dados_razao': dic_dados_razao
 
         }
-        return render(request, 'frota_custos_placa_app/frm_lista_placas_proj.html', context)
+        #return render(request, 'frota_custos_placa_app/frm_lista_placas_proj.html', context)
+        return JsonResponse(data, safe=False)
 
 
