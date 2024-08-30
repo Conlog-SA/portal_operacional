@@ -5,8 +5,11 @@ $(document).on('click','.clickable' , function(){
 
 $(document).on('click','.button-check-post' , function(){
     $(this).addClass("selected");
-    element = $(this).siblings().eq(0);
-    element.removeClass("selected");
+    quantidade_botoes = $(this).siblings().length;
+    for (let i = 0; i < quantidade_botoes; i++) {
+      element = $(this).siblings().eq(i);
+      element.removeClass("selected");
+    }
     let resposta_check = 2;
     let name =  $(this).attr("name").split('@')
     let cod_item_check = name[0]
@@ -18,8 +21,17 @@ $(document).on('click','.button-check-post' , function(){
     else if ($(this).hasClass("nok-button-check")) {
         resposta_check = 1;
     }
+    else if ($(this).hasClass("blue-button-check")) {
+        resposta_check = 2;
+    }
+    else if ($(this).hasClass("yellow-button-check")) {
+        resposta_check = 3;
+    }
+    else if ($(this).hasClass("orange-button-check")) {
+        resposta_check = 4;
+    }
 
-    if (resposta_check != 2) {
+    if (resposta_check < 5) {
         $.ajax({
             type: 'POST',
             url: '/safety_checks_aplicados_app/item_aplicado',
@@ -32,7 +44,6 @@ $(document).on('click','.button-check-post' , function(){
             success: function (dados) {
             }
         });
-
     }
 });
 

@@ -33,7 +33,15 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
                                                                                               data_atual.day)).order_by(
                 '-cod_check__data_desativacao')
 
-            filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa, cod_filial__in=check_ativo.values('cod_filial').distinct())
+            filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
+            filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa,
+                                            cod_filial__in=check_ativo.values('cod_filial').distinct())
+
+            if filial_usuario.cod_empresa.cod_empresa == 12:
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif filial_usuario.cod_empresa.cod_empresa == 17:
+                filiais = filiais.union(filiais_transporte_pessoas)
+
             for filial in filiais:
                 str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'
         elif colaborador.perfil_usu == 'U':
@@ -66,7 +74,6 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
             )
             colaborador.save()
 
-
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
         cod_filial_usuario_sessao = colaborador_envio.cod_filial
@@ -85,7 +92,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
             return HttpResponse('Não há check de blitz ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=cod_filial_usuario_sessao,
+            cod_filial=colaborador.cod_filial,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,

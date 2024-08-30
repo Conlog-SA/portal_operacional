@@ -12,6 +12,7 @@ from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
 from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
+from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.safety_relatos_app.models import Relato
@@ -25,7 +26,7 @@ class Form_Seguranca_Check(View):
     def get(self, request):
         lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ',
                        '4': 'Blitz - Carro', '5': 'Blitz - Moto', '6': 'Blitz - Bicicleta',
-                       '7': 'Blitz - Outros Meios'}
+                       '7': 'Blitz - Outros Meios', '8': 'GSO'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0
@@ -521,7 +522,6 @@ class Check_Aplicado_Editar(View):
             else:
                 str_atividade = ''
 
-            print(relato_aplicado.cod_tipo_relato)
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
                                         <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
                                             <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
@@ -758,6 +758,37 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
+        if check_aplicado.cod_layout_check.tipo_check == 8:
+            gab_gso_aplicado = Gabarito_GSO.objects.filter(cod_check_aplicado=check_aplicado).first()
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade"> Unidade: </label>
+                                                                    <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                                        <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                   <label class="responsive-font" for="nome_avaliado_gso">Nome do avaliado:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="nome_avaliado_gso" name="nome_avaliado_gso" value="{relatado.nome_colaborador}">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                  <label for="placa_onibus_gso">Placa do Ônibus:</label>
+                                                                  <input type="text" class="form-control responsive-font" id="placa_onibus_gso" name="placa_onibus_gso" value="{gab_gso_aplicado.placa_onibus}">
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
         html_check_editar += '<div class="background-check-preenchido" style="width:100%;display:flex;justify-content:center">'
 
         for item in itens_layout_check:
@@ -765,7 +796,7 @@ class Check_Aplicado_Editar(View):
             if item.tipo_item == 2:
                 html_check_editar += f'<b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{item.desc_check}</b>'
             if item.tipo_item == 1:
-                if item.tipo_resposta == 1 or item.tipo_resposta == 3 or item.tipo_resposta == 4:
+                if item.tipo_resposta == 1 or item.tipo_resposta == 3 or item.tipo_resposta == 4 or item.tipo_resposta == 5 or item.tipo_resposta == 6:
                     desc_resposta_botao = ''
                     if item.tipo_resposta == 1 or item.tipo_resposta == '1':
                         desc_resposta_botao = 'OK/NOK'.split('/')
@@ -773,6 +804,13 @@ class Check_Aplicado_Editar(View):
                         desc_resposta_botao = 'SIM/NÃO'.split('/')
                     if item.tipo_resposta == 4 or item.tipo_resposta == '4':
                         desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
+                    if item.tipo_resposta == 5 or item.tipo_resposta == '5':
+                        desc_resposta_botao = 'OK/NA/NOK'.split('/')
+                        str_botao_na = ''
+                    if item.tipo_resposta == 6 or item.tipo_resposta == '6':
+                        desc_resposta_botao = 'OTIMO/BOM/REGULAR/DANIFICADO'.split('/')
+                        str_botao_bom = ''
+                        str_botao_regular = ''
                     resposta_ok_nok_check_aplicado = Item_Check_Aplicados.objects.filter(
                         cod_check_aplicado=check_aplicado, cod_item_check=item).first()
 
@@ -781,21 +819,41 @@ class Check_Aplicado_Editar(View):
                     if resposta_ok_nok_check_aplicado is not None:
                         if resposta_ok_nok_check_aplicado.resp_item == 0:
                             str_botao_ok = 'background-color:green'
-                            str_botao_nok = ''
                         elif resposta_ok_nok_check_aplicado.resp_item == 1:
-                            str_botao_ok = ''
                             str_botao_nok = 'background-color:red'
+                        elif resposta_ok_nok_check_aplicado.resp_item == 3:
+                            str_botao_nok = 'background-color:cyan'
+                        elif resposta_ok_nok_check_aplicado.resp_item == 4:
+                            str_botao_nok = 'background-color:yellow'
+                        elif resposta_ok_nok_check_aplicado.resp_item == 5:
+                            str_botao_nok = 'background-color:orange'
                     if item.campo_obs_img == 0:
+
+                        if item.tipo_resposta == 5 or item.tipo_resposta == '5':
+                            str_buttons = f'''<button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[2]}</button>
+                                              '''
+                        elif item.tipo_resposta == 6 or item.tipo_resposta == '6':
+                            str_buttons = f'''<button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font yellow-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;" disabled>{desc_resposta_botao[1]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font orange-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;" disabled>{desc_resposta_botao[2]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[3]}</button>
+                                           '''
+                        else:
+                            str_buttons = f''' <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
+                                                '''
 
                         html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                 <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black;">{item.desc_check}</p>
                                                 <input type="hidden" class="identifier" value="{item.ordem_item}">
                                                 <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
                                                 <div style="display:flex;justify-content:center;padding:4px">
-                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
-                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
+                                                {str_buttons}
                                                 </div>
                                             </div>'''
+
                     if item.campo_obs_img == 1:
                         respostas_texto_fotos_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
                             cod_check_aplicado=check_aplicado, cod_item_check=item).first()
@@ -808,13 +866,29 @@ class Check_Aplicado_Editar(View):
                         else:
                             str_comentario = ''
 
+                        if item.tipo_resposta == 5 or item.tipo_resposta == '5':
+                            str_buttons = f'''<button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[2]}</button>
+                                              '''
+                        elif item.tipo_resposta == 6 or item.tipo_resposta == '6':
+                            str_buttons = f'''<button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font yellow-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;" disabled>{desc_resposta_botao[1]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font orange-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;" disabled>{desc_resposta_botao[2]}</button>
+                                              <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[3]}</button>
+                                           '''
+                        else:
+                            str_buttons = f''' <button type="button" name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>{desc_resposta_botao[0]}</button>
+                                                    <button type="button" name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>{desc_resposta_botao[1]}</button>
+                                                '''
+
+
                         html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
                                                     <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black;">{item.desc_check}</p>
                                                     <input type="hidden" class="identifier" value="{item.ordem_item}">
                                                     <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
                                                     <div style="display:flex;justify-content:center;">
-                                                        <button name="{str_nome_botoes}" class="responsive-font ok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_ok}" disabled>OK</button>
-                                                        <button name="{str_nome_botoes}" class="responsive-font nok-button-check button-check-post input-botao relatos" type="button" style="padding:7px;border-width:1px;border-radius:5px;{str_botao_nok}" disabled>NOK</button>
+                                                       {str_buttons}
                                                     </div>
                                                     <div class="responsive-div" style="display:flex;justify-content:flex-start;margin:1rem 0.5rem 1rem 0.5rem">
                                                         <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
@@ -902,5 +976,3 @@ class Check_Aplicado_Editar(View):
         </main>'''
 
         return HttpResponse(check_html_recebido)
-
-

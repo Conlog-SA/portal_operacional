@@ -765,7 +765,6 @@ $(document).on('click','.check-preenchido-element' , function(){
 
 $(document).on('click','.editar-check' , function(){
     let let_cod_check_aplicado = $(this).attr('name');
-    console.log(let_cod_check_aplicado)
 
      $.ajax({
 	        type: 'GET',
@@ -818,6 +817,10 @@ $(document).on('click','.editar-check' , function(){
                     $('#meio_transporte').selectpicker('refresh');
                     $('#nome_avaliado').selectpicker('refresh');
                     $('#modalEditarCheckAplicado').css("display", "block");
+                }
+                else if (tipo_check == 8) {
+                    $('#modalEditarCheckAplicado').css("display", "block");
+                    $('#unidade').selectpicker('refresh');
                 }
             }
     });

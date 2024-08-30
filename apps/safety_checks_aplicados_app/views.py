@@ -21,6 +21,7 @@ from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_A
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
 from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
+from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Item_Check
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
@@ -58,21 +59,24 @@ class Check_Aplicado_View(View):
             #validacao_blitz_bicicleta_existentes
             validacao_checks_existentes = Blitz_Trajeto_Bicicleta.objects.all().values('cod_check_aplicado')
         if tipo_check_aplicado == '7':
-            #validacao_blitz_bicicleta_existentes
+            #validacao_blitz_outros_meios_existentes
             validacao_checks_existentes = Blitz_Trajeto_Outros_Meios.objects.all().values('cod_check_aplicado')
+        if tipo_check_aplicado == '8':
+            #validacao_gso_existentes
+            validacao_checks_existentes = Gabarito_GSO.objects.all().values('cod_check_aplicado')
 
         lista_checks_aplicados = lista_checks_aplicados.filter(cod_check_aplicado__in=validacao_checks_existentes)
-
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:
             count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
             count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
+            respostas_button = Item_Check_Aplicados.objects.filter(cod_check_aplicado=check)
             count_respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=check)
-            count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').count()
+            count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').exclude(cod_check_aplicado__in=respostas_button.values('cod_check_aplicado'), cod_item_check__in=respostas_button.values('cod_item_check')).count()
             obj_layout_check = check.cod_layout_check
             total_itens_layout = Item_Check.objects.filter(cod_check=obj_layout_check).count()
-            count_respostas_nao_respondidos = total_itens_layout - (count_respostas_ok + count_respostas_nok + count_respostas_texto)
+            count_respostas_nao_respondidos = total_itens_layout - (respostas_button.count() + count_respostas_texto)
 
             nome_colaborador_avaliador = 'N/A'
             if check.cod_colaborador_avaliado != None:

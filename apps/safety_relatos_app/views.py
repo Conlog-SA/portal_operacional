@@ -33,8 +33,13 @@ class Form_Gerar_Relatos_Check(View):
                                                                                               data_atual.month,
                                                                                               data_atual.day)).order_by(
                 '-cod_check__data_desativacao')
-
+            filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
             filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa, cod_filial__in=check_ativo.values('cod_filial').distinct())
+
+            if filial_usuario.cod_empresa.cod_empresa == 12 or filial_usuario.cod_empresa.cod_empresa == '12':
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_empresa.cod_empresa == '17':
+                filiais = filiais.union(filiais_transporte_pessoas)
 
             for filial in filiais:
                 str_options_select_unidade += f'<option value="{str(filial.cod_filial)}">{str(filial.desc_filial)}</option>'

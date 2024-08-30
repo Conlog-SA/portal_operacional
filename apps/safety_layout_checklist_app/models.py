@@ -30,6 +30,7 @@ class Item_Check(models.Model):
     data_inicio = models.DateTimeField(blank=True, null=True)
     data_desativacao = models.DateTimeField(blank=True, null=True)
     campo_obs_img = models.IntegerField(blank=False, null=False)
+    #campo_img = models.IntegerField(blank=False, null=False)
     obrigatorio = models.IntegerField(blank=False, null=False)
     ordem_item = models.IntegerField(blank=False, null=False)
     tipo_item = models.IntegerField(blank=False, null=False)

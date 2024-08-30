@@ -31,12 +31,36 @@ label{
     transition: all 0.3s ease;
 }
 
+.blue-button-check{
+    transition: all 0.3s ease;
+}
+
+.yellow-button-check{
+    transition: all 0.3s ease;
+}
+
+.orange-button-check{
+    transition: all 0.3s ease;
+}
+
 .ok-button-check.selected{
     background-color:green;
 }
 
 .nok-button-check.selected{
     background-color:red;
+}
+
+.blue-button-check.selected{
+    background-color:cyan;
+}
+
+.yellow-button-check.selected{
+    background-color:yellow;
+}
+
+.orange-button-check.selected{
+    background-color:orange;
 }
 
 .homeApp_loginContainer{
