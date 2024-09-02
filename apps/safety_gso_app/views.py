@@ -57,19 +57,13 @@ class Form_Gerar_Check_Gso(View):
     @csrf_exempt
     def post(self, request):
         filial_colaborador = request.POST['unidade_avaliado_gso']
-        nome_avaliado = request.POST['nome_avaliado_gso']
+        cod_motorista_avaliado_gso = request.POST['cod_motorista_avaliado_gso']
         placa_onibus = request.POST['placa_onibus_gso']
 
-        colaborador = Colaborador(
-            nome_colaborador=nome_avaliado,
-            cod_filial=filial_colaborador,
-            situacao=0
-        )
-        colaborador.save()
+        colaborador = Colaborador.objects.filter(cod_colaborador=cod_motorista_avaliado_gso).first()
 
         cod_colaborador = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
-        cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
         data_atual = datetime.now()
         check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=8, cod_filial=colaborador.cod_filial,
@@ -85,7 +79,7 @@ class Form_Gerar_Check_Gso(View):
             return HttpResponse('Não há check ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=colaborador.cod_filial,
+            cod_filial=filial_colaborador,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
@@ -100,7 +94,6 @@ class Form_Gerar_Check_Gso(View):
                                                 data_inicio__lte=date(data_atual.year, data_atual.month,
                                                                       data_atual.day)).order_by('ordem_item')
         lista_itens_dict = []
-        str_itens_obrigatorios = []
         for item in lista_itens:
             desc_resposta_botao = ''
             if item.tipo_resposta == 1 or item.tipo_resposta == '1':
