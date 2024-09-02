@@ -54,6 +54,8 @@ urlpatterns = [
     path('safety_blitz_trajeto_outros_meios_app/', include('apps.safety_blitz_trajeto_outros_meios_app.urls')),
     path('safety_gso_app/', include('apps.safety_gso_app.urls')),
     path('frota_custos_placa_app/', include('apps.frota_custos_placa_app.urls')),
+    path('ti_painel_processos_automaticos_app/', include('apps.ti_painel_processos_automaticos_app.urls')),
+    path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
