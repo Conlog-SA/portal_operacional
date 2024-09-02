@@ -95,6 +95,7 @@ INSTALLED_APPS = [
     'apps.safety_blitz_trajeto_outros_meios_app',
     'apps.safety_gso_app',
     'apps.frota_custos_placa_app',
+    'apps.freightech_remunerado_qlp_app'
 ]
 
 MIDDLEWARE = [
