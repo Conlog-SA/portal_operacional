@@ -42,8 +42,6 @@ class Form_Seguranca_Check(View):
             filiais = lista_filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
         elif usuario.cod_filial.cod_empresa.cod_empresa == 17:
             filiais = lista_filiais.union(filiais_transporte_pessoas)
-        else:
-            print(usuario.cod_filial.cod_empresa)
 
         '''for filial in lista_filiais:
             lista_filiais_dict.append({filial.cod_filial, filial.desc_filial})
