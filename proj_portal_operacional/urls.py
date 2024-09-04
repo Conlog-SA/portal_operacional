@@ -56,6 +56,7 @@ urlpatterns = [
     path('frota_custos_placa_app/', include('apps.frota_custos_placa_app.urls')),
     path('ti_painel_processos_automaticos_app/', include('apps.ti_painel_processos_automaticos_app.urls')),
     path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
+    path('contratos_frete_deep_app/', include('apps.contratos_frete_deep_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
