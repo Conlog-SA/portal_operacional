@@ -11,11 +11,11 @@ class Processa_Contrato(View):
 
     @csrf_exempt
     def post(self, request):
-        nro_contrato = request.POST['usuario']
-        razao_social_contratado = request.POST['senha']
-        data_contrato = request.POST['email']
-        status = request.POST['usuario']
-        nome_arquivo = request.POST['senha']
+        nro_contrato = request.POST['nro_contrato']
+        razao_social_contratado = request.POST['razao_social_contratado']
+        data_contrato = request.POST['data_contrato']
+        status = request.POST['status']
+        nome_arquivo = request.POST['nome_arquivo']
         data_processamento = datetime.now()
 
         objeto = Contrato_Processado(
