@@ -36,9 +36,12 @@ class Form_Gerar_Relatos_Check(View):
             filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
             filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa, cod_filial__in=check_ativo.values('cod_filial').distinct())
 
-            if filial_usuario.cod_empresa.cod_empresa == 12 or filial_usuario.cod_empresa.cod_empresa == '12':
+            if filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial not in [34, 57, 89]:
                 filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
-            elif filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_empresa.cod_empresa == '17':
+            elif filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial in [34, 57, 89]:
+                filiais_transporte_pessoas = filiais_transporte_pessoas.exclude(cod_filial=filial_usuario.cod_filial)
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif filial_usuario.cod_empresa.cod_empresa == 17:
                 filiais = filiais.union(filiais_transporte_pessoas)
 
             for filial in filiais:

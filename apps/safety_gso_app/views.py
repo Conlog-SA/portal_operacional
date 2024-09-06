@@ -40,7 +40,6 @@ class Form_Gerar_Check_Gso(View):
             if filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial not in [34, 57, 89]:
                 filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
             elif filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial in [34, 57, 89]:
-                print(filial_usuario.cod_filial)
                 filiais_transporte_pessoas = filiais_transporte_pessoas.exclude(cod_filial=filial_usuario.cod_filial)
                 filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
             elif filial_usuario.cod_empresa.cod_empresa == 17:
