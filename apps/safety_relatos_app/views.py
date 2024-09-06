@@ -54,15 +54,20 @@ class Form_Gerar_Relatos_Check(View):
         processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
-        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
-        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
-        lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        if filial_usuario.cod_filial not in [34, 57, 89]:
+            lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        else:
+            lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=17)
+            lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=17)
+            lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=17)
 
         str_options_select_local = ''
-        if filial_usuario.cod_empresa.cod_empresa == 17:
+        if filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_filial in [34, 57, 89]:
+            print('teste')
             flag_deep = True
-            locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6,
-                                                         cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6)
             for local in locais:
                 str_options_select_local += f'<option value="{local.cod_componente}">{local.desc_componente}</option>'
         else:
