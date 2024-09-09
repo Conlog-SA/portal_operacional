@@ -65,6 +65,10 @@ $(document).ready(function(){
         "scrollCollapse": true,
         "paging": true,
         "pageLength": 7,
+        "responsive": false,
+        "stateSave": true,
+        "select": true,
+        "colReorder": true,
         "dom": 'Bfrtip',
         "buttons": [
             'copyHtml5'
@@ -95,9 +99,9 @@ $(document).ready(function(){
             { title: "Ativa/Desativa" }
         ],
         "columnDefs": [
-            {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9, 17,18,19,20,21]},
+            {"className": "dt-center", "targets": [0,1,2,3,4,5,6,7,8,17,18,19]},
             {"className": "dt-left", "targets": []},
-            {"className": "dt-right", "targets": [1,5,11,10,11,12,13,14,15,16]}
+            {"className": "dt-right", "targets": [9,10,11,12,13,14,15,16,20,21]}
         ],
         "language": {
             "decimal": ",",
@@ -1364,6 +1368,10 @@ function povoa_tab_mapas_terceitos_2art(){
                 "scrollCollapse": true,
                 "paging": true,
                 "pageLength": 7,
+                "responsive": false,
+                "stateSave": true,
+                "select": true,
+                "colReorder": true,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'
@@ -1468,9 +1476,9 @@ function povoa_tab_mapas_terceitos_2art(){
                     { title: "Ativa/Desativa" }
                 ],
                 "columnDefs": [
-                    {"className": "dt-center", "targets": [0,2,3,4,6,7,8,9, 17,18,19,20,21]},
+                    {"className": "dt-center", "targets": [0,1,2,3,4,5,6,7,8,17,18,19]},
                     {"className": "dt-left", "targets": []},
-                    {"className": "dt-right", "targets": [1,5,11,10,11,12,13,14,15,16]}
+                    {"className": "dt-right", "targets": [9,10,11,12,13,14,15,16,20,21]}
                 ],
                 "language": {
                     "decimal": ",",
@@ -1665,6 +1673,7 @@ function povoa_tab_mapas_terceitos_2art(){
                 }
 
           });
+            $("#tab_mapas_terceitos_2art").DataTable().columns.adjust().draw();
             loader_gera_pag_terc_2art.style.display = "none";
 
         },

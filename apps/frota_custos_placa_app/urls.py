@@ -7,5 +7,6 @@ urlpatterns = [
              name='acessa_frm_custos_placa'),
     path('gera_dados_razao_placas_proj', views.Frm_Custos_Placa_Proj_View.as_view(),
              name='gera_dados_razao_placas_proj'),
+    path('altera_item_cluster_lancamento', views.Frm_Custos_Placa_Proj_View.as_view(), name='altera_item_cluster_lancamento'),
 
 ]

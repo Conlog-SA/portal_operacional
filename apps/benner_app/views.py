@@ -1831,10 +1831,13 @@ class ConexaoBancoBenner():
 
         return lista_veiculos_venda
 
-    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_contas, ano_competencia, mes_competencia):
+    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia):
+
         sql_razao_placas = (
             f'''
-            SELECT  CAST(LAN.COMPETENCIA AS DATE)             
+            SELECT  LAN.HANDLE 					AS	handle_lan,
+		            FN_DOC.HANDLE				AS	handle_fn_doc,
+                    CAST(LAN.COMPETENCIA AS DATE)             
                                                 AS  COMPETENCIA,  
                     CAST(LAN.DATA AS DATE)	    AS	DATA_LANC,  
                     LAN_CC.PROJETO			    AS	HANDLE_PROJETO,  
@@ -1851,7 +1854,8 @@ class ConexaoBancoBenner():
                     LAN_CC.VALOR                AS  VAL_LANC,   
                     FORNECEDOR.NOME			    AS	NOME_FORNECEDOR,  
                     FN_DOC.DOCUMENTODIGITADO	AS	NUM_DOC, 
-                    fn_doc.DOCUMENTOCONTABIL	AS	num_doc_contabil,
+                    COALESCE(fn_doc.DOCUMENTOCONTABIL, LAN.DOCUMENTOCONTABIL)
+                    	                        AS	num_doc_contabil,
                     fn_doc.TIPODOCUMENTO 		AS	handle_tipo_doc,
                     tipo_doc.NOME				AS	desc_tipo_doc,
                     CT.HANDLE                   AS  handle_cc, 
@@ -1892,8 +1896,9 @@ class ConexaoBancoBenner():
                AND  YEAR(LAN.COMPETENCIA) = {ano_competencia}
                AND  MONTH(LAN.COMPETENCIA) = {mes_competencia}
                AND	CT.NOME IS NOT NULL
-               AND	CT.NIVELSUPERIOR in ({lista_handle_contas})
+               AND	CT.NIVELSUPERIOR in ({lista_handle_tipo_contas})
                AND	LAN_CC.PROJETO in ({lista_handle_proj})
+               AND  LAN_CC.NATUREZA = 'D'
              ORDER  BY LAN.COMPETENCIA,  
                     LAN.DATA,  
                     LAN_CC.PROJETO;	
@@ -1902,6 +1907,8 @@ class ConexaoBancoBenner():
         df_razao_placas = pd.read_sql(sql_razao_placas, self.__conn)
         df_razao_placas['codigo_os'] = ''
         df_razao_placas['desc_os'] = ''
+        df_razao_placas['obs_os'] = ''
+        df_razao_placas['desc_tipo_os'] = ''
         df_razao_placas['desc_produto'] = ''
         df_razao_placas['desc_cluster'] = ''
         for index, row in df_razao_placas.iterrows():
@@ -1912,13 +1919,15 @@ class ConexaoBancoBenner():
                 tipo_os = cod_os.split('.')[0]
                 cod_empresa = df_razao_placas.loc[index, 'cod_empresa_lan']
                 handle_prod = df_razao_placas.loc[index, 'handle_prod']
-                if tipo_os == 'CORINT':
+                if tipo_os in ('CORINT', 'PREINT'):
                     sql_os = (
                         f'''
-                        SELECT	os.DESCRICAO	AS	desc_os,
+                        SELECT	os.DESCRICAO	        AS	desc_os,
+                                tipo_os.NOME            AS  desc_tipo_os,
+                                os.OBSERVACOES          AS  obs_os,
                                 os_prod_int.PRODUTO		AS	handle_prod,
-                                prod.NOME		AS	desc_produto,
-                                conj.NOME		AS	desc_conjunto
+                                prod.NOME		        AS	desc_produto,
+                                conj.NOME		        AS	desc_conjunto
                           FROM 	MF_ORDEMSERVICOS (NOLOCK) os
                           LEFT	JOIN MF_ORDEMPRODUTOINTERNOS (NOLOCK) os_prod_int
                             ON	(os_prod_int.ORDEMSERVICO = os.HANDLE)
@@ -1926,6 +1935,8 @@ class ConexaoBancoBenner():
                             ON	(prod.HANDLE = os_prod_int.PRODUTO)
                           LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
                             ON	(conj.HANDLE = os_prod_int.CONJUNTO) 
+                          LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                            ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
                          WHERE 	os.CODIGO = '{cod_os}'
                            AND	os.EMPRESA = {cod_empresa}
                            AND  os_prod_int.PRODUTO = {handle_prod}
@@ -1935,10 +1946,82 @@ class ConexaoBancoBenner():
                     cursor.execute(sql_os)
                     reg_os = cursor.fetchone()
                     df_razao_placas.loc[index, 'desc_os'] = reg_os.desc_os
+                    df_razao_placas['obs_os'] = reg_os.obs_os
+                    df_razao_placas['desc_tipo_os'] = reg_os.desc_tipo_os
                     df_razao_placas.loc[index, 'desc_produto'] = reg_os.desc_produto
                     df_razao_placas.loc[index, 'desc_cluster'] = reg_os.desc_conjunto
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2556:
+                handle_fn_doc = df_razao_placas.loc[index, 'handle_fn_doc']
+                if handle_fn_doc > 0:
+                    sql_os = (
+                        f'''
+                        SELECT 	os.CODIGO		        AS	codigo_os,
+                                os.DESCRICAO	        AS	desc_os,
+                                tipo_os.NOME            AS  desc_tipo_os,
+                                os.OBSERVACOES          AS  obs_os,
+                                prod.HANDLE		        AS	handle_prod,
+                                prod.nome		        AS	desc_produto,
+                                'COMBUSTIVEL'	        AS	desc_conjunto,
+                                itens_ordem_compra.quantidade
+                                                        AS  qtd_item,
+                                un.NOME	                AS  nome_un
+                          FROM	FN_DOCUMENTOS (NOLOCK) FN_DOC     
+                          LEFT	JOIN CP_RECEBIMENTOFISICOPAI (NOLOCK) receb_fisico_pai 
+                            ON	(receb_fisico_pai.HANDLE = FN_DOC.RECEBIMENTOFISICO)  
+                          LEFT	JOIN CP_RECEBIMENTOFISICO (NOLOCK) receb_fisico
+                            ON	(receb_fisico.RECEBIMENTOFISICOPAI = receb_fisico_pai.HANDLE)  
+                          LEFT	JOIN CP_ORDENSCOMPRAITENS (NOLOCK) itens_ordem_compra 
+                            ON	(itens_ordem_compra.HANDLE = receb_fisico.ORDEMCOMPRAITEM)  
+                          LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                            ON	(prod.HANDLE = itens_ordem_compra.PRODUTO)    
+                          LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                            ON	(un.HANDLE = itens_ordem_compra.UNIDADE)  
+                          LEFT	JOIN MF_ORDEMSERVICOCOMBUSTIVEIS (NOLOCK) os_comb 
+                            ON	(os_comb.ORDEMCOMPRAPRODUTO = itens_ordem_compra.HANDLE)
+                          LEFT	JOIN MF_ORDEMSERVICOS (NOLOCK) os 
+                            ON	(os.HANDLE = os_comb.ORDEMSERVICO)  
+                          LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                            ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
+                         WHERE	FN_DOC.handle = {handle_fn_doc} 
+                        '''
+                    )
+                    cursor = self.__conn.cursor()
+                    cursor.execute(sql_os)
+                    itens_os_comb = cursor.fetchall()
+                    codigo_os = ''
+                    desc_os = ''
+                    desc_produto = ''
+                    desc_conjunto = ''
+                    for os in itens_os_comb:
+                        codigo_os = os.codigo_os
+                        desc_os = f'DESCRICAO OS: {os.desc_os}' #. OBSERVAÇÃO OS: {os.obs_os}
+                        desc_produto += os.desc_produto + ', Qtd.: ' + str(os.qtd_item) + '(' + os.nome_un + ') / '
+                        desc_conjunto = os.desc_conjunto
+                    df_razao_placas.loc[index, 'codigo_os'] = codigo_os
+                    df_razao_placas.loc[index, 'desc_os'] = desc_os
+                    df_razao_placas['desc_tipo_os'] = os.desc_tipo_os
+                    df_razao_placas.loc[index, 'desc_produto'] = desc_produto
+                    df_razao_placas.loc[index, 'desc_cluster'] = desc_conjunto
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2542:
+                df_razao_placas.loc[index, 'desc_cluster'] = 'PEDAGIOS'
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2592:
+                df_razao_placas.loc[index, 'desc_cluster'] = 'VALE FISICO'
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2593:
+                df_razao_placas.loc[index, 'desc_cluster'] = 'VALE FINANCEIRO'
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] in (2796,2802,2916):
+                df_razao_placas.loc[index, 'desc_cluster'] = 'MULTAS'
+
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] in (3849, 3894):
+                df_razao_placas.loc[index, 'desc_cluster'] = 'AVARIAS'
 
 
 
         self.__conn.close()
         return df_razao_placas
+
+

@@ -11,8 +11,9 @@
   <!-- Bootstrap select picker -->
   <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}"/>
 
-  <!-- Bibliotecas Table-->
-  <link defer   rel="stylesheet" href="{% static 'libs/jquery_3_6_0/css/dataTables.min.css' %}"/>
+  <!-- Bibliotecas Table
+  <link defer   rel="stylesheet" href="{% static 'libs/jquery_3_6_0/css/dataTables.min.css' %}"/> -->
+
 
   <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
   <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
@@ -150,12 +151,15 @@
 
 {% block link_js %}
   <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
-  <!-- Bibliotecas Table-->
+  <!-- Bibliotecas Table
   <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.min.js' %}"></script>
+
+
   <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.buttons.min.js' %}"></script>
   <script defer src="{% static 'libs/jquery_3_6_0/js/jszip.min.js' %}"></script>
   <script defer src="{% static 'libs/jquery_3_6_0/js/vfs_fonts.js' %}"></script>
   <script defer src="{% static 'libs/jquery_3_6_0/js/buttons.html5.min.js' %}"></script>
+  -->
 
 
 
@@ -183,11 +187,7 @@
           type="text/javascript">
   </script>
 
-<!--
-  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_m1_controller.js' %}"
-          type="text/javascript">
-  </script>
-  -->
+
 
   <script src="{% static 'controllers/contabil_operacoes_farol_ndd_app/form_notas_tratadas_controller.js' %}"
           type="text/javascript">

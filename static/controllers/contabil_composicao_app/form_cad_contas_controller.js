@@ -454,8 +454,8 @@ $(document).on('click','button', function(){
                 success: function (data) {
                     //$("#tab_conciliacao_composicao_benner").DataTable().clear().draw();
                     //Limpa tabela
-                    $("#tab_conciliacao_composicao_benner").dataTable().fnClearTable();
-                    $("#tab_conciliacao_composicao_benner").dataTable().fnDestroy();
+                    //$("#tab_conciliacao_composicao_benner").dataTable().fnClearTable();
+                    //$("#tab_conciliacao_composicao_benner").dataTable().fnDestroy();
                     const tabela = new DataTable("#tab_conciliacao_composicao_benner");
                     let let_lista_dados = [];
                     for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
@@ -3032,8 +3032,8 @@ function gera_conciliacao_comp_benner_detalhado(){
             },
             dataType: 'json',
             success: function (data) {
-                $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnClearTable();
-                $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnDestroy();
+               // $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnClearTable();
+                //$("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnDestroy();
                 const tabela = new DataTable("#tab_conciliacao_composicao_benner_detalhado");
 
                 let let_lista_dados_conciliacao = [];

@@ -52,7 +52,7 @@ $(document).on('change','input', function(){
 
 				$.gritter.add({
                     title: 'Atenção!',
-                    text: data.tipo_planilha_frm,
+                    text: data.msg,
                     image: '../../static/icons/triangle-exclamation-solid.svg',
                     sticky: false,
                     time: '',
