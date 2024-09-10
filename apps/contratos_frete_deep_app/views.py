@@ -22,7 +22,7 @@ class Processa_Contrato(View):
             nro_contrato=nro_contrato,
             razao_social_contratado=razao_social_contratado,
             data_contrato=data_contrato,
-            status=status,
+            status_contrato=status,
             nome_arquivo=nome_arquivo,
             data_processamento=data_processamento
         )

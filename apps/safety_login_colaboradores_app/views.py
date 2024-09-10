@@ -94,13 +94,13 @@ class Menu_Safe(View):
                                                 <b style="color:white;">Relatos</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=3).first() is not None:
-                str_menu_colaborador += '''
-                                            <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">GSDPQ</b>
-                                            </div>
-                                        '''
+            ##if check_ativo.filter(cod_check__tipo_check=3).first() is not None:
+            #    str_menu_colaborador += '''
+            #                                <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+            #                                    <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
+            #                                    <b style="color:white;">GSDPQ</b>
+            #                                </div>
+            #                            '''
             if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
@@ -133,7 +133,7 @@ class Menu_Safe(View):
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+                                                <b style="color:white;">GSO</b>
                                             </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
@@ -145,10 +145,6 @@ class Menu_Safe(View):
                                             <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
                                                     <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
                                                     <b style="color:white;">Relatos</b>
-                                            </div>
-                                            <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-                                                    <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
-                                                    <b style="color:white;">GSDPQ</b>
                                             </div>
                                             <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem">
                                                     <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
@@ -172,6 +168,10 @@ class Menu_Safe(View):
                                             </div>
                                         </div>
                                     '''
+            #   <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
+            #           <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
+            #           <b style="color:white;">GSDPQ</b>
+            #   </div>
 
         context = {
             'nome_colaborador': primeiro_nome_colaborador,
@@ -191,8 +191,8 @@ class Menu_Safe(View):
             url = 'empilhadeira_check'
         elif tipo_check == '1':
             url = 'relatos_check'
-        elif tipo_check == '2':
-            url = 'gsdpq_check'
+        #elif tipo_check == '2':
+        #    url = 'gsdpq_check'
         elif tipo_check == '3':
             url = 'blitz_trajeto_carro_check'
         elif tipo_check == '4':

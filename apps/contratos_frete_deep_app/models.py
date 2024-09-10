@@ -5,7 +5,7 @@ class Contrato_Processado(models.Model):
     nro_contrato = models.CharField(max_length=100, blank=False, null=False)
     razao_social_contratado = models.CharField(max_length=300, blank=False, null=False)
     data_contrato = models.CharField(max_length=60, blank=False, null=False)
-    status = models.CharField(max_length=60, blank=False, null=False)
+    status_contrato = models.CharField(max_length=60, blank=False, null=False)
     nome_arquivo = models.CharField(max_length=300, blank=False, null=False)
     data_processamento = models.DateTimeField(blank=True, null=True)
 

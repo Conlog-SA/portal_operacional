@@ -43,25 +43,25 @@ class Check_Aplicado_View(View):
         if tipo_check_aplicado == '1':
             #validacao_gab_op_existentes
             validacao_checks_existentes = Gabarito_Operacional_Emp.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '2':
+        elif tipo_check_aplicado == '2':
             #validao_relatos_existentes
             validacao_checks_existentes = Relato.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '3':
+        elif tipo_check_aplicado == '3':
             #validacao_gsdpq_existentes
             validacao_checks_existentes = Gabarito_GSDPQ.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '4':
+        elif tipo_check_aplicado == '4':
             #validacao_blitz_carro_existentes
             validacao_checks_existentes = Blitz_Trajeto_Carro.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '5':
+        elif tipo_check_aplicado == '5':
             #validacao_blitz_moto_existentes
             validacao_checks_existentes = Blitz_Trajeto_Moto.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '6':
+        elif tipo_check_aplicado == '6':
             #validacao_blitz_bicicleta_existentes
             validacao_checks_existentes = Blitz_Trajeto_Bicicleta.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '7':
+        elif tipo_check_aplicado == '7':
             #validacao_blitz_outros_meios_existentes
             validacao_checks_existentes = Blitz_Trajeto_Outros_Meios.objects.all().values('cod_check_aplicado')
-        if tipo_check_aplicado == '8':
+        elif tipo_check_aplicado == '8':
             #validacao_gso_existentes
             validacao_checks_existentes = Gabarito_GSO.objects.all().values('cod_check_aplicado')
 
@@ -69,9 +69,19 @@ class Check_Aplicado_View(View):
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados:
-            count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
-            count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
             respostas_button = Item_Check_Aplicados.objects.filter(cod_check_aplicado=check)
+            respostas_button_list = list(respostas_button)
+            respostas_ok = []
+            respostas_nok = []
+            for resposta in respostas_button_list:
+                if resposta.resp_item == 0:
+                    respostas_ok.append(resposta)
+                elif resposta.resp_item == 1:
+                    respostas_nok.append(resposta)
+            count_respostas_ok = len(respostas_ok)
+            count_respostas_nok = len(respostas_nok)
+            #count_respostas_ok = Item_Check_Aplicados.objects.filter(resp_item=0, cod_check_aplicado=check).count()
+            #count_respostas_nok = Item_Check_Aplicados.objects.filter(resp_item=1, cod_check_aplicado=check).count()
             count_respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=check)
             count_respostas_texto = count_respostas_texto.exclude(comentario__isnull=True).exclude(comentario__exact='').exclude(cod_check_aplicado__in=respostas_button.values('cod_check_aplicado'), cod_item_check__in=respostas_button.values('cod_item_check')).count()
             obj_layout_check = check.cod_layout_check
