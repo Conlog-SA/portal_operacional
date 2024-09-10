@@ -44,7 +44,7 @@ $(document).on('click', 'button', function(){
         $("#sl_tipo_veic_equip_custos_placa").selectpicker('selectAll');
     } else if ( let_nome_btn == 'btn_gera_dados_custos_placas_proj' ) {
         let let_lista_handle_proj = $("#sl_proj_custos_placa").val().toString();
-        let let_lista_handle_contas = $("#sl_tipo_veic_equip_custos_placa").val().toString();
+        let let_lista_handle_tipo_contas = $("#sl_tipo_veic_equip_custos_placa").val().toString();
         let let_comp = $("#dt_comp_frm_custos_placa").val();
 
         let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
@@ -53,48 +53,49 @@ $(document).on('click', 'button', function(){
             type: 'GET',
             data: {
                 'lista_handle_proj'         :   let_lista_handle_proj,
-                'lista_handle_contas'       :   let_lista_handle_contas,
+                'lista_handle_tipo_contas'  :   let_lista_handle_tipo_contas,
                 'comp'                      :   let_comp
             },
             url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
             success: function(dados){
                 //$("#div_placas_frm_custos_placa").html(dados);
+
                 lista_placas_razao = [];
                 dados.dic_dados_razao.forEach(doc => {
+                    let let_comp_cluster = `
+                        <select id="sl_cluster_frm_custos_placa_${doc.handle_lan}"
+                                name="sl_cluster_frm_custos_placa"
+                                style="font-size: 10px;"
+                                data-live-search="true">
+                    `;
+                    dados.lista_cluster.forEach(item => {
+                        let let_selected = ``;
+                        if(item.cod_item_cluster == doc.cod_cluster){
+                            let_selected = `selected=selected`;
+                        }
+                        let_comp_cluster += `<option value="${item.cod_item_cluster}" ${let_selected}>${item.desc_item_cluster}</option>`;
+                    });
+                    let_comp_cluster += `</select>`;
+
                     reg = [
-                        '',
                         doc.placa,
-                        doc.nome_projeto,
-                        doc.desc_tipo_conta,
                         doc.conta,
-                        doc.desc_tipo_doc,
-                        doc.num_doc,
-                        doc.num_doc_contabil,
-                        doc.val_lanc,
-                        doc.tipo_lancamento,
-                        doc.obs,
                         doc.codigo_os,
                         doc.desc_os,
+                        doc.val_lanc,
+                        let_comp_cluster,
+                        doc.obs,
+                        doc.nome_fornec,
                         doc.desc_produto,
-                        doc.desc_cluster,
-                        ''
+                        doc.num_doc_contabil,
+                        doc.nome_projeto,
+                        doc.desc_tipo_conta,
+                        doc.desc_tipo_os,
+                        doc.obs_os
                     ];
                     lista_placas_razao.push(reg);
                 });
                 $("#tab_placas_razao").DataTable({
-                    /*"bJQueryUI": true,
-                    "pageLength": 10,
-                    "destroy": true,
-                    "fixedHeader": {
-                        header: true,
-                        footer: false
-                    },
-                    "searching": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copy'
-                    ],
-                    */
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
@@ -103,33 +104,63 @@ $(document).on('click', 'button', function(){
                     "scrollCollapse": true,
                     "paging": true,
                     "pageLength": 10,
+                    "responsive": true,
+                    "stateSave": true,
+                    "select": true,
+                    "colReorder": true,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'
                     ],
                     "data":lista_placas_razao,
                     "columns": [
-                        { title: "" },
                         { title: "Placa" },
-                        { title: "Projeto" },
-                        { title: "Tipo Conta" },
                         { title: "Conta" },
-                        { title: "Tipo Doc." },
-                        { title: "Núm. Doc." },
-                        { title: "Núm. Contábil" },
-                        { title: "R$ Valor" },
-                        { title: "Tipo Lançamento" },
-                        { title: "Histórico" },
                         { title: "OS" },
                         { title: "Descrição OS" },
-                        { title: "Item OS" },
+                        { title: "R$ Valor" },
                         { title: "Cluster" },
-                        { title: "Editar" }
+                        { title: "Histórico" },
+                        { title: "Fornecedor" },
+                        { title: "Item OS" },
+                        { title: "Núm. Contábil" },
+                        { title: "Projeto" },
+                        { title: "Tipo Conta" },
+                        { title: "Tipo OS" },
+                        { title: "Obs. OS" }
                     ],
+                    "initComplete": function () {
+                        this.api()
+                            .columns([0,1,2,7,9,10,11])
+                            .every(function () {
+                                let column = this;
+
+                                // Create select element
+                                let select = document.createElement('select');
+                                select.add(new Option(''));
+                                column.footer().replaceChildren(select);
+
+                                // Apply listener for user change in value
+                                select.addEventListener('change', function () {
+                                    column
+                                        .search(select.value, {exact: true})
+                                        .draw();
+                                });
+
+                                // Add list of options
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.add(new Option(d));
+                                    });
+                            });
+                    },
                     "columnDefs": [
-                        {"className": "dt-center", "targets": [5,7]},
-                        {"className": "dt-left", "targets": [0]},
-                        {"className": "dt-right", "targets": [1, 2, 3, 4, 6,8]}
+                        {"className": "dt-center", "targets": [2,5,9]},
+                        {"className": "dt-left", "targets": [0,1,4,6,7,8,10,11]},
+                        {"className": "dt-right", "targets": [3]}
                     ],
                     "language": {
                         "decimal": ",",
@@ -158,7 +189,7 @@ $(document).on('click', 'button', function(){
                         }
                     }
                 });
-
+                $("#tab_placas_razao").DataTable().columns.adjust().draw();
 
                 let_loader_frm_custos_placa.style.display = "none";
 
@@ -175,6 +206,61 @@ $(document).on('click', 'button', function(){
                 });
             }
         });
+    } if (let_nome_btn == 'btn_desmarcar_conta_frm_custos_placa'){
+        $("#sl_conta_frm_custos_placa").selectpicker('deselectAll');
+
+    } else if (let_nome_btn == 'btn_seleciona_todas_conta_frm_custos_placa') {
+        $("#sl_conta_frm_custos_placa").selectpicker('selectAll');
+    }
+
+});
+
+
+
+$(document).on('change','select', function(){
+    let let_nome_select = $(this).attr('name');
+    let let_id_select = $(this).attr('id');
+
+    if (let_nome_select == 'sl_cluster_frm_custos_placa'){
+        let let_cod_lan = let_id_select.split('_')[5];
+        let let_cod_item_cluster = $(this).val();
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'POST',
+            url: '/frota_custos_placa_app/altera_item_cluster_lancamento',
+            data: {
+                'cod_lan'           :   let_cod_lan,
+                'cod_item_cluster'  :   let_cod_item_cluster
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+
+
+
+                let_loader_frm_custos_placa.style.display = "none";
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
     }
 
 });

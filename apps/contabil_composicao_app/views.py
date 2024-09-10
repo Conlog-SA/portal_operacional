@@ -48,6 +48,7 @@ class Form_Imp_Cad_Conta_View(View):
         lista_filiais = Filial.objects.filter(cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
                                               cod_reduzido__isnull=False)
 
+
         # diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
         nome_pasta_empresa = ''
         # qtd_arquivos_postados = 0
@@ -57,6 +58,7 @@ class Form_Imp_Cad_Conta_View(View):
             nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
         diretorio_arquivos_postados = os.path.join(BASE_DIR,
                                                    f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
+
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = 0
         for arq in lista_arquivos:
@@ -1928,19 +1930,25 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date])'''
+                '''print('Parcelas')
+                for parc in parcelas:
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val pago {parc.val_pago}')'''
 
 
                 val_parcelas_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  #val_pago=0
                             data_vencimento__lte=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
-                    .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'))
+                    .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'), sum_val_pago_parc_atrasadas=Sum('val_pago'))
 
                 '''val_parc_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  # val_pago=0
                             data_vencimento__lte=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
-'''
+                print('Atrasadas')
+                for parc_atr in val_parc_atrasadas:
+                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')'''
+
 
 
                 val_composicao_ano = 0
@@ -1952,7 +1960,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     val_pago = val_composicao_ano_dic['sum_val_pago']
 
                 if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
-                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas']
+                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
 
 
                 val_composicao = val_composicao_ano - val_pago
