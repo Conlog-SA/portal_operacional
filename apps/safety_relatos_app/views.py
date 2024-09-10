@@ -36,9 +36,12 @@ class Form_Gerar_Relatos_Check(View):
             filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
             filiais = Filial.objects.filter(cod_empresa=filial_usuario.cod_empresa, cod_filial__in=check_ativo.values('cod_filial').distinct())
 
-            if filial_usuario.cod_empresa.cod_empresa == 12 or filial_usuario.cod_empresa.cod_empresa == '12':
+            if filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial not in [34, 57, 89]:
                 filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
-            elif filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_empresa.cod_empresa == '17':
+            elif filial_usuario.cod_empresa.cod_empresa == 12 and filial_usuario.cod_filial in [34, 57, 89]:
+                filiais_transporte_pessoas = filiais_transporte_pessoas.exclude(cod_filial=filial_usuario.cod_filial)
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif filial_usuario.cod_empresa.cod_empresa == 17:
                 filiais = filiais.union(filiais_transporte_pessoas)
 
             for filial in filiais:
@@ -51,15 +54,20 @@ class Form_Gerar_Relatos_Check(View):
         processos = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
         for processo in processos:
             str_options_select_processo += f'<option value="{processo.cod_componente}">{processo.desc_componente}</option>'
-        lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
-        lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
-        lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        if filial_usuario.cod_filial not in [34, 57, 89]:
+            lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+        else:
+            lista_categorias_ato_inseguro = Itens_Componentes.objects.filter(campo_check=3, cod_empresa=17)
+            lista_categorias_condicao_insegura = Itens_Componentes.objects.filter(campo_check=4, cod_empresa=17)
+            lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=17)
 
         str_options_select_local = ''
-        if filial_usuario.cod_empresa.cod_empresa == 17:
+        if filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_filial in [34, 57, 89]:
+            print('teste')
             flag_deep = True
-            locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6,
-                                                         cod_empresa=filial_usuario.cod_empresa.cod_empresa)
+            locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6)
             for local in locais:
                 str_options_select_local += f'<option value="{local.cod_componente}">{local.desc_componente}</option>'
         else:

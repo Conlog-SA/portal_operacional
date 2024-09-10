@@ -48,6 +48,7 @@ class Form_Imp_Cad_Conta_View(View):
         lista_filiais = Filial.objects.filter(cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
                                               cod_reduzido__isnull=False)
 
+
         # diretorio_arquivos_postados = 'media/docs/contabil_composicao_app/anexos_pendentes_importacao'
         nome_pasta_empresa = ''
         # qtd_arquivos_postados = 0
@@ -57,6 +58,7 @@ class Form_Imp_Cad_Conta_View(View):
             nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
         diretorio_arquivos_postados = os.path.join(BASE_DIR,
                                                    f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
+
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = 0
         for arq in lista_arquivos:

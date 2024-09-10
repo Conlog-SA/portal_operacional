@@ -217,6 +217,10 @@ class Lista_Colaboradores(View):
         if tipo_check == '1':
             lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='op')
             lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='empilhadeira')
+        if tipo_check == '8':
+            lista_colaboradores = (lista_colaboradores.filter(desc_cargo__icontains='Motorista de Ônibus Rodoviário')
+                                   .union(lista_colaboradores.filter(desc_cargo__icontains='Motorista Instrutor'))
+                                   .union(lista_colaboradores.filter(desc_cargo__icontains='Instrutor de Motorista')))
         dict_colaboradores_options = []
         for colaborador in lista_colaboradores:
             dict_colaboradores_options.append({'cod_colaborador': colaborador.cod_colaborador, 'nome_colaborador': colaborador.nome_colaborador, 'desc_cargo': colaborador.desc_cargo}) #f'<option value="{operador.cod_colaborador}">{operador.nome_colaborador}</option>'
