@@ -1244,7 +1244,10 @@ class ConexaoBancoBenner():
                   "         NOME,    " +
                   "         SUBSTRING(estrutura, 1,1) AS ESTRUT_EMP, "
                   "         SUBSTRING(estrutura, 1,4) AS ESTRUT_OP, "
-                  "         SUBSTRING(estrutura, 1,7) AS ESTRUT_FIL "
+                  "         SUBSTRING(estrutura, 1,7) AS ESTRUT_FIL,"
+                  "         CASE WHEN EMPRESA = 12 THEN 'CONLOG'"
+                  "              WHEN EMPRESA = 17 THEN 'DEEP'"
+                  "         END         AS  desc_empresa  "
                   "  FROM   GN_PROJETOS (NOLOCK) " +
                   " WHERE   LEN(ESTRUTURA)= 11 " +
                   "   AND   EMPRESA = " + str(cod_empresa))
@@ -1252,7 +1255,7 @@ class ConexaoBancoBenner():
         projetos_cursor = cursor.fetchall()
         for row in projetos_cursor:
             projeto = Projeto_Benner(row.HANDLE, row.EMPRESA, row.ESTRUT_EMP, row.ESTRUT_OP, row.ESTRUT_FIL,
-                                     row.ESTRUTURA, row.NOME)
+                                     row.ESTRUTURA, row.NOME, row.desc_empresa)
             lista_projetos.append(projeto)
         cursor.close()
         self.__conn.close()

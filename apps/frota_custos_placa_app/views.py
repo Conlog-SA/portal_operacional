@@ -30,10 +30,11 @@ class Frm_Custos_Placa_View(View):
                        ('OPERACIONAL', 'TRANSPORTE')) and '(INATIVO)' not in proj1.nome_proj:
                     lista_projetos.append(proj1)
 
-            lista_projetos_benner_na_conlog = (ConexaoBancoBenner()
-                .retorna_projetos_by_empresa(12))
+            lista_projetos_benner_na_conlog = (ConexaoBancoBenner().retorna_projetos_by_empresa(12))
+            '''143 - OPERACIONAL UEL - GLD
+            1060 - OPERACIONAL RIO BRILHANTE - GLD'''
             for proj2 in lista_projetos_benner_na_conlog:
-                if proj2.handle_proj in (380, 390, 875, 1060, 912, 916):
+                if proj2.handle_proj in (143, 380, 390, 875, 1060, 912, 916):
                     lista_projetos.append(proj2)
 
         context = {
@@ -48,7 +49,8 @@ class Frm_Custos_Placa_Proj_View(View):
         lista_handle_tipo_contas_frm = request.GET['lista_handle_tipo_contas']
         comp_frm = request.GET['comp']
 
-        df_custos_placas = ConexaoBancoBenner().retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_tipo_contas_frm, comp_frm.split('-')[0], comp_frm.split('-')[1])
+        df_custos_placas = (ConexaoBancoBenner()
+                            .retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_tipo_contas_frm, comp_frm.split('-')[0], comp_frm.split('-')[1]))
         #df_custos_placas.to_excel('df_custos_placas.xlsx')
         df_group_placas_contas = df_custos_placas[['PLACA', 'NOME_PROJETO', 'desc_tipo_conta', 'HANDLE_CONTA', 'NOME_CONTA',
                                                    'tipo_lancamento','NUM_DOC', 'num_doc_contabil', 'desc_tipo_doc',

@@ -46,7 +46,7 @@
                                 data-live-search="true"
                                 title="Selecione o projeto">
                             {% for proj in lista_projetos_benner %}
-                                <option value="{{ proj.handle_proj }}">{{ proj.nome_proj }}</option>
+                                <option value="{{ proj.handle_proj }}">{{ proj.nome_proj }} - {{ proj.desc_empresa }}</option>
                             {% endfor %}
 
                         </select>
@@ -76,20 +76,19 @@
                                 multiple data-selected-text-format="count > 0"
                                 data-live-search="true"
                                 title="Selecione o tipo de veículo/equipamento">
-                            {% if cod_empresa == 12 %}
-                                <option value="1267">VEICULOS PRÓPRIOS</option>
-                                <option value="2295">EQUIPAMENTOS</option>
-                                <option value="2442">VEICULOS DE AGREGADOS E TERCEIROS</option>
-                                <option value="6881">FROTA LEVE</option>
-                                <option value="7217">LOCADOS/COMODATADOS</option>
-                                <option value="11485">VEICULOS DE AGREGADOS E TERCEIROS (NOVO)</option>
-                            {% endif %}
-                            {% if cod_empresa == 17 %}
-                                <option value="5444">EQUIPAMENTOS</option>
-                                <option value="6922">VEICULOS PROPRIOS</option>
-                                <option value="7027">VEICULOS DE AGREGADOS E TERCEIROS</option>
-                                <option value="7085">FROTA LEVE ALUGADA</option>
-                            {% endif %}
+
+                                <option value="1267">CONTA: VEICULOS PRÓPRIOS CONLOG</option>
+                                <option value="2295">CONTA: EQUIPAMENTOS CONLOG</option>
+                                <option value="2442">CONTA: VEICULOS DE AGREGADOS E TERCEIROS CONLOG</option>
+                                <option value="6881">CONTA: FROTA LEVE CONLOG</option>
+                                <option value="7217">CONTA: LOCADOS/COMODATADOS CONLOG</option>
+                                <option value="11485">CONTA: VEICULOS DE AGREGADOS E TERCEIROS (NOVO) CONLOG</option>
+
+                                <option value="5444">CONTA: EQUIPAMENTOS DEEP</option>
+                                <option value="6922">CONTA: VEICULOS PROPRIOS DEEP</option>
+                                <option value="7027">CONTA: VEICULOS DE AGREGADOS E TERCEIROS DEEP</option>
+                                <option value="7085">CONTA: FROTA LEVE ALUGADA DEEP</option>
+
                         </select>
                     </div>
                 </div>
