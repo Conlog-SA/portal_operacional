@@ -70,6 +70,7 @@ class Projeto(models.Model):
     data_inativado = models.DateField(null=True)
     data_inicio = models.DateField(null=True)
     integra_frota = models.CharField(max_length=1,null=True)
+    ctrl_cluster_dre = models.CharField(max_length=1,null=True)
     class Meta:
         managed = True
         db_table = 'ger_projetos'

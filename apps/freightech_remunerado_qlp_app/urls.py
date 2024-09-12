@@ -7,5 +7,7 @@ urlpatterns = [
                  name='acessa_frm_importa_plan_freightech'),
     path('importa_plan_remunerado_selecionada', views.Frm_Importa_Plan_Remunerado_Freightech_View.as_view(),
                  name='importa_plan_remunerado_selecionada'),
+    path('retorna_rem_comparacao_competencias', views.Frm_Pesq_Dados_Comparacao_Quinzenas_View.as_view(),
+         name='retorna_rem_comparacao_competencias'),
 
 ]

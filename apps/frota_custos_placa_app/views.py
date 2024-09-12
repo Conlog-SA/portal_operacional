@@ -13,12 +13,32 @@ class Frm_Custos_Placa_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
-        lista_projetos_benner = (ConexaoBancoBenner()
-                                 .retorna_projetos_by_empresa(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+        lista_projetos = []
+        if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12:
+            lista_projetos_benner = (ConexaoBancoBenner()
+                                     .retorna_projetos_by_empresa(
+                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+            for proj in lista_projetos_benner:
+                if any(x in proj.nome_proj for x in ('ROTA', 'TERCEIROS', 'ARMAZEM', 'EQUIPAMENTO', 'AUTO SERVIÇO', 'APOIO', 'UDC'))\
+                        and '(INATIVO)' not in proj.nome_proj:
+                    lista_projetos.append(proj)
+        elif obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 17:
+            lista_projetos_benner_deep = (ConexaoBancoBenner().retorna_projetos_by_empresa(
+                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+            for proj1 in lista_projetos_benner_deep:
+                if any(x in proj1.nome_proj for x in
+                       ('OPERACIONAL', 'TRANSPORTE')) and '(INATIVO)' not in proj1.nome_proj:
+                    lista_projetos.append(proj1)
+
+            lista_projetos_benner_na_conlog = (ConexaoBancoBenner()
+                .retorna_projetos_by_empresa(12))
+            for proj2 in lista_projetos_benner_na_conlog:
+                if proj2.handle_proj in (380, 390, 875, 1060, 912, 916):
+                    lista_projetos.append(proj2)
 
         context = {
             'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
-            'lista_projetos_benner': lista_projetos_benner
+            'lista_projetos_benner': lista_projetos
         }
         return render(request, 'frota_custos_placa_app/frm_custos_placa.html', context)
 
