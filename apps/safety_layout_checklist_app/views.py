@@ -34,14 +34,14 @@ class Form_Seguranca_Check(View):
             lista_filiais = Filial.objects.filter(cod_empresa=usuario.cod_filial.cod_empresa, ativo=1)
             #lista_filiais = Filial.objects.all()
             flag_corporativo = 1
-        elif usuario.corporativo == 'N':
-            lista_filiais = [usuario.cod_filial]
 
-        filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
-        if usuario.cod_filial.cod_empresa.cod_empresa == 12:
-            filiais = lista_filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
-        elif usuario.cod_filial.cod_empresa.cod_empresa == 17:
-            filiais = lista_filiais.union(filiais_transporte_pessoas)
+            filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
+            if usuario.cod_filial.cod_empresa.cod_empresa == 12:
+                filiais = lista_filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif usuario.cod_filial.cod_empresa.cod_empresa == 17:
+                filiais = lista_filiais.union(filiais_transporte_pessoas)
+        elif usuario.corporativo == 'N':
+            filiais = [usuario.cod_filial]
 
         '''for filial in lista_filiais:
             lista_filiais_dict.append({filial.cod_filial, filial.desc_filial})
