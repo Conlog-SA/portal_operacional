@@ -14,7 +14,11 @@ class Frm_Custos_Placa_View(View):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
         lista_projetos = []
+        logo_empresa = ''
+        cor_padrao = ''
         if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12:
+            logo_empresa = 'icons/logo-branca.png'
+            cor_padrao = '#f46424'
             lista_projetos_benner = (ConexaoBancoBenner()
                                      .retorna_projetos_by_empresa(
                 obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
@@ -23,6 +27,8 @@ class Frm_Custos_Placa_View(View):
                         and '(INATIVO)' not in proj.nome_proj:
                     lista_projetos.append(proj)
         elif obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 17:
+            logo_empresa = 'icons/logo-small-deep.png'
+            cor_padrao = '#3b8eed' ##3378ad
             lista_projetos_benner_deep = (ConexaoBancoBenner().retorna_projetos_by_empresa(
                 obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
             for proj1 in lista_projetos_benner_deep:
@@ -37,8 +43,11 @@ class Frm_Custos_Placa_View(View):
                 if proj2.handle_proj in (143, 380, 390, 875, 1060, 912, 916):
                     lista_projetos.append(proj2)
 
+
         context = {
             'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
+            'logo_empresa': logo_empresa,
+            'cor_padrao': cor_padrao,
             'lista_projetos_benner': lista_projetos
         }
         return render(request, 'frota_custos_placa_app/frm_custos_placa.html', context)

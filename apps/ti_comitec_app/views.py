@@ -218,6 +218,9 @@ class Frm_Edit_Ideia_View(View):
 
         cod_usu_master = 0
         obs_usu_master = ''
+        cod_usu_head = 0
+        obs_usu_master = ''
+        nota_head = 0
         if obj_ideia.cod_usu_master != None:
             cod_usu_master =  obj_ideia.cod_usu_master.cod_usu
             obs_usu_master = obj_ideia.obs_usu_master
