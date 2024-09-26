@@ -3,6 +3,27 @@ from django.db import models
 from apps.estrut_org_app.models import Projeto
 from apps.usuario_app.models import Usuario
 
+class Operadora_Plano(models.Model):
+    cod_operadora_plano = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    desc_operadora_plano = models.CharField(max_length=80, blank=False, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'op_gente_gestao_rateio_unimed_operadoras_plano'
+
+class Plano_Saude(models.Model):
+    cod_plano_saude = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    filial = models.CharField(max_length=80, blank=False, null=False)
+    especificacao = models.CharField(max_length=80, blank=True, null=True)
+    percentual_empresa_titular = models.IntegerField(blank=True, null=True)
+    percentual_empresa_dependente = models.IntegerField(blank=True, null=True)
+    percentual_empresa_copay = models.IntegerField(blank=True, null=True)
+    operadora_plano = models.ForeignKey(Operadora_Plano, models.DO_NOTHING, db_column='operadora_plano', blank=False,
+                      null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'op_gente_gestao_rateio_unimed_planos'
 
 class Arquivo_Despesas(models.Model):
     cod_arq_despesa = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -10,9 +31,12 @@ class Arquivo_Despesas(models.Model):
     nome_arq_original = models.CharField(max_length=100, blank=False, null=False)
     competencia_informada = models.DateField(blank=True, null=True)
     qtd_registros = models.IntegerField(blank=False, null=False)
-    qtd_importados = models.IntegerField(blank=False, null=False)
-    qtd_atualizados = models.IntegerField(blank=False, null=False)
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
+    status_arquivo = models.IntegerField(blank=False, null=False)
+    data_desativacao = models.DateTimeField(null=False, blank=False)
+    cod_usu_desativacao = models.IntegerField(blank=False, null=False)
+    cod_plano_saude = models.ForeignKey(Plano_Saude, models.DO_NOTHING, db_column='cod_plano_saude', blank=False,
+                                    null=False)
 
     class Meta:
         managed = True
@@ -40,7 +64,9 @@ class Despesa_Unimed(models.Model):
                null=False)
     cod_arq_despesa = models.ForeignKey(Arquivo_Despesas, models.DO_NOTHING, db_column='cod_arq_despesa', blank=False,
                                     null=False)
+    percentual_empresa = models.CharField(max_length=20, blank=True, null=True)
 
     class Meta:
         managed = True
         db_table = 'op_gente_gestao_rateio_unimed_despesas'
+
