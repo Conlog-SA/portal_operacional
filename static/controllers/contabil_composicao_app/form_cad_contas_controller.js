@@ -3667,8 +3667,8 @@ function gera_conciliacao_comp_benner_auditoria(){
                 },
                 dataType: 'json',
                 success: function (data) {
-                    $("#tab_conciliacao_composicao_benner_aud").dataTable().fnClearTable();
-                    $("#tab_conciliacao_composicao_benner_aud").dataTable().fnDestroy();
+                    //$("#tab_conciliacao_composicao_benner_aud").dataTable().fnClearTable();
+                    //$("#tab_conciliacao_composicao_benner_aud").dataTable().fnDestroy();
                     //const tabela = new DataTable("#tab_conciliacao_composicao_benner_aud");
 
                     let let_lista_dados_conciliacao = [];

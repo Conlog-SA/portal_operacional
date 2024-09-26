@@ -89,14 +89,93 @@
 
         </form>
         <div id="div_conteudo_plan_remunerado_importado" class="form-group  cl_div_tabela_principal_pagina w-100">
+            <form id="frm_pesq_qlp_freigh" name="frm_pesq_qlp_freigh"
+                  class="d-flex mt-3 flex-column align-items-center justify-content-between">
+                {% csrf_token %}
+
+                <div class="d-flex align-items-center justify-content-start text-white w-100 mb-3">
+                    <div class="d-flex align-items-start justify-content-between">
+                        <h5>
+                            <i class="fa-solid fa-code-compare" style="color: #f46424;"></i>
+                            Comparação Planilhas Remuneração por Período
+                        </h5>
+                    </div>
+                    <div class="mt-3 d-flex align-items-start justify-content-between">
+                        &nbsp;
+                    </div>
+                    <div class="mt-3 d-flex align-items-start justify-content-between">
+                        &nbsp;
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100 mb-6" >
+                    <div class="d-flex flex-column w-100"
+                         style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                        <label for="sl_unidade_pesq_qlp_freigh">Unidade</label>
+                        <select class="selectpicker form-control" id="sl_unidade_pesq_qlp_freigh"
+                                name="sl_unidade_qlp_adm_freigh"
+                                title="Unidade"
+                                data-live-search="true">
+                            <option value="CDD CAMBORIU">CDD CAMBORIU</option>
+                            <option value="CDD CUIABA">CDD CUIABA</option>
+                            <option value="CDD FLORIANOPOLIS">CDD FLORIANOPOLIS</option>
+                            <option value="CDD GUARULHOS">CDD GUARULHOS</option>
+                            <option value="CDD PELOTAS">CDD PELOTAS</option>
+                            <option value="CDD RIO DE JANEIRO">CDD RIO DE JANEIRO</option>
+                            <option value="MACACU">MACACU</option>
+                            <option value="UDC GUARULHOS">UDC GUARULHOS</option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-column w-100"
+                         style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                        <label for="dt_comp_pesq_qlp_freigh_1">Data 1</label>
+                        <input type="month" class="form-control" id="dt_comp_pesq_qlp_freigh_1" required>
+                    </div>
+                    <div class="d-flex flex-column w-100"
+                         style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                        <label for="dt_quinz_pesq_qlp_freigh_1">Quinzena</label>
+                        <select class="selectpicker form-control" id="dt_quinz_pesq_qlp_freigh_1"
+                                name="dt_quinz_pesq_qlp_freigh_1"
+                                title="Quinzena">
+                            <option value="1">Quinz. 1</option>
+                            <option value="2">Quinz. 2</option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-column w-100"
+                         style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                        <label for="dt_comp_pesq_qlp_freigh_2">Data 2</label>
+                        <input type="month" class="form-control" id="dt_comp_pesq_qlp_freigh_2" required>
+                    </div>
+                    <div class="d-flex flex-column w-100"
+                         style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                        <label for="dt_quinz_pesq_qlp_freigh_2">Quinzena</label>
+                        <select class="selectpicker form-control" id="dt_quinz_pesq_qlp_freigh_2"
+                                name="dt_quinz_qlp_adm_freigh_2"
+                                title="Quinzena">
+                            <option value="1">Quinz. 1</option>
+                            <option value="2">Quinz. 2</option>
+                        </select>
+                    </div>
+                    <div class="d-flex flex-column w-100" style="margin-top: 1rem;margin-left: 0.25rem;">
+                        <button type='button' id="btn_aplicar_pesq_qlp_freigh"
+                            name="btn_aplicar_pesq_qlp_freigh"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Aplicar
+                        </button>
+                    </div>
+                </div>
+            </form>
+            <br>
             <div class="col-md-12 w-100 h-100">
                 <nav>
                     <div class="nav nav-tabs" id="myTab" role="tablist">
                         <button class="nav-link active" id="a_tab_param_plan_rem" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_param_plan_rem" type="button" role="tab"
                                 aria-controls="div_tab_param_plan_rem" aria-selected="true">
-                            <i class="fa-regular fa-lightbulb" style="color: #f46424;"></i>
-                            Parâmetros Plan Remuneração
+                            <i class="fa-solid fa-user-graduate" style="color: #f46424;"></i>
+                            QLP ADM
                         </button>
                         <button class="nav-link" id="a_tab_cargos_rem_senior" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_cargos_rem_senior" type="button" role="tab"
@@ -112,6 +191,59 @@
                     <div class="tab-pane active" id="div_tab_param_plan_rem" name="div_tab_param_plan_rem"
                          role="tabpanel"
                          aria-labelledby="a_tab_param_plan_rem">
+
+                        <!-- START QLP ADM -->
+                        <div id="div_tab_qlp_adm_freigh" class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100">
+                                <table id="tab_qlp_adm_feigh"  class="display wrap w-100 cl_tab_principal_pagina">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Vigência</th>
+                                        <th scope="col">Quinzena</th>
+                                        <th scope="col">Grupo</th>
+                                        <th scope="col">Cargo</th>
+                                        <th scope="col">Qtd.</th>
+                                        <th scope="col">Qtd. Encargos</th>
+                                        <th scope="col">R$ Encargos</th>
+                                        <th scope="col">Qtd. Ordenados</th>
+                                        <th scope="col">R$ Ordenados</th>
+                                        <th scope="col">Qtd. Frota Leve</th>
+                                        <th scope="col">R$ Frota Leve</th>
+                                        <th scope="col">Qtd. Benefícios</th>
+                                        <th scope="col">R$ Benefícios</th>
+                                        <th scope="col">Qtd. Telefonia</th>
+                                        <th scope="col">R$ Telefonia</th>
+                                        <th scope="col">Qtd. Uniformes</th>
+                                        <th scope="col">R$ Uniformes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                            </div>
+                        </div>
+
+
+                        <!-- END QLP ADM -->
 
 
 

@@ -42,7 +42,7 @@ class Filial_Benner():
         self.nome_filial = nome_filial
 
 class Projeto_Benner():
-    def __init__(self, handle_proj, cod_emp, estrut_emp, estrut_op, estrut_filial, estrut_proj, nome_proj):
+    def __init__(self, handle_proj, cod_emp, estrut_emp, estrut_op, estrut_filial, estrut_proj, nome_proj, desc_empresa):
         self.handle_proj = handle_proj
         self.cod_emp = cod_emp
         self.estrut_emp = estrut_emp
@@ -50,6 +50,7 @@ class Projeto_Benner():
         self.estrut_filial = estrut_filial
         self.estrut_proj = estrut_proj
         self.nome_proj = nome_proj
+        self.desc_empresa = desc_empresa
 
 class DRE_SINTETICO():
     def __init__(self, COMPETENCIA, Dre_Conta_Rel_Estrut_Dre, VALOR):

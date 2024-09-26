@@ -1,11 +1,13 @@
 from datetime import datetime
+import locale
 
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
 from apps.freightech_remunerado_qlp_app.importador_plan_freitech import Importador_Plan_Freightech
-from apps.freightech_remunerado_qlp_app.models import Plan_Remunerada_Freightech
+from apps.freightech_remunerado_qlp_app.models import Plan_Remunerada_Freightech, \
+    Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm
 from apps.usuario_app.models import Usuario
 
 
@@ -47,4 +49,95 @@ class Frm_Importa_Plan_Remunerado_Freightech_View(View):
             'msg': 'Importação realizada com sucesso!'
         }
         return JsonResponse(data, safe=False)
+
+class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
+    def get(self, request):
+        nome_unidade_freigh_frm = request.GET['nome_unidade_freigh']
+        data_1_frm = request.GET['data_1'] + '-01'
+        quinz_1_frm = request.GET['quinz_1']
+        data_2_frm = request.GET['data_2'] + '-01'
+        quinz_2_frm = request.GET['quinz_2']
+        lista_obj_rem = []
+        obj_rem_1 = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm.objects
+                     .filter(nome_unidade=nome_unidade_freigh_frm,
+                             vigencia=data_1_frm,
+                             quinzena=quinz_1_frm))
+
+
+        if len(obj_rem_1) > 0:
+            for reg1 in obj_rem_1:
+                obj_rem_2 = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm.objects
+                             .filter(nome_unidade=nome_unidade_freigh_frm,
+                                     vigencia=data_2_frm,
+                                     quinzena=quinz_2_frm,
+                                     cod_cargo_freightech=reg1.cod_cargo_freightech)
+                             .first())
+
+                dic_rem_1 = {
+                    'cod_qlp_rem_rota_adm': reg1.cod_qlp_rem_rota_adm ,
+                    'vigencia': datetime.strftime(reg1.vigencia, '%m-%Y'),
+                    'quinzena': reg1.quinzena,
+                    'desc_grupo': reg1.cod_cargo_freightech.grupo_cargo,
+                    'desc_cargo': reg1.cod_cargo_freightech.desc_cargo,
+                    'qtd_qlp':  self.compara_valores(reg1.qtd_qlp_bench, obj_rem_2.qtd_qlp_bench),
+                    'qtd_encargos': self.compara_valores(reg1.qtd_encargos, obj_rem_2.qtd_encargos),
+                    'val_unit_encargos': self.compara_valores(reg1.val_unit_encargos, obj_rem_2.val_unit_encargos),
+                    'qtd_ordenados': self.compara_valores(reg1.qtd_ordenados, obj_rem_2.qtd_ordenados),
+                    'val_unit_ordenados': self.compara_valores(reg1.val_unit_ordenados, obj_rem_2.val_unit_ordenados),
+                    'qtd_frota_leve': self.compara_valores(reg1.qtd_frota_leve, obj_rem_2.qtd_frota_leve),
+                    'val_unit_frota_leve': self.compara_valores(reg1.val_unit_frota_leve, obj_rem_2.val_unit_frota_leve),
+                    'qtd_beneficios': self.compara_valores(reg1.qtd_beneficios, obj_rem_2.qtd_beneficios),
+                    'val_unit_beneficio': self.compara_valores(reg1.val_unit_beneficio, obj_rem_2.val_unit_beneficio),
+                    'qtd_telefonia': self.compara_valores(reg1.qtd_telefonia, obj_rem_2.qtd_telefonia),
+                    'val_unit_telefonia': self.compara_valores(reg1.val_unit_telefonia, obj_rem_2.val_unit_telefonia),
+                    'qtd_uniformes': self.compara_valores(reg1.qtd_uniformes, obj_rem_2.qtd_uniformes),
+                    'val_unit_uniformes': self.compara_valores(reg1.val_unit_uniformes, obj_rem_2.val_unit_uniformes)
+                }
+                lista_obj_rem.append(dic_rem_1)
+
+                dic_rem_2 = {
+                    'cod_qlp_rem_rota_adm': obj_rem_2.cod_qlp_rem_rota_adm,
+                    'vigencia': datetime.strftime(obj_rem_2.vigencia, '%m-%Y'),
+                    'quinzena': obj_rem_2.quinzena,
+                    'desc_grupo': obj_rem_2.cod_cargo_freightech.grupo_cargo,
+                    'desc_cargo': obj_rem_2.cod_cargo_freightech.desc_cargo,
+                    'qtd_qlp': self.compara_valores(obj_rem_2.qtd_qlp_bench, reg1.qtd_qlp_bench),
+                    'qtd_encargos': self.compara_valores(obj_rem_2.qtd_encargos, reg1.qtd_encargos),
+                    'val_unit_encargos': self.compara_valores(obj_rem_2.val_unit_encargos, reg1.val_unit_encargos),
+                    'qtd_ordenados': self.compara_valores(obj_rem_2.qtd_ordenados, reg1.qtd_ordenados),
+                    'val_unit_ordenados': self.compara_valores(obj_rem_2.val_unit_ordenados, reg1.val_unit_ordenados),
+                    'qtd_frota_leve': self.compara_valores(obj_rem_2.qtd_frota_leve, reg1.qtd_frota_leve),
+                    'val_unit_frota_leve': self.compara_valores(obj_rem_2.val_unit_frota_leve, reg1.val_unit_frota_leve) ,
+                    'qtd_beneficios': self.compara_valores(obj_rem_2.qtd_beneficios, reg1.qtd_beneficios),
+                    'val_unit_beneficio': self.compara_valores(obj_rem_2.val_unit_beneficio, reg1.val_unit_beneficio),
+                    'qtd_telefonia': self.compara_valores(obj_rem_2.qtd_telefonia, reg1.qtd_telefonia),
+                    'val_unit_telefonia': self.compara_valores(obj_rem_2.val_unit_telefonia, reg1.val_unit_telefonia),
+                    'qtd_uniformes': self.compara_valores(obj_rem_2.qtd_uniformes, reg1.qtd_uniformes),
+                    'val_unit_uniformes': self.compara_valores(obj_rem_2.val_unit_uniformes, reg1.val_unit_uniformes)
+                }
+                lista_obj_rem.append(dic_rem_2)
+
+
+
+        if len(lista_obj_rem) == 0:
+            msg = 'Não foram encontrados registros importados para essa vigência!'
+        else:
+            msg = 'Registros gerados'
+
+        data = dict()
+        data = {
+            'lista_obj_rem': lista_obj_rem,
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+    def compara_valores(self, x, y):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+        campo = locale.currency(x, grouping=True, symbol=None)
+        if x != y:
+            campo = f"<span style='background:#FF0000;color:#ffffff'>{locale.currency(x, grouping=True, symbol=None)}</span>"
+        return campo
+
+
+
 

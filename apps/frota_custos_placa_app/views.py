@@ -13,12 +13,42 @@ class Frm_Custos_Placa_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
-        lista_projetos_benner = (ConexaoBancoBenner()
-                                 .retorna_projetos_by_empresa(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+        lista_projetos = []
+        logo_empresa = ''
+        cor_padrao = ''
+        if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12:
+            logo_empresa = 'icons/logo-branca.png'
+            cor_padrao = '#f46424'
+            lista_projetos_benner = (ConexaoBancoBenner()
+                                     .retorna_projetos_by_empresa(
+                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+            for proj in lista_projetos_benner:
+                if any(x in proj.nome_proj for x in ('ROTA', 'TERCEIROS', 'ARMAZEM', 'EQUIPAMENTO', 'AUTO SERVIÇO', 'APOIO', 'UDC'))\
+                        and '(INATIVO)' not in proj.nome_proj:
+                    lista_projetos.append(proj)
+        elif obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 17:
+            logo_empresa = 'icons/logo-small-deep.png'
+            cor_padrao = '#3b8eed' ##3378ad
+            lista_projetos_benner_deep = (ConexaoBancoBenner().retorna_projetos_by_empresa(
+                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+            for proj1 in lista_projetos_benner_deep:
+                if any(x in proj1.nome_proj for x in
+                       ('OPERACIONAL', 'TRANSPORTE')) and '(INATIVO)' not in proj1.nome_proj:
+                    lista_projetos.append(proj1)
+
+            lista_projetos_benner_na_conlog = (ConexaoBancoBenner().retorna_projetos_by_empresa(12))
+            '''143 - OPERACIONAL UEL - GLD
+            1060 - OPERACIONAL RIO BRILHANTE - GLD'''
+            for proj2 in lista_projetos_benner_na_conlog:
+                if proj2.handle_proj in (143, 380, 390, 875, 1060, 912, 916):
+                    lista_projetos.append(proj2)
+
 
         context = {
             'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
-            'lista_projetos_benner': lista_projetos_benner
+            'logo_empresa': logo_empresa,
+            'cor_padrao': cor_padrao,
+            'lista_projetos_benner': lista_projetos
         }
         return render(request, 'frota_custos_placa_app/frm_custos_placa.html', context)
 
@@ -28,7 +58,8 @@ class Frm_Custos_Placa_Proj_View(View):
         lista_handle_tipo_contas_frm = request.GET['lista_handle_tipo_contas']
         comp_frm = request.GET['comp']
 
-        df_custos_placas = ConexaoBancoBenner().retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_tipo_contas_frm, comp_frm.split('-')[0], comp_frm.split('-')[1])
+        df_custos_placas = (ConexaoBancoBenner()
+                            .retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_tipo_contas_frm, comp_frm.split('-')[0], comp_frm.split('-')[1]))
         #df_custos_placas.to_excel('df_custos_placas.xlsx')
         df_group_placas_contas = df_custos_placas[['PLACA', 'NOME_PROJETO', 'desc_tipo_conta', 'HANDLE_CONTA', 'NOME_CONTA',
                                                    'tipo_lancamento','NUM_DOC', 'num_doc_contabil', 'desc_tipo_doc',

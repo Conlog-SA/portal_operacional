@@ -47,53 +47,64 @@ class Importador_Plan_Freightech():
                     desc_cargo = row['Cargo'].split('|')[0].split(':')[1]
                 )
                 obj_cargo_freightech.save()
-            obj_qlp_adm = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm.objects.filter(id_reg_plan=row['_id'])).first()
+            data_vigencia_reg = datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01', '%Y-%m-%d')
+            quinzena_reg = row['Vigencia'].split('_')[1]
+            obj_qlp_adm = ((Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm.objects
+                           .filter(vigencia=data_vigencia_reg,
+                                   quinzena=quinzena_reg,
+                                   nome_unidade=row['Unidade - Nome'],
+                                   cod_cargo_freightech=obj_cargo_freightech))
+                           .first())
             if obj_qlp_adm == None:
-                obj_qlp_adm = Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm(
-                    vigencia =  datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01', '%Y-%m-%d'),
-                    quinzena = row['Vigencia'].split('_')[1],
-                    nome_unidade =  row['Unidade - Nome'],
-                    val_unit_beneficio =  row['Valor Benefício'],
-                    val_unit_encargos = row['Salário Encargos'],
-                    val_unit_frota_leve = row['Valor Frota Leve'],
-                    val_unit_ordenados =  row['Salário Ordenados'],
-                    val_unit_telefonia = row['Valor Telefonia'],
-                    val_unit_uniformes = row['Valor Uniformes'],
-                    val_bench_salarios = row['QLP Benchmark Salário'],
-                    qtd_qlp_bench = row['QLP Benchmark Quantidade'],
-                    qtd_beneficios = row['Quantidade Benefício'],
-                    qtd_encargos = row['Quantidade Encargos'],
-                    qtd_frota_leve = row['Quantidade Frota Leve'],
-                    qtd_ordenados = row['Quantidade Ordenados'],
-                    qtd_telefonia = row['Quantidade Telefonia'],
-                    qtd_uniformes = row['Quantidade Uniformes'],
-                    id_reg_plan = row['_id'],
-                    cod_cargo_freightech = obj_cargo_freightech,
-                    cod_plan_rem_freigh = obj_arquivo
-                )
-                obj_qlp_adm.save()
+                if row['QLP Benchmark Quantidade'] > 0:
+                    obj_qlp_adm = Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm(
+                        vigencia =  data_vigencia_reg,
+                        quinzena = quinzena_reg,
+                        nome_unidade =  row['Unidade - Nome'],
+                        val_unit_beneficio =  row['Valor Benefício'],
+                        val_unit_encargos = row['Salário Encargos'],
+                        val_unit_frota_leve = row['Valor Frota Leve'],
+                        val_unit_ordenados =  row['Salário Ordenados'],
+                        val_unit_telefonia = row['Valor Telefonia'],
+                        val_unit_uniformes = row['Valor Uniformes'],
+                        val_bench_salarios = row['QLP Benchmark Salário'],
+                        qtd_qlp_bench = row['QLP Benchmark Quantidade'],
+                        qtd_beneficios = row['Quantidade Benefício'],
+                        qtd_encargos = row['Quantidade Encargos'],
+                        qtd_frota_leve = row['Quantidade Frota Leve'],
+                        qtd_ordenados = row['Quantidade Ordenados'],
+                        qtd_telefonia = row['Quantidade Telefonia'],
+                        qtd_uniformes = row['Quantidade Uniformes'],
+                        id_reg_plan = row['_id'],
+                        cod_cargo_freightech = obj_cargo_freightech,
+                        cod_plan_rem_freigh = obj_arquivo
+                    )
+                    obj_qlp_adm.save()
             else:
-                obj_qlp_adm.vigencia = datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01', '%Y-%m-%d')
-                obj_qlp_adm.quinzena = row['Vigencia'].split('_')[1]
-                obj_qlp_adm.nome_unidade = row['Unidade - Nome']
-                obj_qlp_adm.val_unit_beneficio = row['Valor Benefício']
-                obj_qlp_adm.val_unit_encargos = row['Salário Encargos']
-                obj_qlp_adm.val_unit_frota_leve = row['Valor Frota Leve']
-                obj_qlp_adm.val_unit_ordenados = row['Salário Ordenados']
-                obj_qlp_adm.val_unit_telefonia = row['Valor Telefonia']
-                obj_qlp_adm.val_unit_uniformes = row['Valor Uniformes']
-                obj_qlp_adm.val_bench_salarios = row['QLP Benchmark Salário']
-                obj_qlp_adm.qtd_qlp_bench = row['QLP Benchmark Quantidade']
-                obj_qlp_adm.qtd_beneficios = row['Quantidade Benefício']
-                obj_qlp_adm.qtd_encargos = row['Quantidade Encargos']
-                obj_qlp_adm.qtd_frota_leve = row['Quantidade Frota Leve']
-                obj_qlp_adm.qtd_ordenados = row['Quantidade Ordenados']
-                obj_qlp_adm.qtd_telefonia = row['Quantidade Telefonia']
-                obj_qlp_adm.qtd_uniformes = row['Quantidade Uniformes']
-                obj_qlp_adm.id_reg_plan = row['_id']
-                obj_qlp_adm.cod_cargo_freightech = obj_cargo_freightech
-                obj_qlp_adm.cod_plan_rem_freigh = obj_arquivo
-                obj_qlp_adm.save()
+                if row['QLP Benchmark Quantidade'] == 0:
+                    obj_qlp_adm.delete()
+                else:
+                    obj_qlp_adm.vigencia = data_vigencia_reg
+                    obj_qlp_adm.quinzena = quinzena_reg
+                    obj_qlp_adm.nome_unidade = row['Unidade - Nome']
+                    obj_qlp_adm.val_unit_beneficio = row['Valor Benefício']
+                    obj_qlp_adm.val_unit_encargos = row['Salário Encargos']
+                    obj_qlp_adm.val_unit_frota_leve = row['Valor Frota Leve']
+                    obj_qlp_adm.val_unit_ordenados = row['Salário Ordenados']
+                    obj_qlp_adm.val_unit_telefonia = row['Valor Telefonia']
+                    obj_qlp_adm.val_unit_uniformes = row['Valor Uniformes']
+                    obj_qlp_adm.val_bench_salarios = row['QLP Benchmark Salário']
+                    obj_qlp_adm.qtd_qlp_bench = row['QLP Benchmark Quantidade']
+                    obj_qlp_adm.qtd_beneficios = row['Quantidade Benefício']
+                    obj_qlp_adm.qtd_encargos = row['Quantidade Encargos']
+                    obj_qlp_adm.qtd_frota_leve = row['Quantidade Frota Leve']
+                    obj_qlp_adm.qtd_ordenados = row['Quantidade Ordenados']
+                    obj_qlp_adm.qtd_telefonia = row['Quantidade Telefonia']
+                    obj_qlp_adm.qtd_uniformes = row['Quantidade Uniformes']
+                    obj_qlp_adm.id_reg_plan = row['_id']
+                    obj_qlp_adm.cod_cargo_freightech = obj_cargo_freightech
+                    obj_qlp_adm.cod_plan_rem_freigh = obj_arquivo
+                    obj_qlp_adm.save()
 
 
     def rota_qlp_equipe_entrega(self, obj_arquivo):
@@ -108,14 +119,21 @@ class Importador_Plan_Freightech():
                     desc_cargo = row['Cargo']
                 )
                 obj_cargo_freightech.save()
+            data_vigencia_reg = datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01',
+                                      '%Y-%m-%d')
+            quinzena_reg = row['Vigencia'].split('_')[1]
             obj_qlp_equipe_entrega = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Equipe_Entrega
-                                      .objects.filter(id_reg_plan=row['_id']).first())
+                                      .objects.filter(vigencia=data_vigencia_reg,
+                                                      quinzena=quinzena_reg,
+                                                      nome_unidade=row['Unidade - Nome'],
+                                                      cod_cargo_freightech=obj_cargo_freightech,
+                                                      turno=row['Turno'])
+                                      .first())
             if obj_qlp_equipe_entrega == None:
                 obj_qlp_equipe_entrega = Registros_Plan_Remunerado_Freightech_Rota_Qlp_Equipe_Entrega(
                     nome_unidade = row['Unidade - Nome'],
-                    vigencia = datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01',
-                                      '%Y-%m-%d'),
-                    quinzena = row['Vigencia'].split('_')[1],
+                    vigencia = data_vigencia_reg,
+                    quinzena = quinzena_reg,
                     turno = row['Turno'],
                     qtd_dsr = row['DSR'],
                     hora_extra_fixa = row['Hora Extra Fixa'],
@@ -138,9 +156,8 @@ class Importador_Plan_Freightech():
                 obj_qlp_equipe_entrega.save()
             else:
                 obj_qlp_equipe_entrega.nome_unidade = row['Unidade - Nome']
-                obj_qlp_equipe_entrega.vigencia = datetime.strptime(f'{row["Vigencia"].split("_")[3]}-{row["Vigencia"].split("_")[2]}-01',
-                                      '%Y-%m-%d')
-                obj_qlp_equipe_entrega.quinzena = row['Vigencia'].split('_')[1]
+                obj_qlp_equipe_entrega.vigencia = data_vigencia_reg
+                obj_qlp_equipe_entrega.quinzena = quinzena_reg
                 obj_qlp_equipe_entrega.turno = row['Turno']
                 obj_qlp_equipe_entrega.qtd_dsr = row['DSR']
                 obj_qlp_equipe_entrega.hora_extra_fixa = row['Hora Extra Fixa']
