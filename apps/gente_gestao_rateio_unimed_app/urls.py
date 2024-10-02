@@ -10,5 +10,6 @@ urlpatterns = [
     path('filiais_despesa', views.Form_Filial_Despesas.as_view(), name='filiais_despesa'),
     path('obter_filiais', views.Obter_Filiais.as_view(), name='obter_filiais'),
     path('historico_importacoes', views.Historico_Importacoes.as_view(), name='historico_importacoes'),
-
+    path('projetos_filial', views.Projeto_Filial.as_view(), name='projetos_filial'),
+    path('colaboradores_excecao', views.Colaborador_Excecao_View.as_view(), name='colaboradores_excecao'),
 ]

@@ -10,8 +10,9 @@ from django.shortcuts import render
 from django.views import View
 
 from apps.conecta_senior_app.views import Conexao_Senior_BD
-from apps.estrut_org_app.models import Filial
-from apps.gente_gestao_rateio_unimed_app.models import Arquivo_Despesas, Despesa_Unimed, Plano_Saude, Operadora_Plano
+from apps.estrut_org_app.models import Filial, Projeto
+from apps.gente_gestao_rateio_unimed_app.models import Arquivo_Despesas, Despesa_Unimed, Plano_Saude, Operadora_Plano, \
+    Colaborador_Excecao, Projetos_Senior
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
 
@@ -26,12 +27,20 @@ class Form_Importa_Plan_Despesas_View(View):
             cod_empresa_filtro = 1
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
             cod_empresa_filtro = 2
+
+        #
         lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
             'cod_filial_senior', 'desc_filial_senior').distinct()
         lista_filiais_dict = []
         for filial in lista_filiais:
             lista_filiais_dict.append({'cod_filial_senior': filial[0], 'desc_filial_senior': filial[1]})
-        #lista_filiais = Filial.objects.filter(cod_empresa__cod_empresa=obj_usu.cod_filial.cod_empresa.cod_empresa)
+
+        lista_filiais_notas_plano = [1, 2, 3, 5, 9, 36, 62, 93]
+        lista_todas_filiais = Filial.objects.filter(cod_filial__in=lista_filiais_notas_plano).values_list(
+            'cod_filial', 'desc_filial').distinct()
+        lista_todas_filiais_dict = []
+        for filial in lista_todas_filiais:
+            lista_todas_filiais_dict.append({'cod_filial': filial[0], 'desc_filial': filial[1]})
 
         lista_codigos_usuarios_importacao = Arquivo_Despesas.objects.filter(cod_usu__cod_filial__cod_empresa__cod_empresa=obj_usu.cod_filial.cod_empresa.cod_empresa).values_list(
             'cod_usu').distinct()
@@ -48,6 +57,7 @@ class Form_Importa_Plan_Despesas_View(View):
 
         contexto = {
             'lista_filiais': lista_filiais_dict,
+            'lista_todas_filiais': lista_todas_filiais_dict,
             'desc_menu': 'Rateio Despesas Unimed',
             'usuarios_importacao': usuarios_importacao,
             'lista_planos': lista_planos_dict
@@ -137,6 +147,8 @@ class Form_Importa_Plan_Despesas_View(View):
                     raise Exception('Porcentagem inválida informada.')
                 if percentual_empresa == 'nan':
                     percentual_empresa = None
+                else:
+                    percentual_empresa = int(float(percentual_empresa)*100)
 
                 competencia_split = str(row['COMPETENCIA']).strip().split('/')
 
@@ -150,6 +162,20 @@ class Form_Importa_Plan_Despesas_View(View):
                     cod_empresa_senior = 2
                 titular_senior = conexao_senior.pesquisar_dados_colaborador_por_cpf_emp(cpf_titular, cod_empresa_senior)
                 if 'erro' not in titular_senior:
+                    excecoes = Colaborador_Excecao.objects.all()
+                    cod_projeto = titular_senior['cod_projeto_colab']
+                    desc_projeto = titular_senior['nom_projeto_colab']
+                    cod_filial = titular_senior['cod_filial_colab']
+                    desc_filial = titular_senior['nom_filial_colab']
+                    for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
+                                                    'desc_proj_colab_excecao', 'cod_filial_colab_excecao',
+                                                    'desc_filial_colab_excecao').distinct():
+                        if str(exc[0]).zfill(11) == str(cpf_titular).zfill(11):
+                            cod_projeto = exc[1]
+                            desc_projeto = exc[2]
+                            cod_filial = exc[3]
+                            desc_filial = exc[4]
+
                     obj_registro_despesa_new = Despesa_Unimed(
                         competencia=competencia,
                         cpf_beneficiario=cpf_beneficiario,
@@ -162,10 +188,10 @@ class Form_Importa_Plan_Despesas_View(View):
                         cod_arq_despesa=arquivo_despesa,
                         nome_titular_senior=titular_senior['nome_colab'],
                         matricula_titular=titular_senior['matricula_colab'],
-                        cod_filial_senior=titular_senior['cod_filial_colab'],
-                        desc_filial_senior=titular_senior['nom_filial_colab'],
-                        cod_projeto_senior=titular_senior['cod_projeto_colab'],
-                        desc_projeto_senior=titular_senior['nom_projeto_colab'],
+                        cod_filial_senior=cod_filial,
+                        desc_filial_senior=desc_filial,
+                        cod_projeto_senior=cod_projeto,
+                        desc_projeto_senior=desc_projeto,
                         cod_empresa_senior=cod_empresa_senior,
                         percentual_empresa=percentual_empresa
                     )
@@ -278,12 +304,26 @@ class Preenche_Colaborador(View):
         conexao_senior = Conexao_Senior_BD(obj_usu.cod_filial.cod_empresa.cod_empresa)
         titular_senior = conexao_senior.pesquisar_dados_por_matricula(matricula, cod_empresa_senior)
         if 'erro' not in titular_senior:
+            excecoes = Colaborador_Excecao.objects.all().values_list('cpf_colab_excecao').distinct()
+            cod_projeto = titular_senior['cod_projeto_colab']
+            desc_projeto = titular_senior['nom_projeto_colab']
+            cod_filial = titular_senior['cod_filial_colab']
+            desc_filial = titular_senior['nom_filial_colab']
+            for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao').distinct():
+                if str(exc.cpf_colab_excecao).zfill(11) == str(titular_senior['cpf_colab']).zfill(11):
+                    cod_projeto = exc.cod_proj_colab_excecao
+                    projeto = Projeto.objects.filter(cod_projeto=cod_projeto).first()
+                    desc_projeto = projeto.desc_proj
+
+                    filial = Filial.objects.filter(cod_filial=projeto.cod_filial).first()
+                    cod_filial = filial.cod_filial
+                    desc_filial = filial.desc_filial
             data = {
                 'nome_titular_senior': titular_senior['nome_colab'],
-                'cod_filial_colab': titular_senior['cod_filial_colab'],
-                'nom_filial_colab': titular_senior['nom_filial_colab'],
-                'cod_projeto_colab': titular_senior['cod_projeto_colab'],
-                'nom_projeto_colab': titular_senior['nom_projeto_colab']
+                'cod_filial_colab': cod_filial,
+                'nom_filial_colab': desc_filial,
+                'cod_projeto_colab': cod_projeto,
+                'nom_projeto_colab': desc_projeto
             }
             return JsonResponse(data)
         else:
@@ -341,6 +381,8 @@ class Busca_Despesas(View):
 
         lista_despesas = lista_despesas_pesquisa_com_filial.union(lista_despesas_pesquisa_sem_filial).order_by('desc_filial_senior', 'nome_beneficiario')
 
+        valor_total_despesas_atribuidas = lista_despesas_pesquisa_com_filial.aggregate(Sum('valor'))
+
         for despesa in lista_despesas:
             despesa_dict = {
                            'Competencia': str(despesa.competencia).strip(),
@@ -375,7 +417,9 @@ class Busca_Despesas(View):
             tab_rateio_despesas_busca.append(despesa_dict)
 
         data = {
-            'tab_rateio_despesas_busca': tab_rateio_despesas_busca
+            'tab_rateio_despesas_busca': tab_rateio_despesas_busca,
+            'valor_total_despesas_atribuidas': float(valor_total_despesas_atribuidas['valor__sum'])
+
         }
         return JsonResponse(data)
 
@@ -613,7 +657,7 @@ class Obter_Filiais(View):
             cod_empresa_filtro = 1
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
             cod_empresa_filtro = 2
-        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro, cod_arq_despesa__status_arquivo=1).values_list(
             'cod_filial_senior', 'desc_filial_senior').distinct()
         lista_filiais_dict = []
         for filial in lista_filiais:
@@ -657,3 +701,62 @@ class Historico_Importacoes(View):
 
         retorno = 'Ok'
         return HttpResponse(retorno)
+
+class Projeto_Filial(View):
+    def get(self, request):
+        #cod_usu_session = request.session['cod_usuario_logado']
+        cod_filial = request.GET['cod_filial']
+        projetos = Projetos_Senior.objects.exclude(desc_projeto__contains="INATIVO")
+        projetos_dict = []
+
+        for proj in projetos:
+            projetos_dict.append({
+                'cod_projeto': proj.cod_senior_projeto,
+                'desc_proj': proj.desc_projeto,
+            })
+
+        return JsonResponse(projetos_dict, safe=False)
+
+class Colaborador_Excecao_View(View):
+    def get(self, request):
+        #cod_usu_session = request.session['cod_usuario_logado']
+        colaboradores_excecao = list(Colaborador_Excecao.objects.all().order_by('cod_colab_excecao'))
+        colaboradores_excecao_dict = []
+
+        for col in colaboradores_excecao:
+            colaboradores_excecao_dict.append({
+                'cod_colab_excecao': col.cod_colab_excecao,
+                'nome_colab_excecao': col.nome_colab_excecao,
+                'cpf_colab_excecao': col.cpf_colab_excecao,
+                'projeto_col': col.desc_proj_colab_excecao,
+            })
+
+        return JsonResponse(colaboradores_excecao_dict, safe=False)
+    def post(self, request):
+        nome_colab_excecao = request.POST['nome_colab_excecao']
+        cpf_colab_excecao = request.POST['cpf_colab_excecao']
+        cod_projeto_colab_excecao = request.POST['cod_projeto_colab_excecao']
+        cod_filial_colab_excecao = request.POST['cod_filial_colab_excecao']
+        competencia_inicio_vigencia = request.POST['competencia_inicio_vigencia']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+        conexao_senior = Conexao_Senior_BD(obj_usu.cod_filial.cod_empresa.cod_empresa)
+        cod_filial_senior = Filial.objects.filter(cod_filial=cod_filial_colab_excecao).first().cod_filial_senior
+        desc_filial_senior = conexao_senior.retorna_nome_filial_senior(cod_filial_colab_excecao)['nom_fil']
+
+        desc_proj = Projetos_Senior.objects.filter(cod_senior_projeto=cod_projeto_colab_excecao).first().desc_projeto
+
+        colab_excecao = Colaborador_Excecao(
+            nome_colab_excecao=nome_colab_excecao,
+            cpf_colab_excecao=cpf_colab_excecao,
+            cod_filial_colab_excecao=cod_filial_senior,
+            desc_filial_colab_excecao=desc_filial_senior,
+            cod_proj_colab_excecao=cod_projeto_colab_excecao,
+            desc_proj_colab_excecao=desc_proj,
+            competencia_inicio=competencia_inicio_vigencia,
+            status_ativo=1
+        )
+        colab_excecao.save()
+
+        return HttpResponse('Sucesso!')

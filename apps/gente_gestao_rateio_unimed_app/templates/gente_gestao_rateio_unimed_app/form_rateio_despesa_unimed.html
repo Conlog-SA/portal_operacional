@@ -102,6 +102,13 @@
                         Histórico
                         <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
                     </button>
+                    <button class="nav-link tabs-nav a_tab_cadastro_excecoes tab-nav" id="a_tab_cadastro_excecoes" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_cadastro_excecoes" type="button" role="tab"
+                            aria-controls="div_tab_cadastro_excecoes"
+                            aria-selected="false" style="border-radius:0px 0px 0 0; font-size:15px">
+                        Exceções
+                        <i class="fa-solid fa-pen-to-square" style="color: #f46424"></i>
+                    </button>
                 </div>
             </nav>
             <div class="tab-content" style="border-radius:0 0 10px 10px; font-size:15px">
@@ -257,6 +264,34 @@
                                 </tr>
                             </thead>
                             <tbody id="body_tab_historico_importacao"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="tab-pane" id="div_tab_cadastro_excecoes" role="tabpanel"
+                             aria-labelledby="a_tab_cadastro_excecoes" style="padding-left:5px">
+                    <div class="form-group" style="display:flex;justify-content:space-between">
+                        <div style="display:flex;align-items:flex-end;width:100%">
+                            <div style="width:100%;display:flex;align-items:flex-end;justify-content:flex-end;padding-left:1rem">
+                                <button type="button" id="criar_excecao_colaborador" name="criar_excecao_colaborador" class="btn btn-primary btn-rounded botaoPrincipal btn-input-criar-excecao" style="width:10%;height:fit-content;padding:0.6rem;margin-top:1.2rem;margin-right:0.6rem">
+                                    <i class="fa-regular fa-square-plus"></i>
+                                    Adicionar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 w-100 h-100">
+                        <table id="tab_excecoes_colaboradores"  class="display wrap w-100 cl_tab_principal_pagina">
+                            <thead style="width:100%">
+                                <tr>
+                                    <th scope="col">Cód. Exceção</th>
+                                    <th scope="col">Nome do Colab.</th>
+                                    <th scope="col">CPF do Colab.</th>
+                                    <th scope="col">Projeto</th>
+                                    <th scope="col">Fim Vigência</th>
+                                    <th scope="col">Anular</th>
+                                </tr>
+                            </thead>
+                            <tbody id="body_tab_excecoes_colab"></tbody>
                         </table>
                     </div>
                 </div>

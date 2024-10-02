@@ -32,6 +32,7 @@ $.ajaxSetup({
     tabelaConsultaDespesas = null;
     tabelaCalculaRateio = null;
     tabelaHistoricoImportacao = null;
+    tabelaCadastroExcecao = null;
 }
 
 $(document).on('click','.btn-realiza-importacao' , function(){
@@ -287,7 +288,6 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
         },
         success: function (dados) {
             let_lista_dados_rateio = [];
-            let let_soma_valor = 0;
             dados.tab_rateio_despesas_busca.forEach( despesa => {
                 let let_html_matricula = '';
                 let let_html_editar = '';
@@ -298,7 +298,6 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
                 else {
                     let_html_matricula = despesa['Matricula_Titular'];
                     let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'_2">Editar</button>';
-                    let_soma_valor += parseFloat(despesa['Valor']);
                 }
 
                 let let_dado_despesa = [
@@ -377,19 +376,8 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
 			});
             tabelaConsultaDespesas.columns.adjust();
             //$('#contabilizador_valor_nf_filial_despesas')[0].innerText = 'Valor total da Filial: ' + String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
-            let let_valor_final = '';
-            if (String(let_soma_valor).split('.').length > 1) {
-                if (String(let_soma_valor).split('.')[1].length > 2) {
-                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
-                }
-                if (String(let_soma_valor).split('.')[1].length == 1) {
-                    let_valor_final = String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,1)+'0';
-                }
-            }
-            else if (String(let_soma_valor).split('.').length == 1) {
-                let_valor_final = String(let_soma_valor)+',00';
-            }
-            $('#contabilizador_valor_nf_filial_despesas').html('Valor total da Filial: <p style="font-size:25px">R$ ' + let_valor_final + '</p>');
+
+            $('#contabilizador_valor_nf_filial_despesas').html('Valor total da Filial: <p style="font-size:25px">R$ ' + dados.valor_total_despesas_atribuidas.toFixed(2) + '</p>');
 
         }
     });
@@ -663,15 +651,182 @@ $(document).on('shown.bs.tab','.tab-nav' , function(e) {
     tabelaCalculaRateio.clear().columns.adjust();
     tabelaCalculaRateio.draw();
   }
-    else if (target == 'a_tab_historico_importacao') {
+  else if (target == 'a_tab_historico_importacao') {
     tabelaHistoricoImportacao = $('#tab_historico_importacao').DataTable();
     tabelaHistoricoImportacao.clear().columns.adjust();
     tabelaHistoricoImportacao.draw();
+  }
+  else if (target == 'a_tab_cadastro_excecoes') {
+
+    $.ajax({
+        type: 'GET',
+        url: '/gente_gestao_rateio_unimed_app/colaboradores_excecao',
+        success: function (dados) {
+            let let_lista_colabs_excecao_dict = [];
+            dados.forEach( col => {
+                let_lista_colabs_excecao_dict.push([
+                    col.cod_colab_excecao,
+                    col.nome_colab_excecao,
+                    col.cpf_colab_excecao,
+                    col.projeto_col,
+                    '<i class="fa-solid fa-lock" style="color: #f46424;font-size:24px"></i>',
+                    '<i class="fa-solid fa-ban" style="color: #B90E0A;font-size:24px"></i>',
+                ])
+            });
+
+            tabelaCadastroExcecao = $('#tab_excecoes_colaboradores').DataTable( {
+                "bJQueryUI": true,
+                "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "770px",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
+                "pageLength": 7,
+                "autoWidth": false,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
+                "data":let_lista_colabs_excecao_dict,
+                "columns": [
+                    { title: "Cód. Exceção" },
+                    { title: "Nome do Colab." },
+                    { title: "CPF do Colab." },
+                    { title: "Projeto" },
+                    { title: "Fim Vigência" },
+                    { title: "Anular" },
+                ],
+                "order": [1, 'desc'],
+                "oLanguage": {
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "Mostrar _MENU_ registros",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
+                    }
+                }
+            });
+
+            //tabelaCadastroExcecao = $('#tab_excecoes_colaboradores').DataTable();
+            tabelaCadastroExcecao.columns.adjust();
+
+        },
+        error: function (xhr, status, error) {
+            $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '../../icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+            });
+        }
+    });
   }
 });
 
 $(document).on('click','.fechaModalBuscaColabSenior' , function(){
     $('#modalBuscaColabSenior').hide();
 });
+
+$(document).on('click','.fechaModalCadastraExcecao' , function(){
+    $('#modalAdicionaExcecao').hide();
+});
+
+$(document).on('click','.btn-input-criar-excecao' , function(){
+
+    $("#nomeColabExcecao").val("");
+    $("#cpfColabExcecao").val("");
+    $("#filialColabExcecao").val("");
+    $("#projetoColabExcecao").val("");
+
+    $("#modalAdicionaExcecao").show();
+});
+
+$(document).on('change','.filial-colab-excecao' , function(){
+    let let_cod_filial = $('#filialColabExcecao').val();
+
+    $.ajax({
+        type: 'GET',
+        url: '/gente_gestao_rateio_unimed_app/projetos_filial',
+        data: {
+            'cod_filial'   :   let_cod_filial
+        },
+        success: function (dados) {
+            $('#projetoColabExcecao').prop('disabled',false);
+            $('#projetoColabExcecao option').remove();
+            dados.forEach( projeto => {
+                $('#projetoColabExcecao').append('<option value="'+projeto.cod_projeto+'">'+projeto.desc_proj+'</option>');
+            });
+            $('#projetoColabExcecao').selectpicker('refresh');
+        },
+        error: function (xhr, status, error) {
+            $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '../../icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+            });
+        }
+    });
+});
+
+$(document).on('click','.btn-adiciona-excecao' , function(){
+    let let_nome_colab_excecao = $('#nomeColabExcecao').val();
+    let let_cpf_colab_excecao = $('#cpfColabExcecao').val();
+    let let_cod_filial_colab_excecao = $('#filialColabExcecao').val();
+    let let_cod_projeto_colab_excecao = $('#projetoColabExcecao').val();
+    let let_competencia_inicio = $("#input_competencia_inicio_excecao").val();
+
+    let_competencia_inicio = let_competencia_inicio.split('-')[1] + '/' + let_competencia_inicio.split('-')[0];
+
+    $.ajax({
+        type: 'POST',
+        url: '/gente_gestao_rateio_unimed_app/colaboradores_excecao',
+        data: {
+            'nome_colab_excecao'   :   let_nome_colab_excecao,
+            'cpf_colab_excecao'   :   let_cpf_colab_excecao,
+            'cod_projeto_colab_excecao'   :   let_cod_projeto_colab_excecao,
+            'cod_filial_colab_excecao' : let_cod_filial_colab_excecao,
+            'competencia_inicio_vigencia' :   let_competencia_inicio,
+        },
+        success: function (dados) {
+            $('#modalAdicionaExcecao').hide();
+            $('#projetoColabExcecao').prop('disabled',false);
+            $('#projetoColabExcecao option').remove();
+            dados.forEach( projeto => {
+                $('#projetoColabExcecao').append('<option value="'+projeto.cod_projeto+'">'+projeto.desc_proj+'</option>');
+            });
+            $('#projetoColabExcecao').selectpicker('refresh');
+        },
+        error: function (xhr, status, error) {
+            $.gritter.add({
+                    title: 'Erro!',
+                    text: xhr.responseText,
+                    image: '../../icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+            });
+        }
+    });
+});
+
 
 

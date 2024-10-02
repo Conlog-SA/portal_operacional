@@ -70,3 +70,28 @@ class Despesa_Unimed(models.Model):
         managed = True
         db_table = 'op_gente_gestao_rateio_unimed_despesas'
 
+
+class Colaborador_Excecao(models.Model):
+    cod_colab_excecao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    nome_colab_excecao = models.CharField(max_length=100, blank=False, null=False)
+    cpf_colab_excecao = models.CharField(max_length=20, blank=False, null=False)
+    cod_proj_colab_excecao = models.CharField(max_length=50, blank=False, null=False)
+    desc_proj_colab_excecao = models.CharField(max_length=150, blank=False, null=False)
+    cod_filial_colab_excecao = models.IntegerField(blank=False, null=False)
+    desc_filial_colab_excecao = models.CharField(max_length=150, blank=False, null=False)
+    competencia_inicio = models.CharField(max_length=30, blank=False, null=False)
+    competencia_fim = models.CharField(max_length=30, blank=True, null=True)
+    status_ativo = models.IntegerField(blank=False, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'op_gente_gestao_rateio_unimed_colabs_excecao'
+
+class Projetos_Senior(models.Model):
+    cod_projeto = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    cod_senior_projeto = models.CharField(max_length=80, blank=False, null=False)
+    desc_projeto = models.CharField(max_length=150, blank=False, null=False)
+
+    class Meta:
+        managed = True
+        db_table = 'op_gente_gestao_rateio_unimed_projetos_senior'
