@@ -91,6 +91,7 @@ class Projetos_Senior(models.Model):
     cod_projeto = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     cod_senior_projeto = models.CharField(max_length=80, blank=False, null=False)
     desc_projeto = models.CharField(max_length=150, blank=False, null=False)
+    usu_desc_projeto = models.CharField(max_length=100, blank=True, null=False)
 
     class Meta:
         managed = True

@@ -463,7 +463,7 @@ class Calcula_Rateio(View):
             for despesa in despesas_titulares_porcentagem_excecao:
                 if despesa.percentual_empresa is not None:
                     custo_empresa_titulares_excecao += float(despesa.valor)*float(despesa.percentual_empresa)/100
-                    custo_colaborador_titulares_excecao += float(despesa.valor)*(float(despesa.percentual_empresa)/100)
+                    custo_colaborador_titulares_excecao += float(despesa.valor)*(100-float(despesa.percentual_empresa))/100
             if despesas_titulares['valor__sum'] == None:
                 custo_total_empresa_titular = custo_empresa_titulares_excecao
                 custo_total_colaborador_titular = custo_colaborador_titulares_excecao
@@ -505,7 +505,7 @@ class Calcula_Rateio(View):
             lista_dict_titulares_percentual_informado = []
             for despesa in custo_titulares_por_projeto_percentual_informado:
                 valor_empresa = float(despesa.valor) * float(despesa.percentual_empresa)/100
-                valor_colaborador = float(despesa.valor) * (float(despesa.percentual_empresa)/100)
+                valor_colaborador = float(despesa.valor) * (100-float(despesa.percentual_empresa))/100
                 desc_projeto = despesa.desc_projeto_senior
 
                 disc_despesa_percentual_informado = {
@@ -709,10 +709,15 @@ class Projeto_Filial(View):
         projetos = Projetos_Senior.objects.exclude(desc_projeto__contains="INATIVO")
         projetos_dict = []
 
+
         for proj in projetos:
+            desc_proj = proj.desc_projeto
+            if proj.usu_desc_projeto != '' and proj.usu_desc_projeto != ' ' and proj.usu_desc_projeto is not None:
+                print(proj.usu_desc_projeto)
+                desc_proj += ' - ' + proj.usu_desc_projeto
             projetos_dict.append({
                 'cod_projeto': proj.cod_senior_projeto,
-                'desc_proj': proj.desc_projeto,
+                'desc_proj': desc_proj,
             })
 
         return JsonResponse(projetos_dict, safe=False)
@@ -743,7 +748,7 @@ class Colaborador_Excecao_View(View):
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
         conexao_senior = Conexao_Senior_BD(obj_usu.cod_filial.cod_empresa.cod_empresa)
         cod_filial_senior = Filial.objects.filter(cod_filial=cod_filial_colab_excecao).first().cod_filial_senior
-        desc_filial_senior = conexao_senior.retorna_nome_filial_senior(cod_filial_colab_excecao)['nom_fil']
+        desc_filial_senior = conexao_senior.retorna_nome_filial_senior(cod_filial_colab_excecao)['nome_fil']
 
         desc_proj = Projetos_Senior.objects.filter(cod_senior_projeto=cod_projeto_colab_excecao).first().desc_projeto
 
