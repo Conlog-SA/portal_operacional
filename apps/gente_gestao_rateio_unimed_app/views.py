@@ -29,7 +29,7 @@ class Form_Importa_Plan_Despesas_View(View):
             cod_empresa_filtro = 2
 
         #
-        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro, cod_arq_despesa__status_arquivo=1).values_list(
             'cod_filial_senior', 'desc_filial_senior').distinct()
         lista_filiais_dict = []
         for filial in lista_filiais:
@@ -416,9 +416,14 @@ class Busca_Despesas(View):
 
             tab_rateio_despesas_busca.append(despesa_dict)
 
+        if valor_total_despesas_atribuidas['valor__sum'] is not None:
+            custo_total = float(valor_total_despesas_atribuidas['valor__sum'])
+        else:
+            custo_total = 0
+
         data = {
             'tab_rateio_despesas_busca': tab_rateio_despesas_busca,
-            'valor_total_despesas_atribuidas': float(valor_total_despesas_atribuidas['valor__sum'])
+            'valor_total_despesas_atribuidas': custo_total
 
         }
         return JsonResponse(data)
@@ -638,13 +643,18 @@ class Calcula_Rateio(View):
         }
         tab_rateio_despesas_busca.insert(0, despesa_total)
 
+        if calculo_filial['valor__sum'] is not None:
+            custo_total = float(calculo_filial['valor__sum'])
+        else:
+            custo_total = 0
+
         data = {
             #'custo_total_empresa_titular': custo_total_empresa_titular,
             #'custo_total_empresa_dependente': custo_total_empresa_dependente,
             #'custo_total_colaborador_titular': custo_total_colaborador_titular,
             #'custo_total_colaborador_dependente': custo_total_colaborador_dependente,
             #'custo_empresa_total': custo_empresa_total,
-            'custo_total': float(calculo_filial['valor__sum']),
+            'custo_total': custo_total,
             'tab_rateio_despesas_busca': tab_rateio_despesas_busca
         }
         return JsonResponse(data)

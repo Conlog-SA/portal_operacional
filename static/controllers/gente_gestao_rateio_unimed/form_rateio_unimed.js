@@ -279,108 +279,128 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
     let let_competencia = $("#input_competencia").val();
     let let_filial = $("#input_filial").val();
 
-    $.ajax({
-        type: 'GET',
-        url: '/gente_gestao_rateio_unimed_app/busca_despesas',
-        data: {
-            'competencia'   :   let_competencia,
-            'filial'   :    let_filial,
-        },
-        success: function (dados) {
-            let_lista_dados_rateio = [];
-            dados.tab_rateio_despesas_busca.forEach( despesa => {
-                let let_html_matricula = '';
-                let let_html_editar = '';
+    msg_erro = '';
+    if (let_competencia == '') {
+        msg_erro += 'Selecione uma competencia!<br>';
+    }
+    if (let_filial == '') {
+        msg_erro += 'Selecione uma filial!<br>';
+    }
+    if (msg_erro == '') {
+        $.ajax({
+            type: 'GET',
+            url: '/gente_gestao_rateio_unimed_app/busca_despesas',
+            data: {
+                'competencia'   :   let_competencia,
+                'filial'   :    let_filial,
+            },
+            success: function (dados) {
+                let_lista_dados_rateio = [];
+                dados.tab_rateio_despesas_busca.forEach( despesa => {
+                    let let_html_matricula = '';
+                    let let_html_editar = '';
 
-                if (despesa['Matricula_Titular'] == '') {
-                    let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'_2">Buscar</button>';
-                }
-                else {
-                    let_html_matricula = despesa['Matricula_Titular'];
-                    let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'_2">Editar</button>';
-                }
+                    if (despesa['Matricula_Titular'] == '') {
+                        let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'_2">Buscar</button>';
+                    }
+                    else {
+                        let_html_matricula = despesa['Matricula_Titular'];
+                        let_html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+despesa['Cod_Despesa']+'_2">Editar</button>';
+                    }
 
-                let let_dado_despesa = [
-                    '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
-                    despesa['Competencia'].split('-')[1]+'/'+despesa['Competencia'].split('-')[0],
-                    despesa['Beneficiario'],
-                    ('000000'+despesa['Cpf'].split('.')[0]).slice(-11),
-                    despesa['Dependencia'],
-                    despesa['Titular'],
-                    ('000000'+despesa['Cpf_Titular'].split('.')[0]).slice(-11),
-                    despesa['Desc_Despesa'],
-                    despesa['Valor'].split('.')[0]+','+despesa['Valor'].split('.')[1].substring(0,2),
-                    let_html_matricula,
-                    despesa['Nome_Titular_Senior'],
-                    despesa['Desc_Filial_Senior'],
-                    despesa['Desc_Projeto_Senior'],
-                    let_html_editar
-			    ];
-			    let_lista_dados_rateio.push(let_dado_despesa);
-            });
-            tabelaConsultaDespesas = $('#tab_rateio_despesas_consulta').DataTable( {
-				    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "770px",
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 7,
-                    "autoWidth": false,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-			  		"data":let_lista_dados_rateio,
-			  		"columns": [
-			  		    { title: "" },
-			  		    { title: "Competência" },
-                        { title: "Beneficiário" },
-                        { title: "CPF Beneficiário" },
-                        { title: "Tipo Dependência" },
-                        { title: "Titular" },
-                        { title: "CPF Titular" },
-                        { title: "Despesa" },
-                        { title: "Valor" },
-                        { title: "Matricula Titular" },
-                        { title: "Nome Tit. Senior" },
-                        { title: "Filial" },
-                        { title: "Projeto" },
-                        { title: "Editar" }
-                    ],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
+                    let let_dado_despesa = [
+                        '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
+                        despesa['Competencia'].split('-')[1]+'/'+despesa['Competencia'].split('-')[0],
+                        despesa['Beneficiario'],
+                        ('000000'+despesa['Cpf'].split('.')[0]).slice(-11),
+                        despesa['Dependencia'],
+                        despesa['Titular'],
+                        ('000000'+despesa['Cpf_Titular'].split('.')[0]).slice(-11),
+                        despesa['Desc_Despesa'],
+                        despesa['Valor'].split('.')[0]+','+despesa['Valor'].split('.')[1].substring(0,2),
+                        let_html_matricula,
+                        despesa['Nome_Titular_Senior'],
+                        despesa['Desc_Filial_Senior'],
+                        despesa['Desc_Projeto_Senior'],
+                        let_html_editar
+                    ];
+                    let_lista_dados_rateio.push(let_dado_despesa);
+                });
+                tabelaConsultaDespesas = $('#tab_rateio_despesas_consulta').DataTable( {
+                        "bJQueryUI": true,
+                        "destroy": true,
+                        "fixedHeader": true,
+                        "scrollY": "770px",
+                        "scrollX": true,
+                        "scrollCollapse": true,
+                        "paging": true,
+                        "pageLength": 7,
+                        "autoWidth": false,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "data":let_lista_dados_rateio,
+                        "columns": [
+                            { title: "" },
+                            { title: "Competência" },
+                            { title: "Beneficiário" },
+                            { title: "CPF Beneficiário" },
+                            { title: "Tipo Dependência" },
+                            { title: "Titular" },
+                            { title: "CPF Titular" },
+                            { title: "Despesa" },
+                            { title: "Valor" },
+                            { title: "Matricula Titular" },
+                            { title: "Nome Tit. Senior" },
+                            { title: "Filial" },
+                            { title: "Projeto" },
+                            { title: "Editar" }
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
                             }
                         }
-                    }
-			});
-            tabelaConsultaDespesas.columns.adjust();
-            //$('#contabilizador_valor_nf_filial_despesas')[0].innerText = 'Valor total da Filial: ' + String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
+                });
+                tabelaConsultaDespesas.columns.adjust();
+                //$('#contabilizador_valor_nf_filial_despesas')[0].innerText = 'Valor total da Filial: ' + String(let_soma_valor).split('.')[0]+','+String(let_soma_valor).split('.')[1].substring(0,2);
 
-            $('#contabilizador_valor_nf_filial_despesas').html('Valor total da Filial: <p style="font-size:25px">R$ ' + dados.valor_total_despesas_atribuidas.toFixed(2) + '</p>');
+                $('#contabilizador_valor_nf_filial_despesas').html('Valor total da Filial: <p style="font-size:25px">R$ ' + dados.valor_total_despesas_atribuidas.toFixed(2) + '</p>');
 
-        }
-    });
+            }
+        });
+    }
+    else {
+        $.gritter.add({
+            title: 'Erro!',
+            text: msg_erro,
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+
+    }
+
 });
 
 $(document).on('click','.btn-input-calculo-rateios' , function(){
@@ -388,107 +408,132 @@ $(document).on('click','.btn-input-calculo-rateios' , function(){
     let let_cod_filial = $("#input_filial_calculo_rateio").val();
     let let_cod_plano_saude = $("#input_plano_calculo_rateio").val();
 
-    $.ajax({
-        type: 'GET',
-        url: '/gente_gestao_rateio_unimed_app/calcula_rateio',
-        data: {
-            'competencia'   :   let_competencia,
-            'cod_filial'   :    let_cod_filial,
-            'cod_plano_saude':  let_cod_plano_saude
-        },
-        success: function (dados) {
-            let_lista_dados_rateio = [];
-            flag_custo_empresa_zero = false;
-            dados.tab_rateio_despesas_busca.forEach( despesa => {
-                let let_dado_despesa = [
-                    despesa['desc_projeto_senior'],
-                    parseFloat(despesa['valor_total_empresa']).toFixed(2),
-                    parseFloat(despesa['valor_total_colaborador']).toFixed(2),
-                    parseFloat(despesa['custo_titulares_do_projeto_parcela_empresa']).toFixed(2),
-                    parseFloat(despesa['custo_titulares_do_projeto_parcela_colaborador']).toFixed(2),
-                    parseFloat(despesa['custo_dependentes_do_projeto_parcela_empresa']).toFixed(2),
-                    parseFloat(despesa['custo_dependentes_do_projeto_parcela_colaborador']).toFixed(2)
-			    ];
-			    let_lista_dados_rateio.push(let_dado_despesa);
-			    if (parseFloat(despesa['valor_total']) == 0) {
-			        flag_custo_empresa_zero = true;
-			    }
-            });
-            if (flag_custo_empresa_zero == false) {
-                ordenar = [1, 'desc'];
-            }
-            else {
-                ordenar = [2, 'desc'];
-            }
+    msg_erro = '';
+    if (let_competencia == '') {
+        msg_erro += 'Selecione uma competencia!<br>';
+    }
+    if (let_cod_filial == '') {
+        msg_erro += 'Selecione uma filial!<br>';
+    }
+    if (let_cod_plano_saude == '') {
+        msg_erro += 'Selecione um plano de saúde!';
+    }
+    if (msg_erro == '') {
 
-            tabelaCalculaRateio = $('#tab_calculo_rateio').DataTable( {
-				    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "770px",
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 7,
-                    "autoWidth": false,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-			  		"data":let_lista_dados_rateio,
-			  		"columns": [
-			  		    { title: "Projeto" },
-                        { title: "Custo Empresa" },
-                        { title: "Custo Colaborador" },
-                        { title: "Custo Empresa - Titular" },
-                        { title: "Custo Colaborador - Titular" },
-                        { title: "Custo Empresa - Dependente" },
-                        { title: "Custo Colaborador - Dependente" }
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": [0, 1, 2, 3, 4, 5]},
-                        {'targets': [1, 2], 'className': 'bolded'}
-                    ],
-                    'order': [ordenar],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
+        $.ajax({
+            type: 'GET',
+            url: '/gente_gestao_rateio_unimed_app/calcula_rateio',
+            data: {
+                'competencia'   :   let_competencia,
+                'cod_filial'   :    let_cod_filial,
+                'cod_plano_saude':  let_cod_plano_saude
+            },
+            success: function (dados) {
+                let_lista_dados_rateio = [];
+                flag_custo_empresa_zero = false;
+                dados.tab_rateio_despesas_busca.forEach( despesa => {
+                    let let_dado_despesa = [
+                        despesa['desc_projeto_senior'],
+                        parseFloat(despesa['valor_total_empresa']).toFixed(2),
+                        parseFloat(despesa['valor_total_colaborador']).toFixed(2),
+                        parseFloat(despesa['custo_titulares_do_projeto_parcela_empresa']).toFixed(2),
+                        parseFloat(despesa['custo_titulares_do_projeto_parcela_colaborador']).toFixed(2),
+                        parseFloat(despesa['custo_dependentes_do_projeto_parcela_empresa']).toFixed(2),
+                        parseFloat(despesa['custo_dependentes_do_projeto_parcela_colaborador']).toFixed(2)
+                    ];
+                    let_lista_dados_rateio.push(let_dado_despesa);
+                    if (parseFloat(despesa['valor_total']) == 0) {
+                        flag_custo_empresa_zero = true;
+                    }
+                });
+                if (flag_custo_empresa_zero == false) {
+                    ordenar = [1, 'desc'];
+                }
+                else {
+                    ordenar = [2, 'desc'];
+                }
+
+                tabelaCalculaRateio = $('#tab_calculo_rateio').DataTable( {
+                        "bJQueryUI": true,
+                        "destroy": true,
+                        "fixedHeader": true,
+                        "scrollY": "770px",
+                        "scrollX": true,
+                        "scrollCollapse": true,
+                        "paging": true,
+                        "pageLength": 7,
+                        "autoWidth": false,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "data":let_lista_dados_rateio,
+                        "columns": [
+                            { title: "Projeto" },
+                            { title: "Custo Empresa" },
+                            { title: "Custo Colaborador" },
+                            { title: "Custo Empresa - Titular" },
+                            { title: "Custo Colaborador - Titular" },
+                            { title: "Custo Empresa - Dependente" },
+                            { title: "Custo Colaborador - Dependente" }
+                        ],
+                        "columnDefs": [
+                            {"className": "dt-center", "targets": [0, 1, 2, 3, 4, 5]},
+                            {'targets': [1, 2], 'className': 'bolded'}
+                        ],
+                        'order': [ordenar],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
                             }
                         }
-                    }
-			});
-            tabelaCalculaRateio.columns.adjust();
-            //$('#contabilizador_valor_nf_filial_rateio')[0].innerText = 'Valor total da NF: ' + String(let_soma_valor).replace('.', ',');
-            $('#contabilizador_valor_nf_filial_rateio').html('Valor total do Plano: <p style="font-size:25px">R$ ' + parseFloat(dados.custo_total).toFixed(2), + '</p>');
-        },
-        error: function (xhr, status, error) {
-            $.gritter.add({
-                    title: 'Erro!',
-                    text: xhr.responseText,
-                    image: '../../icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-            });
-        }
-    });
+                });
+                tabelaCalculaRateio.columns.adjust();
+                //$('#contabilizador_valor_nf_filial_rateio')[0].innerText = 'Valor total da NF: ' + String(let_soma_valor).replace('.', ',');
+                $('#contabilizador_valor_nf_filial_rateio').html('Valor total do Plano: <p style="font-size:25px">R$ ' + parseFloat(dados.custo_total).toFixed(2), + '</p>');
+            },
+            error: function (xhr, status, error) {
+                $.gritter.add({
+                        title: 'Erro!',
+                        text: xhr.responseText,
+                        image: '../../icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                });
+            }
+        });
+
+    }
+    else {
+        $.gritter.add({
+            title: 'Erro!',
+            text: msg_erro,
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+
+    }
+
 });
 
 $(document).on('click','.btn-input-busca-historico' , function(){
@@ -797,35 +842,68 @@ $(document).on('click','.btn-adiciona-excecao' , function(){
 
     let_competencia_inicio = let_competencia_inicio.split('-')[1] + '/' + let_competencia_inicio.split('-')[0];
 
-    $.ajax({
-        type: 'POST',
-        url: '/gente_gestao_rateio_unimed_app/colaboradores_excecao',
-        data: {
-            'nome_colab_excecao'   :   let_nome_colab_excecao,
-            'cpf_colab_excecao'   :   let_cpf_colab_excecao,
-            'cod_projeto_colab_excecao'   :   let_cod_projeto_colab_excecao,
-            'cod_filial_colab_excecao' : let_cod_filial_colab_excecao,
-            'competencia_inicio_vigencia' :   let_competencia_inicio,
-        },
-        success: function (dados) {
-            $('#modalAdicionaExcecao').hide();
-            $('#projetoColabExcecao').prop('disabled',false);
-            $('#projetoColabExcecao option').remove();
-            dados.forEach( projeto => {
-                $('#projetoColabExcecao').append('<option value="'+projeto.cod_projeto+'">'+projeto.desc_proj+'</option>');
-            });
-            $('#projetoColabExcecao').selectpicker('refresh');
-        },
-        error: function (xhr, status, error) {
-            $.gritter.add({
-                    title: 'Erro!',
-                    text: xhr.responseText,
-                    image: '../../icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-            });
-        }
-    });
+    msg_erro = '';
+    if (let_nome_colab_excecao == '' || let_nome_colab_excecao == null) {
+        msg_erro += 'Informe o nome do cadastrado!<br>';
+    }
+    if (let_cpf_colab_excecao == '' || let_cpf_colab_excecao == null) {
+        msg_erro += 'Informe o cpf do cadastrado!<br>';
+    }
+
+    if (let_cod_filial_colab_excecao == '') {
+        msg_erro += 'Selecione a filial que o colaborador deve constar!<br>';
+    }
+    if (let_cod_projeto_colab_excecao == '') {
+        msg_erro += 'Selecione o projeto que o colaborador deve constar!<br>';
+    }
+
+    if (let_competencia_inicio == '') {
+        msg_erro += 'Selecione o inicio da vigência da exceção!';
+    }
+
+    if (msg_erro == '') {
+        $.ajax({
+            type: 'POST',
+            url: '/gente_gestao_rateio_unimed_app/colaboradores_excecao',
+            data: {
+                'nome_colab_excecao'   :   let_nome_colab_excecao,
+                'cpf_colab_excecao'   :   let_cpf_colab_excecao,
+                'cod_projeto_colab_excecao'   :   let_cod_projeto_colab_excecao,
+                'cod_filial_colab_excecao' : let_cod_filial_colab_excecao,
+                'competencia_inicio_vigencia' :   let_competencia_inicio,
+            },
+            success: function (dados) {
+                $('#modalAdicionaExcecao').hide();
+                $('#projetoColabExcecao').prop('disabled',false);
+                $('#projetoColabExcecao option').remove();
+                dados.forEach( projeto => {
+                    $('#projetoColabExcecao').append('<option value="'+projeto.cod_projeto+'">'+projeto.desc_proj+'</option>');
+                });
+                $('#projetoColabExcecao').selectpicker('refresh');
+            },
+            error: function (xhr, status, error) {
+                $.gritter.add({
+                        title: 'Erro!',
+                        text: xhr.responseText,
+                        image: '../../icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                });
+            }
+        });
+    }
+    else {
+        $.gritter.add({
+            title: 'Erro!',
+            text: msg_erro,
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+
+    }
+
+
 });
 
 
