@@ -309,16 +309,15 @@ class Preenche_Colaborador(View):
             desc_projeto = titular_senior['nom_projeto_colab']
             cod_filial = titular_senior['cod_filial_colab']
             desc_filial = titular_senior['nom_filial_colab']
-            for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao').distinct():
-                print(exc)
+            for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
+                                            'cod_filial_colab_excecao', 'desc_filial_colab_excecao').distinct():
                 if str(exc[0]).zfill(11) == str(titular_senior['cpf_colab']).zfill(11):
                     cod_projeto = exc[1]
-                    projeto = Projeto.objects.filter(cod_projeto=cod_projeto).first()
-                    desc_projeto = projeto.desc_proj
+                    projeto = Projetos_Senior.objects.filter(cod_senior_projeto=cod_projeto).first()
+                    desc_projeto = projeto.desc_projeto
 
-                    filial = Filial.objects.filter(cod_filial=projeto.cod_filial).first()
-                    cod_filial = filial.cod_filial
-                    desc_filial = filial.desc_filial
+                    cod_filial = exc[2]
+                    desc_filial = exc[3]
             data = {
                 'nome_titular_senior': titular_senior['nome_colab'],
                 'cod_filial_colab': cod_filial,
