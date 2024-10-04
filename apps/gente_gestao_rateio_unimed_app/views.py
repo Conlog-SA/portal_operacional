@@ -261,7 +261,7 @@ class Form_Importa_Plan_Despesas_View(View):
             cod_empresa_filtro = 1
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
             cod_empresa_filtro = 2
-        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro).values_list(
+        lista_filiais = Despesa_Unimed.objects.filter(cod_empresa_senior=cod_empresa_filtro, cod_arq_despesa__status_arquivo=1).values_list(
             'cod_filial_senior', 'desc_filial_senior').distinct()
         lista_filiais_dict = []
         for filial in lista_filiais:
@@ -310,7 +310,8 @@ class Preenche_Colaborador(View):
             cod_filial = titular_senior['cod_filial_colab']
             desc_filial = titular_senior['nom_filial_colab']
             for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao').distinct():
-                if str(exc.cpf_colab_excecao).zfill(11) == str(titular_senior['cpf_colab']).zfill(11):
+                print(exc)
+                if str(exc[0]).zfill(11) == str(titular_senior['cpf_colab']).zfill(11):
                     cod_projeto = exc.cod_proj_colab_excecao
                     projeto = Projeto.objects.filter(cod_projeto=cod_projeto).first()
                     desc_projeto = projeto.desc_proj
