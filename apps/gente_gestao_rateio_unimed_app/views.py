@@ -312,7 +312,7 @@ class Preenche_Colaborador(View):
             for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao').distinct():
                 print(exc)
                 if str(exc[0]).zfill(11) == str(titular_senior['cpf_colab']).zfill(11):
-                    cod_projeto = exc[0]
+                    cod_projeto = exc[1]
                     projeto = Projeto.objects.filter(cod_projeto=cod_projeto).first()
                     desc_projeto = projeto.desc_proj
 
