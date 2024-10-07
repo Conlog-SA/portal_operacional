@@ -93,8 +93,6 @@ class Conexao_Senior_BD():
 
     def pesquisar_dados_colaborador_por_cpf_emp(self, cpf, cod_empresa):
         lista_colabs = {}
-        print(cpf)
-        print(cod_empresa)
         cursor = self.__conn.cursor()
         cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
                 A.NOMFUN   AS NOME_FUNC,
@@ -102,20 +100,29 @@ class Conexao_Senior_BD():
                 B.TITCAR   AS DESC_CARGO,
                 C.CODFIL   AS COD_FIL,
                 C.NOMFIL   AS NOM_FIL,
-                CASE WHEN A.SITAFA = 7
-                        THEN 'Desligado'
-                        ELSE 'Ativo' END
-                        AS  SITUACAO_COLAB,
+                A.SITAFA 	AS  SITUACAO_COLAB,
                 A.CODCCU AS COD_PROJ,
-                D.NOMCCU AS NOM_PROJ
+                D.NOMCCU AS NOM_PROJ,
+                (SELECT COUNT(NUMCPF) FROM r034fun (NOLOCK) GROUP BY NUMCPF HAVING NUMCPF = ?) AS QTD_REGISTROS_COL
                 
                 FROM R034FUN A (NOLOCK)
                 LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
                 LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
                 LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
                 WHERE A.NUMCPF = ?
-                AND C.NUMEMP = ?''', [int(cpf.split('.')[0]), int(cod_empresa)])
-        result = cursor.fetchall()
+                AND C.NUMEMP = ?
+                GROUP BY 
+                        A.NUMCAD, 
+                        A.NOMFUN,
+                        A.NUMCPF,
+                        B.TITCAR,
+                        C.CODFIL,
+                        C.NOMFIL,
+                        A.SITAFA,
+                        A.CODCCU,
+                        D.NOMCCU''', [int(cpf.split('.')[0]), int(cpf.split('.')[0]), int(cod_empresa)])
+        result = list(cursor.fetchall())
+        result = [reg for reg in result if reg.QTD_REGISTROS_COL == 1 or reg.QTD_REGISTROS_COL > 1 and reg.SITUACAO_COLAB == 1]
         if cursor is not None and len(result) == 1:
             colaborador = result[0]
             data = {
@@ -128,19 +135,66 @@ class Conexao_Senior_BD():
                     'cpf_colab': colaborador.CPF,
                     'matricula_colab': colaborador.ID,
                     'situacao_colab': colaborador.SITUACAO_COLAB,
-                }
+            }
             cursor.close()
             self.__conn.close()
             return data
         else:
-            columns = [column[0] for column in cursor.description]
-            print(columns)
+            cursor = self.__conn.cursor()
+            cursor.execute(f'''SELECT 
+                                    dep.numemp,
+                                    dep.tipcol,
+                                    dep.numcad,
+                                    dep.coddep,
+                                    dep.nomdep,
+                                    col.numcpf
+                                FROM vetorh.dbo.r036dep dep
+                                LEFT JOIN R034FUN col (NOLOCK)
+                                ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
+                                WHERE dep.numemp = 1
+                                AND dep.numcpf = ?''', [int(cpf.split('.')[0])])
+            result = cursor.fetchall()
+            if cursor is not None and len(result) == 1:
+                print(result[0])
+                data = {
+                    'nome_colab': 'teste'
+                }
+                cursor.close()
+                self.__conn.close()
+                return data
+
+            else:
+                cursor = self.__conn.cursor()
+                cursor.execute(f'''SELECT 
+                                        dep.numemp,
+                                        dep.tipcol,
+                                        dep.numcad,
+                                        dep.coddep,
+                                        dep.nomdep,
+                                        col.numcpf
+                                    FROM vetorh.dbo.r036dep dep
+                                    LEFT JOIN R034FUN col
+                                    ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
+                                    WHERE dep.numemp = 1
+                                    AND dep.numcpf = ?''', [int(cpf.split('.')[0])])
+                result = cursor.fetchall()
+            if cursor is not None and len(result) == 1:
+                print(result[0])
+                data = {
+                    'nome_colab': 'teste'
+                }
+                cursor.close()
+                self.__conn.close()
+                return data
+
             if len(cursor.fetchall()) == 0 or cursor is None:
+                print('nao achou')
                 data = {
                     'erro': 'Colaborador não encontrado'
                 }
                 return data
             if len(cursor.fetchall()) > 1:
+                print('achou mais de 1')
                 data = {
                     'erro': 'Colaborador duplicado'
                 }
@@ -303,7 +357,6 @@ class Conexao_Senior_BD():
         self.__conn.close()
         return df_folha_pag_proeventos
 
-
     def retorna_df_provisao_folha_senior(self, data_ref, lista_handle_proj, cod_tipo_provisao):
         data_ref_fim_date = datetime.strptime(data_ref, '%Y-%m-%d')
         data_ref_fim_str = datetime.strftime(
@@ -419,5 +472,32 @@ class Conexao_Senior_BD():
         self.__conn.close()
         return df_provisao_folha_senior
 
+    def retorna_nome_filial_senior(self, codfil):
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''SELECT DISTINCT 
+                    NOMFIL
+                FROM R030FIL A (NOLOCK)
+                WHERE CODFIL = {codfil}''')
+        result = cursor.fetchall()
+        if cursor is not None and len(result) == 1:
+            filial = result[0]
+            data = {
+                'nome_fil': filial.NOMFIL
+            }
+            cursor.close()
+            self.__conn.close()
+            return data
+        else:
+            columns = [column[0] for column in cursor.description]
+            if len(cursor.fetchall()) == 0 or cursor is None:
+                data = {
+                    'erro': 'Filial não encontrada'
+                }
+                return data
+            if len(cursor.fetchall()) > 1:
+                data = {
+                    'erro': 'Filial duplicada'
+                }
+                return data
 
 
