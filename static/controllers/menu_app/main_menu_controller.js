@@ -93,11 +93,58 @@ $(document).on('click', 'a', function(){
                     ],
 
                 */
-                $(".display").DataTable( {
+
+                    //loader_menu.style.display = "none";
+                if ( let_url_menu == '/ti_comitec_app/') {
+                    $('#tab_ideias_comitec').DataTable( {
+                        "bJQueryUI": true,
+                        "destroy": true,
+                        "fixedHeader": true,
+                        "scrollY": true,
+                        "scrollX": true,
+                        "scrollCollapse": true,
+                        "paging": true,
+                        "pageLength": 6,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "columnDefs": [
+                            {"className": "dt-center", "targets": [0,1,2,3,4,5,6]},
+                            {"className": "dt-left", "targets": [7,8,12,13]},
+                            {"className": "dt-right", "targets": [9,10,11]}
+                        ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    $(".display").DataTable( {
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": false, //"50vh" 770px
+                    "scrollY": "50vh", //"50vh" 770px
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": false,
@@ -135,7 +182,8 @@ $(document).on('click', 'a', function(){
                         }
                     }
                     } );
-                    //loader_menu.style.display = "none";
+                }
+
             },
             error: function (request, status, error) {
                 //loader_menu.style.display = "none";
