@@ -243,7 +243,7 @@ class Frm_Edit_Ideia_View(View):
                 'color_gut_t': color_gut_t,
                 'peso_gut_t': peso_gut_t,
 
-                'nota_gut_tt': peso_gut_g + peso_gut_u + peso_gut_t,
+                'nota_gut_tt': peso_gut_g * peso_gut_u * peso_gut_t,
                 'cod_ideia': obj_ideia.cod_ideia,
                 'cod_chamado': obj_ideia.cod_chamado,
                 'desc_ideia': obj_ideia.desc_ideia,
@@ -334,7 +334,7 @@ class Frm_Pontua_Item_Gut_View( View):
             nota_item_gut_u = obj_ideia.cod_gut_u.peso
         if obj_ideia.cod_gut_t != None:
             nota_item_gut_t = obj_ideia.cod_gut_t.peso
-        nota_total_gut = nota_item_gut_g + nota_item_gut_u + nota_item_gut_t
+        nota_total_gut = nota_item_gut_g * nota_item_gut_u * nota_item_gut_t
 
         lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
         data = dict()
@@ -381,9 +381,14 @@ class Frm_Avaliacao_Head_View(View):
         obj_ideia.nota_head = nota_head_frm
         obj_ideia.obs_usu_head = obs_usu_head_frm
         obj_ideia.save()
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
         data = dict()
         data = {
-            'msg': 'Parecer do head registrado'
+            'msg': 'Parecer do head registrado',
+            'lista_ideias_frm': lista_ideias_frm
         }
         return JsonResponse(data, safe=False)
 
@@ -437,8 +442,8 @@ class Tabela_Ideias():
                 nota_head = i.nota_head
                 login_head = i.cod_usu_head.login_usu
                 obs_usu_head = i.obs_usu_head
-            nota_gut = nota_gut_g + nota_gut_u + nota_gut_t
-            tt_nota = nota_gut + nota_head
+            nota_gut = nota_gut_g * nota_gut_u * nota_gut_t
+            tt_nota = nota_gut * nota_head
 
             if i.cod_usu_master != None:
                 login_master = i.cod_usu_master.login_usu

@@ -2421,10 +2421,18 @@ function atualiza_tab_anexos_conta(cod_conta){
             });
             $("#tab_anexos_conta").DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 5,
                 "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "50vh", //"50vh" 770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": false,
+                //"pageLength": 7,
                 "searching": true,
-                "paging": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5'
+                ],
                 "data":var_lista_docs,
                 "columns": [
                     { title: "Ver na composição ?" },

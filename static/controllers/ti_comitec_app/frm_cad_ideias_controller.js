@@ -739,6 +739,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                carrega_tabela_ideias(dados.lista_ideias_frm);
                 let_loader_frm_parecer_head_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
