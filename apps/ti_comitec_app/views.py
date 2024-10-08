@@ -314,9 +314,12 @@ class Frm_Pontua_Item_Gut_View( View):
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        data_atual = datetime.now()
 
         obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
         obj_item_gut = Item_Gut.objects.get(pk=cod_tipo_item_gut_frm, tipo=desc_tipo_item_gut)
+        obj_ideia.data_nota_gut = data_atual
+        obj_ideia.cod_usu_head = obj_usuario_sessao
         nota_item_gut_g = 0
         nota_item_gut_u = 0
         nota_item_gut_t = 0
@@ -375,11 +378,13 @@ class Frm_Avaliacao_Head_View(View):
         obs_usu_head_frm = request.POST['obs_usu_head']
 
         obj_usu_head = Usuario.objects.get(pk=cod_usu_head_frm)
+        data_atual = datetime.now()
 
         obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
         obj_ideia.cod_usu_head = obj_usu_head
         obj_ideia.nota_head = nota_head_frm
         obj_ideia.obs_usu_head = obs_usu_head_frm
+        obj_ideia.data_nota_head = data_atual
         obj_ideia.save()
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
