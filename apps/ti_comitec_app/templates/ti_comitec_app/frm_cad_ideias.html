@@ -172,21 +172,39 @@
                                             <td>{{ideia.login_master}}</td>
                                             <td>{{ideia.login_head}}</td>
                                             <td>
-                                                <button type='button' name='btn_detalhes_ideia_comitec'
-                                                    id='btn_detalhes_ideia_comitec_{{ ideia.cod_ideia }}'
-                                                    class='btn btn-rounded btn-space'
-                                                    value='{{ ideia.cod_ideia }}' title='Clique para ver os detalhes da idéia'>
-                                                    <i class="fa-solid fa-eye" style="color: #f46424;"></i>
-                                                </button>
+                                                {% if obj_usuario_sessao.cod_usu == ideia.cod_usu_owner and  obj_usuario_sessao.tipo_colab == 'L' %}
+                                                    <button type='button' name='btn_detalhes_ideia_comitec'
+                                                        id='btn_detalhes_ideia_comitec_{{ ideia.cod_ideia }}'
+                                                        class='btn btn-rounded btn-space'
+                                                        value='{{ ideia.cod_ideia }}' title='Clique para ver os detalhes da idéia'>
+                                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                                    </button>
+                                                {% endif %}
+                                                {% if obj_usuario_sessao.cod_usu != ideia.cod_usu_owner and obj_usuario_sessao.tipo_colab == 'L'%}
+                                                    <i class="fa-solid fa-eye-slash fa-lg" style="color: #f46424;"></i>
+                                                {% endif %}
+                                                {% if obj_usuario_sessao.tipo_colab == 'M' or obj_usuario_sessao.tipo_colab == 'H'%}
+                                                    <button type='button' name='btn_detalhes_ideia_comitec'
+                                                        id='btn_detalhes_ideia_comitec_{{ ideia.cod_ideia }}'
+                                                        class='btn btn-rounded btn-space'
+                                                        value='{{ ideia.cod_ideia }}' title='Clique para ver os detalhes da idéia'>
+                                                        <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                                    </button>
+                                                {% endif %}
                                             </td>
                                             <td>
-                                                <button type='button' name='btn_abre_modal_muda_idea_proj'
-                                                        id='btn_abre_modal_muda_idea_proj_{{ ideia.cod_ideia }}'
-                                                        class="btn btn-sm btn-primary btn-rounded" value="{{ ideia.cod_ideia }}"
-                                                        style="border-radius: 5rem;border-color: #ffffff; background-color: transparent;"
-                                                        title='Transformar idéia em projeto'>
-                                                    <i class="fa-solid fa-play fa-beat" style="color: #32930C; width: 40px;"></i>
-                                                </button>
+                                                {% if obj_usuario_sessao.tipo_colab == 'M' %}
+                                                    <button type='button' name='btn_abre_modal_muda_idea_proj'
+                                                            id='btn_abre_modal_muda_idea_proj_{{ ideia.cod_ideia }}'
+                                                            class="btn btn-sm btn-primary btn-rounded" value="{{ ideia.cod_ideia }}"
+                                                            style="border-radius: 5rem;border-color: #ffffff; background-color: transparent;"
+                                                            title='Transformar idéia em projeto'>
+                                                        <i class="fa-solid fa-play fa-beat" style="color: #32930C; width: 40px;"></i>
+                                                    </button>
+                                                {% else %}
+                                                    <i class="fa-solid fa-bookmark fa-lg" style="color: #f46424;"></i>
+                                                {% endif %}
+
                                             </td>
                                         </tr>
                                     {% endfor %}

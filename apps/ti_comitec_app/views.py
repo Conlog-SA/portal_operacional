@@ -404,8 +404,8 @@ class Frm_Avaliacao_Head_View(View):
 class Tabela_Ideias():
     def carrega_tabela(self, obj_usuario):
         lista_ideias_frm = []
-        lista_ideias = None
-        if obj_usuario.tipo_colab == 'L':
+        lista_ideias = Ideia.objects.filter(cod_status=0)
+        '''if obj_usuario.tipo_colab == 'L':
             lista_ideias = Ideia.objects.filter(cod_status=0, cod_usu_owner=obj_usuario)
         elif obj_usuario.tipo_colab == 'M':
             lista_ideias = Ideia.objects.filter(cod_status=0, cod_usu_master=obj_usuario)
@@ -414,8 +414,7 @@ class Tabela_Ideias():
                             .filter((Q(cod_usu_head=obj_usuario) | Q(cod_usu_head__isnull=True)),
                                     cod_status=0))
         elif obj_usuario.tipo_colab == 'G':
-            lista_ideias = (Ideia.objects
-                            .filter(cod_status=0))
+            lista_ideias = (Ideia.objects.filter(cod_status=0))'''
 
         for i in lista_ideias:
             nota_gut_g = 0
@@ -472,7 +471,8 @@ class Tabela_Ideias():
                 'nota_gut': nota_gut,
                 'nota_head': nota_head,
                 'nota_total': tt_nota,
-                'cod_ideia': i.cod_ideia
+                'cod_ideia': i.cod_ideia,
+                'cod_usu_owner': i.cod_usu_owner.cod_usu
             }
             lista_ideias_frm.append(ideia)
 

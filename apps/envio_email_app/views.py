@@ -8,8 +8,8 @@ class Envio_Email():
     def __init__(self):
         self.host = 'zimbra.conlogsa.com.br'
         self.port = '587'
-        self.login = 'danilo.costa@conlogsa.com.br' #'sistemas.interno@conlogsa.com.br'
-        self.senha = 'dap@1104!' #'sislot@782!'
+        self.login = 'danilo.costa@conlogsa.com.br'
+        self.senha = '@WSX3edc$RFV5tgb'
 
 
     def envia_email_alerta_adm(self, msg):

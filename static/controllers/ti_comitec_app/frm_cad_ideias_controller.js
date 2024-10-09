@@ -844,8 +844,8 @@ function carrega_tabela_ideias(lista_ideias_frm) {
             { title: "Projeto" }
         ],
         "columnDefs": [
-            {"className": "dt-center", "targets": [0,1,2,3,4,5,6]},
-            {"className": "dt-left", "targets": [7,8,12,13]},
+            {"className": "dt-center", "targets": [0,1,2,3,4,5,6,12,13]},
+            {"className": "dt-left", "targets": [7,8]},
             {"className": "dt-right", "targets": [9,10,11]}
         ],
         "oLanguage": {
