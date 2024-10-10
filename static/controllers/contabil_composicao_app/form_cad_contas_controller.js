@@ -2398,9 +2398,9 @@ function atualiza_tab_anexos_conta(cod_conta){
                     let_num_contrato = doc.cod_contrato__num_contrato;
                 }
 
-                let let_competencia = doc.data_competencia.split('-')[2] + '-' +
+                /* let let_competencia = doc.data_competencia.split('-')[2] + '-' +
                     doc.data_competencia.split('-')[1] + '-' +
-                    doc.data_competencia.split('-')[0]
+                    doc.data_competencia.split('-')[0] */
 
                 let let_chk_anexo_main = 'unchecked';
                 if ( doc.eh_anexo_principal_competencia == 'S' ) {
@@ -2412,7 +2412,7 @@ function atualiza_tab_anexos_conta(cod_conta){
                     ` <input type="checkbox" class="checkbox" id="ck_eh_anexo_principal_tab_${doc.cod_anexo_contrato}"
                     name="ck_eh_anexo_principal_tab" ${let_chk_anexo_main}>`,
                     let_num_contrato,
-                    let_competencia,
+                    doc.data_competencia,
                     doc.desc_anexo,
                     var_btn_visualizar_anexo,
                     var_btn_exclui_anexo

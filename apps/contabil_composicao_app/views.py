@@ -2255,6 +2255,10 @@ class Form_Anexos_Conta_View(View):
                 .values('cod_contrato__num_contrato', 'cod_anexo_contrato', 'desc_anexo', 'caminho_anexo',
                         'data_competencia', 'eh_anexo_principal_competencia'))
 
+        if len(lista_anexos) > 0:
+            for anx in lista_anexos:
+                anx['data_competencia'] = datetime.strftime(anx['data_competencia'], '%m-%Y')
+
 
 
         data = dict()
@@ -3409,40 +3413,43 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
 
         if len(registros_tabela) > 0:
             for reg in registros_tabela:
+
                 '''Configura campos data e valores'''
-                if arq['tt_val_rel'] != None:
-                    if type(arq['tt_val_rel']) == str:
-                        arq['tt_val_rel'] = locale.currency(round(float(arq['tt_val_rel'].replace('.','').replace(',','.')), 2), grouping=True,
+                if reg['tt_val_rel'] != None:
+                    if type(reg['tt_val_rel']) == str:
+                        reg['tt_val_rel'] = locale.currency(round(float(reg['tt_val_rel'].replace('.','').replace(',','.')), 2), grouping=True,
                                                             symbol=None)
                     else:
-                        arq['tt_val_rel'] = locale.currency(round(float(arq['tt_val_rel']), 2), grouping=True, symbol=None)
-                if arq['tt_val_razao'] != None:
-                    if type(arq['tt_val_razao']) == str:
-                        arq['tt_val_razao'] = locale.currency(
-                            round(float(arq['tt_val_razao'].replace('.', '').replace(',', '.')), 2), grouping=True,
+                        reg['tt_val_rel'] = locale.currency(round(float(reg['tt_val_rel']), 2), grouping=True, symbol=None)
+                if reg['tt_val_razao'] != None:
+                    if type(reg['tt_val_razao']) == str:
+                        reg['tt_val_razao'] = locale.currency(
+                            round(float(reg['tt_val_razao'].replace('.', '').replace(',', '.')), 2), grouping=True,
                             symbol=None)
                     else:
-                        arq['tt_val_razao'] = locale.currency(round(float(arq['tt_val_razao']), 2), grouping=True,
+                        reg['tt_val_razao'] = locale.currency(round(float(reg['tt_val_razao']), 2), grouping=True,
                                                           symbol=None)
-                if arq['tt_dif'] != None:
+                if reg['tt_dif'] != None:
                     if type(arq['tt_dif']) == str:
-                        arq['tt_dif'] = locale.currency(
-                            round(float(arq['tt_dif'].replace('.', '').replace(',', '.')), 2), grouping=True,
+                        reg['tt_dif'] = locale.currency(
+                            round(float(reg['tt_dif'].replace('.', '').replace(',', '.')), 2), grouping=True,
                             symbol=None)
                     else:
-                        arq['tt_dif'] = locale.currency(round(float(arq['tt_dif']), 2), grouping=True,
+                        reg['tt_dif'] = locale.currency(round(float(reg['tt_dif']), 2), grouping=True,
                                                           symbol=None)
-                if arq['cod_arquivo__data_imp'] != None:
-                    if type(arq['cod_arquivo__data_imp']) == str:
-                        arq['cod_arquivo__data_imp'] = datetime.strftime(datetime.strptime(arq['cod_arquivo__data_imp'], '%d-%m-%Y'), '%d-%m-%Y')
+                if reg['cod_arquivo__data_imp'] != None:
+                    if type(reg['cod_arquivo__data_imp']) == str:
+                        reg['cod_arquivo__data_imp'] = datetime.strftime(datetime.strptime(reg['cod_arquivo__data_imp'], '%d-%m-%Y'), '%d-%m-%Y')
                     else:
-                        arq['cod_arquivo__data_imp'] = datetime.strftime(arq['cod_arquivo__data_imp'], '%d-%m-%Y')
+                        reg['cod_arquivo__data_imp'] = datetime.strftime(reg['cod_arquivo__data_imp'], '%d-%m-%Y')
 
-                if arq['cod_arquivo__data_competencia'] != None:
-                    if type(arq['cod_arquivo__data_competencia']) == str:
-                        arq['cod_arquivo__data_competencia'] = datetime.strftime(datetime.strptime(arq['cod_arquivo__data_competencia'], '%m-%Y'), '%m-%Y')
+                if reg['cod_arquivo__data_competencia'] != None:
+                    if type(reg['cod_arquivo__data_competencia']) == str:
+                        reg['cod_arquivo__data_competencia'] = datetime.strftime(datetime.strptime(reg['cod_arquivo__data_competencia'], '%m-%Y'), '%m-%Y')
                     else:
-                        arq['cod_arquivo__data_competencia'] = datetime.strftime(arq['cod_arquivo__data_competencia'], '%m-%Y')
+
+                        reg['cod_arquivo__data_competencia'] = datetime.strftime(reg['cod_arquivo__data_competencia'], '%m-%Y')
+
 
         lista_registros_tabela = []
         if competencia_form != 'todas':
@@ -3450,6 +3457,7 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
             for reg in registros_tabela:
                 if reg['cod_arquivo__data_competencia'] == competencia_form:
                     lista_registros_tabela.append(reg)
+
         else:
             lista_registros_tabela = registros_tabela
 
