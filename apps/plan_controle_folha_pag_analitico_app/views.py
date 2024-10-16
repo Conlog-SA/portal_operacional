@@ -210,24 +210,30 @@ class Form_Libera_Proj_Usu_View(View):
         if obj_usuario.cod_filial.cod_empresa.cod_empresa == 12:
             lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
                                   .filter(cod_empresa=12)
-                                  .values('handle_benner', 'desc_proj_benner').distinct())
+                                  .values('handle_benner', 'desc_proj_benner', 'cod_empresa').distinct())
             for proj in lista_projetos:
                 reg = {
                     'handle_benner': proj['handle_benner'],
-                    'desc_proj_benner': proj['desc_proj_benner']
+                    'desc_proj_benner': proj['desc_proj_benner'],
+                    'cod_empresa': proj['cod_empresa'],
+                    'nome_empresa': 'CONLOG'
                 }
                 lista_projetos_pagina.append(reg)
         elif obj_usuario.cod_filial.cod_empresa.cod_empresa == 17:
             lista_projetos = list(Liberacao_Usuario_Projeto_Benner.objects
                                   .filter(cod_empresa=17)
-                                  .values('handle_benner', 'desc_proj_benner').distinct())
+                                  .values('handle_benner', 'desc_proj_benner', 'cod_empresa').distinct())
             for proj in lista_projetos:
                 reg = {
                     'handle_benner': proj['handle_benner'],
-                    'desc_proj_benner': proj['desc_proj_benner']
+                    'desc_proj_benner': proj['desc_proj_benner'],
+                    'cod_empresa': proj['cod_empresa'],
+                    'nome_empresa': 'DEEP'
                 }
                 lista_projetos_pagina.append(reg)
             ''' 
+            60	- DEPOT - IOA
+            869	- ARMAZÉM - IOA
             910 - ADMINISTRATIVO - CAL
             912 - OPERACIONAL - CAL
             915 - ADMINISTRATIVO - UTS
@@ -237,12 +243,14 @@ class Form_Libera_Proj_Usu_View(View):
             1060 - OPERACIONAL RIO BRILHANTE - GLD
             '''
             lista_projetos_conlog = list(Liberacao_Usuario_Projeto_Benner.objects
-                                         .filter(handle_benner__in=[910, 912, 915, 916, 143, 300, 1060])
-                                         .values('handle_benner', 'desc_proj_benner').distinct())
+                                         .filter(handle_benner__in=[60, 869, 910, 912, 915, 916, 143, 300, 1060])
+                                         .values('handle_benner', 'desc_proj_benner', 'cod_empresa').distinct())
             for proj in lista_projetos_conlog:
                 reg = {
                     'handle_benner': proj['handle_benner'],
-                    'desc_proj_benner': proj['desc_proj_benner']
+                    'desc_proj_benner': proj['desc_proj_benner'],
+                    'cod_empresa': proj['cod_empresa'],
+                    'nome_empresa': 'CONLOG'
                 }
                 lista_projetos_pagina.append(reg)
         context = {
@@ -261,7 +269,8 @@ class Form_Libera_Proj_Usu_Tab_Usu_View(View):
         cod_usu_form = request.GET['cod_usuario']
         obj_usu = Usuario.objects.get(pk=cod_usu_form)
         lista_liberacoes_usu = list(Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usu)
-                                    .values('cod_libera_usu_proj', 'handle_benner', 'desc_proj_benner', 'ativo_app_folha_pagamento'))
+                                    .values('cod_libera_usu_proj', 'handle_benner', 'desc_proj_benner',
+                                            'cod_empresa', 'ativo_app_folha_pagamento'))
         data = dict()
         data = {
             'lista_liberacoes_usu': lista_liberacoes_usu
@@ -279,6 +288,7 @@ class Form_Libera_Proj_Usu_Tab_Usu_View(View):
             obj_usuario = Usuario.objects.get(pk=cod_usuario_form)
             for proj in lista_projetos_form:
                 handle = proj.split('_')[0]
+                cod_empresa = proj.split('_')[2]
                 if handle != '0' and len(lista_projetos_form) > 0:
                     desc_proj = proj.split('_')[1]
                     obj_liberacao = Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usuario, handle_benner=handle).first()
@@ -291,7 +301,7 @@ class Form_Libera_Proj_Usu_Tab_Usu_View(View):
                             desc_proj_benner = desc_proj,
                             ativo_app_folha_pagamento = 'S',
                             cod_usu = obj_usuario,
-                            cod_empresa= obj_usuario_logado.cod_filial.cod_empresa.cod_empresa
+                            cod_empresa= cod_empresa
                         )
                         nova_liberacao.save()
                     msg =  'Liberações efetuadas !!!'

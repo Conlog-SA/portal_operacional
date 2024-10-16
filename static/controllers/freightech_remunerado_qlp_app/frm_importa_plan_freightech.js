@@ -146,6 +146,9 @@ $(document).on('click','button', function(){
                     "buttons": [
                         'copyHtml5'
                     ],
+                    "fixedColumns": {
+                        "start": 4
+                    },
                     "data":lista_itens_rem,
                     "columns": [
                         { title: "Vigência" },
@@ -227,6 +230,211 @@ $(document).on('click','button', function(){
                     }
                 });
                 $("#tab_qlp_adm_feigh").DataTable().columns.adjust().draw();
+
+
+                let let_lista_qlp = []
+                data.lista_qlp.forEach(item => {
+                    let let_reg = [
+                        item.quinz,
+                        item.periodo,
+                        item.desc_proj,
+                        item.desc_cargo_senior,
+                        item.desc_cargo_freightech,
+                        item.qlp,
+                        item.val_ordenados
+                    ];
+                    let_lista_qlp.push(let_reg);
+                });
+                $("#tab_qlp_senior_x_freigh").DataTable({
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 10,
+                    "responsive": false,
+                    "stateSave": true,
+                    "select": true,
+                    "colReorder": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_qlp,
+                    "columns": [
+                        { title: "Quinzena" },
+                        { title: "Dia" },
+                        { title: "Projeto" },
+                        { title: "Cargo Senior" },
+                        { title: "Cargo Freightech" },
+                        { title: "Qlp." },
+                        { title: "R$ TT Ordenados" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [0,1]},
+                        {"className": "dt-left", "targets": [2,3,4]},
+                        {"className": "dt-right", "targets": [5]}
+                    ],
+                    "initComplete": function () {
+                        this.api()
+                            .columns([0,1,2,3,4])
+                            .every(function () {
+                                let column = this;
+
+                                // Create select element
+                                let select = document.createElement('select');
+                                select.add(new Option(''));
+                                column.footer().replaceChildren(select);
+
+                                // Apply listener for user change in value
+                                select.addEventListener('change', function () {
+                                    column
+                                        .search(select.value, {exact: true})
+                                        .draw();
+                                });
+
+                                // Add list of options
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.add(new Option(d));
+                                    });
+                            });
+                    },
+                    "language": {
+                        "decimal": ",",
+                        "thousands": ".",
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+                $("#tab_qlp_senior_x_freigh").DataTable().columns.adjust().draw();
+
+                let let_lista_qlp_filial = []
+                data.lista_qlp_filial.forEach(item => {
+                    let let_reg = [
+                        item.quinz,
+                        item.periodo,
+                        item.nome_filial,
+                        item.desc_cargo_senior,
+                        item.desc_cargo_freightech,
+                        item.qlp,
+                        item.val_ordenados
+                    ];
+                    let_lista_qlp_filial.push(let_reg);
+                });
+                $("#tab_qlp_filial_senior_x_freigh").DataTable({
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "770px",
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 10,
+                    "responsive": false,
+                    "stateSave": true,
+                    "select": true,
+                    "colReorder": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_qlp_filial,
+                    "columns": [
+                        { title: "Quinzena" },
+                        { title: "Dia" },
+                        { title: "Filial" },
+                        { title: "Cargo Senior" },
+                        { title: "Cargo Freightech" },
+                        { title: "Qlp." },
+                        { title: "R$ TT Ordenados" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [0,1]},
+                        {"className": "dt-left", "targets": [2,3,4]},
+                        {"className": "dt-right", "targets": [5]}
+                    ],
+                    "initComplete": function () {
+                        this.api()
+                            .columns([0,1,2,3,4])
+                            .every(function () {
+                                let column = this;
+
+                                // Create select element
+                                let select = document.createElement('select');
+                                select.add(new Option(''));
+                                column.footer().replaceChildren(select);
+
+                                // Apply listener for user change in value
+                                select.addEventListener('change', function () {
+                                    column
+                                        .search(select.value, {exact: true})
+                                        .draw();
+                                });
+
+                                // Add list of options
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.add(new Option(d));
+                                    });
+                            });
+                    },
+                    "language": {
+                        "decimal": ",",
+                        "thousands": ".",
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+                $("#tab_qlp_filial_senior_x_freigh").DataTable().columns.adjust().draw();
 
 				$.gritter.add({
                     title: 'Atenção!',

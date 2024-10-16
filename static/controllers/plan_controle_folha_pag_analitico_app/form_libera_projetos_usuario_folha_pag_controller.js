@@ -360,10 +360,15 @@ function atualiza_tab_liberacoes_usuario(cod_usuario) {
                     `;
                 }
 
+                let let_nome_empresa = 'CONLOG';
+                if (liberacao.cod_empresa == '17'){
+                    let_nome_empresa = 'DEEP';
+                }
+
                 reg = [
                     "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>",
                     liberacao.handle_benner,
-                    liberacao.desc_proj_benner,
+                    liberacao.desc_proj_benner + '(' + let_nome_empresa + ')',
                     var_rb_libera_proj
                 ];
                 lista_liberacoes.push(reg);

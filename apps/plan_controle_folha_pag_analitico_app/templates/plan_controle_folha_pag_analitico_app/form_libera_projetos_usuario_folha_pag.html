@@ -103,8 +103,8 @@
                                             data-live-search="true"
                                             title="Selecione o projeto">
                                         {% for p in lista_projetos_benner %}
-                                            <option value="{{ p.handle_benner }}_{{ p.desc_proj_benner }}">
-                                                {{ p.handle_benner }} - {{ p.desc_proj_benner }}
+                                            <option value="{{ p.handle_benner }}_{{ p.desc_proj_benner }}_{{p.cod_empresa}}">
+                                                {{ p.handle_benner }} - {{ p.desc_proj_benner }}({{ p.nome_empresa }})
                                             </option>
                                         {% endfor %}
                                     </select>

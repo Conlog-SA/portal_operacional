@@ -522,10 +522,12 @@ class Conexao_Senior_BD():
                     R030FIL.NOMFIL		AS	nome_filial,
                     R018CCU.CODCCU		AS 	cod_ccu_colab,
                     R018CCU.NOMCCU		AS	nome_ccu_colab,
-                    R038HCA.CODCAR		AS	cod_cargo_colab,
+                    R038HCA.CODCAR		AS	cod_cargo,
                     R024CAR.TITRED		AS	nome_cargo_colab,
-                    frei.usu_codcar	AS	cod_cargo_freightech,
-                    frei.usu_descar	AS	desc_cargo_freightech    	           
+                    COALESCE(frei.usu_codcar, 0)
+                    	                AS	cod_cargo_freightech,
+                    COALESCE(frei.usu_descar, '')
+                    	                AS	desc_cargo_freightech    	           
              FROM	vetorh.dbo.R034FUN (NOLOCK)            
         LEFT JOIN	USU_TDIAEMP (NOLOCK)
                ON	(USU_TDIAEMP.USU_NUMEMP = R034FUN.NUMEMP)
@@ -639,4 +641,98 @@ class Conexao_Senior_BD():
         self.__conn.close()
         return df_qlp
 
+
+    def retorna_df_ordenados_por_periodo_e_filial(self, data_ref, cod_filial):
+        sql_ordenados = (
+            f'''
+            SELECT  val_folha.tipcol		AS	tip_col,
+                    val_folha.numemp		AS	cod_empresa,
+                    val_folha.numcad		AS	mat_colab,
+                    fun.nomfun				AS	nome_colab,
+                    hist_cargo.CODCAR		AS	cod_cargo,
+                    cargo.TITRED			AS	desc_cargo,
+                    hist_filial.codfil		AS	cod_filial,
+                    fil.nomfil				AS	nome_filial,
+                    hist_cc.CODCCU			AS	cod_ccu_colab,
+                    cc.nomccu				AS	nome_projeto,
+                    sum(val_folha.valeve)	AS	val_evento
+                FROM r046ver val_folha(NOLOCK)
+                LEFT JOIN r034fun fun (NOLOCK)
+                  ON (fun.numemp = val_folha.numemp 
+                 AND fun.tipcol = val_folha.tipcol 
+                 AND fun.numcad = val_folha.numcad)
+                LEFT JOIN r044cal cal (NOLOCK)
+                  ON (cal.numemp = fun.numemp
+                 AND cal.codcal = val_folha.codcal)
+                LEFT JOIN r008evc eve (NOLOCK)
+                  ON (eve.codeve = val_folha.codeve
+                 AND eve.codtab = val_folha.tabeve)
+                LEFT JOIN r048clc conta (NOLOCK)
+                  ON (conta.tabeve = eve.codtab
+                 AND conta.codclc = eve.codclc)
+                LEFT JOIN R038HCA hist_cargo(NOLOCK)
+                  ON (hist_cargo.NUMEMP = fun.NUMEMP
+                 AND hist_cargo.TIPCOL = fun.TIPCOL 
+                 AND hist_cargo.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R024CAR cargo (NOLOCK)
+                  ON (cargo.ESTCAR = hist_cargo.ESTCAR
+                 AND cargo.CODCAR = hist_cargo.CODCAR)
+                LEFT JOIN R038HFI hist_filial (NOLOCK)
+                  ON (hist_filial.NUMEMP = fun.NUMEMP
+                 AND hist_filial.TIPCOL = fun.TIPCOL 
+                 AND hist_filial.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R030FIL fil (NOLOCK)
+                  ON (fil.NUMEMP = hist_filial.NUMEMP
+                 AND fil.CODFIL = hist_filial.CODFIL)
+                LEFT JOIN R038HCC hist_cc (NOLOCK)
+                  ON (hist_cc.NUMEMP = fun.NUMEMP
+                 AND hist_cc.TIPCOL = fun.TIPCOL
+                 AND hist_cc.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R018CCU cc (NOLOCK)
+                  ON (cc.NUMEMP = hist_cc.NUMEMP
+                 AND cc.CODCCU = hist_cc.CODCCU)             
+            
+                LEFT JOIN R010SIT sit_atual (NOLOCK)
+                  ON sit_atual.CODSIT = fun.sitafa
+               WHERE eve.tipeve = 1 /* Horas Normais Diurnas */
+                 AND	val_folha.codeve = 1
+                 AND	eve.codclc = 1 /*Salários e Ordenados (D) */
+                     AND hist_filial.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HFI TABELA001 (NOLOCK) 
+                                                   WHERE TABELA001.NUMEMP = hist_filial.NUMEMP 
+                                                     AND TABELA001.TIPCOL = hist_filial.TIPCOL 
+                                                     AND TABELA001.NUMCAD = hist_filial.NUMCAD 
+                                                     AND TABELA001.DATALT <= cal.fimcmp)
+                     AND hist_cc.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HCC TABELA002 (NOLOCK) 
+                                                   WHERE TABELA002.NUMEMP = hist_cc.NUMEMP 
+                                                     AND TABELA002.TIPCOL = hist_cc.TIPCOL 
+                                                     AND TABELA002.NUMCAD = hist_cc.NUMCAD 
+                                                     AND TABELA002.DATALT <= cal.fimcmp)                                  
+                     AND hist_cargo.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HCA TABELA003 (NOLOCK) 
+                                                   WHERE TABELA003.NUMEMP = hist_cargo.NUMEMP 
+                                                     AND TABELA003.TIPCOL = hist_cargo.TIPCOL 
+                                                     AND TABELA003.NUMCAD = hist_cargo.NUMCAD 
+                                                     AND TABELA003.DATALT <= cal.fimcmp) 
+            
+               
+                    AND cal.perref = '{data_ref}'
+                AND fil.CODFIL = {cod_filial}
+                GROUP BY val_folha.tipcol,
+                    val_folha.numemp,
+                    val_folha.numcad,
+                    fun.nomfun,
+                    hist_cargo.CODCAR,
+                    cargo.TITRED,
+                    hist_filial.codfil,
+                    fil.nomfil,
+                    hist_cc.CODCCU,
+                    cc.nomccu
+                ORDER BY val_folha.numcad ASC;
+            '''
+        )
+        df_ordenados = pd.read_sql(sql_ordenados, self.__conn)
+        self.__conn.close()
+        return df_ordenados
 

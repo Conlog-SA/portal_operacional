@@ -109,7 +109,15 @@
                                 data-live-search="true"
                                 title="Selecione o projeto">
                             {% for proj in lista_projetos_pagina %}
-                                <option value="{{ proj.handle_benner }}_{{ proj.cod_empresa }}">{{ proj.desc_proj_benner }}</option>
+                                <option value="{{ proj.handle_benner }}_{{ proj.cod_empresa }}">
+                                    {{ proj.handle_benner }} -
+                                    {{ proj.desc_proj_benner }}(
+                                    {% if proj.cod_empresa == 12 %}
+                                        CONLOG
+                                    {% else %}
+                                        DEEP
+                                    {% endif %}
+                                    )</option>
                             {% endfor %}
 
                         </select>

@@ -1,10 +1,14 @@
+import calendar
 from datetime import datetime
 import locale
 
+import pandas as pd
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
 
+from apps.calendario_app.models import Calendario_Dias
+from apps.conecta_senior_app.views import Conexao_Senior_BD
 from apps.freightech_remunerado_qlp_app.importador_plan_freitech import Importador_Plan_Freightech
 from apps.freightech_remunerado_qlp_app.models import Plan_Remunerada_Freightech, \
     Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm
@@ -52,7 +56,8 @@ class Frm_Importa_Plan_Remunerado_Freightech_View(View):
 
 class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
     def get(self, request):
-        nome_unidade_freigh_frm = request.GET['nome_unidade_freigh']
+        cod_unidade_senior_frm = request.GET['nome_unidade_freigh'].split('_')[0]
+        nome_unidade_freigh_frm = request.GET['nome_unidade_freigh'].split('_')[1]
         data_1_frm = request.GET['data_1'] + '-01'
         quinz_1_frm = request.GET['quinz_1']
         data_2_frm = request.GET['data_2'] + '-01'
@@ -117,6 +122,118 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                 }
                 lista_obj_rem.append(dic_rem_2)
 
+        '''Ordenados'''
+        con_ordenados_1 = Conexao_Senior_BD(12)
+        data_ref_1 = data_1_frm + '-01'
+        df_ordenados_cargo_1 = con_ordenados_1.retorna_df_ordenados_por_periodo_e_filial(data_1_frm,cod_unidade_senior_frm)
+        df_ordenados_cargo_1['vigencia'] = data_1_frm
+        df_ordenados_cargo_1['quinz'] = quinz_1_frm
+
+        con_ordenados_2 = Conexao_Senior_BD(12)
+        data_ref_2 = data_2_frm + '-01'
+        df_ordenados_cargo_2 = con_ordenados_2.retorna_df_ordenados_por_periodo_e_filial(data_2_frm,cod_unidade_senior_frm)
+        df_ordenados_cargo_2['vigencia'] = data_2_frm
+        df_ordenados_cargo_2['quinz'] = quinz_2_frm
+        df_ordenados_cargo = pd.concat([df_ordenados_cargo_1, df_ordenados_cargo_2]).reset_index()
+        df_ordenados_cargo_fil = df_ordenados_cargo.groupby(
+            ['vigencia', 'quinz', 'cod_filial', 'cod_cargo'])[
+            ['val_evento']].sum().reset_index()
+        df_ordenados_cargo_proj = df_ordenados_cargo.groupby(
+            ['vigencia', 'quinz', 'cod_filial', 'cod_ccu_colab', 'cod_cargo' ])[
+            ['val_evento']].sum().reset_index()
+
+        '''QLP Senior'''
+        '''Seleciona data 1'''
+        data_1 = None
+        if quinz_1_frm == '1':
+            data_1 = (Calendario_Dias.objects
+                      .filter(data_dia__year=data_1_frm.split('-')[0],
+                                                    data_dia__month=data_1_frm.split('-')[1], data_dia__day__range=[1,15])
+                      .order_by('-data_dia').first())
+
+        else:
+            ano = int(data_1_frm.split('-')[0])
+            mes = int(data_1_frm.split('-')[1])
+            _, ultimo_dia_mes = calendar.monthrange(ano, mes)
+            data_1 = (Calendario_Dias.objects
+                      .filter(data_dia__year=data_1_frm.split('-')[0],
+                              data_dia__month=data_1_frm.split('-')[1], data_dia__day__range=[16, ultimo_dia_mes])
+                      .order_by('-data_dia').first())
+
+
+        con_senior_1 = Conexao_Senior_BD(12)
+        df_qlp_senior_1 = con_senior_1.retorna_qlp_por_periodo_e_filial(data_1.data_dia, cod_unidade_senior_frm)
+        df_qlp_senior_1['quinz'] = quinz_1_frm
+        df_qlp_senior_1['vigencia'] = data_1_frm
+        df_qtd_qlp_cargo_1 = df_qlp_senior_1.groupby(['data_qlp', 'vigencia', 'quinz', 'cod_filial', 'nome_filial', 'cod_ccu_colab', 'nome_ccu_colab', 'cod_cargo', 'nome_cargo_colab', 'desc_cargo_freightech'])[['matricula_colab']].count().reset_index()
+
+        #print(df_qtd_qlp_cargo_1)
+
+
+        '''Seleciona data 2,'''
+        data_2 = None
+        if quinz_2_frm == '1':
+            data_2 = (Calendario_Dias.objects
+                      .filter(data_dia__year=data_2_frm.split('-')[0],
+                              data_dia__month=data_2_frm.split('-')[1], data_dia__day__range=[1, 15])
+                      .order_by('-data_dia').first())
+
+        else:
+            ano = int(data_2_frm.split('-')[0])
+            mes = int(data_2_frm.split('-')[1])
+            _, ultimo_dia_mes = calendar.monthrange(ano, mes)
+            data_2 = (Calendario_Dias.objects
+                      .filter(data_dia__year=data_2_frm.split('-')[0],
+                              data_dia__month=data_2_frm.split('-')[1], data_dia__day__range=[16, ultimo_dia_mes])
+                      .order_by('-data_dia').first())
+
+        con_senior_2 = Conexao_Senior_BD(12)
+        df_qlp_senior_2 = con_senior_2.retorna_qlp_por_periodo_e_filial(data_2.data_dia, cod_unidade_senior_frm)
+        df_qlp_senior_2['quinz'] = quinz_2_frm
+        df_qlp_senior_2['vigencia'] = data_2_frm
+        df_qtd_qlp_cargo_2 = df_qlp_senior_2.groupby(['data_qlp', 'vigencia', 'quinz','cod_filial', 'nome_filial', 'cod_ccu_colab', 'nome_ccu_colab', 'cod_cargo', 'nome_cargo_colab', 'desc_cargo_freightech'])[
+            ['matricula_colab']].count().reset_index()
+
+
+        df_qlp_total = pd.concat([df_qtd_qlp_cargo_1, df_qtd_qlp_cargo_2]).reset_index()
+        df_qlp_total = pd.merge(df_qlp_total, df_ordenados_cargo_proj,
+                                how='left',
+                                on=['vigencia', 'quinz', 'cod_filial', 'cod_ccu_colab', 'cod_cargo'] )
+        lista_qlp = []
+        for index, row in df_qlp_total.iterrows():
+            reg = {
+                'quinz': df_qlp_total.loc[index, 'quinz'],
+                'periodo': df_qlp_total.loc[index, 'data_qlp'],
+                'nome_filial': df_qlp_total.loc[index, 'nome_filial'],
+                'desc_proj': df_qlp_total.loc[index, 'nome_ccu_colab'],
+                'desc_cargo_senior': df_qlp_total.loc[index, 'nome_cargo_colab'],
+                'desc_cargo_freightech': df_qlp_total.loc[index, 'desc_cargo_freightech'],
+                'qlp': int(df_qlp_total.loc[index, 'matricula_colab']),
+                'val_ordenados': float(df_qlp_total.loc[index, 'val_evento'])
+            }
+            lista_qlp.append(reg)
+
+        lista_qlp_filial = []
+        df_qlp_filial = df_qlp_total.groupby(['data_qlp', 'vigencia', 'quinz','cod_filial', 'nome_filial', 'cod_cargo', 'nome_cargo_colab', 'desc_cargo_freightech'])[
+            ['matricula_colab']].sum().reset_index()
+        df_qlp_filial = pd.merge(df_qlp_filial, df_ordenados_cargo_fil,
+                                how='left',
+                                on=['vigencia', 'quinz', 'cod_filial', 'cod_cargo'])
+        for index, row in df_qlp_filial.iterrows():
+            reg = {
+                'quinz': df_qlp_filial.loc[index, 'quinz'],
+                'periodo': df_qlp_filial.loc[index, 'data_qlp'],
+                'nome_filial': df_qlp_filial.loc[index, 'nome_filial'],
+                'desc_cargo_senior': df_qlp_filial.loc[index, 'nome_cargo_colab'],
+                'desc_cargo_freightech': df_qlp_filial.loc[index, 'desc_cargo_freightech'],
+                'qlp': int(df_qlp_filial.loc[index, 'matricula_colab']),
+                'val_ordenados': float(df_qlp_filial.loc[index, 'val_evento'])
+            }
+            lista_qlp_filial.append(reg)
+
+
+
+
 
 
         if len(lista_obj_rem) == 0:
@@ -126,6 +243,8 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
 
         data = dict()
         data = {
+            'lista_qlp': lista_qlp,
+            'lista_qlp_filial': lista_qlp_filial,
             'lista_obj_rem': lista_obj_rem,
             'msg': msg
         }

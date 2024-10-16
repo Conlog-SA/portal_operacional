@@ -10,12 +10,14 @@ class Item_Cluster(models.Model):
 
 class Razao_Frota(models.Model):
     cod_razao_frota = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    data_comp = models.DateField(null=False, blank=False)
     handle_lanc = models.IntegerField(null=False, blank=False)
     placa = models.CharField(max_length=10, null=False, blank=False)
     handle_projeto = models.IntegerField(null=False, blank=False)
     desc_projeto = models.CharField(max_length=80, null=False, blank=False)
     desc_tipo_conta = models.CharField(max_length=60, null=False, blank=False)
     doc_contabil = models.CharField(max_length=30, null=True, blank=True)
+    data_lancamento = models.DateField(null=False, blank=False)
     valor = models.DecimalField(max_digits=8, decimal_places=2)
     historico = models.CharField(max_length=500, null=True, blank=True)
     nome_fornecedor = models.CharField(max_length=80, null=True, blank=True)

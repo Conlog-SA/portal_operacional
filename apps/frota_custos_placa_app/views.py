@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
@@ -65,7 +67,7 @@ class Frm_Custos_Placa_Proj_View(View):
                                                    'tipo_lancamento','NUM_DOC', 'num_doc_contabil', 'desc_tipo_doc',
                                                    'HISTORICO', 'VAL_LANC', 'codigo_os', 'desc_os', 'desc_produto',
                                                    'desc_cluster', 'NOME_FORNECEDOR', 'handle_lan', 'HANDLE_PROJETO',
-                                                   'desc_tipo_os', 'obs_os']].reset_index()
+                                                   'desc_tipo_os', 'obs_os', 'COMPETENCIA', 'DATA_LANC']].reset_index()
 
         df_contas_placa_periodo = df_custos_placas[['HANDLE_CONTA', 'NOME_CONTA']].drop_duplicates().reset_index()
 
@@ -87,6 +89,8 @@ class Frm_Custos_Placa_Proj_View(View):
 
             if obj_razao_cluster == None:
                 obj_razao_cluster = Razao_Frota(
+                    data_comp = df_group_placas_contas.loc[index, 'COMPETENCIA'],
+                    data_lancamento=df_group_placas_contas.loc[index, 'DATA_LANC'],
                     handle_lanc = df_group_placas_contas.loc[index, 'handle_lan'],
                     placa = df_group_placas_contas.loc[index, 'PLACA'],
                     handle_projeto = df_group_placas_contas.loc[index, 'HANDLE_PROJETO'],
@@ -141,7 +145,8 @@ class Frm_Custos_Placa_Proj_View(View):
                 'desc_cluster': desc_cluster,
                 'handle_lan': int(df_group_placas_contas.loc[index, 'handle_lan']),
                 'desc_tipo_os': df_group_placas_contas.loc[index, 'desc_tipo_os'],
-                'obs_os': df_group_placas_contas.loc[index, 'obs_os']
+                'obs_os': df_group_placas_contas.loc[index, 'obs_os'],
+                'data_lancamento': datetime.strptime(df_group_placas_contas.loc[index, 'DATA_LANC'], '%Y-%m-%d').strftime('%d-%m-%Y')
             }
             dic_dados_razao.append(placa_razao)
 

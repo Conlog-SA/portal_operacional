@@ -199,6 +199,18 @@ table{
     color: white;
 }
 
+.dt-search {
+    display: flex;
+    justify-content: start!important;
+    align-items: start!important;
+}
+
+.dt-buttons{
+    display: flex;
+    justify-content: end!important;
+    align-items: end!important;
+}
+
 .cl_tab_modais{
     color: black;
     font-size: 12px;

@@ -1929,8 +1929,8 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 '''parcelas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
-                                                    ultimo_dia_data_competencia_mais_12_meses_date])'''
-                '''print('Parcelas')
+                                                    ultimo_dia_data_competencia_mais_12_meses_date])
+
                 for parc in parcelas:
                     print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val pago {parc.val_pago}')'''
 
