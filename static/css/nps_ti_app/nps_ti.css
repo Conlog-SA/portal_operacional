@@ -1,0 +1,13 @@
+.gritter-top{
+    background:#3b8eed !important;
+    border-radius: 10px 10px 0px 0px;
+}
+
+.gritter-item{
+    background:#3b8eed !important;
+}
+
+.gritter-bottom{
+    background:#3b8eed !important;
+    border-radius: 0px 0px 10px 10px;
+}

@@ -46,7 +46,7 @@ urlpatterns = [
     path('conecta_rota_app/', include('apps.conecta_rota_app.urls')),
     path('conecta_as_app/', include('apps.conecta_as_app.urls')),
     path('conecta_vans_app/', include('apps.conecta_vans_app.urls')),
-    path('conecta_rv_app/', include('apps.conecta_rv_app.urls')),
+    path('conecta_rv_app/', include('apps.conecta_rv_appurls')),
     path('safety_gsdpq_app/', include('apps.safety_gsdpq_app.urls')),
     path('safety_blitz_trajeto_carro_app/', include('apps.safety_blitz_trajeto_carro_app.urls')),
     path('safety_blitz_trajeto_moto_app/', include('apps.safety_blitz_trajeto_moto_app.urls')),
@@ -57,6 +57,7 @@ urlpatterns = [
     path('ti_painel_processos_automaticos_app/', include('apps.ti_painel_processos_automaticos_app.urls')),
     path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
     path('contratos_frete_deep_app/', include('apps.contratos_frete_deep_app.urls')),
+    path('nps_ti_app/', include('apps.nps_ti_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
