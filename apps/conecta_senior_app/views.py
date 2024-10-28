@@ -474,4 +474,239 @@ class Conexao_Senior_BD():
                 }
                 return data
 
+    def retorna_qlp_por_periodo_e_filial(self, data_ref, cod_filial):
+        sql_qlp= (
+        f'''
+           SELECT	distinct
+                    R034FUN.NUMCAD		AS	matricula_colab,
+                    R034FUN.NOMFUN		AS	nome_colab,
+                    CAST(R034FUN.DATADM AS DATE)
+                                        AS	dt_adm_colab,
+                    CASE WHEN SIT_APU.CODSIT IN (7,22) 
+                         THEN CAST(USU_TDIAEMP.USU_DIADAT AS DATE)
+                         ELSE NULL 
+                    END					AS	dt_demissao_colab,
+                    CASE WHEN SIT_APU.CODSIT in (7 , 22)
+                         THEN 'Inativo'
+                         ELSE 'Ativo'
+                    END					AS	status_colab,
+                    CAST(USU_TDIAEMP.USU_DIADAT AS DATE)
+                                        AS	data_qlp,
+                    R030FIL.CODFIL		AS	cod_filial,
+                    R030FIL.NOMFIL		AS	nome_filial,
+                    R018CCU.CODCCU		AS 	cod_ccu_colab,
+                    R018CCU.NOMCCU		AS	nome_ccu_colab,
+                    R038HCA.CODCAR		AS	cod_cargo,
+                    R024CAR.TITRED		AS	nome_cargo_colab,
+                    COALESCE(frei.usu_codcar, 0)
+                    	                AS	cod_cargo_freightech,
+                    COALESCE(frei.usu_descar, '')
+                    	                AS	desc_cargo_freightech    	           
+             FROM	vetorh.dbo.R034FUN (NOLOCK)            
+        LEFT JOIN	USU_TDIAEMP (NOLOCK)
+               ON	(USU_TDIAEMP.USU_NUMEMP = R034FUN.NUMEMP)
+        LEFT JOIN	R038HFI (NOLOCK)
+               ON	(R038HFI.NUMEMP = R034FUN.NUMEMP) 
+              AND	(R038HFI.TIPCOL = R034FUN.TIPCOL) 
+              AND 	(R038HFI.NUMCAD = R034FUN.NUMCAD)
+        LEFT JOIN	R030FIL (NOLOCK)
+               ON	(R030FIL.NUMEMP = R038HFI.NUMEMP) 
+              AND 	(R030FIL.CODFIL = R038HFI.CODFIL) 
+        LEFT JOIN	R038HCC (NOLOCK)
+               ON	(R038HCC.NUMEMP = R034FUN.NUMEMP) 
+              AND 	(R038HCC.TIPCOL = R034FUN.TIPCOL) 
+              AND	(R038HCC.NUMCAD = R034FUN.NUMCAD)
+        LEFT JOIN	R018CCU (NOLOCK)
+               ON	(R018CCU.NUMEMP = R038HCC.NUMEMP) 
+              AND	(R018CCU.CODCCU = R038HCC.CODCCU)
+        LEFT JOIN	R038HCA (NOLOCK)
+               ON	(R038HCA.NUMEMP = R034FUN.NUMEMP) 
+              AND	(R038HCA.TIPCOL = R034FUN.TIPCOL) 
+              AND	(R038HCA.NUMCAD = R034FUN.NUMCAD)
+        LEFT JOIN	R024CAR (NOLOCK)
+               ON	(R024CAR.ESTCAR = R038HCA.ESTCAR) 
+              AND	(R024CAR.CODCAR = R038HCA.CODCAR)
+        LEFT JOIN	usu_tdesfre frei 
+               ON	frei.usu_codcar = R024CAR.usu_desfre
+        LEFT JOIN	R038HLO (NOLOCK)
+               ON	(R038HLO.NUMEMP = R034FUN.NUMEMP) 
+              AND	(R038HLO.TIPCOL = R034FUN.TIPCOL) 
+              AND	(R038HLO.NUMCAD = R034FUN.NUMCAD)
+        LEFT JOIN	R016ORN (NOLOCK)
+               ON	(R016ORN.TABORG = R038HLO.TABORG) 
+              AND	(R016ORN.NUMLOC = R038HLO.NUMLOC)
+        LEFT JOIN	R038HES (NOLOCK)
+               ON	(R038HES.NUMEMP = R034FUN.NUMEMP) 
+              AND	(R038HES.TIPCOL = R034FUN.TIPCOL) 
+              AND	(R038HES.NUMCAD = R034FUN.NUMCAD)
+              
+        LEFT JOIN	R038HPO (NOLOCK) 
+               ON	(R038HPO.NUMEMP = R034FUN.NUMEMP) 
+              AND	(R038HPO.TIPCOL = R034FUN.TIPCOL) 
+              AND	(R038HPO.NUMCAD = R034FUN.NUMCAD) 
+        LEFT JOIN	R017POS (NOLOCK)
+               ON	(R017POS.ESTPOS = R038HPO.ESTPOS) 
+              AND	(R017POS.POSTRA = R038HPO.POSTRA)    
+        LEFT JOIN	R010SIT SIT_ATUAL (NOLOCK)
+               ON	SIT_ATUAL.CODSIT = R034FUN.SITAFA    
+               
+        LEFT JOIN	r066apu (NOLOCK) 
+               ON	(r066apu.NUMEMP = R034FUN.NUMEMP) 
+              AND	(r066apu.TIPCOL = R034FUN.TIPCOL) 
+              AND	(r066apu.NUMCAD = R034FUN.NUMCAD) 
+              AND	(r066apu.DATAPU = USU_TDIAEMP.USU_DIADAT)
+        LEFT JOIN	R004HOR HORA_APU (NOLOCK)
+               ON	(HORA_APU.CODHOR = r066apu.HORDAT)
+        LEFT JOIN	R066SIT (NOLOCK)  apu_sit 
+               ON	(apu_sit.NUMEMP = r066apu.NUMEMP) 
+              AND	(apu_sit.TIPCOL = r066apu.TIPCOL) 
+              AND	(apu_sit.NUMCAD = r066apu.NUMCAD) 
+              AND	(apu_sit.DATAPU = USU_TDIAEMP.USU_DIADAT)
+        LEFT JOIN	R010SIT SIT_APU (NOLOCK)
+               ON	SIT_APU.CODSIT = apu_sit.CODSIT  
+              
+            WHERE	USU_TDIAEMP.USU_DIADAT = '{data_ref}'     
+              AND	R034FUN.NUMEMP = 1      
+              AND	R034FUN.DATADM <= '{data_ref}' 
+              AND	((R034FUN.SITAFA <> 7) OR ((R034FUN.SITAFA in (7,22)) AND (R034FUN.DATAFA >= '{data_ref}' )))
+              AND	R034FUN.TIPCOL = 1
+              AND	R030FIL.CODFIL = {cod_filial}
+              AND	SIT_APU.CODSIT NOT IN (7,22) 
+              AND 	R017POS.POSTRA <> '99_9999'
+              AND	R038HFI.DATALT = (SELECT MAX(DATALT) 
+                                        FROM R038HFI TABELA001 (NOLOCK) 
+                                       WHERE TABELA001.NUMEMP = R038HFI.NUMEMP 
+                                         AND TABELA001.TIPCOL = R038HFI.TIPCOL 
+                                         AND TABELA001.NUMCAD = R038HFI.NUMCAD 
+                                         AND TABELA001.DATALT <= USU_TDIAEMP.USU_DIADAT) 
+              AND	R038HCC.DATALT = (SELECT MAX(DATALT) 
+                                        FROM R038HCC TABELA002 (NOLOCK) 
+                                       WHERE TABELA002.NUMEMP = R038HCC.NUMEMP 
+                                         AND TABELA002.TIPCOL = R038HCC.TIPCOL AND TABELA002.NUMCAD = R038HCC.NUMCAD 
+                                         AND TABELA002.DATALT <= USU_TDIAEMP.USU_DIADAT) 
+              AND	R038HCA.DATALT = (SELECT MAX(DATALT) 
+                                        FROM R038HCA TABELA003 (NOLOCK) 
+                                       WHERE TABELA003.NUMEMP = R038HCA.NUMEMP 
+                                         AND TABELA003.TIPCOL = R038HCA.TIPCOL 
+                                         AND TABELA003.NUMCAD = R038HCA.NUMCAD 
+                                         AND TABELA003.DATALT <= USU_TDIAEMP.USU_DIADAT) 
+              AND	R038HLO.DATALT = (SELECT MAX(DATALT) 
+                                        FROM R038HLO TABELA004 (NOLOCK) 
+                                       WHERE TABELA004.NUMEMP = R038HLO.NUMEMP 
+                                         AND TABELA004.TIPCOL = R038HLO.TIPCOL 
+                                         AND TABELA004.NUMCAD = R038HLO.NUMCAD 
+                                         AND TABELA004.DATALT <= USU_TDIAEMP.USU_DIADAT)
+              AND	R038HES.DATALT = (SELECT MAX(DATALT) 
+                                        FROM R038HES TABELA005 (NOLOCK) 
+                                       WHERE TABELA005.NUMEMP = R038HES.NUMEMP 
+                                         AND TABELA005.TIPCOL = R038HES.TIPCOL 
+                                         AND TABELA005.NUMCAD = R038HES.NUMCAD 
+                                         AND TABELA005.DATALT <= USU_TDIAEMP.USU_DIADAT)
+              AND	R038HPO.INIATU = (SELECT MAX(INIATU) 
+                                        FROM R038HPO TABELA006 (NOLOCK) 
+                                       WHERE TABELA006.NUMEMP = R038HPO.NUMEMP 
+                                         AND TABELA006.TIPCOL = R038HPO.TIPCOL 
+                                         AND TABELA006.NUMCAD = R038HPO.NUMCAD 
+                                         AND TABELA006.INIATU <= USU_TDIAEMP.USU_DIADAT)
+            ORDER	BY R034FUN.NOMFUN
+        '''
+        )
+        df_qlp = pd.read_sql(sql_qlp, self.__conn)
+        self.__conn.close()
+        return df_qlp
+
+
+    def retorna_df_ordenados_por_periodo_e_filial(self, data_ref, cod_filial):
+        sql_ordenados = (
+            f'''
+            SELECT  val_folha.tipcol		AS	tip_col,
+                    val_folha.numemp		AS	cod_empresa,
+                    val_folha.numcad		AS	mat_colab,
+                    fun.nomfun				AS	nome_colab,
+                    hist_cargo.CODCAR		AS	cod_cargo,
+                    cargo.TITRED			AS	desc_cargo,
+                    hist_filial.codfil		AS	cod_filial,
+                    fil.nomfil				AS	nome_filial,
+                    hist_cc.CODCCU			AS	cod_ccu_colab,
+                    cc.nomccu				AS	nome_projeto,
+                    sum(val_folha.valeve)	AS	val_evento
+                FROM r046ver val_folha(NOLOCK)
+                LEFT JOIN r034fun fun (NOLOCK)
+                  ON (fun.numemp = val_folha.numemp 
+                 AND fun.tipcol = val_folha.tipcol 
+                 AND fun.numcad = val_folha.numcad)
+                LEFT JOIN r044cal cal (NOLOCK)
+                  ON (cal.numemp = fun.numemp
+                 AND cal.codcal = val_folha.codcal)
+                LEFT JOIN r008evc eve (NOLOCK)
+                  ON (eve.codeve = val_folha.codeve
+                 AND eve.codtab = val_folha.tabeve)
+                LEFT JOIN r048clc conta (NOLOCK)
+                  ON (conta.tabeve = eve.codtab
+                 AND conta.codclc = eve.codclc)
+                LEFT JOIN R038HCA hist_cargo(NOLOCK)
+                  ON (hist_cargo.NUMEMP = fun.NUMEMP
+                 AND hist_cargo.TIPCOL = fun.TIPCOL 
+                 AND hist_cargo.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R024CAR cargo (NOLOCK)
+                  ON (cargo.ESTCAR = hist_cargo.ESTCAR
+                 AND cargo.CODCAR = hist_cargo.CODCAR)
+                LEFT JOIN R038HFI hist_filial (NOLOCK)
+                  ON (hist_filial.NUMEMP = fun.NUMEMP
+                 AND hist_filial.TIPCOL = fun.TIPCOL 
+                 AND hist_filial.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R030FIL fil (NOLOCK)
+                  ON (fil.NUMEMP = hist_filial.NUMEMP
+                 AND fil.CODFIL = hist_filial.CODFIL)
+                LEFT JOIN R038HCC hist_cc (NOLOCK)
+                  ON (hist_cc.NUMEMP = fun.NUMEMP
+                 AND hist_cc.TIPCOL = fun.TIPCOL
+                 AND hist_cc.NUMCAD = fun.NUMCAD)
+                LEFT JOIN R018CCU cc (NOLOCK)
+                  ON (cc.NUMEMP = hist_cc.NUMEMP
+                 AND cc.CODCCU = hist_cc.CODCCU)             
+            
+                LEFT JOIN R010SIT sit_atual (NOLOCK)
+                  ON sit_atual.CODSIT = fun.sitafa
+               WHERE eve.tipeve = 1 /* Horas Normais Diurnas */
+                 AND	val_folha.codeve = 1
+                 AND	eve.codclc = 1 /*Salários e Ordenados (D) */
+                     AND hist_filial.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HFI TABELA001 (NOLOCK) 
+                                                   WHERE TABELA001.NUMEMP = hist_filial.NUMEMP 
+                                                     AND TABELA001.TIPCOL = hist_filial.TIPCOL 
+                                                     AND TABELA001.NUMCAD = hist_filial.NUMCAD 
+                                                     AND TABELA001.DATALT <= cal.fimcmp)
+                     AND hist_cc.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HCC TABELA002 (NOLOCK) 
+                                                   WHERE TABELA002.NUMEMP = hist_cc.NUMEMP 
+                                                     AND TABELA002.TIPCOL = hist_cc.TIPCOL 
+                                                     AND TABELA002.NUMCAD = hist_cc.NUMCAD 
+                                                     AND TABELA002.DATALT <= cal.fimcmp)                                  
+                     AND hist_cargo.DATALT = (SELECT MAX(DATALT) 
+                                                    FROM R038HCA TABELA003 (NOLOCK) 
+                                                   WHERE TABELA003.NUMEMP = hist_cargo.NUMEMP 
+                                                     AND TABELA003.TIPCOL = hist_cargo.TIPCOL 
+                                                     AND TABELA003.NUMCAD = hist_cargo.NUMCAD 
+                                                     AND TABELA003.DATALT <= cal.fimcmp) 
+            
+               
+                    AND cal.perref = '{data_ref}'
+                AND fil.CODFIL = {cod_filial}
+                GROUP BY val_folha.tipcol,
+                    val_folha.numemp,
+                    val_folha.numcad,
+                    fun.nomfun,
+                    hist_cargo.CODCAR,
+                    cargo.TITRED,
+                    hist_filial.codfil,
+                    fil.nomfil,
+                    hist_cc.CODCCU,
+                    cc.nomccu
+                ORDER BY val_folha.numcad ASC;
+            '''
+        )
+        df_ordenados = pd.read_sql(sql_ordenados, self.__conn)
+        self.__conn.close()
+        return df_ordenados
 

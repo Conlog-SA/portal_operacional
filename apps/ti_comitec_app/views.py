@@ -243,7 +243,7 @@ class Frm_Edit_Ideia_View(View):
                 'color_gut_t': color_gut_t,
                 'peso_gut_t': peso_gut_t,
 
-                'nota_gut_tt': peso_gut_g + peso_gut_u + peso_gut_t,
+                'nota_gut_tt': peso_gut_g * peso_gut_u * peso_gut_t,
                 'cod_ideia': obj_ideia.cod_ideia,
                 'cod_chamado': obj_ideia.cod_chamado,
                 'desc_ideia': obj_ideia.desc_ideia,
@@ -314,9 +314,12 @@ class Frm_Pontua_Item_Gut_View( View):
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        data_atual = datetime.now()
 
         obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
         obj_item_gut = Item_Gut.objects.get(pk=cod_tipo_item_gut_frm, tipo=desc_tipo_item_gut)
+        obj_ideia.data_nota_gut = data_atual
+        obj_ideia.cod_usu_head = obj_usuario_sessao
         nota_item_gut_g = 0
         nota_item_gut_u = 0
         nota_item_gut_t = 0
@@ -334,7 +337,7 @@ class Frm_Pontua_Item_Gut_View( View):
             nota_item_gut_u = obj_ideia.cod_gut_u.peso
         if obj_ideia.cod_gut_t != None:
             nota_item_gut_t = obj_ideia.cod_gut_t.peso
-        nota_total_gut = nota_item_gut_g + nota_item_gut_u + nota_item_gut_t
+        nota_total_gut = nota_item_gut_g * nota_item_gut_u * nota_item_gut_t
 
         lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
         data = dict()
@@ -375,15 +378,22 @@ class Frm_Avaliacao_Head_View(View):
         obs_usu_head_frm = request.POST['obs_usu_head']
 
         obj_usu_head = Usuario.objects.get(pk=cod_usu_head_frm)
+        data_atual = datetime.now()
 
         obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
         obj_ideia.cod_usu_head = obj_usu_head
         obj_ideia.nota_head = nota_head_frm
         obj_ideia.obs_usu_head = obs_usu_head_frm
+        obj_ideia.data_nota_head = data_atual
         obj_ideia.save()
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
         data = dict()
         data = {
-            'msg': 'Parecer do head registrado'
+            'msg': 'Parecer do head registrado',
+            'lista_ideias_frm': lista_ideias_frm
         }
         return JsonResponse(data, safe=False)
 
@@ -394,8 +404,8 @@ class Frm_Avaliacao_Head_View(View):
 class Tabela_Ideias():
     def carrega_tabela(self, obj_usuario):
         lista_ideias_frm = []
-        lista_ideias = None
-        if obj_usuario.tipo_colab == 'L':
+        lista_ideias = Ideia.objects.filter(cod_status=0)
+        '''if obj_usuario.tipo_colab == 'L':
             lista_ideias = Ideia.objects.filter(cod_status=0, cod_usu_owner=obj_usuario)
         elif obj_usuario.tipo_colab == 'M':
             lista_ideias = Ideia.objects.filter(cod_status=0, cod_usu_master=obj_usuario)
@@ -404,8 +414,7 @@ class Tabela_Ideias():
                             .filter((Q(cod_usu_head=obj_usuario) | Q(cod_usu_head__isnull=True)),
                                     cod_status=0))
         elif obj_usuario.tipo_colab == 'G':
-            lista_ideias = (Ideia.objects
-                            .filter(cod_status=0))
+            lista_ideias = (Ideia.objects.filter(cod_status=0))'''
 
         for i in lista_ideias:
             nota_gut_g = 0
@@ -437,8 +446,8 @@ class Tabela_Ideias():
                 nota_head = i.nota_head
                 login_head = i.cod_usu_head.login_usu
                 obs_usu_head = i.obs_usu_head
-            nota_gut = nota_gut_g + nota_gut_u + nota_gut_t
-            tt_nota = nota_gut + nota_head
+            nota_gut = nota_gut_g * nota_gut_u * nota_gut_t
+            tt_nota = nota_gut * nota_head
 
             if i.cod_usu_master != None:
                 login_master = i.cod_usu_master.login_usu
@@ -462,7 +471,8 @@ class Tabela_Ideias():
                 'nota_gut': nota_gut,
                 'nota_head': nota_head,
                 'nota_total': tt_nota,
-                'cod_ideia': i.cod_ideia
+                'cod_ideia': i.cod_ideia,
+                'cod_usu_owner': i.cod_usu_owner.cod_usu
             }
             lista_ideias_frm.append(ideia)
 

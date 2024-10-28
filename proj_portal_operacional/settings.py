@@ -98,7 +98,10 @@ INSTALLED_APPS = [
     'apps.ti_painel_processos_automaticos_app',
     'apps.freightech_remunerado_qlp_app',
     'apps.contratos_frete_deep_app',
+<<<<<<< HEAD
     'apps.nps_ti_app',
+=======
+>>>>>>> c7b76b18c5845176dc711827c533fb5dcd17608f
 ]
 
 MIDDLEWARE = [

@@ -107,7 +107,7 @@ $(document).on('click', 'button', function(){
                     if (dados.lista_form_lanc_tab[i].status_importacao == 'P'){
                         varImgStatusImpRegistro =
                             `<i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
-                            title="Mapa desconto não encontrado ou mapa já faturado. Verifique !"></i>
+                            title="Mapa já faturado. Verifique !"></i>
                             `;
 
                     } else if (dados.lista_form_lanc_tab[i].status_importacao == 'I'){
@@ -116,6 +116,12 @@ $(document).on('click', 'button', function(){
                             title="Registro importado com sucesso!"></i>
 
                         `;
+                    } else if (dados.lista_form_lanc_tab[i].status_importacao == 'N'){
+                        varImgStatusImpRegistro =
+                            `<i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
+                            title="Mapa desconto não encontrado. Verifique !"></i>
+                            `;
+
                     }
                     
                     var registro_lanc = [

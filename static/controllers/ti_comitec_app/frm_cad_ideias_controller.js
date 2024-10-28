@@ -29,55 +29,6 @@ $.ajaxSetup({
     }
 });
 
-$(document).ready(function(){
-    $('#tab_ideias_comitec').DataTable( {
-        "bJQueryUI": true,
-        "destroy": true,
-        "fixedHeader": true,
-        "scrollY": true,
-        "scrollX": true,
-        "scrollCollapse": true,
-        "paging": true,
-        "pageLength": 6,
-        "dom": 'Bfrtip',
-        "buttons": [
-            'copyHtml5'
-        ],
-        "columnDefs": [
-            {"className": "dt-center", "targets": [0,1,2,3,4,5]},
-            {"className": "dt-left", "targets": [8,12,13]},
-            {"className": "dt-right", "targets": [6,7,9,10,11]}
-        ],
-        "oLanguage": {
-            "sProcessing":   "Processando...",
-            "sLengthMenu":   "Mostrar _MENU_ registros",
-            "sZeroRecords":  "Não foram encontrados resultados",
-            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-            "sInfoFiltered": "",
-            "sInfoPostFix":  "",
-            "sSearch":       "Pesquisar:",
-            "sUrl":          "",
-            "oPaginate": {
-                "sFirst":    "Primeiro",
-                "sPrevious": "Anterior",
-                "sNext":     "Proximo",
-                "sLast":     "Último"
-            },
-            "buttons":{
-                "copyTitle": 'Dados Copiados',
-                "copySuccess": {
-                    _: '%d linhas copiadas',
-                    1: '1 linha copiada'
-                }
-            }
-        }
-    });
-
-
-
-
-});
 
 
 
@@ -788,6 +739,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                carrega_tabela_ideias(dados.lista_ideias_frm);
                 let_loader_frm_parecer_head_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
@@ -892,9 +844,9 @@ function carrega_tabela_ideias(lista_ideias_frm) {
             { title: "Projeto" }
         ],
         "columnDefs": [
-            {"className": "dt-center", "targets": [0,1,2,3,4,5]},
-            {"className": "dt-left", "targets": [8,12,13]},
-            {"className": "dt-right", "targets": [6,7,9,10,11]}
+            {"className": "dt-center", "targets": [0,1,2,3,4,5,6,12,13]},
+            {"className": "dt-left", "targets": [7,8]},
+            {"className": "dt-right", "targets": [9,10,11]}
         ],
         "oLanguage": {
             "sProcessing":   "Processando...",

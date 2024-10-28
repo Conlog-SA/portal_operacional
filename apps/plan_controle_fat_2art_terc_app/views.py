@@ -1215,8 +1215,10 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                     lanc.save()
                     reg.id_lanc_banco = lanc.cod_lanc_2art_terc_financ
                     reg.status_importacao = 'I'
-                else:
+                elif obj_2art_terc_financ is not None and obj_2art_terc_financ.status_financeiro_2art_terc_financ == 'P':
                     reg.status_importacao = 'P'
+                else:
+                    reg.status_importacao = 'N'
 
                 lista_form_lanc_tab.append(reg.__dict__)
 
