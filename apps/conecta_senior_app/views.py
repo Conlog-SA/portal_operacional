@@ -154,7 +154,7 @@ class Conexao_Senior_BD():
 
     def pesquisar_dados_dependente_por_cpf_emp(self, cpf):
         cursor = self.__conn.cursor()
-        cursor.execute(f'''SELECT 
+        cursor.execute(f'''SELECT TOP 1
                                 dep.numemp AS NUMEMP,
                                 col.numcpf AS CPF
                             FROM vetorh.dbo.r036dep dep
@@ -162,17 +162,20 @@ class Conexao_Senior_BD():
                             ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
                             WHERE dep.numemp = 1
                             AND dep.numcpf = ?
+                            ORDER BY col.datafa DESC
                             ''', [int(cpf.split('.')[0])])
         result = cursor.fetchall()
         if cursor is not None and len(result) == 1:
             dependente = result[0]
             if dependente.NUMEMP == 1:
-                numemp = 12
+                numemp = 1
             elif dependente.NUMEMP == 2:
-                numemp = 17
-            info_titular = self.pesquisar_dados_colaborador_por_cpf_emp(dependente.CPF, numemp)
+                numemp = 2
+            info_titular = self.pesquisar_dados_colaborador_por_cpf_emp(str(dependente.CPF), numemp)
 
             return info_titular
+        else:
+            return {'erro': 'Titular não encontrado'}
 
     def pesquisar_dados_por_matricula(self, matricula, cod_empresa):
         cursor = self.__conn.cursor()

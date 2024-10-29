@@ -100,13 +100,14 @@ class Form_Importa_Plan_Despesas_View(View):
         filename = fs.save(caminho_arq_importado, myfile)
         uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
         tab_rateio_despesas_nao_importadas = []
-        conteudo_arq_plan_unimed = pd.read_excel(uploaded_file_url)
+        conteudo_arq_plan_unimed = pd.read_excel(uploaded_file_url, converters={'COMPETENCIA':str,
+                                                                                'CPF_BENEFICIARIO':str,
+                                                                                'CPF_TITULAR':str})
         conteudo_arq_plan_unimed = conteudo_arq_plan_unimed.dropna(how='all')
         conteudo_arq_plan_unimed.rename(columns=lambda x: str(x).strip(), inplace=True)
 
-        colunas_planilha = ['BENEFICIARIO', 'DEPENDENCIA', 'TITULAR', 'CPF_TITULAR',
-                            'DESC_DESPESA', 'VL_FATURADO', 'CPF_BENEFICIARIO', 'COMPETENCIA',
-                            'PERCENTUAL_EMPRESA']
+        colunas_planilha = ['BENEFICIARIO', 'DEPENDENCIA', 'DESC_DESPESA', 'VL_FATURADO',
+                            'CPF_BENEFICIARIO', 'COMPETENCIA', 'PERCENTUAL_EMPRESA']
         try:
             for index, row in conteudo_arq_plan_unimed.iterrows():
 
@@ -137,11 +138,14 @@ class Form_Importa_Plan_Despesas_View(View):
 
                 nome_beneficiario = str(row['BENEFICIARIO']).strip()
                 tipo_depencencia = str(row['DEPENDENCIA']).strip()
-                nome_titular = str(row['TITULAR']).strip()
+                colunas_list = conteudo_arq_plan_unimed.columns.values.tolist()
+                if 'TITULAR' in colunas_list:
+                    nome_titular = str(row['TITULAR']).strip()
+                else:
+                    nome_titular = 'N/A'
                 desc_despesa = str(row['DESC_DESPESA']).strip()
                 valor = float(row['VL_FATURADO'])
                 cpf_beneficiario = str(row['CPF_BENEFICIARIO']).strip().zfill(11)
-                cpf_titular = str(row['CPF_TITULAR']).strip().zfill(11)
                 percentual_empresa = str(row['PERCENTUAL_EMPRESA']).strip()
                 if float(percentual_empresa) < 0 or float(percentual_empresa) > 1:
                     raise Exception('Porcentagem inválida informada.')
@@ -160,17 +164,31 @@ class Form_Importa_Plan_Despesas_View(View):
                     cod_empresa_senior = 1
                 elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
                     cod_empresa_senior = 2
-                titular_senior = conexao_senior.pesquisar_dados_colaborador_por_cpf_emp(cpf_titular, cod_empresa_senior)
+                if 'CPF_TITULAR' in colunas_list or 'titular' in tipo_depencencia.lower():
+                    if 'titular' in tipo_depencencia.lower():
+                        print('chegamos aqui')
+                        cpf_titular = cpf_beneficiario
+                    else:
+                        cpf_titular = str(row['CPF_TITULAR']).strip().zfill(11)
+                    cpf_titular_encontrado = cpf_titular.zfill(11)
+                    titular_senior = conexao_senior.pesquisar_dados_colaborador_por_cpf_emp(cpf_titular, cod_empresa_senior)
+                else:
+                    cpf_titular = 'N/A'
+                    titular_senior = conexao_senior.pesquisar_dados_dependente_por_cpf_emp(cpf_beneficiario)
+
                 if 'erro' not in titular_senior:
                     excecoes = Colaborador_Excecao.objects.all()
                     cod_projeto = titular_senior['cod_projeto_colab']
                     desc_projeto = titular_senior['nom_projeto_colab']
                     cod_filial = titular_senior['cod_filial_colab']
                     desc_filial = titular_senior['nom_filial_colab']
+
+                    if 'CPF_TITULAR' not in colunas_list:
+                        cpf_titular_encontrado = titular_senior['cpf_colab']
                     for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
                                                     'desc_proj_colab_excecao', 'cod_filial_colab_excecao',
                                                     'desc_filial_colab_excecao').distinct():
-                        if str(exc[0]).zfill(11) == str(cpf_titular).zfill(11):
+                        if str(exc[0]).zfill(11) == str(cpf_titular_encontrado):
                             cod_projeto = exc[1]
                             desc_projeto = exc[2]
                             cod_filial = exc[3]
@@ -248,7 +266,7 @@ class Form_Importa_Plan_Despesas_View(View):
                 despesa.delete()
             arquivo_despesa.delete()
             #response = HttpResponse('Erro durante importação, contate o administrador!')
-            print(e)
+            raise e
             response = HttpResponse(e)
             response.status_code = 500
             return response
