@@ -101,14 +101,14 @@ $(document).on('click', '.envio-nps', function(){
         $.ajax({
             type:"POST",
             url: '/nps_ti_app/form/',
-            dataType: 'json',
+            dataType: 'html',
             data: {
                 'email' : email,
                 'cod_filial_nps'   :   cod_filial_nps,
                 'json_respostas'   : string_json_respostas
             },
             success: function (data) {
-                $("#envia_senha").attr("disabled", true);
+                $("body").html(data);
             },
             error: function (request, status, error) {
 

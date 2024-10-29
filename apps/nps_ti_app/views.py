@@ -54,7 +54,16 @@ class Form_Nps_Ti(View):
         )
         pesquisa_respondida.save()
 
-        return JsonResponse('Ok', safe=False)
+        if '@deeplogistica.com.br' in email:
+            flag_empresa = 1
+        else:
+            flag_empresa = 0
+
+        context = {
+            'flag_empresa': flag_empresa
+        }
+
+        return render(request, 'nps_ti_app/msg_finalizada_nps_ti.html', context)
 
 class Envio_Email_Nps(View):
 
