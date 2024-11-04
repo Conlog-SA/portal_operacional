@@ -83,8 +83,7 @@ class Conexao_Senior_BD():
                     'data_admissao_colab': row.DATA_ADMISSAO,
                     'cpf_colab': row.CPF,
                     'matricula_colab': row.ID,
-                    'situacao_colab': row.SITUACAO_COLAB,
-
+                    'situacao_colab': row.SITUACAO_COLAB
                 }
                 data.append(colab)
             cursor.close()
@@ -92,7 +91,6 @@ class Conexao_Senior_BD():
             return data
 
     def pesquisar_dados_colaborador_por_cpf_emp(self, cpf, cod_empresa):
-        lista_colabs = {}
         cursor = self.__conn.cursor()
         cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
                 A.NOMFUN   AS NOME_FUNC,
@@ -139,54 +137,8 @@ class Conexao_Senior_BD():
             cursor.close()
             self.__conn.close()
             return data
+
         else:
-            cursor = self.__conn.cursor()
-            cursor.execute(f'''SELECT 
-                                    dep.numemp,
-                                    dep.tipcol,
-                                    dep.numcad,
-                                    dep.coddep,
-                                    dep.nomdep,
-                                    col.numcpf
-                                FROM vetorh.dbo.r036dep dep
-                                LEFT JOIN R034FUN col (NOLOCK)
-                                ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
-                                WHERE dep.numemp = 1
-                                AND dep.numcpf = ?''', [int(cpf.split('.')[0])])
-            result = cursor.fetchall()
-            if cursor is not None and len(result) == 1:
-                print(result[0])
-                data = {
-                    'nome_colab': 'teste'
-                }
-                cursor.close()
-                self.__conn.close()
-                return data
-
-            else:
-                cursor = self.__conn.cursor()
-                cursor.execute(f'''SELECT 
-                                        dep.numemp,
-                                        dep.tipcol,
-                                        dep.numcad,
-                                        dep.coddep,
-                                        dep.nomdep,
-                                        col.numcpf
-                                    FROM vetorh.dbo.r036dep dep
-                                    LEFT JOIN R034FUN col
-                                    ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
-                                    WHERE dep.numemp = 1
-                                    AND dep.numcpf = ?''', [int(cpf.split('.')[0])])
-                result = cursor.fetchall()
-            if cursor is not None and len(result) == 1:
-                print(result[0])
-                data = {
-                    'nome_colab': 'teste'
-                }
-                cursor.close()
-                self.__conn.close()
-                return data
-
             if len(cursor.fetchall()) == 0 or cursor is None:
                 print('nao achou')
                 data = {
@@ -199,6 +151,31 @@ class Conexao_Senior_BD():
                     'erro': 'Colaborador duplicado'
                 }
                 return data
+
+    def pesquisar_dados_dependente_por_cpf_emp(self, cpf):
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''SELECT TOP 1
+                                dep.numemp AS NUMEMP,
+                                col.numcpf AS CPF
+                            FROM vetorh.dbo.r036dep dep
+                            LEFT JOIN R034FUN col (NOLOCK)
+                            ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
+                            WHERE dep.numemp = 1
+                            AND dep.numcpf = ?
+                            ORDER BY col.datafa DESC
+                            ''', [int(cpf.split('.')[0])])
+        result = cursor.fetchall()
+        if cursor is not None and len(result) == 1:
+            dependente = result[0]
+            if dependente.NUMEMP == 1:
+                numemp = 1
+            elif dependente.NUMEMP == 2:
+                numemp = 2
+            info_titular = self.pesquisar_dados_colaborador_por_cpf_emp(str(dependente.CPF), numemp)
+
+            return info_titular
+        else:
+            return {'erro': 'Titular não encontrado'}
 
     def pesquisar_dados_por_matricula(self, matricula, cod_empresa):
         cursor = self.__conn.cursor()
