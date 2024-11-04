@@ -15,8 +15,11 @@
   <main class="w-75 h-75 text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
 
       <div class="homeApp__sobre">
-        <img class="" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
-        <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+          <img class="" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
+          <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+          <br/><br/>
+          <img class="mt-2 homeApp_temValor" src="{% static 'img/logo-deep.png'%}" alt="Logo Deep"
+               width="261,80px;" height="110px;"/>
       </div>
       <div class="homeApp__linhaVertical" id="div_form_index"></div>
       <form action="{% url 'login' %}" method="POST"

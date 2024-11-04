@@ -1,5 +1,11 @@
 {% load static %}
 
+{% block link_static_css %}
+    {% if cod_empresa == 17 %}
+        <link rel="stylesheet" href="{% static 'css/frota_custos_placa_app/frm_custos_placa_deep.css' %}" />
+    {% endif %}
+{% endblock %}
+
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
@@ -16,7 +22,7 @@
               method="POST"
               class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
             {% csrf_token %}
-
+            <input type="hidden" id="hd_cor_empresa_frm_custos_placa" value="{{cor_padrao}}">
             <div class="d-flex justify-content-between align-items-between w-100">
                 <hr class="hr_title">
             </div>
@@ -99,43 +105,37 @@
                            id="dt_comp_frm_custos_placa" autocomplete="off" />
                 </div>
 
-                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;margin-top: 2.5rem;">
-                    <!-- <div class="d-flex w-100">
+                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                    <div class="d-flex w-100">
                         <label for="sl_conta_frm_custos_placa">Contas do período
                             <button type='button' id="btn_seleciona_todas_conta_frm_custos_placa"
                                 name="btn_seleciona_todas_conta_frm_custos_placa"
                                 class="btn btn-rounded btn-space" title="Todos os projetos" >
-                                <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                                <i class="fa-regular fa-square-check" style="color: {{ cor_padrao }}"></i>
                             </button>
                             &nbsp;&nbsp;
                             <button type='button' id="btn_desmarcar_conta_frm_custos_placa"
                                 name="btn_desmarcar_conta_frm_custos_placa"
                                 class="btn btn-rounded btn-space" title="Limpar seleção">
-                                <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                                <i class="fa-regular fa-square" style="color: {{ cor_padrao }}"></i>
                             </button>
                         </label>
                     </div>
-                    -->
 
-                        <!-- <select class="selectpicker form-control" id="sl_conta_frm_custos_placa"
-                                name="sl_conta_frm_custos_placa"
-                                multiple data-selected-text-format="count > 0"
-                                data-live-search="true"
-                                readonly
-                                title="Selecione as contas do período">
 
-                        </select> -->
-                        <button type="button" name="btn_gera_dados_custos_placas_proj"
-                                id="btn_gera_dados_custos_placas_proj"
-                                class="btn btn-primary btn-rounded" style="font-size: 0.8rem;border-color: {{cor_padrao}}; border-color: {{cor_padrao}};">
-                            <i class="fa-solid fa-filter"></i>
-                            Gerar Dados
-                        </button>
+                    <select class="selectpicker form-control" id="sl_conta_frm_custos_placa"
+                            name="sl_conta_frm_custos_placa"
+                            multiple data-selected-text-format="count > 0"
+                            data-live-search="true"
+                            readonly
+                            title="Selecione as contas do período">
+
+                    </select>
 
                 </div>
-
-
             </div>
+
+
 
             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
                 <div class="d-flex align-items-end w-100">
@@ -162,7 +162,12 @@
                      &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column w-100">
-                    &nbsp;
+                    <button type="button" name="btn_gera_dados_custos_placas_proj"
+                            id="btn_gera_dados_custos_placas_proj"
+                            class="btn btn-primary btn-rounded" style="font-size: 0.8rem;border-color: {{cor_padrao}}; border-color: {{cor_padrao}};">
+                        <i class="fa-solid fa-filter"></i>
+                        Gerar Dados
+                    </button>
                 </div>
             </div>
 
@@ -172,30 +177,26 @@
                 <table id="tab_placas_razao"  class="display wrap w-100 cl_tab_principal_pagina">
                 <thead>
                     <tr>
-                        <th scope="col">Placa</th>
-                        <th scope="col">Conta</th>
-                        <th scope="col">OS</th>
-                        <th scope="col">Descrição OS</th>
-                        <th scope="col">R$ Valor</th>
-                        <th scope="col">Cluster</th>
-                        <th scope="col">Histórico</th>
-                        <th scope="col">Fornecedor</th>
-                        <th scope="col">Item OS</th>
-                        <th scope="col">Núm. Contábil</th>
-                        <th scope="col">Dt. Lançamento</th>
-                        <th scope="col">Projeto</th>
-                        <th scope="col">Tipo Conta</th>
-                        <th scope="col">Tipo os</th>
-                        <th scope="col">Obs. OS</th>
+                        <th scope="col" class="col_placa">Placa</th>
+                        <th scope="col" class="col_conta">Conta</th>
+                        <th scope="col" class="col_val">R$ Valor</th>
+                        <th scope="col" class="col_os">OS</th>
+                        <th scope="col" class="col_tip_os">Tipo OS</th>
+                        <th scope="col" class="col_hist">Histórico</th>
+                        <th scope="col" class="col_fornec">Fornecedor</th>
+                        <th scope="col" class="col_num_cont">Núm. Contábil</th>
+                        <th scope="col" class="col_dt_lanc">Dt. Lançamento</th>
+                        <th scope="col" class="col_proj">Projeto</th>
+                        <th scope="col" class="col_tipo_conta">Tipo Conta</th>
+                        <th scope="col" class="col_cluster">Cluster</th>
+                        <th scope="col" class="col_detail_os">Detalhes OS</th>
+
                     </tr>
                 </thead>
                 <tbody>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
                         <th></th>
                         <th></th>
                         <th></th>
@@ -219,5 +220,5 @@
 
 
 
-
+{% include 'frota_custos_placa_app/modais_frm_custos_placas.html' %}
 

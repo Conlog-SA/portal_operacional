@@ -5,8 +5,25 @@
     Menu | Portal Operacional
 {% endblock %}
 
+{% block icon %}
+  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
+    <link rel="icon" href="{% static 'icons/logo-laranja.png' %}" />
+  {% else %}
+    <link rel="icon" href="{% static 'icons/logo-small-deep.png' %}" />
+  {% endif %}
+
+
+
+{% endblock %}
+
 {% block link_static_css %}
-  <link rel="stylesheet" href="{% static 'css/menu_app/menu_app.css' %}"/>
+  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
+    <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_conlog.css' %}"/>
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_deep.css' %}"/>
+  {% endif %}
+
+
   <link rel="stylesheet" href="{% static 'css/perfil-dropdown.css' %}" />
   <!-- Bootstrap select picker -->
   <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}"/>
@@ -16,7 +33,11 @@
 
 
   <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
+    <link rel="stylesheet" href="{% static 'css/loader_conlog.css' %}" />
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/loader_deep.css' %}" />
+  {% endif %}
 
   <style>
     body {background-image: url('../../../static/img/{{str_bg}}');
@@ -30,7 +51,8 @@
       <span>
         <a class="linkMenuLateral" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
            aria-controls="offcanvasExample">
-          <img class="p-3 setaAbreMenuLateral" src="{% static 'icons/seta.png'%}" alt="Abrir menu"/>
+          <!-- <img class="p-3 setaAbreMenuLateral" src="{% static 'icons/seta.png'%}" alt="Abrir menu"/> -->
+          <i class="p-3 setaAbreMenuLateral fa-solid fa-caret-right fa-2xl" style="color: {{ cor_emp_hex }}" alt="Abrir menu"></i>
         </a> 
       </span>
     </div>
@@ -86,7 +108,7 @@
           {% csrf_token %}
           <button type="submit" class="btn btn-rounded btn-space"
                   style="margin-top: 4.5rem;" title="Fazer Logout">
-            <i class="fa-solid fa-right-from-bracket" style="color: #f46424;"></i>
+            <i class="fa-solid fa-right-from-bracket" style="color: {{ cor_emp_hex }}"></i>
           </button>
 
         </form>
@@ -110,7 +132,7 @@
               <h2 class="accordion-header" id="heading{{ menu.cod_menu.cod_menu }}">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ menu.cod_menu.cod_menu }}" aria-expanded="false" aria-controls="collapse{{ menu.cod_menu.cod_menu }}">
                   <i class="iconeMenu {{ menu.cod_menu.nome_icone }}" alt="{{ menu.cod_menu.desc_menu }}"
-                     style="color: #f46424;"></i>
+                     style="color: {{ cor_emp_hex }}"></i>
                   {{ menu.cod_menu.desc_menu }}
                 </button>
               </h2>
@@ -123,7 +145,7 @@
                          id="a_sub_menu_{{ sub_menu.cod_menu.cod_menu }}"
                          style="padding-top: 0.5rem;padding-bottom: 0.5rem;">
 
-                        <i class="iconeSubMenu {{ sub_menu.cod_menu.nome_icone }}" alt="{{ sub_menu.cod_menu.desc_menu }}" style="color: #f46424;"></i>
+                        <i class="iconeSubMenu {{ sub_menu.cod_menu.nome_icone }}" alt="{{ sub_menu.cod_menu.desc_menu }}" style="color: {{cor_emp_hex}}"></i>
                         <p class="submenu_titulo">{{ sub_menu.cod_menu.desc_menu }}</p>
                         <input type="hidden" id="hd_url_sub_menu_{{ sub_menu.cod_menu.cod_menu }}" value="{{ sub_menu.cod_menu.url_menu }}">
                         {% comment %} <img class="iconeSubMenu" src="{% static 'icons/seta_cinza.png'%}" alt="submenu"/>Frota 1 {% endcomment %}

@@ -49,36 +49,7 @@ $(document).on('change','input', function(){
         if (let_check_comp == false) {
             let_novo_status_menu = 'D';
         }
-        $.ajax({
-            type: "POST",
-            url: '/usuario_app/destativa_ativa_item_usuario_menu',
-            data: {
-                'cod_menu'       :   let_cod_menu,
-                'cod_usu'        :   let_cod_usu,
-                'status'         :   let_novo_status_menu
-            },
-            dataType: 'json',
-            success: function (data) {
-                let let_cod_usu = $("#cb_usuarios").val();
-                retorna_menu_sub_menu(let_cod_usu);
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: data.msg,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            },
-            error: function (request, status, error) {
-                  $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                  });
-            }
-        });
+
 
     }
 

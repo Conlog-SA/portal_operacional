@@ -1,0 +1,75 @@
+.text-wrap{
+    white-space:normal;
+}
+.width-50{
+    width:50px;
+}
+
+input:checked[type='checkbox'] {
+    background-color: #3b8eed!important;
+}
+
+.col_placa{
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_conta{
+    width: 10%!important;
+    white-space:normal!important;
+}
+
+.col_cluster {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_val {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_detail_os {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_os {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_tip_os {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_hist {
+    width: 10%!important;
+    white-space:normal!important;
+}
+
+.col_fornec {
+    width: 10%!important;
+    white-space:normal!important;
+}
+
+.col_num_cont {
+    width: 10%!important;
+    white-space:normal!important;
+}
+
+.col_dt_lanc {
+    width: 5%!important;
+    white-space:normal!important;
+}
+
+.col_proj {
+    width: 10%!important;
+    white-space:normal!important;
+}
+
+.col_tipo_conta {
+    width: 5%!important;
+    white-space:normal!important;
+}

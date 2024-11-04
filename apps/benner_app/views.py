@@ -8,6 +8,7 @@ from django.shortcuts import render
 from apps.benner_app.models import Placa_Beneficiario_Terceiro, Empilhadeira, Ordens_Servico, Familia, Compras_Item, \
     Produto, Empresa_Benner, Operacao_Benner, Filial_Benner, Projeto_Benner, Beneficiario_Terceiro, \
     Requisicao_Atendidas_TMA
+from apps.frota_custos_placa_app.models import Os_Razao_Frota
 from apps.frota_disponibilidade_empilhadeira_app.models import OS_Apontamento_Disp_Empilhadeira
 from apps.suprimentos_evolucao_precos_app.models import Compra_Auditada
 
@@ -1834,12 +1835,12 @@ class ConexaoBancoBenner():
 
         return lista_veiculos_venda
 
-    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia):
+    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia, lista_handle_contas):
 
         sql_razao_placas = (
             f'''
             SELECT  LAN.HANDLE 					AS	handle_lan,
-		            FN_DOC.HANDLE				AS	handle_fn_doc,
+		            COALESCE(FN_DOC.HANDLE, 0)	AS	handle_fn_doc,
                     CAST(LAN.COMPETENCIA AS DATE)             
                                                 AS  COMPETENCIA,  
                     CAST(LAN.DATA AS DATE)	    AS	DATA_LANC,  
@@ -1854,6 +1855,7 @@ class ConexaoBancoBenner():
                         WHEN 'D' THEN 'Débito' 
                         ELSE 'Crédito'  
                     END)                        AS  tipo_lancamento,   
+                    LAN_CC.HANDLE               AS  handle_lanc_cc,
                     LAN_CC.VALOR                AS  VAL_LANC,   
                     FORNECEDOR.NOME			    AS	NOME_FORNECEDOR,  
                     FN_DOC.DOCUMENTODIGITADO	AS	NUM_DOC, 
@@ -1901,12 +1903,14 @@ class ConexaoBancoBenner():
                AND	CT.NOME IS NOT NULL
                AND	CT.NIVELSUPERIOR in ({lista_handle_tipo_contas})
                AND	LAN_CC.PROJETO in ({lista_handle_proj})
+               AND  LAN.CONTA in ({lista_handle_contas})
                AND  LAN_CC.NATUREZA = 'D'
              ORDER  BY LAN.COMPETENCIA,  
                     LAN.DATA,  
                     LAN_CC.PROJETO;	
         '''
         )
+        #print(sql_razao_placas)
         df_razao_placas = pd.read_sql(sql_razao_placas, self.__conn)
         df_razao_placas['codigo_os'] = ''
         df_razao_placas['desc_os'] = ''
@@ -1914,95 +1918,142 @@ class ConexaoBancoBenner():
         df_razao_placas['desc_tipo_os'] = ''
         df_razao_placas['desc_produto'] = ''
         df_razao_placas['desc_cluster'] = ''
+        df_razao_placas['cod_os_razao_frota'] = 0
         for index, row in df_razao_placas.iterrows():
+            placa = df_razao_placas.loc[index, 'PLACA']
+            sql_os = ''
             if df_razao_placas.loc[index, 'cod_origem_lancamento'] == 22:
-                cod_os = df_razao_placas.loc[index, 'HISTORICO'].split('BXD ')[1]
-                df_razao_placas.loc[index, 'codigo_os'] = cod_os
 
-                tipo_os = cod_os.split('.')[0]
-                cod_empresa = df_razao_placas.loc[index, 'cod_empresa_lan']
-                handle_prod = df_razao_placas.loc[index, 'handle_prod']
-                if tipo_os in ('CORINT', 'PREINT'):
-                    sql_os = (
-                        f'''
-                        SELECT	os.DESCRICAO	        AS	desc_os,
-                                tipo_os.NOME            AS  desc_tipo_os,
-                                os.OBSERVACOES          AS  obs_os,
-                                os_prod_int.PRODUTO		AS	handle_prod,
-                                prod.NOME		        AS	desc_produto,
-                                conj.NOME		        AS	desc_conjunto
-                          FROM 	MF_ORDEMSERVICOS (NOLOCK) os
-                          LEFT	JOIN MF_ORDEMPRODUTOINTERNOS (NOLOCK) os_prod_int
-                            ON	(os_prod_int.ORDEMSERVICO = os.HANDLE)
-                          LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
-                            ON	(prod.HANDLE = os_prod_int.PRODUTO)
-                          LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
-                            ON	(conj.HANDLE = os_prod_int.CONJUNTO) 
-                          LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
-                            ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
-                         WHERE 	os.CODIGO = '{cod_os}'
-                           AND	os.EMPRESA = {cod_empresa}
-                           AND  os_prod_int.PRODUTO = {handle_prod}
-                        '''
-                    )
-                    cursor = self.__conn.cursor()
-                    cursor.execute(sql_os)
-                    reg_os = cursor.fetchone()
-                    df_razao_placas.loc[index, 'desc_os'] = reg_os.desc_os
-                    df_razao_placas.loc[index, 'obs_os'] = reg_os.obs_os
-                    df_razao_placas.loc[index, 'desc_tipo_os'] = reg_os.desc_tipo_os
-                    df_razao_placas.loc[index, 'desc_produto'] = reg_os.desc_produto
-                    df_razao_placas.loc[index, 'desc_cluster'] = reg_os.desc_conjunto
-                elif tipo_os == 'ABAINT' :
-                    sql_os = (
-                        f'''
-                        SELECT	os.CODIGO		        AS	codigo_os,
-                                os.DESCRICAO	        AS	desc_os,
-                                tipo_os.NOME            AS  desc_tipo_os,
-                                os.OBSERVACOES          AS  obs_os,
-                                prod.HANDLE		        AS	handle_prod,
-                                prod.nome		        AS	desc_produto,
-                                'COMBUSTIVEL'	        AS	desc_conjunto,
-                                os_comb.quantidade
-                                                        AS  qtd_item,
-                                un.NOME	                AS  nome_un
-                          FROM	MF_ORDEMSERVICOS (NOLOCK) os      
-                          LEFT	JOIN MF_ORDEMSERVICOCOMBUSTIVEIS (NOLOCK) os_comb 
-                            ON	(os_comb.ORDEMSERVICO = os.HANDLE) 
-                          LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
-                            ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)                            
-                          LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
-                            ON	(prod.HANDLE = os_comb.PRODUTO)    
-                          LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
-                            ON	(un.HANDLE = os_comb.UNIDADEMEDIDA)  
-                         WHERE 	os.CODIGO = '{cod_os}'
-                           AND	os.EMPRESA = {cod_empresa}
-                           AND  os_comb.PRODUTO = {handle_prod}
-                        '''
-                    )
-                    cursor = self.__conn.cursor()
-                    cursor.execute(sql_os)
-                    reg_os = cursor.fetchone()
-                    df_razao_placas.loc[index, 'desc_os'] = reg_os.desc_os
-                    df_razao_placas.loc[index, 'obs_os'] = reg_os.obs_os
-                    df_razao_placas.loc[index, 'desc_tipo_os'] = reg_os.desc_tipo_os
-                    df_razao_placas.loc[index, 'desc_produto'] = reg_os.desc_produto
-                    df_razao_placas.loc[index, 'desc_cluster'] = reg_os.desc_conjunto
+                #if 'BXD ' in df_razao_placas.loc[index, 'HISTORICO']:
+                try:
+                    cod_os = df_razao_placas.loc[index, 'HISTORICO'].split('BXD ')[1]
+                    df_razao_placas.loc[index, 'codigo_os'] = cod_os
 
+                    tipo_os = cod_os.split('.')[0]
+                    cod_empresa = df_razao_placas.loc[index, 'cod_empresa_lan']
+                    handle_prod = df_razao_placas.loc[index, 'handle_prod']
+                    if tipo_os in ('CORINT', 'PREINT'):
+                        sql_os = (
+                            f'''
+                            SELECT	os.handle               AS  handle_os,
+                                    os.CODIGO		        AS	codigo_os,
+                                    os.DESCRICAO	        AS	desc_os,
+                                    tipo_os.HANDLE          AS  handle_tipo_os, 
+                                    tipo_os.NOME            AS  desc_tipo_os,
+                                    os.OBSERVACOES          AS  obs_os,
+                                    os_prod_int.PRODUTO		AS	handle_prod,
+                                    prod.NOME		        AS	desc_produto,
+                                    os_prod_int.QUANTIDADE  AS  qtd_prod,
+                                    conj.NOME		        AS	desc_conjunto,
+                                    un.NOME	                AS  nome_un
+                              FROM 	MF_ORDEMSERVICOS (NOLOCK) os
+                              LEFT	JOIN MF_ORDEMPRODUTOINTERNOS (NOLOCK) os_prod_int
+                                ON	(os_prod_int.ORDEMSERVICO = os.HANDLE)
+                              LEFT  JOIN MA_RECURSOS (NOLOCK) placa
+                                ON  (placa.HANDLE = os.VEICULO
+                               AND  placa.EMPRESA = os.EMPRESA)
+                              LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                                ON	(prod.HANDLE = os_prod_int.PRODUTO)
+                              LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
+                                ON	(conj.HANDLE = os_prod_int.CONJUNTO) 
+                              LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                                ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
+                              LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                                ON	(un.HANDLE = os_prod_int.UNIDADEMEDIDA) 
+                             WHERE 	os.CODIGO = '{cod_os}'
+                               AND	os.EMPRESA = {cod_empresa}
+                               AND  os_prod_int.PRODUTO = {handle_prod}
+                               AND  placa.PLACANUMERO = '{placa}'
+                            '''
+                        )
+
+                    elif tipo_os == 'ABAINT' :
+                        sql_os = (
+                            f'''
+                            SELECT	os.handle               AS  handle_os,
+                                    os.CODIGO		        AS	codigo_os,
+                                    os.DESCRICAO	        AS	desc_os,
+                                    tipo_os.HANDLE          AS  handle_tipo_os, 
+                                    tipo_os.NOME            AS  desc_tipo_os,
+                                    os.OBSERVACOES          AS  obs_os,
+                                    prod.HANDLE		        AS	handle_prod,
+                                    prod.nome		        AS	desc_produto,
+                                    'COMBUSTIVEL'	        AS	desc_conjunto,
+                                    os_comb.quantidade
+                                                            AS  qtd_prod,
+                                    un.NOME	                AS  nome_un
+                              FROM	MF_ORDEMSERVICOS (NOLOCK) os      
+                              LEFT	JOIN MF_ORDEMSERVICOCOMBUSTIVEIS (NOLOCK) os_comb 
+                                ON	(os_comb.ORDEMSERVICO = os.HANDLE) 
+                              LEFT  JOIN MA_RECURSOS (NOLOCK) placa
+                                ON  (placa.HANDLE = os.VEICULO
+                               AND  placa.EMPRESA = os.EMPRESA)
+                              LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                                ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)                            
+                              LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                                ON	(prod.HANDLE = os_comb.PRODUTO)    
+                              LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                                ON	(un.HANDLE = os_comb.UNIDADEMEDIDA)  
+                             WHERE 	os.CODIGO = '{cod_os}'
+                               AND	os.EMPRESA = {cod_empresa}
+                               AND  os_comb.PRODUTO = {handle_prod}
+                               AND  placa.PLACANUMERO = '{placa}'
+                            '''
+                        )
+
+                    elif tipo_os in ('PREEXT'):
+                        sql_os = (
+                            f'''
+                                SELECT 	os.handle				AS	handle_os,
+                                        os.CODIGO		        AS	codigo_os,
+                                        os.DESCRICAO	        AS	desc_os,
+                                        os.TIPOORDEMSERVICO		AS	handle_tipo_os,
+                                        tipo_os.NOME            AS  desc_tipo_os,
+                                        os.OBSERVACOES          AS  obs_os,
+                                        os_prod.PRODUTO 		AS  handle_prod,
+                                        prod.nome		        AS	desc_produto,
+                                        conj.NOME	        	AS	desc_conjunto,         
+                                        os_prod.quantidade      AS  qtd_prod,
+                                        un.NOME	                AS  nome_un
+                                  FROM	MF_ORDEMSERVICOS (NOLOCK) os  
+                                  LEFT	JOIN MF_ORDEMPRODUTOINTERNOS os_prod
+                                    ON	(os_prod.ORDEMSERVICO  = os.HANDLE)
+                                  LEFT  JOIN MA_RECURSOS (NOLOCK) placa
+                                    ON  (placa.HANDLE = os.VEICULO
+                                   AND  placa.EMPRESA = os.EMPRESA)
+                                  LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                                    ON	(prod.HANDLE = os_prod.PRODUTO)
+                                  LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
+                                    ON	(conj.HANDLE = os_prod.CONJUNTO)  
+                                  LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                                    ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
+                                  LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                                    ON	(un.HANDLE = os_prod.UNIDADEMEDIDA) 
+                                 WHERE 	os.CODIGO = '{cod_os}'
+                                   AND	os.EMPRESA = {cod_empresa}
+                                   AND  prod.HANDLE = {handle_prod}
+                                   AND  placa.PLACANUMERO = '{placa}';
+                            
+                            '''
+                        )
+                except:
+                    sql_os = ''
             elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2556:
                 handle_fn_doc = df_razao_placas.loc[index, 'handle_fn_doc']
                 if handle_fn_doc > 0:
                     sql_os = (
                         f'''
-                        SELECT 	os.CODIGO		        AS	codigo_os,
+                        SELECT 	os.handle               AS  handle_os,
+                                os.CODIGO		        AS	codigo_os,
                                 os.DESCRICAO	        AS	desc_os,
+                                tipo_os.HANDLE          AS  handle_tipo_os,
                                 tipo_os.NOME            AS  desc_tipo_os,
                                 os.OBSERVACOES          AS  obs_os,
                                 prod.HANDLE		        AS	handle_prod,
                                 prod.nome		        AS	desc_produto,
                                 'COMBUSTIVEL'	        AS	desc_conjunto,
                                 itens_ordem_compra.quantidade
-                                                        AS  qtd_item,
+                                                        AS  qtd_prod,
                                 un.NOME	                AS  nome_un
                           FROM	FN_DOCUMENTOS (NOLOCK) FN_DOC     
                           LEFT	JOIN CP_RECEBIMENTOFISICOPAI (NOLOCK) receb_fisico_pai 
@@ -2019,28 +2070,15 @@ class ConexaoBancoBenner():
                             ON	(os_comb.ORDEMCOMPRAPRODUTO = itens_ordem_compra.HANDLE)
                           LEFT	JOIN MF_ORDEMSERVICOS (NOLOCK) os 
                             ON	(os.HANDLE = os_comb.ORDEMSERVICO)  
+                          LEFT  JOIN MA_RECURSOS (NOLOCK) placa
+                            ON  (placa.HANDLE = os.VEICULO
+                           AND  placa.EMPRESA = os.EMPRESA)
                           LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
                             ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
                          WHERE	FN_DOC.handle = {handle_fn_doc} 
+                           AND  placa.PLACANUMERO = '{placa}'
                         '''
                     )
-                    cursor = self.__conn.cursor()
-                    cursor.execute(sql_os)
-                    itens_os_comb = cursor.fetchall()
-                    codigo_os = ''
-                    desc_os = ''
-                    desc_produto = ''
-                    desc_conjunto = ''
-                    for os in itens_os_comb:
-                        codigo_os = os.codigo_os
-                        desc_os = f'DESCRICAO OS: {os.desc_os}' #. OBSERVAÇÃO OS: {os.obs_os}
-                        desc_produto += os.desc_produto + ', Qtd.: ' + str(os.qtd_item) + '(' + os.nome_un + ') / '
-                        desc_conjunto = os.desc_conjunto
-                    df_razao_placas.loc[index, 'codigo_os'] = codigo_os
-                    df_razao_placas.loc[index, 'desc_os'] = desc_os
-                    df_razao_placas.loc[index, 'desc_tipo_os'] = os.desc_tipo_os
-                    df_razao_placas.loc[index, 'desc_produto'] = desc_produto
-                    df_razao_placas.loc[index, 'desc_cluster'] = desc_conjunto
 
             elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2542:
                 df_razao_placas.loc[index, 'desc_cluster'] = 'PEDAGIOS'
@@ -2061,10 +2099,143 @@ class ConexaoBancoBenner():
                 df_razao_placas.loc[index, 'desc_cluster'] = 'LAVACAO'
 
 
+            elif df_razao_placas.loc[index, 'HANDLE_CONTA'] == 2558 and df_razao_placas.loc[index, 'cod_origem_lancamento'] == 3:
+                handle_fn_doc = df_razao_placas.loc[index, 'handle_fn_doc']
+                sql_os = (
+                    f'''
+                    SELECT 	os.handle				AS	handle_os,
+                            os.CODIGO		        AS	codigo_os,
+                            os.DESCRICAO	        AS	desc_os,
+                            os.TIPOORDEMSERVICO		AS	handle_tipo_os,
+                            tipo_os.NOME            AS  desc_tipo_os,
+                            os.OBSERVACOES          AS  obs_os,
+                            prod.HANDLE		        AS	handle_prod,
+                            prod.nome		        AS	desc_produto,
+                            conj.NOME	        	AS	desc_conjunto,
+                            itens_ordem_compra.quantidade
+                                                    AS  qtd_prod,
+                            un.NOME	                AS  nome_un
+                      FROM	FN_DOCUMENTOS (NOLOCK) FN_DOC     
+                      LEFT	JOIN CP_RECEBIMENTOFISICOPAI (NOLOCK) receb_fisico_pai 
+                        ON	(receb_fisico_pai.HANDLE = FN_DOC.RECEBIMENTOFISICO)  
+                      LEFT	JOIN CP_RECEBIMENTOFISICO (NOLOCK) receb_fisico
+                        ON	(receb_fisico.RECEBIMENTOFISICOPAI = receb_fisico_pai.HANDLE)  
+                      LEFT	JOIN CP_ORDENSCOMPRAITENS (NOLOCK) itens_ordem_compra 
+                        ON	(itens_ordem_compra.HANDLE = receb_fisico.ORDEMCOMPRAITEM)    
+                      LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                        ON	(prod.HANDLE = itens_ordem_compra.PRODUTO)  
+                      LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                        ON	(un.HANDLE = itens_ordem_compra.UNIDADE)  
+                      LEFT	JOIN CP_REQUISICOES (NOLOCK) req 
+                        ON	(req.ordemcompraitem = itens_ordem_compra.HANDLE)
+                      LEFT	JOIN CP_REQUISICOESPAI (NOLOCK) req_pai 
+                        ON	(req_pai.HANDLE = req.REQUISICAOPAI)
+                      LEFT	JOIN MF_ORDEMSERVICOS (NOLOCK) os 
+                        ON	(os.HANDLE = req_pai.ORDEMFROTAS) 
+                      LEFT	JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                        ON	(tipo_os.HANDLE = os.TIPOORDEMSERVICO)
+                      LEFT 	JOIN MF_ORDEMSERVICOPRODUTOS (NOLOCK) os_serv_prod
+                        ON	(os_serv_prod.ORDEMSERVICO = os.HANDLE)	
+                      LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
+                        ON	(conj.HANDLE = os_serv_prod.PARTE)     
+                     WHERE	FN_DOC.handle = {handle_fn_doc}
+                       AND	os.handle is not null;
+                    '''
+                )
 
+            if df_razao_placas.loc[index, 'handle_tipo_doc'] == 34:
+                df_razao_placas.loc[index, 'obs_os'] += df_razao_placas.loc[index, 'desc_tipo_doc']
+
+
+            if sql_os != '':
+                cursor = self.__conn.cursor()
+                cursor.execute(sql_os)
+                reg_os = cursor.fetchall()
+                for os in reg_os:
+                    obj_os = (Os_Razao_Frota.objects
+                              .filter(handle_lanc_cc=df_razao_placas.loc[index, 'handle_lanc_cc'])).first()
+                    obs_os = ''
+                    if os.obs_os != None:
+                        obs_os = os.obs_os
+                    if obj_os == None:
+                        obj_os = Os_Razao_Frota(
+                            handle_lanc_cc=df_razao_placas.loc[index, 'handle_lanc_cc'],
+                            handle_os=os.handle_os,
+                            cod_os=os.codigo_os,
+                            desc_os=os.desc_os,
+                            handle_tipo_os=os.handle_tipo_os,
+                            desc_tipo_os=os.desc_tipo_os,
+                            obs_os=obs_os,
+                            handle_prod=os.handle_prod,
+                            desc_prod=os.desc_produto,
+                            qtd_prod=os.qtd_prod,
+                            desc_conj=os.desc_conjunto,
+                            un_prod=os.nome_un
+                        )
+                        obj_os.save()
+                    df_razao_placas.loc[index, 'cod_os_razao_frota'] = obj_os.cod_os_razao_frota
+                    df_razao_placas.loc[index, 'desc_cluster'] = os.desc_conjunto
+                    df_razao_placas.loc[index, 'codigo_os'] = os.codigo_os
+                    df_razao_placas.loc[index, 'desc_tipo_os'] = os.desc_tipo_os
 
 
         self.__conn.close()
+
         return df_razao_placas
 
+
+
+    def retorna_contas_razao_placas_do_periodo(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia):
+        lista_dic_contas = []
+        cursor = self.__conn.cursor()
+        sql_razao_contas = (
+            f'''
+            SELECT  DISTINCT
+                    LAN.CONTA                   AS  HANDLE_CONTA,  
+                    CONTAS.NOME					AS	NOME_CONTA                   
+              FROM  CT_LANCAMENTOS LAN (NOLOCK)  
+              LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
+                ON 	(LAN_CC.LANCAMENTO = LAN.HANDLE)  
+               AND	(LAN_CC.DOCUMENTO = LAN.DOCUMENTO)  
+              LEFT	JOIN GN_PROJETOS PROJ (NOLOCK)  
+                ON	(PROJ.HANDLE = LAN_CC.PROJETO)  
+               AND	(PROJ.EMPRESA = LAN.EMPRESA)  
+              LEFT	JOIN CT_CC CT (NOLOCK)  
+                ON	(CT.HANDLE = LAN_CC.CENTROCUSTO)  
+              LEFT	JOIN CT_CONTAS CONTAS (NOLOCK)  
+                ON	(CONTAS.HANDLE = LAN.CONTA)  
+              LEFT	JOIN FN_DOCUMENTOS FN_DOC (NOLOCK)  
+                ON	(FN_DOC.HANDLE = LAN.LANCAMENTOFINANCEIRO)  
+              LEFT	JOIN GN_PESSOAS FORNECEDOR (NOLOCK)  
+                ON	(FORNECEDOR.HANDLE = FN_DOC.PESSOA)
+              LEFT 	JOIN CT_CC tipo_conta (NOLOCK)
+                ON	(tipo_conta.HANDLE = CT.NIVELSUPERIOR)  
+              LEFT 	JOIN FN_TIPOSDOCUMENTOS tipo_doc (NOLOCK) 
+                ON	(fn_doc.TIPODOCUMENTO = tipo_doc.HANDLE)
+              LEFT 	JOIN PD_TANQUECONTABILVARIACOES (NOLOCK)  prod_lan
+                ON	(prod_lan.HANDLE = LAN.LANCAMENTOMOVVARIACAOESTOQUE)
+             WHERE  LAN.LANCAMENTOGERADO = 'N'   		
+               AND  YEAR(LAN.COMPETENCIA) = {ano_competencia}
+               AND  MONTH(LAN.COMPETENCIA) = {mes_competencia}
+               AND	CT.NOME IS NOT NULL
+               AND	CT.NIVELSUPERIOR in ({lista_handle_tipo_contas})
+               AND	LAN_CC.PROJETO in ({lista_handle_proj})
+               AND  LAN_CC.NATUREZA = 'D'
+             ORDER  BY 2;	
+            '''
+        )
+
+        cursor.execute(sql_razao_contas)
+        registros_cursor = cursor.fetchall()
+        for row in registros_cursor:
+            conta = {
+                'handle_conta': row.HANDLE_CONTA,
+                'desc_conta': row.NOME_CONTA
+            }
+            lista_dic_contas.append(conta)
+
+        cursor.close()
+        self.__conn.close()
+
+        return lista_dic_contas
 

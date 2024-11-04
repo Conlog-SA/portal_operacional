@@ -19,17 +19,21 @@ class Menu_View(View):
         lista_filiais = Filial.objects.filter(cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
                                               cod_reduzido__isnull=False)
         str_bg = ''
+        cor_emp_hex = ''
         if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
             str_bg = 'background.jpg'
+            cor_emp_hex = '#f46424;'
         elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
             str_bg = 'background-deep.jpg'
+            cor_emp_hex = '#3b8eed;'
 
         context = {
             'obj_usuario_sessao': obj_usuario_sessao,
             'menu_usuario': menu_usuario,
             'sub_menu_usuario': sub_menu_usuario,
             'lista_filiais': lista_filiais,
-            'str_bg': str_bg
+            'str_bg': str_bg,
+            'cor_emp_hex': cor_emp_hex
         }
         return render(request, 'menu_app/main_menu.html', context)
 
