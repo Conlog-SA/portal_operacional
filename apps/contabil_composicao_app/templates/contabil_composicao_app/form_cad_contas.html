@@ -1,9 +1,13 @@
 {% load static %}
 
 {% block link_static_css %}
-    <!-- <link type="text/css" href="{% static 'libs/bootstrap_4/css/bootstrap.min.css' %}" rel="stylesheet"/> -->
     <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
-    <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app.css' %}" />
+    {% if cod_empresa == 17 %}
+        <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app_deep.css' %}" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app.css' %}" />
+    {% endif %}
+
 
 {% endblock %}
 
@@ -11,10 +15,10 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-clipboard fa-2xl" style="color: #f46424;"></i>
+            <i class="fa-solid fa-clipboard fa-2xl" style="color: {{cor_padrao}};"></i>
             <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        <img class="logo_cabecalho" src="{% static logo_empresa %}" >
     </div>
 
 
@@ -35,14 +39,14 @@
                                 class="btn btn-rounded btn-space"
                                 title="Selecionar todos os responsáveis"
                                 style="width: 50px;">
-                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                            <i class="fa-regular fa-square-check" style="color: {{cor_padrao}};"></i>
                         </button>
                         <button type='button' id="btn_desmarcar_resp_contas"
                                 name="btn_desmarcar_resp_contas"
                                 class="btn btn-rounded btn-space"
                                 title="Limpar seleção"
                                 style="width: 50px;">
-                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                            <i class="fa-regular fa-square" style="color: {{cor_padrao}};"></i>
                         </button>
                     </label>
                     <select class="selectpicker form-control cl_cb_contas" id="cb_responsaveis_contas"

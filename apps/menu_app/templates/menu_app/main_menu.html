@@ -6,7 +6,7 @@
 {% endblock %}
 
 {% block icon %}
-  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
+  {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
     <link rel="icon" href="{% static 'icons/logo-laranja.png' %}" />
   {% else %}
     <link rel="icon" href="{% static 'icons/logo-small-deep.png' %}" />
@@ -17,10 +17,14 @@
 {% endblock %}
 
 {% block link_static_css %}
-  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
+  {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
     <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_conlog.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style_conlog.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader_conlog.css' %}" />
   {% else %}
     <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_deep.css' %}"/>
+    <link rel="stylesheet" href="{% static 'css/style_deep.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader_deep.css' %}" />
   {% endif %}
 
 
@@ -33,11 +37,7 @@
 
 
   <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
-  {% if obj_usuario_sessao.cod_filial.cod_empresa == 12 %}
-    <link rel="stylesheet" href="{% static 'css/loader_conlog.css' %}" />
-  {% else %}
-    <link rel="stylesheet" href="{% static 'css/loader_deep.css' %}" />
-  {% endif %}
+
 
   <style>
     body {background-image: url('../../../static/img/{{str_bg}}');
