@@ -55,8 +55,12 @@ class Form_Imp_Cad_Conta_View(View):
         # qtd_arquivos_postados = 0
         if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
             nome_pasta_empresa = 'Deep_Anexos_Pendentes'
+            logo_empresa = 'icons/logo-small-deep.png'
+            cor_padrao = '#3b8eed'  ##3378ad
         elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
             nome_pasta_empresa = 'Conlog_Anexos_Pendentes'
+            logo_empresa = 'icons/logo-branca.png'
+            cor_padrao = '#f46424'
         diretorio_arquivos_postados = os.path.join(BASE_DIR,
                                                    f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
 
@@ -73,6 +77,8 @@ class Form_Imp_Cad_Conta_View(View):
                                    .filter(sala='CON',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
+
+
         contexto = {
             'lista_contas': lista_contas,
             'lista_filiais': lista_filiais,
@@ -82,7 +88,13 @@ class Form_Imp_Cad_Conta_View(View):
             'qtd_arquivos_postados': qtd_arquivos_postados,
             'obj_usuario_sessao': obj_usuario_sessao,
             'lista_usuarios_contabil': lista_usuarios_contabil,
+<<<<<<< HEAD
             'obj_usuario_logado': obj_usuario_logado
+=======
+            'cod_empresa': obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
+            'logo_empresa': logo_empresa,
+            'cor_padrao': cor_padrao,
+>>>>>>> 28e0528e8f17883d8ea40a6a642bfd1c6f7199c3
 
         }
         return render(request, 'contabil_composicao_app/form_cad_contas.html', contexto)

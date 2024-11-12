@@ -1500,6 +1500,10 @@ $(document).on('change','input', function(){
         $("#div_tab_conciliacao_composicao_benner_detalhado").html("");
         $("#div_tab_conciliacao_composicao_benner_aud").html("");
 
+        let let_check_selecionar_todos_itens = `
+            <input type="checkbox" id="ck_seleciona_todos_itens" name="ck_seleciona_todos_itens" >
+        `;
+
         if(let_tipo_rel == 'R'){
             //tab_conciliacao_composicao_benner
             let let_tab_concilicacao_comp_benner = $("<table/>");
@@ -1634,7 +1638,7 @@ $(document).on('change','input', function(){
                 let_cod_modelo_conta = 1;
 
                 let_colunas_tabela_detalhado = [
-                    'Ação',
+                    let_check_selecionar_todos_itens,
                     'Status',
                     'Estrutura',
                     'Cód red',
@@ -1667,7 +1671,7 @@ $(document).on('change','input', function(){
                 let_cod_modelo_conta = 3;
 
                 let_colunas_tabela_detalhado = [
-                    'Ação',
+                    let_check_selecionar_todos_itens,
                     'Status',
                     'Estrutura',
                     'Cód red',
@@ -2066,6 +2070,15 @@ $(document).on('change','input', function(){
         });
 
 
+
+    }
+    else if ( let_nome_inp == 'ck_seleciona_todos_itens') {
+        let let_status_componente = $(this).prop("checked");
+        if( let_status_componente == true) {
+            $('input[name="ck_conta_comp_det"]').prop('checked', true);
+        } else {
+            $('input[name="ck_conta_comp_det"]').prop('checked', false);
+        }
 
     }
 

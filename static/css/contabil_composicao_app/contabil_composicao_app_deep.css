@@ -1,0 +1,443 @@
+
+.tab_conciliacao_composicao_benner_detalhado{
+  background-color: var(--cor_cinza_claro2);
+  color: black;
+  border-radius: 0rem 0rem 0.5rem 0.5rem;
+  font-size: 1rem;
+  padding:1.5rem;
+  margin-right: 0rem !important;
+  height: 85%;
+}
+
+.cl_frm_conciliacao_com_benner {
+    /* height: 45px !important; */
+    background-color:var(--cor_bg_cinza_escuro) !important;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.5rem;
+    opacity: 1;
+    position:relative;
+    z-index:1000;
+}
+
+.cl_frm_cad_contas{
+    /* height: 45px !important; */
+    background-color:var(--cor_bg_cinza_escuro) !important;
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    opacity: 1;
+    position:relative;
+    z-index:1000;
+}
+
+
+.cl_div_cb_contas_conciliacao_detalhada{
+    /* width: 25% !important; */
+    padding-right:0.25rem;
+}
+
+.cl_div_competencia_conciliacao_detalhada{
+    /* width: 25% !important; */
+    padding-right:0.25rem;
+}
+
+
+
+
+
+.cl_btn_conciliacao_comp_benner_detalhado{
+    font-size: 0.925em;
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    /* height: 40px; */
+}
+
+.cl_btn_detalhes_conta{
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+}
+
+
+
+.cl_tbody_tab_conciliacao_composicao_benner_detalhado{
+    color:#FFFFFF;
+}
+
+.details-column-conta-tab-conc-det{
+    width: 35%;
+}
+.details-column-estrutura-tab-conc-det{
+    width: 10%;
+}
+.details-column-cod-red-tab-conc-det{
+    width: 10%;
+}
+.details-column-contrato-tab-conc-det{
+    width: 10%;
+}
+.details-column-desc-conta-tab-conc-det{
+    width: 10%;
+}
+.details-column-tipo-prazo-tab-conc-det{
+    width: 5%;
+}
+.details-column-val-comp-tab-conc-det{
+    width: 5%;
+}
+.details-column-val-bal-tab-conc-det{
+    width: 5%;
+}
+.details-column-val-dif-tab-conc-det{
+    width: 5%;
+}
+.details-column-details-conta-tab-conc-det{
+    width: 5%;
+}
+
+
+
+/* From cad contas
+.bs-searchbox{
+    position: relative;
+    z-index:99999;
+} */
+.cl_div_loader_cad_contas{
+    padding-top: 1rem;
+}
+.cl_div_cad_contas_comp{
+    font-size:12px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+    opacity: 1;
+}
+
+.cl_div_tx_handle_conta_cp{
+    padding-right:0.25rem;
+}
+
+.cl_div_txt_cod_red_conta_cp{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_txt_cod_estrutura_cp{
+    padding-left:0.25rem;
+}
+
+.cl_div_tx_handle_conta_lp{
+    padding-right:0.25rem;
+}
+
+.cl_div_txt_cod_red_conta_lp{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_txt_cod_estrutura_lp{
+    padding-left:0.25rem;
+}
+
+.cl_div_cb_pacote_conta{
+    padding-right:0.25rem;
+}
+
+.cl_div_rd_modelo_conta{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_dt_ini_atv_benner{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_dt_fim_atv_benner{
+    padding-left:0.25rem;
+}
+
+
+.cl_div_chk_status_comp{
+    padding-right:0.25rem;
+}
+
+.cl_div_vazia_cad_conta{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_btn_criar_nova_conta_manual{
+    padding-left:0.5rem;
+    padding-right:0.5rem;
+}
+
+.cl_div_btn_cadastra_nova_conta{
+    padding-left:0.25rem;
+}
+
+
+.cl_btn_importa_contrato_pelo_num{
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    width: 2.5rem;
+    height: 2rem;
+}
+
+
+.cl_div_txt_num_contrato{
+    padding-right: 0.25rem;
+}
+
+.cl_div_dt_emissao_contrato{
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_handle_contrato{
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_doc_contabil{
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_val_nominal{
+    padding-right: 0.25rem;
+}
+
+.cl_div_txt_total_liquido{
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_dia_util{
+    padding-right: 0.25rem;
+}
+
+.cl_div_txt_qtd_parcelas{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.cl_div_dt_primeira_parcela{
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_handle_operacao{
+    padding-right: 0.25rem;
+}
+
+.cl_div_txt_desc_operacao{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.cl_div_chk_atualiza_com_benner{
+    padding-left: 0.25rem;
+}
+
+.cl_div_btn_cadastra_novo_contrato{
+    padding-right: 0.25rem;
+}
+
+.cl_div_btn_importar_contrato_benner{
+    padding-left: 0.25rem;
+}
+
+.cl_div_txt_num_contrato_importa{
+    padding-right: 0.25rem;
+}
+
+.cl_div_btn_importa_contrato_pelo_num{
+    padding-left: 0.25rem;
+    padding-top: 1.3rem;
+}
+
+.cl_btn_cad_contas{
+    font-size: 0.925em;
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    /* height: 40px; */
+}
+
+.cl_div_cb_resp_composicao{
+    padding-right: 0.25rem;
+}
+.cl_div_cb_resp_validacao{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+.cl_div_dt_ini_resp{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+.cl_div_dt_fim_resp{
+    padding-left: 0.25rem;
+}
+
+.cl_div_tab_responsaveis_conta{
+    font-size:10px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.cl_div_btn_associar_responsaveis_conta{
+    padding-left:11rem;
+}
+
+.cl_div_txt_desc_anexo_contrato{
+    padding-right: 0.25rem;
+}
+
+.cl_div_dt_competencia_anexo_doc_contrato{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+}
+
+.cl_div_file_anexo_contrato{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    padding-top: 0.9rem;
+}
+
+.cl_div_btn_anexa_doc_contrato{
+    padding-left: 0.25rem;
+    padding-top: 1.3rem;
+}
+
+.cl_div_tab_responsaveis_conta{
+    font-size:10px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.cl_btn_anexa_doc_contrato{
+    font-size: 0.925em;
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    width: 145.6px;
+    height: 35.6px;
+}
+
+.cl_div_visualizacao_anexo_conta{
+    height: 800px;
+}
+
+.cl_btn_excluir_contrato{
+    font-size: 0.925em;
+    border-color: #3b8eed !important;
+    background-color: #3b8eed !important;
+    /* height: 40px; */
+}
+
+
+input[type=file] {
+    width: 100%;
+    max-width: 100%;
+    color: #444;
+    padding: 4px;
+    background: #fff;
+    border-radius: 0.5rem;
+    border: 1px solid #555;
+    height: 45px !important;
+    font-size: 0.85rem;
+  }
+
+input[type=file]::file-selector-button {
+    margin-right: 20px;
+    border: none;
+    background: #3b8eed;
+    padding: 0.4rem;
+    /* font-size: 1.3rem; */
+    border-radius: 0.5rem;
+    color: #fff;
+    cursor: pointer;
+    transition: background .2s ease-in-out;
+  }
+
+input[type=file]::file-selector-button:hover {
+  background: var(--cor_empresa_hover);
+}
+
+
+.cl_div_loader_cad_comp_detalhada{
+    padding-bottom: 1rem;
+}
+
+
+
+.cl_btn_conf_status_comp{
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    padding-top: 0.125rem;
+    padding-bottom: 0.125rem;
+
+}
+
+.cl_comp_drop_status_comp{
+    padding-top: 0.25rem;
+    padding-left: 0.125rem;
+    padding-right: 0.125rem;
+}
+
+
+.cl_div_tab_status_contrato_comp{
+    font-size:10px;
+    background-color: var(--cor_bg_cinza_escuro) !important;
+    border-radius:0rem 0rem 0.5rem 0.5rem;
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+}
+
+.cl_div_modelo_contas_conciliacao_detalhada{
+    margin-top: 2rem;
+}
+
+.cl_div_competencia_conciliacao_detalhada{
+    margin-top: 0.86rem;
+    margin-left: 0.250rem;
+}
+
+.cl_div_btn_gera_conciliacao_detalhada{
+    margin-top: 2.4rem;
+    margin-left: 0.250rem;
+}
+
+
+.cl_div_comp_imp_arq_contas_m1{
+    width: 11% !important;
+    margin-left: 1rem;
+}
+
+.comp_frm_imp_arq_m1 {
+    width: 11% !important;
+}
+
+.cl_dt_comp_imp_arq_contas_m1 {
+    height: 45px !important;
+    padding: 4px !important;
+}
+

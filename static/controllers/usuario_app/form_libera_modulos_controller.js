@@ -50,7 +50,11 @@ $(document).on('change','input', function(){
             let_novo_status_menu = 'D';
         }
 
+<<<<<<< HEAD
          $.ajax({
+=======
+        $.ajax({
+>>>>>>> 28e0528e8f17883d8ea40a6a642bfd1c6f7199c3
             type: "POST",
             url: '/usuario_app/destativa_ativa_item_usuario_menu',
             data: {
@@ -81,6 +85,11 @@ $(document).on('change','input', function(){
             }
         });
 
+<<<<<<< HEAD
+=======
+    }
+
+>>>>>>> 28e0528e8f17883d8ea40a6a642bfd1c6f7199c3
 
     }
 
