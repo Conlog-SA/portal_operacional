@@ -175,7 +175,7 @@ function atualiza_tab_usuarios(){
 
                 let let_btn_edita_usu = `
                     <button type='button' id='btn_editar_usu_${i}'
-                    name='btn_editar_usu' value='${i}' class='btn btn-sm btn-primary btn-rounded cadastro__botaoTabela'>
+                    name='btn_editar_usu' value='${i}' class='btn btn-rounded btn-space'>
                         <i class="fa-solid fa-user-pen" style="color: #fff;" ></i>
                     </button>
                 `;
@@ -200,7 +200,7 @@ function atualiza_tab_usuarios(){
             }
             $('#tab_usuarios').DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 10,
+                "pageLength": 8,
                 "destroy": true,
                 "dom": 'Bfrtip',
                 "buttons": ['excelHtml5',

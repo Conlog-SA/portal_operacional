@@ -306,9 +306,10 @@ function atualiza_tab_resp_contas(){
             $("#cb_pacotes_responsaveis_contas").selectpicker('refresh');
 
 
+
             dados.dic_lista_contas_resp.forEach(reg => {
 
-                let let_img =   "<i class='fa-solid fa-caret-right' style:"color: var(--cor_empresa)!important;"></i>";
+                let let_img =   "<i class='fa-solid fa-caret-right' ></i>";
 
                 let let_desc_conta = ''
                 if(reg.cod_conta__tipo_modelo == 1) {

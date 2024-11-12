@@ -88,13 +88,10 @@ class Form_Imp_Cad_Conta_View(View):
             'qtd_arquivos_postados': qtd_arquivos_postados,
             'obj_usuario_sessao': obj_usuario_sessao,
             'lista_usuarios_contabil': lista_usuarios_contabil,
-<<<<<<< HEAD
-            'obj_usuario_logado': obj_usuario_logado
-=======
+            'obj_usuario_logado': obj_usuario_logado,
             'cod_empresa': obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
             'logo_empresa': logo_empresa,
             'cor_padrao': cor_padrao,
->>>>>>> 28e0528e8f17883d8ea40a6a642bfd1c6f7199c3
 
         }
         return render(request, 'contabil_composicao_app/form_cad_contas.html', contexto)
@@ -446,6 +443,9 @@ class Form_Cad_Conta_View(View):
     def get(self, request):
         cod_usu_session = request.session['cod_usuario_logado']
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        cod_conta_form = request.GET['cod_conta']
+        cod_modelo_conta_selecionado = request.GET['cod_modelo_conta_selecionado']
 
         tipo_return_form = request.GET['tipo_return']
         obj_conta_pesq = Conta.objects.get(pk=cod_conta_form)

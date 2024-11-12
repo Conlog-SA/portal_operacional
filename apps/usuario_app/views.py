@@ -328,7 +328,7 @@ class Tab_Proj_Usu_View(View):
         obj_proj_usu.save()
         msg = ''
         if valor_bloqueio_form == 'N':
-            msg = 'Projeto bloquado!'
+            msg = 'Projeto bloqueado!'
         else:
             msg = 'Projeto liberado!'
         data = dict()

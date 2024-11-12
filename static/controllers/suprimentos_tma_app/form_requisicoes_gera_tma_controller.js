@@ -119,7 +119,7 @@ function povoa_table_req_atendidas(){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 7,
+                "pageLength": 9,
                 "dom": 'Bfrtip',
                 "searching": true,
                 "buttons": [

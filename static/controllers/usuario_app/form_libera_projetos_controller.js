@@ -262,23 +262,22 @@ function atualiza_tab_proj_usu(cod_usu){
                     `;
                     let_btn_bloqueia_desbloqueia_proj_usu = `
                         <button type='button'
-                            class='btn btn-sm btn-primary botaoPrincipal btn-rounded'
-                            id='btn_bloquear_proj_usu_${pro_usu.cod_proj_usu}'
-                            name='btn_bloquear_proj_usu' value='${pro_usu.cod_proj_usu}' style="width:95px;">
-                            <i class="fa-solid fa-lock" style="color: white;"></i> Bloquear
+                            class='btn btn-rounded btn-space'
+                            id='btn_bloquear_proj_usu_${pro_usu.cod_proj_usu}' title='Bloquear'
+                            name='btn_bloquear_proj_usu' value='${pro_usu.cod_proj_usu}'>
+                            <i class="fa-solid fa-lock" style="color: white;"></i>
                         </button>
                     `;
                 } else if ( pro_usu.status_proj_usu == 'N') {
                     let_img_status_proj_usu = `
-                        <i class="fa-sharp fa-regular fa-circle-xmark" title="Desativado" style="color: #f46424;"></i>
+                        <i class="fa-sharp fa-regular fa-circle-xmark" title="Desativado"></i>
                     `;
                     let_btn_bloqueia_desbloqueia_proj_usu = `
                         <button type='button'
-                            class='btn btn-sm botaoPrincipal btn-primary btn-rounded'
-                            id='btn_liberar_proj_usu_${pro_usu.cod_proj_usu}'
-                            name='btn_liberar_proj_usu' value='${pro_usu.cod_proj_usu}' style="width:95px;">
+                            class='btn btn-rounded btn-space'
+                            id='btn_liberar_proj_usu_${pro_usu.cod_proj_usu}' title='Desbloquear'
+                            name='btn_liberar_proj_usu' value='${pro_usu.cod_proj_usu}'>
                             <i class="fa-solid fa-unlock" style="color: white;"></i>
-                            Liberar
                         </button>
                     `;
                 }
@@ -302,7 +301,7 @@ function atualiza_tab_proj_usu(cod_usu){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 9,
+                "pageLength": 8,
                 "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [
