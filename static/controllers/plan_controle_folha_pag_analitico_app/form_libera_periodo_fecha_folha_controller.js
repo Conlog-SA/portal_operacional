@@ -164,7 +164,7 @@ $(document).on('click', 'button', function(){
                     });
                     $("#tab_periodos_do_ano").DataTable({
                         "bJQueryUI": true,
-                        "pageLength": 7,
+                        "paging": false,
                         "destroy": true,
                         "fixedHeader": {
                             header: true,

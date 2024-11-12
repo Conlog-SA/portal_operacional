@@ -13,6 +13,8 @@ from apps.usuario_app.models import Usuario
 class Form_Registra_Notas_Tratadas_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         usuario_portal = Usuario.objects.filter(cod_usu=id_usu_session).first()
         lista_excecoes = Excecoes_Natureza_Operacao.objects.filter(
             cod_usu__cod_filial__cod_empresa=usuario_portal.cod_filial.cod_empresa
@@ -22,7 +24,8 @@ class Form_Registra_Notas_Tratadas_View(View):
 
         context = {
             'lista_excecoes': lista_excecoes,
-            'lista_operacoes': lista_benner_sem_excecao
+            'lista_operacoes': lista_benner_sem_excecao,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_operacoes_farol_ndd_app/form_notas_tratadas.html', context)
 

@@ -12,10 +12,14 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-link fa-2xl" alt="Conciliação Composição x Benner(Resumo)" style="color: #f46424;"></i>
+            <i class="fa-solid fa-link fa-2xl icon-color-e" alt="Conciliação Composição x Benner(Resumo)" ></i>
             <h1 class=" titlePadraoMenu">Vincula Responsável Conta</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+                {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
     </div>
 
     <div class="containerApp">
@@ -27,13 +31,13 @@
                         <button class="nav-link active" id="a_tab_contas_responsaveis" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_contas_responsaveis" type="button" role="tab"
                                 aria-controls="div_tab_contas_responsaveis" aria-selected="true">
-                            <i class="fa-solid fa-file-invoice-dollar" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-file-invoice-dollar icon-color-e" ></i>
                             Contas por Responsável
                         </button>
                         <button class="nav-link" id="a_tab_vincular_contas_resp" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_vincular_contas_resp" type="button" role="tab"
                                 aria-controls="div_tab_vincular_contas_resp" aria-selected="false">
-                            <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-file-signature icon-color-e"></i>
                             Vincular Resp. Pacotes/Contas
                         </button>
                     </div>
@@ -107,14 +111,14 @@
                                                 class="btn btn-rounded btn-space"
                                                 title="Selecionar todos as contas"
                                                 style="width: 50px;">
-                                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                                            <i class="fa-regular fa-square-check icon-color-e"></i>
                                         </button>
                                         <button type='button' id="btn_desmarcar_cb_contas_responsaveis_contas"
                                                 name="btn_desmarcar_cb_contas_responsaveis_contas"
                                                 class="btn btn-rounded btn-space"
                                                 title="Limpar seleção"
                                                 style="width: 50px;">
-                                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                                            <i class="fa-regular fa-square icon-color-e"></i>
                                         </button>
                                     </label>
                                     <select class="selectpicker form-control cl_cb_contas" id="cb_contas_responsaveis_contas"
@@ -233,14 +237,14 @@
                                                 class="btn btn-rounded btn-space"
                                                 title="Selecionar todas as contas"
                                                 style="width: 50px;">
-                                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                                            <i class="fa-regular fa-square-check icon-color-e"></i>
                                         </button>
                                         <button type='button' id="btn_desmarcar_contas_vincula_resp"
                                                 name="btn_desmarcar_contas_vincula_resp"
                                                 class="btn btn-rounded btn-space"
                                                 title="Limpar seleção"
                                                 style="width: 50px;">
-                                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                                            <i class="fa-regular fa-square icon-color-e"></i>
                                         </button>
 
                                     </label>

@@ -6,7 +6,7 @@
 .formulario-principal {
     padding-left: 1rem;
     padding-right: 0;
-    color:#ef7814 !important;
+    color:var(--cor_empresa)!important;
 }
 
 @media (max-width: 550px) {
@@ -32,5 +32,5 @@
 }
 
 .numero-laranja {
-    color: #ef7814;
+    color: var(--cor_empresa)!important;
 }

@@ -27,6 +27,9 @@ from proj_portal_operacional.settings import BASE_DIR
 
 class Form_Gerar_Pag_2Art_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
         lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario_sessao,
@@ -34,7 +37,8 @@ class Form_Gerar_Pag_2Art_View(View):
                                                cod_projeto__data_inativado__isnull=True,
                                                status_proj_usu='S')
         contexto = {
-            'lista_projetos': lista_projetos
+            'lista_projetos': lista_projetos,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_fat_2art_terc_app/form_gerar_pag_2art_terc.html', contexto)
 
@@ -561,6 +565,9 @@ class Comp_Select_Tipo_Ocorrencias_Lanc_2Art_Terc_View(View):
 
 class Form_Cad_Placa_2Art_Terc_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
         lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario_sessao,
@@ -571,7 +578,8 @@ class Form_Cad_Placa_2Art_Terc_View(View):
 
         contexto = {
             'lista_projetos': lista_projetos,
-            'lista_beneficiarios_terceiro': lista_beneficiarios_terceiro
+            'lista_beneficiarios_terceiro': lista_beneficiarios_terceiro,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_fat_2art_terc_app/form_cad_placas_fat_2art_terc.html', contexto)
 
@@ -877,13 +885,17 @@ class Comp_Beneficiarios_Terc_2Art_View(View):
 class Form_Cad_Fretes_Terc_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
+        id_usu_session = request.session['cod_usuario_logado']
         usuario_portal = Usuario.objects.filter(cod_usu=id_usu_session).first()
         cad_projetos = Proj_Usu.objects.filter(cod_usu=usuario_portal,
                                                cod_projeto__cod_atividade__desc2_atividade='Terceiro',
                                                status_proj_usu='S')
 
         context = {
-            'cad_projetos': cad_projetos
+            'cad_projetos': cad_projetos,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_fat_2art_terc_app/form_cad_frete_spot.html', context)
 
@@ -1149,10 +1161,14 @@ class Form_Replica_Cad_Frete_2Art_Terc_View(View):
 
 class Form_Importa_Arquivo_Fat_Terc_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cad_projetos = Projeto.objects.filter(cod_atividade__desc2_atividade='Terceiro').order_by('cod_projeto')
 
         context = {
-            "cad_projetos": cad_projetos
+            "cad_projetos": cad_projetos,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request,
                       'plan_controle_fat_2art_terc_app/form_importa_arquivo_faturamento_terceiros.html',
@@ -1385,13 +1401,17 @@ class ImportaArquivosFatTer():
 class Form_Relatorio_Pagamentos_Terc_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
+        id_usu_session = request.session['cod_usuario_logado']
         usuario_portal = Usuario.objects.filter(cod_usu=id_usu_session).first()
         cad_projetos = Proj_Usu.objects.filter(cod_usu=usuario_portal,
                                                cod_projeto__cod_atividade__desc2_atividade='Terceiro',
                                                status_proj_usu='S')
 
         context = {
-            "cad_projetos": cad_projetos
+            "cad_projetos": cad_projetos,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_fat_2art_terc_app/form_relatorio_pagamento_terceiros.html', context)
 

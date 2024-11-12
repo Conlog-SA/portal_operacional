@@ -9,7 +9,7 @@
                 aria-expanded="false" aria-controls="collapse_{{ctr.handle_fn_doc}}" style="font-size:12px;">
 
                 <div style="font-size:12px; width:80%">
-                    <div class="row" style="background-color:#f46424;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;padding-top: 0.5rem;padding-bottom: 0.5rem;">
+                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;padding-top: 0.5rem;padding-bottom: 0.5rem;">
                     <div class="col-md-3">
                         <i class="fa-solid fa-receipt" style="color: #000000;"></i>
                         <strong>Contrato:</strong> {{ctr.num_contrato}}
@@ -49,7 +49,7 @@
 
                     <div class="row" style="margin-top: 0.5rem;">
                         <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
                             <strong>CONTA EM CURTO PRAZO</strong>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_cp}}
@@ -60,7 +60,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
                             <strong>CONTA EM LONGO PRAZO</strong>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_lp}}
@@ -68,14 +68,14 @@
                         </div>
                     </div>
 
-                    <div class="row" style="background-color:#f46424;color:#FFFFFF;margin-top: 0.5rem;">
+                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;margin-top: 0.5rem;">
                         <div class="col-md-12" style="margin-top: 0.5rem;">
                             <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FFFFFF;"></i>
                             <strong>INFO TOTAIS CONTA</strong>
                             <hr>
                         </div>
                     </div>
-                    <div class="row" style="background-color:#f46424; color:#FFFFFF;" >
+                    <div class="row" style="background-color: var(--cor_empresa) !important; color:#FFFFFF;" >
                         <div class="col-md-3">
                             <strong>Valor Total Líquido:</strong> {{ctr.val_liquido}}
                         </div>
@@ -87,7 +87,7 @@
                         </div>
                     </div>
 
-                    <div class="row" style="background-color:#f46424;color:#FFFFFF;padding-bottom: 0.5rem;border-radius: 0rem 0rem 0.3rem 0.3rem;">
+                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;padding-bottom: 0.5rem;border-radius: 0rem 0rem 0.3rem 0.3rem;">
                         <div class="col-md-3">
                             <strong>Próxima parcela:</strong>{{ctr.proxima_parc_pendente}}
                         </div>
@@ -210,8 +210,7 @@
                             <td>
                                 {% if parc.tipo_prazo == 'RN' %}
                                     &nbsp;&nbsp;
-                                    <i class="fa-solid fa-handshake fa-1xl" title="{{parc.obs_parcela}}"
-                                                style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-handshake fa-1xl icon-color-e" title="{{parc.obs_parcela}}"></i>
                                     &nbsp;&nbsp;&nbsp;
 
                                 {% endif %}
@@ -221,7 +220,7 @@
                                                 id='btn_liquidar_parcela_{{parc.handle_parc}}'
                                                 class='btn btn-rounded btn-space'
                                                 value='{{parc.handle_parc}}'>
-                                            <i class="fa-solid fa-receipt" style="color: #f46424;"
+                                            <i class="fa-solid fa-receipt icon-color-e""
                                                title="Liquidar"></i>
                                         </button>
                                     {% endif %}
@@ -230,7 +229,7 @@
                                                 id='btn_liquidar_parcela_{{parc.handle_parc}}'
                                                 class='btn btn-rounded btn-space'
                                                 value='{{parc.handle_parc}}' disabled>
-                                            <i class="fa-solid fa-receipt" style="color: #f46424;"
+                                            <i class="fa-solid fa-receipt icon-color-e"
                                                title="Liquidar"></i>
                                         </button>
                                     {% endif %}

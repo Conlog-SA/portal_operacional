@@ -178,12 +178,13 @@ function povoa_tabela_rel_filial_comprador(){
             });
             $("#tabCadRelFilialComprador").DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 5,
+                "pageLength": 7,
                 "destroy": true,
                 "fixedHeader": {
                     header: true,
                     footer: false
                 },
+                "paging": true,
                 "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [

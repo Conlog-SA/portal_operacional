@@ -1,5 +1,6 @@
 from django.http import JsonResponse, Http404
 from django.shortcuts import render
+from datetime import datetime
 
 # Create your views here.
 from django.views import View
@@ -11,15 +12,26 @@ from apps.suprimentos_rel_filial_comprador_app.models import Relacao_Filial_Comp
 
 class Form_Cad_Rel_Filial_Comprador_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_filiais = Filial.objects.all()
         lista_usuarios = Usuario.objects.filter(sala='SPR', data_desativacao__isnull=True)
         lista_filial_comprador = Relacao_Filial_Comprador.objects.all()
+
+        for reg in lista_filial_comprador:
+            reg.data_ini = reg.data_ini.strftime('%d-%m-%Y')
+            if reg.data_fim != None:
+                reg.data_fim = reg.data_fim.strftime('%d-%m-%Y')
+
         context = {
             'lista_filiais': lista_filiais,
             'lista_usuarios': lista_usuarios,
             'lista_filial_comprador': lista_filial_comprador,
             'desc_menu_principal': 'Cadastro Filial x Comprador',
-            'id_menu_pai': 45
+            'id_menu_pai': 45,
+            'obj_usuario_logado': obj_usuario_logado
+
         }
         return render(request, 'suprimentos_rel_filial_comprador_app/form_cad_rel_filial_comprador.html', context)
 
@@ -80,6 +92,7 @@ class Table_Filial_Compradores_View(View):
         lista_filial_comprador = list(Relacao_Filial_Comprador.objects.all()
                                       .values('cod_rel_filial_comprador', 'cod_filial__desc_filial',
                                               'cod_usu__nome_usu', 'data_ini', 'data_fim'))
+
         data = dict()
         data = {
             'lista_filial_comprador': lista_filial_comprador

@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Empresa | Portal Operacional
+{% endblock %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static './css/home_app/index_empresa.css' %}"/>
+
+
+{% endblock %}
+
+{% block conteudo %}
+<div class="containerApp">
+
+    <div class="d-flex justify-content-between align-items-between w-100">
+    <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+        <div class="d-flex flex-column w-100 align-items-end" style="margin-left: 5rem;">
+            <form id="frm_selecione_empresa_conlog" name="frm_selecione_empresa_conlog"  method="POST"
+            class="d-flex flex-column align-items-center justify-content-between" action="{% url 'index' %}">
+                {% csrf_token %}
+                <button type='submit' name='btn_empresa' value="12"
+                    id='btn_empresa' onmouseover="troca_img_para_branca()" onmouseout="troca_img_para_preta()"
+                    class='btn btn-rounded btn-space btn_conlog' title='Acessar como usuario CONLOG'>
+                    <img class="img-logo-conlog" src="./static/img/logo_conlog_preta.png" width="400px"  />
+                    <img src="./static/img/tem-valor.png" width="400px"/>
+                </button>
+            </form>
+
+        </div>
+
+        <div class="d-flex flex-column w-100 align-items-start" style="margin-left: 0.25rem;">
+            <hr>
+        </div>
+
+        <div class="d-flex flex-column w-100 align-items-start" style="margin-right: 0.25rem;">
+            <form id="frm_selecione_empresa_deep" name="frm_selecione_empresa_deep"  method="POST"
+            class="d-flex flex-column align-items-center justify-content-between" action="{% url 'index' %}">
+                {% csrf_token %}
+                <button type='submit' name='btn_empresa' value="17"
+                    id='btn_empresa'
+                    class='btn btn-rounded btn-space btn_deep' title='Acessar como usuario DEEP'>
+                    <img src="./static/img/logo-deep.png" width="400px"/>
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+</div>
+
+<script>
+    function troca_img_para_branca(){
+        $(".img-logo-conlog").prop('src', './static/img/Logo_Branca.png' );
+    }
+
+    function troca_img_para_preta(){
+        $(".img-logo-conlog").prop('src', './static/img/logo_conlog_preta.png' );
+    }
+</script>
+
+{% endblock %}
+

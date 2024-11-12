@@ -13,6 +13,22 @@ from apps.usuario_app.views import Usuario_View
 
 
 #Class Index
+
+class Pagina_Empresa_View(View):
+    def get(self, request):
+        context = {
+            'cod_empresa_selecionada': '0'
+        }
+        return render(request, 'home_app/frm_seleciona_empresa.html', context)
+
+    def post(self, request):
+        cod_empresa_frm = request.POST['btn_empresa']
+
+        context = {
+            'cod_empresa_selecionada': cod_empresa_frm
+        }
+        return render(request, 'home_app/index.html', context)
+
 class Index_View(View):
     def get(self, request):
         #gera_datas_previstas_requisicoes_frota()
@@ -24,11 +40,13 @@ class Index_View(View):
             'msg': msg_recebida
         }
         return render(request, 'home_app/index.html', context)
+        #return render(request, 'home_app/frm_seleciona_empresa.html', context)
 
 
     def post(self, request):
         usu_form = request.POST['txt_usu']
         senha_form = request.POST['txt_pwd']
+        hd_cod_empresa_frm = request.POST['hd_cod_empresa']
         '''Valida dados do usuario no AD'''
         obj_con_ad = Conexao_AD().identificacao_ad(usu_form, senha_form)
         validacao_usuario_ad = obj_con_ad[0]
@@ -50,6 +68,7 @@ class Index_View(View):
 
             if usu_existe == True and obj_usuario.status_usu == 'A':
                 request.session['cod_usuario_logado'] = obj_usuario.cod_usu
+                request.session['cod_empresa_usuario_logado'] = obj_usuario.cod_filial.cod_empresa.cod_empresa
                 return redirect('acessa_menu')
             elif usu_existe == True and obj_usuario.status_usu == 'I':
                 msg_form_index = 'Acesso do usuário bloqueado! Verifique com a equipe da área de TI'
@@ -67,7 +86,8 @@ class Index_View(View):
             msg_form_index = msg_erro_validao_ad
             dados = {
                 'cod_status_login': 1,
-                'msg_erro': msg_form_index
+                'msg_erro': msg_form_index,
+                'cod_empresa_selecionada': hd_cod_empresa_frm
             }
             pag_redirecionamento = 'home_app/index.html'
 

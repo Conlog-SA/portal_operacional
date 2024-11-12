@@ -11,10 +11,14 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-clipboard fa-2xl" style="color: #f46424;"></i>
+            <i class="fa-solid fa-clipboard fa-2xl" style="color: var(--cor_empresa)!important;"></i>
             <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
     </div>
 
 
@@ -35,14 +39,14 @@
                                 class="btn btn-rounded btn-space"
                                 title="Selecionar todos os responsáveis"
                                 style="width: 50px;">
-                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                            <i class="fa-regular fa-square-check"></i>
                         </button>
                         <button type='button' id="btn_desmarcar_resp_contas"
                                 name="btn_desmarcar_resp_contas"
                                 class="btn btn-rounded btn-space"
                                 title="Limpar seleção"
                                 style="width: 50px;">
-                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                            <i class="fa-regular fa-square"></i>
                         </button>
                     </label>
                     <select class="selectpicker form-control cl_cb_contas" id="cb_responsaveis_contas"
@@ -65,7 +69,7 @@
                     {% if obj_usuario_sessao.corporativo == 'S' %}
                     <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                             name="btn_abrir_modal_atualiza_contratos_benner"
-                            class="btn btn-primary btn-rounded botaoPrincipal" >
+                            class="btn btn-primary btn-rounded botaoPrincipal icon-colorb" >
                         <i class="fa-solid fa-repeat"></i>
                         Atualiza contratos Benner
                     </button>
@@ -73,7 +77,7 @@
                     {% if obj_usuario_sessao.corporativo == 'N' %}
                     <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                             name="btn_abrir_modal_atualiza_contratos_benner"
-                            class="btn btn-primary btn-rounded botaoPrincipal" disabled>
+                            class="btn btn-primary btn-rounded botaoPrincipal icon-colorb" disabled>
                         <i class="fa-solid fa-repeat"></i>
                         Atualiza contratos Benner
                     </button>
@@ -82,17 +86,17 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;margin-left: 0.25rem;margin-top: 2.5rem;">
                     {% if obj_usuario_sessao.corporativo == 'S' %}
                     <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                            class="btn btn-primary btn-rounded botaoPrincipal" value="{{ qtd_arquivos_postados }}"
+                            class="btn btn-primary btn-rounded  botaoPrincipal icon-colorb" value="{{ qtd_arquivos_postados }}"
                             title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
-                        <i class="fa-solid fa-file-import"></i>
+                        <i class="fa-solid fa-file-import icon-colorb"></i>
                         Importar anexos
                     </button>
                     {% endif %}
                     {% if obj_usuario_sessao.corporativo == 'N' %}
                     <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                            class="btn btn-primary btn-rounded botaoPrincipal" value="{{ qtd_arquivos_postados }}"
+                            class="btn btn-primary btn-rounded button-i" style="color: #FFFFFF !important"  value="{{ qtd_arquivos_postados }}"
                             title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
-                        <i class="fa-solid fa-file-import"></i>
+                        <i class="fa-solid fa-file-import icon-colorb" ></i>
                         Importar anexos
                     </button>
                     {% endif %}
@@ -101,7 +105,7 @@
 
             <div class="d-flex flex-column w-100 cl_div_rd_modelo_conta">
                 <label for="cb_contas" style="font-size: 1.5rem;">
-                    <legend style="font-size: 1.05rem;">Selecione o modelo</legend>
+                    <legend style="font-size: 1.05rem;">Selecione o modelo:</legend>
                     <div class="form-check-inline">
                         <label class="form-check-label">
                             <input type="radio" name="rd_modelo_conta" class="form-check-input"
@@ -125,10 +129,13 @@
                             Modelo 3
                         </label>
                     </div>
+                    <div>
+                        <span style="padding-right: 85rem;font-size:1.2rem">Conta</span>
                     <select class="selectpicker form-control cl_cb_contas" id="cb_contas"
                         name="cb_contas"
                         style="color: #999999; font-size: 20px; height: 54.65px"
                         data-live-search="true" title="Selecione a conta">
+
                     {% for conta in lista_contas %}
                         <option value="{{conta.cod_conta}}">
                             {{conta.cod_conta}} - {{conta.desc_conta}} - Modelo {{conta.tipo_modelo}} -
@@ -136,23 +143,17 @@
                             Cód. red. LP - {{ conta.cod_red_conta_contabil_lp}}
                         </option>
                     {% endfor %}
+                        </div>
                 </select>
                 </label>
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
-                <div class="d-flex justify-content-end w-100">
-                    Conta usada na(s) seguinte(s) empresa(s):
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
-                <div class="d-flex justify-content-end w-100" id="div_img_empresas_da_conta">
-
-
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div id="div_img_empresas_da_conta" class="d-flex justify-content-end w-100" style="margin-top: 0.25rem;">
 
                 </div>
             </div>
+
 
             <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_contas">
                 <div class="loader" id="loader_frm_cad_contas">
@@ -177,32 +178,32 @@
                         <button class="nav-link active" id="a_tab_dados_conta" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_dados_conta" type="button" role="tab"
                                 aria-controls="div_tab_dados_conta" aria-selected="true">
-                            <i class="fa-solid fa-file-invoice-dollar" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-file-invoice-dollar"></i>
                             Dados da conta
                         </button>
                         <button class="nav-link" id="a_tab_contratos" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_contratos" type="button" role="tab"
                                 aria-controls="div_tab_contratos" aria-selected="false">
-                            <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-file-signature"></i>
                             Documentos
                         </button>
                         <button class="nav-link" id="a_tab_responsaveis" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_resonsaveis" type="button" role="tab"
                                 aria-controls="div_tab_resonsaveis" aria-selected="false">
-                            <i class="fa-solid fa-users" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-users"></i>
                             Responsáveis
                         </button>
                         <button class="nav-link" id="a_tab_anexos" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_anexos" type="button" role="tab"
                                 aria-controls="div_tab_anexos" aria-selected="false">
-                            <i class="fa-solid fa-paperclip" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-paperclip"></i>
                             Anexos
                         </button>
                         {% if obj_usuario_sessao.corporativo == 'S' %}
                         <button class="nav-link" id="a_tab_status_comp" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_status_comp" type="button" role="tab"
                                 aria-controls="div_tab_status_comp" aria-selected="false">
-                            <i class="fa-solid fa-signal" style="color: #f46424;"></i>
+                            <i class="fa-solid fa-signal" ></i>
                             Status Composição
                         </button>
                         {% endif %}
@@ -226,7 +227,7 @@
 
 
                             <div id="div_titulo_dados_curto_prazo" class="d-flex justify-content-between align-items-between mt-3 w-100">
-                                <i class="fa-solid fa-arrow-right-to-bracket" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-arrow-right-to-bracket" ></i>
                                 DADOS CONTA CONTÁBIL
                             </div>
                             <div id="div_hr_curto_prazo" class="d-flex justify-content-between align-items-between w-100">
@@ -336,16 +337,16 @@
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                         <button type='button' id="btn_cadastra_nova_conta"
                                                 name="btn_cadastra_nova_conta"
-                                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                                class="mr-2 btn btn-primary btn-rounded botaoPrincipal icon-colorb"
                                                 value="0">
-                                            <i class="fa-solid fa-plus"></i>
+                                            <i class="fa-solid fa-plus "></i>
                                             <span>Criar conta</span>
                                         </button>
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
                                         <button type='button' id="btn_cadastra_nova_conta"
                                                 name="btn_cadastra_nova_conta"
-                                                class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                                class="mr-2 btn btn-primary btn-rounded botaoPrincipal icon-colorb"
                                                 value="0" disabled>
                                             <i class="fa-solid fa-plus"></i>
                                             <span>Criar conta</span>
@@ -587,7 +588,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between align-items-between w-100">
-                            <i class="fa-solid fa-print" style="color: #f46424;"></i>Visualizador Documento Anexado
+                            <i class="fa-solid fa-print"></i>Visualizador Documento Anexado
                         </div>
 
                         <div class="d-flex justify-content-between align-items-between w-100">

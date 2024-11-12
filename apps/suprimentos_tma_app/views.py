@@ -9,18 +9,24 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views import View
 
+
 from apps.benner_app.views import ConexaoBancoBenner
 from apps.calendario_app.models import Calendario_Dias
 from apps.estrut_org_app.models import Filial, Empresa
+from apps.usuario_app.models import Usuario
 from apps.suprimentos_rel_filial_comprador_app.models import Relacao_Filial_Comprador
 from apps.suprimentos_tma_app.models import Requisicao_Atendida_TMA
 
 
 class Form_Requisicao_Gera_Tma_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         context = {
             'desc_menu_principal': 'Gera TMA',
-            'id_menu_pai': 45
+            'id_menu_pai': 45,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'suprimentos_tma_app/form_requisicoes_gera_tma.html', context)
 

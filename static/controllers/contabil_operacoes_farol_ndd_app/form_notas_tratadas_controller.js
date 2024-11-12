@@ -378,12 +378,12 @@ function povoa_tab_notas_pesq_proc_nfe(tipo_doc, num_nota, data_ini, data_fim, c
 
             var_lista_notas = [];
             for (var i = 0; i < data.lista_notas_validadas.length; i++) {
-                var var_img = "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
+                var var_img = "<i class='fa-solid fa-caret-right'></i>";
                 var var_button = `
                     <button type='button' id='btn_abre_modal_nova_justificativa_nota_tratada_${i}'
                     name='btn_abre_modal_nova_justificativa_nota_tratada' value='${i}'
                     class='btn btn-rounded btn-space'>
-                    <i class="fa-solid fa-paperclip" style="color: #f46424;"></i>
+                    <i class="fa-solid fa-paperclip"></i>
                     </button>
                 `;
                 if (data.lista_notas_validadas[i].tratada == 'S'){
@@ -533,11 +533,11 @@ function povoa_tab_excecoes_operacoes(){
                     <button type='button' id='btn_abre_model_excluir_excecao_${excecao.cod_excecao}'
                     name='btn_abre_model_excluir_excecao' value='${excecao.cod_excecao}'
                     class='btn btn-rounded btn-space'>
-                    <i class="fa-solid fa-trash" style="color: #f46424;"></i>
+                    <i class="fa-solid fa-trash"></i>
                     </button>
                 `;
                 var var_reg = [
-                    "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>",
+                    "<i class='fa-solid fa-caret-right'></i>",
                     excecao.desc_operacao,
                     var_button
                 ];

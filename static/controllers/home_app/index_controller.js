@@ -31,10 +31,21 @@ $.ajaxSetup({
 $(document).ready(function(){
     let let_status_login = $("#hd_indica_status_login").val();
     let let_msg_return = $("#hd_msg_return").val();
+    let let_cod_empresa = $("#hd_cod_empresa").val();
+
+    if( let_cod_empresa == '12'){
+        $('body').css('background-image', "url('../../static/img/background.jpg')");
+    } else {
+        $('body').css('background-image', "url('../../static/img/background-deep.jpg')");
+    }
+
+
     let let_span = $("<span/>");
     let_span.attr({
         class:"fa fa-user-check"
     });
+
+
 
     if (let_status_login == 1){
         $.gritter.add({
@@ -50,3 +61,4 @@ $(document).ready(function(){
     }
 
 });
+

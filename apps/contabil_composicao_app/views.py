@@ -37,6 +37,7 @@ class Form_Imp_Cad_Conta_View(View):
     def get(self, request):
         # lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
         cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=cod_usuario_sessao)
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_contas = Conta.objects.filter(tipo_modelo=1)
@@ -80,7 +81,8 @@ class Form_Imp_Cad_Conta_View(View):
             'desc_menu': 'Cadastro de contas composição',
             'qtd_arquivos_postados': qtd_arquivos_postados,
             'obj_usuario_sessao': obj_usuario_sessao,
-            'lista_usuarios_contabil': lista_usuarios_contabil
+            'lista_usuarios_contabil': lista_usuarios_contabil,
+            'obj_usuario_logado': obj_usuario_logado
 
         }
         return render(request, 'contabil_composicao_app/form_cad_contas.html', contexto)
@@ -430,9 +432,6 @@ class Form_Imp_Contratos_Conta_View(View):
 
 class Form_Cad_Conta_View(View):
     def get(self, request):
-        cod_conta_form = request.GET['cod_conta']
-        cod_modelo_conta_selecionado = request.GET['cod_modelo_conta_selecionado']
-
         cod_usu_session = request.session['cod_usuario_logado']
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
 
@@ -1146,6 +1145,9 @@ class Form_Cad_Parcelas_Contrato_View(View):
 
 class Form_Conciliacao_Comp_Benner_Resumo_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
@@ -1161,12 +1163,16 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
             'lista_contas_modelo_1': lista_contas_modelo_1,
             'desc_menu': 'Conciliação Composição x Benner Resumido',
             'lista_usuarios_contabil': lista_usuarios_contabil,
-            'lista_pacotes': lista_pacotes
+            'lista_pacotes': lista_pacotes,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner.html', contexto)
 
 class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
@@ -1181,7 +1187,8 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             'lista_contas_modelo_1': lista_contas_modelo_1,
             'desc_menu': 'Conciliação Composição x Benner Detalhado',
             'lista_usuarios_contabil': lista_usuarios_contabil,
-            'lista_pacotes': lista_pacotes
+            'lista_pacotes': lista_pacotes,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
@@ -2387,9 +2394,13 @@ class Tabela_Pac_Contas_Modelo_1_View(View):
 
 class Form_Imp_Arq_Contas_M1_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_contas = Conta.objects.filter(tipo_modelo=1, status_comp= 'A')
         context = {
-            'lista_contas': lista_contas
+            'lista_contas': lista_contas,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_importa_arquivo_modelo_1.html', context)
 
@@ -3580,19 +3591,26 @@ class Tabela_Doc_Contas_Modelo_1_View(View):
 
 class Form_Composicao_Auditoria_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         # lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
         '''lista_contas_modelo_1 = (Auditoria_Status_Composicao_Competencia.objects.filter(tipo_prazo='m1')
                                  .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp'))'''
         contexto = {
             #'lista_contas_modelo_1': lista_contas_modelo_1,
-            'desc_menu': 'Composição Auditoria'
+            'desc_menu': 'Composição Auditoria',
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_composicao_auditoria.html',
                       contexto)
 
 class Form_Vincula_Resp_Contas_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
@@ -3604,7 +3622,8 @@ class Form_Vincula_Resp_Contas_View(View):
 
         contexto = {
             'lista_pacotes': lista_pacotes,
-            'lista_usuarios_contabil': lista_usuarios_contabil
+            'lista_usuarios_contabil': lista_usuarios_contabil,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
 
@@ -3725,6 +3744,9 @@ class Importa_Anexos_Contas_View(View):
 
 class Form_Doc_Pac_Modelo_1_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         cod_usu_session = request.session['cod_usuario_logado']
         obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
 
@@ -3732,7 +3754,8 @@ class Form_Doc_Pac_Modelo_1_View(View):
         lista_filiais = Filial.objects.filter(cod_empresa=obj_usu.cod_filial.cod_empresa, cod_reduzido__isnull=False)
         contexto = {
             'dic_pacotes': dic_pacotes,
-            'lista_filiais': lista_filiais
+            'lista_filiais': lista_filiais,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_importa_arquivo_por_pac_modelo_1.html', contexto)
 

@@ -15,6 +15,7 @@ from apps.conecta_senior_app.views import Conexao_Senior_BD
 class Form_Rel_Prov_Sernior_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
         obj_usuario = Usuario.objects.get(pk=id_usu_session)
         # lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario, status_proj_usu_folha_pag='S')
@@ -25,7 +26,8 @@ class Form_Rel_Prov_Sernior_View(View):
             'lista_periodos_liberados': lista_periodos_liberados,
             'desc_menu_principal': 'Rel. Provisões Folha',
             'lista_projetos': lista_projetos,
-            'id_menu_pai': 58
+            'id_menu_pai': 58,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_provisoes_folha_app/form_rel_provisoes_senior.html', context)
 

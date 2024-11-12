@@ -50,3 +50,7 @@
 .modal-content{
     background-color: var(--cor_branco) !important;
 }
+
+.iconeMenu {
+    color: var(--cor_empresa) !important;
+}

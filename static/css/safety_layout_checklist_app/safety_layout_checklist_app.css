@@ -12,9 +12,9 @@ label[for="liberado_filiais"] {
     margin-top: 10px;
   }
 
-.btn-cadastro{
-    background-color: #ef7814 !important;
-    border-color: #ef7814 !important;
+button .btn-cadastro{
+    background-color: var(--cor_empresa)!important;
+    border-color: var(--cor_empresa)!important;
 }
 
 label{
@@ -36,7 +36,7 @@ label{
     padding:5px 5px 5px 15px;
     border-color:white;
     margin-top:25px;
-    background-color:rgb(242,101,34);
+    background-color:var(--cor_empresa)!important;;
     font-size:1.2rem;
 }
 

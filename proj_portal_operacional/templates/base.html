@@ -22,13 +22,19 @@
 
 
     <!-- Importação dos arquivos CSS customizados utilizados -->
-    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    {% if cod_empresa_selecionada == '12' or cod_empresa_selecionada == 12 %}
+        <link rel="stylesheet" href="{% static 'css/cores_conlog.css' %}" />
+    {% else %}
+        <link rel="stylesheet" href="{% static 'css/cores_deep.css' %}" />
+    {% endif %}
+
     <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
     <link rel="stylesheet" href="{% static 'css/reset.css' %}" />
     <link rel="stylesheet" href="{% static 'css/normalize.css' %}"/>
     <!-- Icone utilizado -->
     {% block icon %}
-    <link rel="icon" href="{% static 'libs/fontawesome_6_4/svgs/regular/user.svg' %}" />
+    <link rel="icon" href="{% static 'libs/fontawesome_6_4/svgs/regular/building.svg' %}" />
 
     {% endblock %}
     <!--

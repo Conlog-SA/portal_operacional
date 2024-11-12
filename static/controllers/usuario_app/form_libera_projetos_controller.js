@@ -258,7 +258,7 @@ function atualiza_tab_proj_usu(cod_usu){
                 let let_btn_bloqueia_desbloqueia_proj_usu = '';
                 if ( pro_usu.status_proj_usu == 'S') {
                     let_img_status_proj_usu = `
-                        <i class="fa-solid fa-circle-check" title="Ativo" style="color: #f46424;"></i>
+                        <i class="fa-solid fa-circle-check" title="Ativo" "></i>
                     `;
                     let_btn_bloqueia_desbloqueia_proj_usu = `
                         <button type='button'
@@ -302,7 +302,7 @@ function atualiza_tab_proj_usu(cod_usu){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 7,
+                "pageLength": 9,
                 "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [

@@ -19,6 +19,9 @@ from apps.suprimentos_evolucao_precos_app.models import Compra_Auditada, Justifi
 
 class Form_Gera_Evolucao_Precos_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
             .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
@@ -31,7 +34,8 @@ class Form_Gera_Evolucao_Precos_View(View):
             'lista_familias': lista_familias,
             'lista_filiais': lista_filiais,
             'desc_menu_principal': 'Evolução de preços',
-            'id_menu_pai': 45
+            'id_menu_pai': 45,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'suprimentos_evolucao_precos_app/form_gera_evolucao_precos.html',context)
 
@@ -203,6 +207,9 @@ class Comp_Itens_Evolucao_Precos_View(View):
 
 class Dash_Evolucao_Precos_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         '''A data inicial são os últimos 5 dias da data atual'''
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
@@ -218,7 +225,8 @@ class Dash_Evolucao_Precos_View(View):
             'desc_menu_principal': 'Dashboard Evolução de preços',
             'data_ini': data_ini,
             'data_fim': data_fim,
-            'id_menu_pai': 45
+            'id_menu_pai': 45,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'suprimentos_evolucao_precos_app/dash_evolucao_precos.html',context)
 

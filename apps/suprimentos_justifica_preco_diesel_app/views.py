@@ -12,9 +12,13 @@ from apps.suprimentos_justifica_preco_diesel_app.models import Justificativa_Pre
 
 class Form_Gera_Compras_Diesel_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         context = {
-            'lista_filiais': lista_filiais
+            'lista_filiais': lista_filiais,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'suprimentos_justifica_preco_diesel_app/form_justifica_preco_diesel.html', context)
 

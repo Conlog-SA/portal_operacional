@@ -48,6 +48,10 @@
     font-size: 0.8rem !important;
     border-color: var(--cor_empresa) !important;
     background-color: var(--cor_empresa) !important;
+
+    i{
+        color: #fff !important;
+    }
 }
 
 .botaoPrincipal:hover{
@@ -203,7 +207,14 @@ table{
     display: flex;
     justify-content: start!important;
     align-items: start!important;
+    color: white !important;
 }
+
+.dt-info {
+    color: white !important;
+}
+
+
 
 .dt-buttons{
     display: flex;
@@ -225,12 +236,46 @@ table{
 
 
 .nav-link {
-    color: #f46424 !important;
+    color: var(--cor_empresa) !important;
     --bs-nav-link-hover-color: #ffffff !important;
 }
 
 
 .form-check-input:checked {
-    background-color: #f46424 !important;
-    border-color: #f46424 !important;
+    background-color: var(--cor_empresa) !important;
+    border-color: var(--cor_empresa) !important;
+}
+
+
+i{
+    color: var(--cor_empresa)!important;
+}
+
+
+button i {
+    color: #FFFFFF !important;
+}
+
+.accordion-button i {
+    color: var(--cor_empresa) !important;
+}
+
+.nav-link i{
+    color: var(--cor_empresa) !important;
+}
+
+.btn-space i{
+    color: var(--cor_empresa) !important;
+}
+/*
+.bg_header_modais {
+    background-color: var(--cor_empresa) !important;
+}
+*/
+
+.modal-header{
+    background-color: var(--cor_empresa) !important;
+    i{
+        color: #FFFFFF !important;
+    }
 }

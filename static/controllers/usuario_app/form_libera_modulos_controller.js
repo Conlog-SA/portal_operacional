@@ -50,6 +50,37 @@ $(document).on('change','input', function(){
             let_novo_status_menu = 'D';
         }
 
+         $.ajax({
+            type: "POST",
+            url: '/usuario_app/destativa_ativa_item_usuario_menu',
+            data: {
+                'cod_menu'       :   let_cod_menu,
+                'cod_usu'        :   let_cod_usu,
+                'status'         :   let_novo_status_menu
+            },
+            dataType: 'json',
+            success: function (data) {
+                let let_cod_usu = $("#cb_usuarios").val();
+                retorna_menu_sub_menu(let_cod_usu);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            },
+            error: function (request, status, error) {
+                  $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                  });
+            }
+        });
+
 
     }
 
@@ -150,7 +181,7 @@ function retorna_menu_sub_menu(cod_usuario_param){
                     <h2 class="accordion-header d-flex justify-content-between align-items-center" id="heading_${menu.cod_menu}">
                         <button class="accordion-button collapsed d-flex justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#collapse_${menu.cod_menu}" aria-expanded="false" aria-controls="collapse_${menu.cod_menu}">
                             <div class="d-flex justify-content-center align-items-center">
-                                <i class="iconeMenu ${menu.nome_icone}" alt="${menu.desc_menu}" style="color: #f46424;"></i>
+                                <i class="iconeMenu ${menu.nome_icone}" alt="${menu.desc_menu}"></i>
                                 <p style="margin:0; padding:0;">${menu.desc_menu}</p>
                             </div>
                             </button>
@@ -187,7 +218,7 @@ function retorna_menu_sub_menu(cod_usuario_param){
                         let_html_pagina += `
                             <div class="w-100 mb-3 d-flex justify-content-between align-items-center">
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <i class="${sub_menu.nome_icone}" alt="${sub_menu.desc_sub_menu}" style="color: #f46424; margin-right:1rem; margin-left:2rem;"></i>
+                                    <i class="${sub_menu.nome_icone}" alt="${sub_menu.desc_sub_menu}" style="margin-right:1rem; margin-left:2rem;"></i>
                                     <p style="margin:0; padding:0;">${sub_menu.desc_sub_menu}</p>       
                                 </div>
                                 `

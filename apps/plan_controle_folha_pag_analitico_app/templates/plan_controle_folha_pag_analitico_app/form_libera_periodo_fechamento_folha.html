@@ -13,7 +13,11 @@
             <i class="fa-solid fa-calendar-check fa-2xl"style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Confirma Período Fechamento Folha</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
     </div>
 
     <div class="containerApp">
@@ -26,7 +30,21 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.5rem;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.5rem;">
+                    &nbsp;&nbsp;&nbsp;&nbsp;
+                </div>
                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                     <label for="tf_ano_pesq_periodo_libera_folha">Informe o Ano</label>
                     <input type="number" min="1900" max="2099" class="form-control" name="tf_ano_pesq_periodo_libera_folha"
@@ -42,13 +60,7 @@
                     </button>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.5rem;">
-                    &nbsp;&nbsp;&nbsp;&nbsp;
-                </div>
             </div>
 
 

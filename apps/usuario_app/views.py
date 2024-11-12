@@ -12,11 +12,15 @@ from apps.usuario_app.models import Usuario, Usu_Menu, Proj_Usu
 
 class Form_Cad_Usu_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_usu = Usuario.objects.all()
         lista_filiais = Filial.objects.filter(ativo=1)
         contexto = {
             'lista_usu': lista_usu,
-            'lista_filiais': lista_filiais
+            'lista_filiais': lista_filiais,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'usuario_app/form_cad_usuario.html', contexto)
 
@@ -94,9 +98,12 @@ class Usuario_View(View):
 class Form_Usuario_Menus_View(View):
     def get(self, request):
         lista_usuarios_ativos = Usuario.objects.filter(status_usu='A')
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
         contexto = {
             'lista_usuarios_ativos': lista_usuarios_ativos,
-            'lista_filiais': lista_usuarios_ativos
+            'lista_filiais': lista_usuarios_ativos,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'usuario_app/form_libera_modulos.html', contexto)
 
@@ -222,11 +229,15 @@ class Form_Replica_Acesso_Menus_View(View):
 
 class Form_Libera_Acesso_Projetos_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         lista_usuarios_ativos = Usuario.objects.filter(status_usu='A')
         lista_emp = Empresa.objects.all()
         contexto = {
             'lista_usuarios_ativos': lista_usuarios_ativos,
-            'lista_emp': lista_emp
+            'lista_emp': lista_emp,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'usuario_app/form_libera_projetos.html', contexto)
 

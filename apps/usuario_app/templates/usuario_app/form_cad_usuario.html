@@ -1,18 +1,20 @@
 {% load static %}
 
-{% block link_static_css %} 
-  <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
-  <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+{% block link_static_css %}
   <link rel="stylesheet" href="{% static 'css/usuario_app/cadastro_usuarios.css' %}" />
 {% endblock %}
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-users fa-2xl" alt="Usuários" style="color: #f46424;"></i>
-            <h1 class=" titlePadraoMenu">Cadastro de Usuários</h1>
+            <i class="fa-solid fa-users fa-2xl" alt="Usuários"></i>
+            <h1 class="titlePadraoMenu">Cadastro de Usuários Teste</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
     </div>
     
 	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
@@ -127,8 +129,7 @@
 </div>
 
 
-
-
-<script src="{% static 'controllers/usuario_app/form_cad_usuario_controller.js' %}"
+<script defer src="{% static 'controllers/usuario_app/form_cad_usuario_controller.js' %}"
           type="text/javascript">
 </script>
+

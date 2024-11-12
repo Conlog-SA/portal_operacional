@@ -1575,7 +1575,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_contas_pagar_receber}"
                                 title="Editar Registro">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1585,17 +1585,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_contas_pagar_receber}"
                                 title="Excluir Registro">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1627,7 +1627,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_estoque}"
                                 title="Editar Registro">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1637,17 +1637,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_estoque}"
                                 title="Excluir Registro">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1678,7 +1678,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_folha_pag}"
                                 title="Editar Registro">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1688,17 +1688,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_folha_pag}"
                                 title="Excluir Registro">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1729,7 +1729,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_contas_compensacao}"
                                 title="Editar Registro">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1739,17 +1739,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_contas_compensacao}"
                                 title="Excluir Registro">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1782,7 +1782,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_tributos}"
                                 title="Editar Registro">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1792,17 +1792,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_tributos}"
                                 title="Excluir Registro">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1833,7 +1833,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_edita_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_financ_disp}">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1842,17 +1842,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_excluir_doc_pac_financ_disp_${reg.cod_pac_doc_financ_disp}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_financ_disp}">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1880,7 +1880,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_edita_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_intercompany}">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1889,17 +1889,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_excluir_doc_pac_intercompany_${reg.cod_pac_doc_intercompany}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_intercompany}">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1927,7 +1927,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_edita_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_imobilizado}">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1936,17 +1936,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_excluir_doc_pac_imobilizado_${reg.cod_pac_doc_imobilizado}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_imobilizado}">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -1980,7 +1980,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_edita_doc_pac_consorc_atv_${reg.cod_pac_doc_consorcio_ativo}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_consorcio_ativo}">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -1989,17 +1989,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_${reg.cod_pac_doc_consorcio_ativo}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_consorcio_ativo}">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 
@@ -2027,7 +2027,7 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_edita_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_outros}">
-                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                             </button>
                         `;
 
@@ -2036,17 +2036,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                                 id="btn_abre_modal_excluir_doc_pac_demais_contas_${reg.cod_pac_doc_outros}"
                                 class="btn btn-rounded btn-space"
                                 value="${reg.cod_pac_doc_outros}">
-                                <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                <i class="fa-solid fa-trash-can icon-color-e"></i>
                             </button>
                         `;
 
                         if ( reg.ativo == 'N') {
                             let_btn_editar_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
 
                             let_btn_excluir_arquivo = `
-                                <i class="fa-solid fa-ban" style="color: #f46424;" title="${reg.obs}"></i>
+                                <i class="fa-solid fa-ban icon-color-e" title="${reg.obs}"></i>
                             `;
                         }
 

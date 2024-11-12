@@ -17,6 +17,9 @@ from apps.conecta_senior_app.views import Conexao_Senior_BD
 
 class Form_Libera_Periodo_Fechamento_Folha_View(View):
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         data_hora_atual = datetime.now()
         ano_atual = data_hora_atual.strftime('%Y')
         obj_calendario = Calendario_Dias.objects.filter(ano_competencia_periodo=ano_atual).distinct()\
@@ -42,7 +45,8 @@ class Form_Libera_Periodo_Fechamento_Folha_View(View):
         context = {
             'lista_competencias': lista_competencias,
             'desc_menu_principal' : 'Confirma Período Fechamento Folha',
-            'id_menu_pai' : 58
+            'id_menu_pai' : 58,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_folha_pag_analitico_app/form_libera_periodo_fechamento_folha.html',
                       context)
@@ -113,16 +117,18 @@ class Cad_Liberacao_Comp_Fecha_Folha_View(View):
 class Form_Rel_Folha_Pagamento_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
-        obj_usuario = Usuario.objects.get(pk=id_usu_session)
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
         #lista_projetos = Proj_Usu.objects.filter(cod_usu=obj_usuario, status_proj_usu_folha_pag='S')
         lista_periodos_liberados = Confirma_Periodo_Fechamento_Folha.objects.filter(ativa='S')
-        lista_projetos_pagina = Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usuario, ativo_app_folha_pagamento='S')
+        lista_projetos_pagina = Liberacao_Usuario_Projeto_Benner.objects.filter(cod_usu=obj_usuario_logado, ativo_app_folha_pagamento='S')
 
         context = {
             'lista_periodos_liberados': lista_periodos_liberados,
             'lista_projetos_pagina': lista_projetos_pagina,
             'desc_menu_principal' : 'Rel. Folha Pagamento',
-            'id_menu_pai' : 58
+            'id_menu_pai' : 58,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_folha_pag_analitico_app/form_rel_folha_pagamento.html', context)
 
@@ -196,6 +202,7 @@ class Gera_Rel_Folha_Pagamento_View(View):
 class Form_Libera_Proj_Usu_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
         obj_usuario = Usuario.objects.get(pk=id_usu_session)
 
         lista_usuarios_ativos = (Usuario.objects
@@ -260,7 +267,8 @@ class Form_Libera_Proj_Usu_View(View):
             #'lista_filiais_benner': lista_filiais_benner,
             'lista_projetos_benner': lista_projetos_pagina,
             'desc_menu_principal' : 'Libera Projetos x Usuários',
-            'id_menu_pai' : 58
+            'id_menu_pai' : 58,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'plan_controle_folha_pag_analitico_app/form_libera_projetos_usuario_folha_pag.html', context)
 

@@ -24,6 +24,8 @@ from apps.usuario_app.models import Usuario
 class Form_Seguranca_Check(View):
     @csrf_exempt
     def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
         lista_tipos = {'1': 'Empilhadeiras', '2': 'Relatos', '3': 'GSDPQ',
                        '4': 'Blitz - Carro', '5': 'Blitz - Moto', '6': 'Blitz - Bicicleta',
                        '7': 'Blitz - Outros Meios', '8': 'GSO'}
@@ -49,7 +51,8 @@ class Form_Seguranca_Check(View):
         contexto = {
             'lista_tipos': lista_tipos,
             'lista_filiais' : filiais,
-            'flag_corporativo': flag_corporativo
+            'flag_corporativo': flag_corporativo,
+            'obj_usuario_logado': obj_usuario_logado
         }
         return render(request,'safety_layout_checklist_app/form_cad_layout_checklist.html', contexto)
 

@@ -13,7 +13,11 @@
             <i class="fa-solid fa-arrows-down-to-people fa-2xl" style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Libera Projetos x Usuários</h1>
         </div>
-        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
     </div>
 
     <div class="containerApp">

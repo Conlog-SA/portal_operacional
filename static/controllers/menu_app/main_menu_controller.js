@@ -139,6 +139,48 @@ $(document).on('click', 'a', function(){
                             }
                         }
                     });
+                } else if ( let_url_menu == '/suprimentos_rel_filial_comprador_app/'){
+                    $("#tabCadRelFilialComprador").DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 7,
+                        "destroy": true,
+                        "fixedHeader": {
+                            header: true,
+                            footer: false
+                        },
+                        "paging": true,
+                        "searching": true,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copy'
+                        ],
+                        "language": {
+                            "decimal": ",",
+                            "thousands": ".",
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
+                            }
+                        }
+                        } );
                 } else {
                     $(".display").DataTable( {
                         "bJQueryUI": true,

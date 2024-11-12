@@ -308,7 +308,7 @@ function atualiza_tab_resp_contas(){
 
             dados.dic_lista_contas_resp.forEach(reg => {
 
-                let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
+                let let_img =   "<i class='fa-solid fa-caret-right' style:"color: var(--cor_empresa)!important;"></i>";
 
                 let let_desc_conta = ''
                 if(reg.cod_conta__tipo_modelo == 1) {
@@ -334,7 +334,7 @@ function atualiza_tab_resp_contas(){
                     <button type='button' name='btn_abre_modal_exclui_reg_resp_conta'
                     id='btn_abre_modal_exclui_reg_resp_conta_${reg.cod_resp_conta}' value="${reg.cod_resp_conta}"
                     class='btn btn-rounded btn-space' title="Excluí registro">
-                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                     </button>
                 `;
 
@@ -453,7 +453,7 @@ function atualiza_contas_x_resp_vinculadas(){
                         " Cód. red. LP - "+reg.cod_conta__cod_red_conta_contabil_lp;
                 }
 
-                let let_img =   "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
+                let let_img =   "<i class='fa-solid fa-caret-right icon-color-e'></i>";
 
                 let let_input_data_fim = `
                     <input type="date" id="dt_data_fim_resp_conta_${reg.cod_resp_conta}"
@@ -465,7 +465,7 @@ function atualiza_contas_x_resp_vinculadas(){
                     <button type='button' name='btn_abre_modal_exclui_reg_resp_conta'
                     id='btn_abre_modal_exclui_reg_resp_conta_${reg.cod_resp_conta}' value="${reg.cod_resp_conta}"
                     class='btn btn-rounded btn-space' title="Excluí registro">
-                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                     </button>
                 `;
 

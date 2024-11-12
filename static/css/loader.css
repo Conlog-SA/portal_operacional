@@ -34,8 +34,8 @@
     width: 10px;
     height: 10px;
     margin: 2px;
-    background-color: #f46424;
-    box-shadow: 0 0 20px #f46424;
+    background-color: var(--cor_empresa) !important;
+    box-shadow: 0 0 20px var(--cor_empresa);
     animation: loader_562 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   }
   

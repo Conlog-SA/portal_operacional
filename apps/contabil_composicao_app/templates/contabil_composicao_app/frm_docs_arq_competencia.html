@@ -14,7 +14,7 @@
         {% if obj_usuario_sessao.corporativo == 'S' %}
             <button type="button" name="btn_abre_modal_exclui_arq_docs_m1"
                 id="btn_abre_modal_exclui_arq_docs_m1_{{reg.cod_arq}}"
-                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                class="mr-2 btn btn-primary btn-rounded botaoPrincipal"
                 value="{{cod_arq}}_{{cod_conta}}">
                 <i class="fa-solid fa-trash-can"></i>
                 <span>Excluir arquivo</span>
@@ -23,7 +23,7 @@
         {% if obj_usuario_sessao.corporativo == 'N' %}
             <button type="button" name="btn_abre_modal_exclui_arq_docs_m1"
                 id="btn_abre_modal_exclui_arq_docs_m1_{{reg.cod_arq}}"
-                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                class="mr-2 btn btn-primary btn-rounded botaoPrincipal"
                 value="{{cod_arq}}_{{cod_conta}}" disabled>
                 <i class="fa-solid fa-trash-can"></i>
                 <span>Excluir arquivo</span>
@@ -71,7 +71,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_pagar_receber}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -81,7 +81,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_pagar_receber}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -90,14 +90,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_pagar_receber}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e" ></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e"  title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e"  title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -138,7 +138,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_estoque}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -148,7 +148,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_estoque}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -157,14 +157,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_estoque}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -207,7 +207,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_folha_pag}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -217,7 +217,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_folha_pag}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -226,14 +226,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_folha_pag}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -278,7 +278,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_compensacao}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -288,7 +288,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_compensacao}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -297,14 +297,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_contas_compensacao}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -349,7 +349,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_tributos}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -359,7 +359,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_tributos}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -368,14 +368,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_tributos}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -414,7 +414,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_financ_disp}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -424,7 +424,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_financ_disp}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -433,14 +433,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_financ_disp}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -479,7 +479,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_intercompany}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -489,7 +489,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_intercompany}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -498,14 +498,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_intercompany}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -552,7 +552,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_imobilizado}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -562,7 +562,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_imobilizado}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -571,14 +571,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_imobilizado}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -617,7 +617,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_consorcio_ativo}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -627,7 +627,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_consorcio_ativo}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -636,14 +636,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_consorcio_ativo}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e" title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
@@ -684,7 +684,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_outros}}"
                                     title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
                             </td>
                             <td>
@@ -694,7 +694,7 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_outros}}"
                                     title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                                 {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -703,14 +703,14 @@
                                     class="btn btn-rounded btn-space"
                                     value="{{doc.cod_pac_doc_outros}}"
                                     title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424;"></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% endif %}
                             </td>
                         {% endif %}
                         {% if doc.ativo == 'N' %}
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
-                            <td><i class="fa-solid fa-ban" style="color: #f46424;" title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e"  title="{{doc.obs}}"></i></td>
+                            <td><i class="fa-solid fa-ban icon-color-e"  title="{{doc.obs}}"></i></td>
                         {% endif %}
                     </tr>
                 {% endfor %}
