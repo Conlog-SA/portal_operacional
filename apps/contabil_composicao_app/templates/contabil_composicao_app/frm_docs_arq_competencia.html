@@ -66,13 +66,18 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_pagar_receber"
-                                    id="btn_abre_modal_edita_doc_pac_pagar_receber_{{doc.cod_pac_doc_contas_pagar_receber}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_contas_pagar_receber}}"
-                                    title="{{doc.obs}}">
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_pagar_receber"
+                                        id="btn_abre_modal_edita_doc_pac_pagar_receber_{{doc.cod_pac_doc_contas_pagar_receber}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_contas_pagar_receber}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
                                     <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% endif %}
+
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -83,15 +88,8 @@
                                     title="Excluir Registro">
                                     <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_exclui_doc_pac_pagar_receber"
-                                    id="btn_abre_modal_exclui_doc_pac_pagar_receber_{{doc.cod_pac_doc_contas_pagar_receber}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_contas_pagar_receber}}"
-                                    title="Excluir Registro" disabled>
+                                {% else %}
                                     <i class="fa-solid fa-trash-can icon-color-e" ></i>
-                                </button>
                                 {% endif %}
                             </td>
                         {% endif %}

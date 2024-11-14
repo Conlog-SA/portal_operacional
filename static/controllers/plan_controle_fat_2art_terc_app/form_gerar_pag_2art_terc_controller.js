@@ -1757,13 +1757,16 @@ function atualiza_tab_placas_intativas_benner(param_nome_componenete_acionado){
             });
             $('#tab_dados_placa_inativas_benner').DataTable( {
                 "bJQueryUI": true,
+                "fixedHeader": true,
+                "scrollY": "770px",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
                 "pageLength": 5,
                 "destroy": true,
-                "paging": true,
-                "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [
-                    'copy'
+                    'copyHtml5',
                 ],
                 "data":lista_dados,
                 "columns": [
@@ -1904,13 +1907,16 @@ function atualiza_dados_placa_benef_sinc_benner(param_nome_componenete_acionado)
             });
             $('#tab_dados_placa_sincroniza_benner').DataTable( {
                 "bJQueryUI": true,
+                "fixedHeader": true,
+                "scrollY": "770px",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
                 "pageLength": 5,
                 "destroy": true,
-                "paging": true,
-                "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [
-                    'copy'
+                    'copyHtml5',
                 ],
                 "data":let_lista_dados_tab_placas,
                 "columns": [
@@ -2019,58 +2025,63 @@ function povoa_tab_faturamento_agrupado_por_beneficiario(){
                 let_lista_dados_2art_terceiros_agrupado_por_beneficiario.push(let_dado_2art_terc);
             }
             $('#tab_fat_agrupado_2art_terc').DataTable( {
-            "bJQueryUI": true,
-            "pageLength": 6,
-            "destroy": true,
-            "dom": 'Bfrtip',
-            "buttons": [
-                'copyHtml5'
-             ],
-            "data":let_lista_dados_2art_terceiros_agrupado_por_beneficiario,
-            "columns": [
-                { title: "" },
-                { title: "Beneficiário" },
-                { title: "Qtd. Mapas" },
-                { title: "Tt. Fretes" },
-                { title: "Tt. Calc." },
-                { title: "Dif." },
-                { title: "Tt. Fat." },
-                { title: "Tt. Acrésc." },
-                { title: "Tt. Desc." },
-                { title: "Tt. à Pagar" },
-                { title: "Tt. Conlog" },
-                { title: "Pagar" }
-            ],
-            "columnDefs": [
-                {"className": "dt-center", "targets": [0,2,11]},
-                {"className": "dt-left", "targets": [1]},
-                {"className": "dt-right", "targets": [3,4,5,6,7,8,9,10]}
-            ],
-            "oLanguage": {
-                "sProcessing":   "Processando...",
-                "sLengthMenu":   "Mostrar _MENU_ registros",
-                "sZeroRecords":  "Não foram encontrados resultados",
-                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                "sInfoFiltered": "",
-                "sInfoPostFix":  "",
-                "sSearch":       "Pesquisar:",
-                "sUrl":          "",
-                "oPaginate": {
-                    "sFirst":    "Primeiro",
-                    "sPrevious": "Anterior",
-                    "sNext":     "Proximo",
-                    "sLast":     "Último"
-                },
-                "buttons":{
-                    "copyTitle": 'Dados Copiados',
-                    "copySuccess": {
-                        _: '%d linhas copiadas',
-                        1: '1 linha copiada'
+                "bJQueryUI": true,
+                "fixedHeader": true,
+                "scrollY": "770px",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
+                "pageLength": 6,
+                "destroy": true,
+                "dom": 'Bfrtip',
+                "buttons": [
+                    'copyHtml5',
+                ],
+                "data":let_lista_dados_2art_terceiros_agrupado_por_beneficiario,
+                "columns": [
+                    { title: "" },
+                    { title: "Beneficiário" },
+                    { title: "Qtd. Mapas" },
+                    { title: "Tt. Fretes" },
+                    { title: "Tt. Calc." },
+                    { title: "Dif." },
+                    { title: "Tt. Fat." },
+                    { title: "Tt. Acrésc." },
+                    { title: "Tt. Desc." },
+                    { title: "Tt. à Pagar" },
+                    { title: "Tt. Conlog" },
+                    { title: "Pagar" }
+                ],
+                "columnDefs": [
+                    {"className": "dt-center", "targets": [0,2,11]},
+                    {"className": "dt-left", "targets": [1]},
+                    {"className": "dt-right", "targets": [3,4,5,6,7,8,9,10]}
+                ],
+                "oLanguage": {
+                    "sProcessing":   "Processando...",
+                    "sLengthMenu":   "Mostrar _MENU_ registros",
+                    "sZeroRecords":  "Não foram encontrados resultados",
+                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                    "sInfoFiltered": "",
+                    "sInfoPostFix":  "",
+                    "sSearch":       "Pesquisar:",
+                    "sUrl":          "",
+                    "oPaginate": {
+                        "sFirst":    "Primeiro",
+                        "sPrevious": "Anterior",
+                        "sNext":     "Proximo",
+                        "sLast":     "Último"
+                    },
+                    "buttons":{
+                        "copyTitle": 'Dados Copiados',
+                        "copySuccess": {
+                            _: '%d linhas copiadas',
+                            1: '1 linha copiada'
+                        }
                     }
                 }
-            }
-            });
+                });
             loader_gera_pag_terc_2art.style.display = "none";
 
         },
@@ -2139,6 +2150,11 @@ function povoa_tab_lanc_acres_desc_do_mapa(let_cod_reg_2art_terc_financ){
 
             $('#tab_lanc_2art_terc').DataTable( {
                 "bJQueryUI": true,
+                "fixedHeader": true,
+                "scrollY": "770px",
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
                 "pageLength": 4,
                 "destroy": true,
                 "dom": 'Bfrtip',
