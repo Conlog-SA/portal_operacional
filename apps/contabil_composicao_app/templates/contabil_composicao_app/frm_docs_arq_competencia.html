@@ -20,15 +20,7 @@
                 <span>Excluir arquivo</span>
             </button>
         {% endif %}
-        {% if obj_usuario_sessao.corporativo == 'N' %}
-            <button type="button" name="btn_abre_modal_exclui_arq_docs_m1"
-                id="btn_abre_modal_exclui_arq_docs_m1_{{reg.cod_arq}}"
-                class="mr-2 btn btn-primary btn-rounded botaoPrincipal"
-                value="{{cod_arq}}_{{cod_conta}}" disabled>
-                <i class="fa-solid fa-trash-can"></i>
-                <span>Excluir arquivo</span>
-            </button>
-        {% endif %}
+
     </div>
 </div>
 
@@ -75,7 +67,7 @@
                                         <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                     </button>
                                 {% else %}
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
                                 {% endif %}
 
                             </td>
@@ -89,7 +81,7 @@
                                     <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
                                 {% else %}
-                                    <i class="fa-solid fa-trash-can icon-color-e" ></i>
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -131,32 +123,29 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_estoque"
-                                    id="btn_abre_modal_edita_doc_pac_estoque_{{doc.cod_pac_doc_estoque}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_estoque}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_estoque"
+                                        id="btn_abre_modal_edita_doc_pac_estoque_{{doc.cod_pac_doc_estoque}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_estoque}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_exclui_doc_pac_estoque"
-                                    id="btn_abre_modal_exclui_doc_pac_estoque_{{doc.cod_pac_doc_estoque}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_estoque}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_exclui_doc_pac_estoque"
-                                    id="btn_abre_modal_exclui_doc_pac_estoque_{{doc.cod_pac_doc_estoque}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_estoque}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_exclui_doc_pac_estoque"
+                                        id="btn_abre_modal_exclui_doc_pac_estoque_{{doc.cod_pac_doc_estoque}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_estoque}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -200,32 +189,29 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_folha_pag"
-                                    id="btn_abre_modal_edita_doc_pac_folha_pag_{{doc.cod_pac_doc_folha_pag}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_folha_pag}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_folha_pag"
+                                        id="btn_abre_modal_edita_doc_pac_folha_pag_{{doc.cod_pac_doc_folha_pag}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_folha_pag}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_exclui_doc_pac_folha_pag"
-                                    id="btn_abre_modal_exclui_doc_pac_folha_pag_{{doc.cod_pac_doc_folha_pag}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_folha_pag}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_exclui_doc_pac_folha_pag"
-                                    id="btn_abre_modal_exclui_doc_pac_folha_pag_{{doc.cod_pac_doc_folha_pag}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_folha_pag}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_exclui_doc_pac_folha_pag"
+                                        id="btn_abre_modal_exclui_doc_pac_folha_pag_{{doc.cod_pac_doc_folha_pag}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_folha_pag}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -271,32 +257,29 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_compensacao"
-                                    id="btn_abre_modal_edita_doc_pac_compensacao_{{doc.cod_pac_doc_contas_compensacao}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_contas_compensacao}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_compensacao"
+                                        id="btn_abre_modal_edita_doc_pac_compensacao_{{doc.cod_pac_doc_contas_compensacao}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_contas_compensacao}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_compensacao"
-                                    id="btn_abre_modal_excluir_doc_pac_compensacao_{{doc.cod_pac_doc_contas_compensacao}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_contas_compensacao}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_compensacao"
-                                    id="btn_abre_modal_excluir_doc_pac_compensacao_{{doc.cod_pac_doc_contas_compensacao}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_contas_compensacao}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_compensacao"
+                                        id="btn_abre_modal_excluir_doc_pac_compensacao_{{doc.cod_pac_doc_contas_compensacao}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_contas_compensacao}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -342,6 +325,7 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
                                 <button type="button" name="btn_abre_modal_edita_doc_pac_tributos"
                                     id="btn_abre_modal_edita_doc_pac_tributos_{{doc.cod_pac_doc_tributos}}"
                                     class="btn btn-rounded btn-space"
@@ -349,6 +333,9 @@
                                     title="{{doc.obs}}">
                                     <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissão para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -359,15 +346,8 @@
                                     title="Excluir Registro">
                                     <i class="fa-solid fa-trash-can icon-color-e"></i>
                                 </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_tributos"
-                                    id="btn_abre_modal_excluir_doc_pac_tributos_{{doc.cod_pac_doc_tributos}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_tributos}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -407,32 +387,29 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_financ_disp"
-                                    id="btn_abre_modal_edita_doc_pac_financ_disp_{{doc.cod_pac_doc_financ_disp}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_financ_disp}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_financ_disp"
+                                        id="btn_abre_modal_edita_doc_pac_financ_disp_{{doc.cod_pac_doc_financ_disp}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_financ_disp}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_financ_disp"
-                                    id="btn_abre_modal_excluir_doc_pac_financ_disp_{{doc.cod_pac_doc_financ_disp}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_financ_disp}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_financ_disp"
-                                    id="btn_abre_modal_excluir_doc_pac_financ_disp_{{doc.cod_pac_doc_financ_disp}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_financ_disp}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_financ_disp"
+                                        id="btn_abre_modal_excluir_doc_pac_financ_disp_{{doc.cod_pac_doc_financ_disp}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_financ_disp}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -472,6 +449,7 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
                                 <button type="button" name="btn_abre_modal_edita_doc_pac_intercompany"
                                     id="btn_abre_modal_edita_doc_pac_intercompany_{{doc.cod_pac_doc_intercompany}}"
                                     class="btn btn-rounded btn-space"
@@ -479,25 +457,21 @@
                                     title="{{doc.obs}}">
                                     <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_intercompany"
-                                    id="btn_abre_modal_excluir_doc_pac_intercompany_{{doc.cod_pac_doc_intercompany}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_intercompany}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_intercompany"
-                                    id="btn_abre_modal_excluir_doc_pac_intercompany_{{doc.cod_pac_doc_intercompany}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_intercompany}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_intercompany"
+                                        id="btn_abre_modal_excluir_doc_pac_intercompany_{{doc.cod_pac_doc_intercompany}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_intercompany}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -545,32 +519,29 @@
                         <td title="Valor diferença R$">{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_imobilizado"
-                                    id="btn_abre_modal_edita_doc_pac_imobilizado_{{doc.cod_pac_doc_imobilizado}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_imobilizado}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_imobilizado"
+                                        id="btn_abre_modal_edita_doc_pac_imobilizado_{{doc.cod_pac_doc_imobilizado}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_imobilizado}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_imobilizado"
-                                    id="btn_abre_modal_excluir_doc_pac_imobilizado_{{doc.cod_pac_doc_imobilizado}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_imobilizado}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_imobilizado"
-                                    id="btn_abre_modal_excluir_doc_pac_imobilizado_{{doc.cod_pac_doc_imobilizado}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_imobilizado}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_imobilizado"
+                                        id="btn_abre_modal_excluir_doc_pac_imobilizado_{{doc.cod_pac_doc_imobilizado}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_imobilizado}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -610,32 +581,29 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
-                                <button type="button" name="btn_abre_modal_edita_doc_pac_consorc_atv"
-                                    id="btn_abre_modal_edita_doc_pac_consorc_atv_{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    title="{{doc.obs}}">
-                                    <i class="fa-solid fa-pen-to-square icon-color-e"></i>
-                                </button>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
+                                    <button type="button" name="btn_abre_modal_edita_doc_pac_consorc_atv"
+                                        id="btn_abre_modal_edita_doc_pac_consorc_atv_{{doc.cod_pac_doc_consorcio_ativo}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_consorcio_ativo}}"
+                                        title="{{doc.obs}}">
+                                        <i class="fa-solid fa-pen-to-square icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_consorcio_ativo"
-                                    id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_consorcio_ativo"
-                                    id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_consorcio_ativo}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_consorcio_ativo"
+                                        id="btn_abre_modal_excluir_doc_pac_consorcio_ativo_{{doc.cod_pac_doc_consorcio_ativo}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_consorcio_ativo}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
@@ -677,6 +645,7 @@
                         <td>{{ doc.val_dif }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
+                                {% if obj_usuario_sessao.corporativo == 'S' %}
                                 <button type="button" name="btn_abre_modal_edita_doc_pac_demais_contas"
                                     id="btn_abre_modal_edita_doc_pac_demais_contas_{{doc.cod_pac_doc_outros}}"
                                     class="btn btn-rounded btn-space"
@@ -684,25 +653,21 @@
                                     title="{{doc.obs}}">
                                     <i class="fa-solid fa-pen-to-square icon-color-e"></i>
                                 </button>
+                                {% else %}
+                                    <i class="fa-solid fa-pen-to-square icon-color-e" title="Sem permissões para editar"></i>
+                                {% endif %}
                             </td>
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_demais_contas"
-                                    id="btn_abre_modal_excluir_doc_pac_demais_contas_{{doc.cod_pac_doc_outros}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_outros}}"
-                                    title="Excluir Registro">
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
-                                {% endif %}
-                                {% if obj_usuario_sessao.corporativo == 'N' %}
-                                <button type="button" name="btn_abre_modal_excluir_doc_pac_demais_contas"
-                                    id="btn_abre_modal_excluir_doc_pac_demais_contas_{{doc.cod_pac_doc_outros}}"
-                                    class="btn btn-rounded btn-space"
-                                    value="{{doc.cod_pac_doc_outros}}"
-                                    title="Excluir Registro" disabled>
-                                    <i class="fa-solid fa-trash-can icon-color-e"></i>
-                                </button>
+                                    <button type="button" name="btn_abre_modal_excluir_doc_pac_demais_contas"
+                                        id="btn_abre_modal_excluir_doc_pac_demais_contas_{{doc.cod_pac_doc_outros}}"
+                                        class="btn btn-rounded btn-space"
+                                        value="{{doc.cod_pac_doc_outros}}"
+                                        title="Excluir Registro">
+                                        <i class="fa-solid fa-trash-can icon-color-e"></i>
+                                    </button>
+                                {% else %}
+                                    <i class="fa-solid fa-trash-can icon-color-e" title="Sem permissões para excluir"></i>
                                 {% endif %}
                             </td>
                         {% endif %}
