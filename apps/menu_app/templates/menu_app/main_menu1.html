@@ -97,7 +97,7 @@
                 {% for menu in menu_usuario %}
                 <li class="side-item">
                     <a href="#" id="a_menu" class="link_menu" value="{{ menu.cod_menu.cod_menu }}">
-                        <i class="{{ menu.cod_menu.nome_icone }}" alt="{{ menu.cod_menu.desc_menu }}"
+                        <i class="{{ menu.cod_menu.nome_icone }}" title="{{ menu.cod_menu.desc_menu }}"
                              style="color: {{ cor_emp_hex }}"></i>
                         <span class="item-description">
                           {{ menu.cod_menu.desc_menu }}
@@ -113,7 +113,7 @@
                                 <li class="side-item">
                                     <a href="#" name="a_sub_menu" class="link_sub_menu" id="a_sub_menu_{{ sub_menu.cod_menu.cod_menu }}"
                                        value="{{ sub_menu.cod_menu.cod_menu }}">
-                                        <i class="{{ sub_menu.cod_menu.nome_icone }}" alt="{{ sub_menu.cod_menu.desc_menu }}"
+                                        <i class="{{ sub_menu.cod_menu.nome_icone }}" title="{{ sub_menu.cod_menu.desc_menu }}"
                                              style="color: {{ cor_emp_hex }}"></i>
                                         <span class="item-description">
                                           {{ sub_menu.cod_menu.desc_menu }}
