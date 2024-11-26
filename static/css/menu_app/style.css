@@ -93,8 +93,8 @@ main {
 
 .side-item:hover,
  #logout_btn:hover {
-    background-color: #e3e9f7;
-    color: #363636 !important;
+    background-color: #4F4F4F;
+    color: #FFF !important;
 }
 
 .side-item a {
@@ -104,7 +104,7 @@ main {
     justify-content: center
     color: #0a0a0a;
     :hover {
-        color: #363636 !important;
+        color: #FFF !important;
     }
 }
 
@@ -129,7 +129,7 @@ main {
 #logout_btn,
  #open_btn_menu{
     border: none;
-    /* padding: 10px; */
+    padding: 10px;
     font-size:  14px;
     display: flex;
     /* gap: 20px; */
@@ -187,10 +187,20 @@ main {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    font-size: 14px;
+    font-size: 12px;
     transition: width .6s;
     height: 0px;
     color: #FFF !important;
+}
+
+.side_sub_menu_items {
+    width: 0px;
+    height: 0px;
+    overflow: hidden;
+}
+
+.open-side-sub-menu-items {
+    height: auto;
 }
 
 #sidebar.open-sidebar  {

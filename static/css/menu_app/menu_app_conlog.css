@@ -37,6 +37,10 @@ body {
     border-image-slice: 50vh;
 }
 
+#main_menu {
+    overflow-y: scroll;
+}
+
 .linkMenuLateral{
     width: 50px;
     /* height: calc(100vh - 3rem); */
@@ -54,11 +58,22 @@ body {
 
 }
 
+/*
 .conteudoPrincipal{
     margin-left: 50px;
     height: 100vh;
     font-weight: 100 !important;
 }
+*/
+
+.conteudoPrincipal {
+    margin-left: 5%;
+    width: 95%;
+    padding: 0px;
+    height: 100vh;
+    margin-bottom: 2%;
+}
+
 
 .cabecalho{
     background-color: var(--cor_bg_solido_claro);

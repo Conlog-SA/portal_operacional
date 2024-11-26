@@ -3,16 +3,16 @@
 <!-- Modal Replica Acessos -->
 <div id="modal_replicacao_acesso_modulos" role="dialog" class="modal">
   <div class="modal-dialog">
-    <div class="modal-content" style="border-radius: 10px;">
-      <div class="modal-header" style="background-color:#f26522;">
-          <div class="" align="left" style="font-size:1.2rem;">
-            <i class="fa-solid fa-code-compare" style="color: #FFF;" ></i>
-            <span style="color:#FFF;">Replica acesso aos módulos ativos</span>
+    <div class="modal-content">
+      <div class="modal-header div_Titulo">
+          <div class="d-flex align-items-center justify-content-center">
+              <i class="fa-solid fa-code-compare" alt="Usuários"></i>
+              <h1 class="titlePadraoMenu">Replica acesso aos módulos ativos</h1>
           </div>
-
-          <div class="" align="right">
-            <button type="button" name="bnt_fecha_modal_replicacao_acesso_modulos" id="bnt_fecha_modal_replicacao_acesso_modulos" data-dismiss="modal" aria-hidden="true" class="modalCopiaAcessos__fecharModal">
-                  <i class="fa-solid fa-xmark" style="color: #FFF;"></i>
+          <div class="col-md-6" align="right">
+            <button type="button" name="bnt_fecha_modal_replicacao_acesso_modulos"
+                    id="bnt_fecha_modal_replicacao_acesso_modulos" class="btn_fecha_modais">
+                  <i class="fa-solid fa-circle-xmark fa-2xl" ></i>
             </button>
 
           </div>
@@ -22,7 +22,7 @@
         <div class="text-center">
           <br/>
           <form id="frm_replica_acessos" name="frm_replica_acessos"  method="POST"
-                class="d-flex justify-content-center align-items-center flex-column homeApp__loginForm">
+                class="d-flex justify-content-center align-items-center flex-column">
             {% csrf_token %}
             <select id="cb_usu_replicacao"
                     name="cb_usu_replicacao"
@@ -34,8 +34,9 @@
                   {% endfor %}
               </select>
             <br/><br/>
-            <button type="button" name="btn_replica_acesso_modulos" id="btn_replica_acesso_modulos" class="btn btn-primary btn-rounded liberaModulos__botao">
-              Replicar acessos
+            <button type="button" name="btn_replica_acesso_modulos" id="btn_replica_acesso_modulos"
+                    class="btn btn-primary btn-rounded botaoPrincipal">
+                <i class="fa-solid fa-check" ></i>Replicar acessos
             </button>
           </form>
         </div>

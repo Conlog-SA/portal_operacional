@@ -562,7 +562,7 @@ $(document).on('click','button', function(){
                         "bJQueryUI": true,
                         "destroy": true,
                         "fixedHeader": true,
-                        "scrollY": "50vh", //770px
+                        "scrollY": "80vh", //770px
                         "scrollX": true,
                         "scrollCollapse": true,
                         "paging": false,
@@ -1574,7 +1574,7 @@ $(document).on('change','input', function(){
             let_thead.append(let_tr)
             let_tab_concilicacao_comp_benner.append(let_thead);
 
-            let let_body = $("<body/>");
+            let let_body = $("<tbody/>");
             let_tab_concilicacao_comp_benner.append(let_body)
 
             $("#div_tab_conciliacao_composicao_benner").html(let_tab_concilicacao_comp_benner);
@@ -1582,7 +1582,7 @@ $(document).on('change','input', function(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": "50vh", //770px
+                    "scrollY": "80vh", //770px
                     "scrollX": true,
                     "scrollCollapse": true,
                     "paging": false,
@@ -1703,7 +1703,7 @@ $(document).on('change','input', function(){
             let_thead_detalhado.append(let_tr_detalhado)
             let_tab_concilicacao_comp_benner_detalhado.append(let_thead_detalhado);
 
-            let let_body_detalhado = $("<body/>");
+            let let_body_detalhado = $("<tbody/>");
             let_tab_concilicacao_comp_benner_detalhado.append(let_body_detalhado)
 
             $("#div_tab_conciliacao_composicao_benner_detalhado").html(let_tab_concilicacao_comp_benner_detalhado);
@@ -1822,7 +1822,7 @@ $(document).on('change','input', function(){
             let_thead_aud.append(let_tr_aud)
             let_tab_concilicacao_comp_benner_aud.append(let_thead_aud);
 
-            let let_body_aud = $("<body/>");
+            let let_body_aud = $("<tbody/>");
             let_tab_concilicacao_comp_benner_aud.append(let_body_aud)
 
             $("#div_tab_conciliacao_composicao_benner_aud").html(let_tab_concilicacao_comp_benner_aud);
@@ -2160,7 +2160,7 @@ function atualiza_form_dados_conta(tipo_return, cod_conta) {
             $("#btn_cadastra_nova_conta").html(let_new_label_btn_cadastro_conta);
             let let_btn_criar_nova_conta_manual = `
                 <button type='button' name='btn_criar_nova_conta_manual'
-                id='btn_criar_nova_conta_manual' class='mr-2 btn btn-primary btn-rounded cl_btn_cad_contas'>
+                id='btn_criar_nova_conta_manual' class='btn btn-primary btn-rounded botaoPrincipal'>
                 <i class="fa-solid fa-plus"></i>Criar conta
                 </button>
             `;
@@ -3400,28 +3400,25 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             <hr class="hr_title">
         `);
         $("#div_dados_curto_prazo").html(`
-            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_cp">
-                <label>
-                    Handle
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Handle</label>
                     <input type="text" id="tx_handle_conta_cp"
                            name="tx_handle_conta_cp" class="form-control">
-                </label>
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_cp">
-                <label>
-                    Código Reduzido
+            <div class="d-flex flex-column align-items-start w-100"
+                    style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                <label>Código Reduzido</label>
                     <input type="text" id="txt_cod_red_conta_cp"
                            name="txt_cod_red_conta_cp" class="form-control" >
-                </label>
+
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_cp">
-                <label>
-                    Estrutura
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Estrutura</label>
                     <input type="text" class="form-control"
                            id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp">
-                </label>
+
             </div>
         `);
 
@@ -3483,28 +3480,26 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             <hr class="hr_title">
         `);
         $("#div_dados_curto_prazo").html(`
-            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_cp">
-                <label>
-                    Handle C.P.
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Handle C.P.</label>
                     <input type="text" id="tx_handle_conta_cp"
                            name="tx_handle_conta_cp" class="form-control">
-                </label>
+
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_cp">
-                <label>
-                    Código Reduzido C.P.
+            <div class="d-flex flex-column align-items-start w-100"
+                style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                <label>Código Reduzido C.P.</label>
                     <input type="text" id="txt_cod_red_conta_cp"
                            name="txt_cod_red_conta_cp" class="form-control" >
-                </label>
+
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_cp">
-                <label>
-                    Estrutura C.P.
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Estrutura C.P.</label>
                     <input type="text" class="form-control"
                            id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp">
-                </label>
+
             </div>
         `);
 
@@ -3516,28 +3511,25 @@ function desenha_frm_cad_contas_conforme_tipo_modelo(let_cod_modelo_conta){
             <hr class="hr_title">
         `);
         $("#div_dados_longo_prazo").html(`
-            <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_lp">
-                <label>
-                    Handle L.P.
-                    <input type="text" id="tx_handle_conta_lp"
-                           name="tx_handle_conta_lp" class="form-control">
-                </label>
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Handle L.P.</label>
+                <input type="text" id="tx_handle_conta_lp"
+                       name="tx_handle_conta_lp" class="form-control">
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_lp">
-                <label>
-                    Código Reduzido L.P.
-                    <input type="text" id="txt_cod_red_conta_lp"
+            <div class="d-flex flex-column align-items-start w-100"
+            style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                <label>Código Reduzido L.P.</label>
+                <input type="text" id="txt_cod_red_conta_lp"
                            name="txt_cod_red_conta_lp" class="form-control" >
-                </label>
+
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_lp">
-                <label>
-                    Estrutura L.P.
-                    <input type="text" class="form-control"
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>Estrutura L.P.</label>
+                <input type="text" class="form-control"
                            id="txt_cod_estrutura_lp" name="txt_cod_estrutura_lp">
-                </label>
+
             </div>
         `);
 

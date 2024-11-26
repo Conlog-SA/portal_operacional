@@ -154,11 +154,11 @@ function atualiza_tab_usuarios(){
                 let let_img_status_usu  = '';
                 if (data.list_usuario_cadastrados[i].status_usu == 'A'){
                     let_img_status_usu = `
-                        <i class="fa-solid fa-user fa-2xl fa-beat" title="Ativo"></i>
+                        <i class="fa-solid fa-user fa-beat" title="Ativo"></i>
                     `;
                 } else if (data.list_usuario_cadastrados[i].status_usu == 'D'){
                     let_img_status_usu = `
-                        <i class="fa-regular fa-2xl fa-user" title="Desativado"></i>
+                        <i class="fa-regular fa-user" title="Desativado"></i>
                     `;
                 }
                 let let_perfil_usu = '';
@@ -200,11 +200,18 @@ function atualiza_tab_usuarios(){
             }
             $('#tab_usuarios').DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 8,
                 "destroy": true,
+                "fixedHeader": true,
+                "scrollY": true, //"50vh" 770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
+                "pageLength": 10,
+                "searching": true,
                 "dom": 'Bfrtip',
-                "buttons": ['excelHtml5',
-                            'pdfHtml5'
+                "table-layout":'fixed',
+                "buttons": [
+                    'copyHtml5'
                 ],
                 "data":let_lista_dados_usuarios,
                 "columns": [

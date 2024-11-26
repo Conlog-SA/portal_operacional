@@ -301,7 +301,7 @@ function atualiza_tab_proj_usu(cod_usu){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 8,
+                "pageLength": 10,
                 "searching": true,
                 "dom": 'Bfrtip',
                 "buttons": [

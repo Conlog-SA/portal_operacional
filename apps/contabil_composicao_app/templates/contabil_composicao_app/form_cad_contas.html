@@ -15,7 +15,7 @@
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
 
-            <i class="fa-solid fa-clipboard fa-2xl"></i>
+            <i class="fa-solid fa-clipboard"></i>
             <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -35,7 +35,7 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+            <div class="d-flex justify-content-between align-items-between w-100">
                 <div class="d-flex flex-column w-100 align-items-start" style="margin-right: 0.25rem;">
                     <label for="cb_responsaveis_contas">
                         Responsáveis contas
@@ -69,109 +69,92 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                 </div>
 
-                <div class="d-flex flex-column w-100 align-items-between"
-                     style="margin-right: 0.25rem;margin-left: 0.25rem;margin-top: 2.5rem;">
+                <div class="d-flex justify-content-end w-100" style="margin-right: 0.25rem;margin-left: 0.25rem;margin-top: 2.5rem;">
                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                    <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
-                            name="btn_abrir_modal_atualiza_contratos_benner"
-                            class="btn btn-primary btn-rounded botaoPrincipal icon-colorb" >
-                        <i class="fa-solid fa-repeat"></i>
-                        Atualiza contratos Benner
-                    </button>
+                        <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
+                                name="btn_abrir_modal_atualiza_contratos_benner"
+                                class="btn btn-primary btn-rounded botaoPrincipal" >
+                            <i class="fa-solid fa-repeat"></i>
+                            Atualiza contratos Benner
+                        </button>
+                        &nbsp;&nbsp;
+                        <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
+                                class="btn btn-primary btn-rounded  botaoPrincipal icon-colorb" value="{{ qtd_arquivos_postados }}"
+                                title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
+                            <i class="fa-solid fa-file-import"></i>
+                            Importar anexos
+                        </button>
                     {% endif %}
                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                    <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
-                            name="btn_abrir_modal_atualiza_contratos_benner"
-                            class="btn btn-primary btn-rounded botaoPrincipal icon-colorb" disabled>
-                        <i class="fa-solid fa-repeat"></i>
-                        Atualiza contratos Benner
-                    </button>
-                    {% endif %}
-                </div>
-                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;margin-left: 0.25rem;margin-top: 2.5rem;">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                    <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                            class="btn btn-primary btn-rounded  botaoPrincipal icon-colorb" value="{{ qtd_arquivos_postados }}"
-                            title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
-                        <i class="fa-solid fa-file-import icon-colorb"></i>
-                        Importar anexos
-                    </button>
-                    {% endif %}
-                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                    <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                            class="btn btn-primary btn-rounded button-i" style="color: #FFFFFF !important"  value="{{ qtd_arquivos_postados }}"
-                            title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
-                        <i class="fa-solid fa-file-import icon-colorb" ></i>
-                        Importar anexos
-                    </button>
+                         <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
+                                name="btn_abrir_modal_atualiza_contratos_benner"
+                                class="btn btn-primary btn-rounded botaoPrincipal" disabled>
+                            <i class="fa-solid fa-repeat"></i>
+                            Atualiza contratos Benner
+                        </button>
+                        &nbsp;&nbsp;
+                        <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
+                                class="btn btn-primary btn-rounded button-i" style="color: #FFFFFF !important"  value="{{ qtd_arquivos_postados }}"
+                                title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
+                            <i class="fa-solid fa-file-import" ></i>
+                            Importar anexos
+                        </button>
                     {% endif %}
                 </div>
             </div>
 
-            <div class="d-flex flex-column w-100 cl_div_rd_modelo_conta">
-                <label for="cb_contas" style="font-size: 1.5rem;">
-                    <legend style="font-size: 1.05rem;">Selecione o modelo:</legend>
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
+            <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: 1rem;">
+                <div class="d-flex flex-column w-100 align-items-start">
+                    <label for="cb_contas" style="font-size: 14px;">
+                        Conta(Selecione o modelo da conta :
+                        <div class="form-check-inline">
                             <input type="radio" name="rd_modelo_conta" class="form-check-input"
                                checked id="rd_modelo_conta_1">
                             Modelo 1
-                        </label>
-                    </div>
 
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
                             <input type="radio" name="rd_modelo_conta" class="form-check-input"
                                id="rd_modelo_conta_2">
                             Modelo 2
-                        </label>
-                    </div>
 
-                    <div class="form-check-inline">
-                        <label class="form-check-label">
                             <input type="radio" name="rd_modelo_conta" class="form-check-input"
                                id="rd_modelo_conta_3">
-                            Modelo 3
-                        </label>
-                    </div>
-                    <div>
-                        <span style="padding-right: 85rem;font-size:1.2rem">Conta</span>
-                    <select class="selectpicker form-control cl_cb_contas" id="cb_contas"
-                        name="cb_contas"
-                        style="color: #999999; font-size: 20px; height: 54.65px"
-                        data-live-search="true" title="Selecione a conta">
-
-                    {% for conta in lista_contas %}
-                        <option value="{{conta.cod_conta}}">
-                            {{conta.cod_conta}} - {{conta.desc_conta}} - Modelo {{conta.tipo_modelo}} -
-                            Cód. red. CP - {{ conta.cod_red_conta_contabil_cp}} -
-                            Cód. red. LP - {{ conta.cod_red_conta_contabil_lp}}
-                        </option>
-                    {% endfor %}
+                            Modelo 3)
                         </div>
-                </select>
-                </label>
-            </div>
+                    </label>
+                    <select class="selectpicker form-control cl_cb_contas" id="cb_contas"
+                            name="cb_contas"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            data-live-search="true" title="Selecione a conta">
 
-            <div class="d-flex justify-content-between align-items-between w-100">
-                <div id="div_img_empresas_da_conta" class="d-flex justify-content-end w-100" style="margin-top: 0.25rem;">
-
+                        {% for conta in lista_contas %}
+                            <option value="{{conta.cod_conta}}">
+                                {{conta.cod_conta}} - {{conta.desc_conta}} - Modelo {{conta.tipo_modelo}} -
+                                Cód. red. CP - {{ conta.cod_red_conta_contabil_cp}} -
+                                Cód. red. LP - {{ conta.cod_red_conta_contabil_lp}}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
             </div>
 
 
-            <div class="d-flex justify-content-between align-items-between w-100 cl_div_loader_cad_contas">
-                <div class="loader" id="loader_frm_cad_contas">
-                    <div class="loader-inner">
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
-                        <div class="loader-block"></div>
+            <div class="d-flex justify-content-between align-items-between w-100 mt-3 mb-2">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="loader" id="loader_frm_cad_contas">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
                     </div>
+                </div>
+                <div id="div_img_empresas_da_conta" class="d-flex justify-content-end w-100">
+
                 </div>
             </div>
         </form>
@@ -221,111 +204,108 @@
                          role="tabpanel"
                          aria-labelledby="a_tab_dados_conta">
                         <form id="frm_cad_conta" name="frm_cad_conta"
-                              class="d-flex flex-column align-items-center justify-content-between">
+                              class="d-flex flex-column align-items-start justify-content-between">
 
-                            <div class="d-flex flex-column w-100">
-                                <label>
-                                    Descrição da Conta
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column align-items-start w-100 mt-3">
+                                    <label>
+                                        Descrição da Conta
+                                    </label>
                                     <input type="text" id="txt_desc_conta" name="txt_desc_conta" class="form-control">
-                                </label>
+
+                                </div>
                             </div>
 
 
-                            <div id="div_titulo_dados_curto_prazo" class="d-flex justify-content-between align-items-between mt-3 w-100">
+
+                            <div id="div_titulo_dados_curto_prazo"
+                                 class="d-flex justify-content-between align-items-between mt-3 w-100">
                                 <i class="fa-solid fa-arrow-right-to-bracket" ></i>
                                 DADOS CONTA CONTÁBIL
                             </div>
-                            <div id="div_hr_curto_prazo" class="d-flex justify-content-between align-items-between w-100">
+                            <div id="div_hr_curto_prazo"
+                                 class="d-flex justify-content-between align-items-between w-100">
                                 <hr class="hr_title">
                             </div>
 
-                            <div id="div_dados_curto_prazo" class="d-flex justify-content-between align-items-between w-100 mb-3">
-                                <div class="d-flex flex-column w-100 cl_div_tx_handle_conta_cp">
-                                    <label>
-                                        Handle
-                                        <input type="text" id="tx_handle_conta_cp"
-                                               name="tx_handle_conta_cp" class="form-control">
-                                    </label>
+                            <div id="div_dados_curto_prazo"
+                                 class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label>Handle</label>
+                                    <input type="text" id="tx_handle_conta_cp"
+                                           name="tx_handle_conta_cp" class="form-control"/>
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_txt_cod_red_conta_cp">
-                                    <label>
-                                        Código Reduzido
-                                        <input type="text" id="txt_cod_red_conta_cp"
-                                               name="txt_cod_red_conta_cp" class="form-control" >
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>Código Reduzido</label>
+                                    <input type="text" id="txt_cod_red_conta_cp"
+                                           name="txt_cod_red_conta_cp" class="form-control" />
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_txt_cod_estrutura_cp">
-                                    <label>
-                                        Estrutura
-                                        <input type="text" class="form-control"
-                                               id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp">
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label>Estrutura</label>
+                                    <input type="text" class="form-control"
+                                           id="txt_cod_estrutura_cp" name="txt_cod_estrutura_cp"/>
+
                                 </div>
                             </div>
 
 
 
-                            <div id="div_titulo_dados_longo_prazo" class="d-flex justify-content-between align-items-between mt-3 w-100">
+                            <div id="div_titulo_dados_longo_prazo"
+                                 class="d-flex justify-content-between align-items-between w-100">
 
                             </div>
 
-                            <div id="div_hr_longo_prazo" class="d-flex justify-content-between align-items-between w-100">
+                            <div id="div_hr_longo_prazo"
+                                 class="d-flex justify-content-between align-items-between w-100">
 
                             </div>
 
-                            <div id="div_dados_longo_prazo" class="d-flex justify-content-between align-items-between w-100 mb-3">
+                            <div id="div_dados_longo_prazo"
+                                 class="d-flex justify-content-between align-items-between w-100">
 
                             </div>
 
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
-                                <div class="d-flex flex-column w-100 cl_div_cb_pacote_conta">
-                                    <label>Pacote Conta
-                                         <select class="selectpicker form-control" id="cb_pacote_conta"
-                                                name="cb_pacote_conta"
-                                                style="color: #999999; font-size: 20px; height: 54.65px;"
-                                                data-live-search="true" title="Selecione a conta">
-                                            {% for pac in lista_pacotes_conta %}
-                                                <option value="{{pac.cod_pacote_conta}}">
-                                                    {{pac.desc_pacote_conta}}
-                                                </option>
-                                            {% endfor %}
-                                         </select>
-                                    </label>
+                            <div class="d-flex justify-content-between align-items-between w-100 mt-3">
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label>Pacote Conta</label>
+                                    <select class="selectpicker form-control" id="cb_pacote_conta"
+                                            name="cb_pacote_conta"
+                                            style="color: #999999; font-size: 20px; height: 54.65px;"
+                                            data-live-search="true" title="Selecione a conta">
+                                        {% for pac in lista_pacotes_conta %}
+                                            <option value="{{pac.cod_pacote_conta}}">
+                                                {{pac.desc_pacote_conta}}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_dt_ini_atv_benner">
-                                    <label>
-                                        Data Início de Atividade
-                                        <input type="date" class="form-control"
-                                               id="dt_ini_atv_benner">
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <label>Data Início de Atividade</label>
+                                    <input type="date" class="form-control" id="dt_ini_atv_benner">
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_dt_fim_atv_benner">
-                                    <label>
-                                        Data Fim de Atividade
-                                        <input type="date" class="form-control"
-                                               id="dt_fim_atv_benner">
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label>Data Fim de Atividade</label>
+                                    <input type="date" class="form-control" id="dt_fim_atv_benner">
+
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100 cl_div_chk_status_comp">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-4 mt-3">
+                                <div class="d-flex flex-column align-items-start w-100">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                    <label class="col-form-label text-white text-left cursor-pointer"
-                                           for="chk_status_comp">Status Composição</label>
-                                    <div class="container">
-                                        <input type="checkbox" checked="checked" class="checkbox"
-                                               name="chk_status_comp"
-                                               id="chk_status_comp">
-                                        <label class="switch" for="chk_status_comp">
-                                            <span class="slider"></span>
-                                        </label>
-                                    </div>
+                                    <label for="chk_status_comp">Status Composição</label>
+                                         <input type="checkbox" checked="checked" class="checkbox"
+                                                name="chk_status_comp"
+                                                id="chk_status_comp">
                                     {% endif %}
                                 </div>
 
@@ -338,7 +318,7 @@
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_btn_cadastra_nova_conta">
+                                <div class="d-flex flex-column align-items-end w-100">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                         <button type='button' id="btn_cadastra_nova_conta"
                                                 name="btn_cadastra_nova_conta"
@@ -395,69 +375,67 @@
                               class="d-flex flex-column align-items-center justify-content-between">
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100 cl_div_cb_resp_composicao">
-                                    <label>Resp. Composição<br/>
-                                         <select class="selectpicker form-control" id="cb_resp_composicao"
-                                                name="cb_resp_composicao"
-                                                style="color: #999999; font-size: 20px; height: 54.65px"
-                                                data-live-search="true" title="Responsável composição">
-                                                {% for usu in lista_usuarios_contabil %}
-                                                    <option value="{{usu.nome_usu}}">
-                                                        {{usu.nome_usu}}
-                                                    </option>
-                                                {% endfor %}
-                                         </select>
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100" >
+                                    <label>Resp. Composição</label>
+                                     <select class="selectpicker form-control" id="cb_resp_composicao"
+                                            name="cb_resp_composicao"
+                                            data-live-search="true" title="Responsável composição">
+                                            {% for usu in lista_usuarios_contabil %}
+                                                <option value="{{usu.nome_usu}}">
+                                                    {{usu.nome_usu}}
+                                                </option>
+                                            {% endfor %}
+                                     </select>
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_cb_resp_validacao">
-                                    <label>Resp. Validação<br/>
-                                         <select class="selectpicker form-control" id="cb_resp_validacao"
-                                                name="cb_resp_validacao"
-                                                style="color: #999999; font-size: 20px; height: 54.65px"
-                                                data-live-search="true" title="Responsável validação">
-                                                {% for usu in lista_usuarios_contabil %}
-                                                    <option value="{{usu.nome_usu}}">
-                                                        {{usu.nome_usu}}
-                                                    </option>
-                                                {% endfor %}
-                                         </select>
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem;margin-right:0.25rem;">
+                                    <label>Resp. Validação</label>
+                                     <select class="selectpicker form-control" id="cb_resp_validacao"
+                                            name="cb_resp_validacao"
+                                            data-live-search="true" title="Responsável validação">
+                                            {% for usu in lista_usuarios_contabil %}
+                                                <option value="{{usu.nome_usu}}">
+                                                    {{usu.nome_usu}}
+                                                </option>
+                                            {% endfor %}
+                                     </select>
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_dt_ini_resp">
-                                    <label>Início<br/>
-                                         <input type="date" id="dt_ini_resp" name="dt_ini_resp" class="form-control">
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100" style="margin-right:0.25rem;">
+                                    <label>Início</label>
+                                    <input type="date" id="dt_ini_resp" name="dt_ini_resp" class="form-control">
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_dt_fim_resp">
-                                    <label>Fim<br/>
-                                         <input type="date" id="dt_fim_resp" name="dt_fim_resp" class="form-control">
-                                    </label>
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label>Fim</label>
+                                    <input type="date" id="dt_fim_resp" name="dt_fim_resp" class="form-control">
+
                                 </div>
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100 cl_div_chk_status_comp">
+                                <div class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div class="d-flex flex-column w-100 div_vazia_cad_conta">
+                                <div class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div id="d-flex flex-column w-100 div_vazia_cad_conta"
-                                     class="cl_div_btn_criar_nova_conta_manual">
+                                <div class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_btn_associar_responsaveis_conta">
+                                <div class="d-flex justify-content-end w-100">
                                     <input type="hidden" id="hd_tipo_transacao_resp" value="C">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_associar_responsaveis_conta"
                                             name="btn_associar_responsaveis_conta"
-                                            class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                            class="btn btn-primary btn-rounded botaoPrincipal"
                                             value="0">
                                         <i class="fa-solid fa-plus"></i>
                                         <span>Associar responsáveis</span>
@@ -466,7 +444,7 @@
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
                                     <button type='button' id="btn_associar_responsaveis_conta"
                                             name="btn_associar_responsaveis_conta"
-                                            class="mr-2 btn btn-primary btn-rounded cl_btn_cad_contas"
+                                            class="btn btn-primary btn-rounded botaoPrincipal"
                                             value="0" disabled>
                                         <i class="fa-solid fa-plus"></i>
                                         <span>Associar responsáveis</span>
@@ -503,42 +481,40 @@
                               class="d-flex flex-column align-items-center justify-content-between"
                               enctype="multipart/form-data">
 
-                            <div class="d-flex h-100 align-items-center justify-content-start w-100 mb-3">
-                                <div class="mt-3 d-flex w-100 align-items-start justify-content-between">
+                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                <div class="d-flex flex-column align-items-start w-100">
                                     <label for="ck_eh_anexo_principal">Mostrar este anexo nas composições ?</label>
                                     <input type="checkbox" class="checkbox" id="ck_eh_anexo_principal"
                                            name="ck_eh_anexo_principal" unchecked>
                                 </div>
-                                <div class="d-flex flex-column w-100 cl_div_dt_competencia_anexo_doc_contrato">
-                                    <label>
-                                        Contrato
+                                <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;">
+                                    <label>Contrato</label>
                                         <select id="list_contratos_conta_anexo" name="list_contratos_conta_anexo"
                                                 class="selectpicker form-control">
-
                                         </select>
-                                    </label>
+
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_dt_competencia_anexo_doc_contrato">
-                                    <label for="dt_competencia_anexo_doc_contrato">
-                                        Competência
+                                <div class="d-flex flex-column align-items-start w-100">
+                                    <label for="dt_competencia_anexo_doc_contrato">Competência</label>
                                         <input type="month" class="form-control" id="dt_competencia_anexo_doc_contrato" required>
-                                    </label>
+
                                 </div>
 
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-3" >
 
-                                <div class="d-flex flex-column align-items-start">
+                                <div class="d-flex flex-column align-items-start w-100">
                                     <label for="txt_desc_anexo_contrato">Descrição do arquivo</label>
                                     <input type="text" name="txt_desc_anexo_contrato"
                                                 id="txt_desc_anexo_contrato"
                                                 class="form-control"/>
                                 </div>
 
-                                <div class="d-flex flex-column align-items-end w-75"
-                                     style="margin-top: 1rem;margin-left: 0.5rem;">
+                                <div class="d-flex flex-column align-items-start w-100"
+                                     style="margin-left: 0.25rem;">
+                                    <lable>Selecione o arquivo</lable>
                                     <input type="file" name="file_anexo_contrato"
                                                 id="file_anexo_contrato"
                                                 class="containerApp"
@@ -547,12 +523,11 @@
                                     />{% csrf_token %}
                                 </div>
 
-                                <div class="d-flex flex-column align-items-end w-25"
-                                     style="margin-top: 1rem;">
+                                <div class="d-flex flex-column align-items-end w-100" style="margin-top: 1.5rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
                                         name="btn_anexa_doc_contrato"
-                                        class="btn btn-primary btn-rounded cl_btn_anexa_doc_contrato"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
                                         value="0">
                                         <i class="fa-solid fa-paperclip"></i>
                                         <span>Anexar</span>
@@ -561,7 +536,7 @@
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
                                         name="btn_anexa_doc_contrato"
-                                        class="mr-1 btn btn-primary btn-rounded cl_btn_anexa_doc_contrato"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
                                         value="0" disabled>
                                         <i class="fa-solid fa-paperclip"></i>
                                         <span>Anexar</span>

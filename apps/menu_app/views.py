@@ -35,7 +35,7 @@ class Menu_View(View):
             'str_bg': str_bg,
             'cor_emp_hex': cor_emp_hex
         }
-        return render(request, 'menu_app/main_menu.html', context)
+        return render(request, 'menu_app/main_menu1.html', context)
 
 
 

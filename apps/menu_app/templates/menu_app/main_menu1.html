@@ -107,6 +107,23 @@
                         </span>
                     </a>
                 </li>
+                <ul class="side_items side_sub_menu_items" id="ul_side_sub_menu_{{menu.cod_menu.cod_menu}}">
+                        {% for sub_menu in sub_menu_usuario %}
+                            {% if sub_menu.cod_menu.pai_menu == menu.cod_menu.cod_menu %}
+                                <li class="side-item">
+                                    <a href="#" name="a_sub_menu" class="link_sub_menu" id="a_sub_menu_{{ sub_menu.cod_menu.cod_menu }}"
+                                       value="{{ sub_menu.cod_menu.cod_menu }}">
+                                        <i class="{{ sub_menu.cod_menu.nome_icone }}" alt="{{ sub_menu.cod_menu.desc_menu }}"
+                                             style="color: {{ cor_emp_hex }}"></i>
+                                        <span class="item-description">
+                                          {{ sub_menu.cod_menu.desc_menu }}
+                                        </span>
+                                    </a>
+                                    <input type="hidden" id="hd_url_sub_menu_{{ sub_menu.cod_menu.cod_menu }}" value="{{ sub_menu.cod_menu.url_menu }}">
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
                 {% endfor %}
             </ul>
             <!--
@@ -133,7 +150,7 @@
 
     </nav>
 
-    <main id="main_menu">
+    <main id="main_menu" class="d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal" >
         <h1>Por favor, selecione a aplicação desejada no menu ao lado.</h1>
     </main>
 
@@ -176,6 +193,8 @@
   <script src="{% static 'controllers/menu_app/main_menu_controller.js' %}"
           type="text/javascript">
   </script>
+
+
 
   <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_pac_m1_controller.js' %}"
           type="text/javascript">
