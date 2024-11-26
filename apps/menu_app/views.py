@@ -22,10 +22,10 @@ class Menu_View(View):
         cor_emp_hex = ''
         if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
             str_bg = 'background.jpg'
-            cor_emp_hex = '#f46424;'
+            cor_emp_hex = '#f46424 !important;'
         elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
             str_bg = 'background-deep.jpg'
-            cor_emp_hex = '#3b8eed;'
+            cor_emp_hex = '#3b8eed !important;'
 
         context = {
             'obj_usuario_sessao': obj_usuario_sessao,
@@ -36,7 +36,7 @@ class Menu_View(View):
             'cor_emp_hex': cor_emp_hex,
             'VERSAO_PORTAL': VERSAO_PORTAL,
         }
-        return render(request, 'menu_app/main_menu.html', context)
+        return render(request, 'menu_app/main_menu1.html', context)
 
 
 

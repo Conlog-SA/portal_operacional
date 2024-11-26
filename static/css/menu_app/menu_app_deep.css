@@ -54,10 +54,20 @@ body {
 
 }
 
+/*
 .conteudoPrincipal{
     margin-left: 50px;
     height: 100vh;
     font-weight: 100 !important;
+}
+*/
+
+.conteudoPrincipal {
+    margin-left: 5%;
+    width: 95%;
+    padding: 0px;
+    margin-bottom: 2%;
+    height: 100vh;
 }
 
 .cabecalho{

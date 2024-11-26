@@ -1,0 +1,360 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Menu | Portal Operacional
+{% endblock %}
+
+{% block icon %}
+  {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
+    <link rel="icon" href="{% static 'icons/logo-laranja.png' %}" />
+  {% else %}
+    <link rel="icon" href="{% static 'icons/logo-small-deep.png' %}" />
+  {% endif %}
+
+
+
+{% endblock %}
+
+{% block link_static_css %}
+  {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
+
+    <link rel="stylesheet" href="{% static 'css/cores_conlog.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_conlog.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'css/toggle_switch_conlog.css' %}" />
+
+
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/cores_deep.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/menu_app/menu_app_deep.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'css/toggle_switch_deep.css' %}" />
+
+  {% endif %}
+
+
+
+  <link rel="stylesheet" href="{% static 'css/perfil-dropdown.css' %}" />
+  <!-- Bootstrap select picker -->
+  <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}"/>
+<link rel="stylesheet" href="{% static 'css/menu_app/style.css' %}" />
+
+  <!-- Bibliotecas Table
+  <link defer   rel="stylesheet" href="{% static 'libs/jquery_3_6_0/css/dataTables.min.css' %}"/> -->
+
+
+
+
+
+  <style>
+    body {background-image: url('../../../static/img/{{str_bg}}');
+  </style>
+{% endblock %}
+
+{% block conteudo %}
+    <nav id="sidebar">
+        <div id="sidebar_content">
+
+            <div id="user">
+                <div class="div-icon-menu">
+                    <button id="open_btn_menu">
+                        <i id="open_btn_icon_menu" class="fa-solid fa-bars fa-2xl" style="color: {{ cor_emp_hex }}"></i>
+                    </button>
+                </div>
+
+                <div class="div-dados-user">
+                    <p id="user_infos">
+                    <span class="item-description">
+                        <span class="nome-usu">
+                            <i class="fa-solid fa-circle-user"></i>
+                            <b>{{obj_usuario_sessao.login_usu}}</b><br/>
+                        </span>
+                        <span class="dados-usu">
+                            {% if obj_usuario_sessao.perfil_usu == 'A' %}
+                              <i class="fa-solid fa-arrow-right"></i>Adm
+                            {% else %}
+                              <i class="fa-solid fa-arrow-right"></i>Usuário
+                            {% endif %}
+                            (
+                            {% if obj_usuario_sessao.corporativo == 'S' %}
+                              Corporativo
+                            {% endif %}
+                            )<br/>
+                            <i class="fa-solid fa-arrow-right"></i>{{obj_usuario_sessao.cod_filial.cod_empresa.desc_empresa}}
+                            <br/>
+                            <i class="fa-solid fa-arrow-right"></i>{{obj_usuario_sessao.cod_filial.desc_filial}}
+                        </span>
+
+                    </span>
+                </p>
+                </div>
+
+
+            </div>
+
+            <ul id="side_items">
+                {% for menu in menu_usuario %}
+                <li class="side-item">
+                    <a href="#" id="a_menu" class="link_menu" value="{{ menu.cod_menu.cod_menu }}">
+                        <i class="{{ menu.cod_menu.nome_icone }}" title="{{ menu.cod_menu.desc_menu }}"
+                             style="color: {{ cor_emp_hex }}"></i>
+                        <span class="item-description">
+                          {{ menu.cod_menu.desc_menu }}
+                        </span>
+                        <span>
+                            <i id="i_icon_seta_menu_{{ menu.cod_menu.cod_menu }}" class="fa-solid fa-caret-right"></i>
+                        </span>
+                    </a>
+                </li>
+                <ul class="side_items side_sub_menu_items" id="ul_side_sub_menu_{{menu.cod_menu.cod_menu}}">
+                        {% for sub_menu in sub_menu_usuario %}
+                            {% if sub_menu.cod_menu.pai_menu == menu.cod_menu.cod_menu %}
+                                <li class="side-item">
+                                    <a href="#" name="a_sub_menu" class="link_sub_menu" id="a_sub_menu_{{ sub_menu.cod_menu.cod_menu }}"
+                                       value="{{ sub_menu.cod_menu.cod_menu }}">
+                                        <i class="{{ sub_menu.cod_menu.nome_icone }}" title="{{ sub_menu.cod_menu.desc_menu }}"
+                                             style="color: {{ cor_emp_hex }}"></i>
+                                        <span class="item-description">
+                                          {{ sub_menu.cod_menu.desc_menu }}
+                                        </span>
+                                    </a>
+                                    <input type="hidden" id="hd_url_sub_menu_{{ sub_menu.cod_menu.cod_menu }}" value="{{ sub_menu.cod_menu.url_menu }}">
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                {% endfor %}
+            </ul>
+            <!--
+            <button id="open_btn">
+                <i id="open_btn_icon" class="fa-solid fa-chevron-right"></i>
+            </button>
+            -->
+
+        </div>
+
+        <div id="logout">
+            <form action="{% url 'logout' %}" method="GET">
+              {% csrf_token %}
+              <button type="submit" id="logout_btn">
+                <i class="fa-solid fa-right-from-bracket" style="color: {{ cor_emp_hex }}"></i>
+                  <span class="item-description">
+                      Logout
+                  </span>
+              </button>
+
+            </form>
+        </div>
+
+
+    </nav>
+
+    <main id="main_menu" class="d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal" >
+        <h1>Por favor, selecione a aplicação desejada no menu ao lado.</h1>
+    </main>
+
+
+
+
+
+{% include 'contabil_composicao_app/modais_form_docs_m1.html' %}
+
+
+{% endblock %}
+
+{% block link_js %}
+  <script defer  src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
+<script defer  src="{% static 'controllers/menu_app/style.js' %}"></script>
+  <!-- Bibliotecas Table
+  <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.min.js' %}"></script>
+
+
+  <script defer src="{% static 'libs/jquery_3_6_0/js/dataTables.buttons.min.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/jszip.min.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/vfs_fonts.js' %}"></script>
+  <script defer src="{% static 'libs/jquery_3_6_0/js/buttons.html5.min.js' %}"></script>
+  -->
+
+
+
+  <!-- Bootstrap select picker --->
+  {% comment %}
+    <script src="{% static 'libs/bootstrap_select_1_13_14/dist/js/i18n/defaults-*.js' %}"></script>
+  {% endcomment %}
+
+{% endblock %}
+
+{% block base_controllers_apps_js %}
+  <script src="{% static 'controllers/perfil-dropdown.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/menu_app/main_menu_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_imp_arq_pac_m1_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_cad_contas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+
+
+  <script src="{% static 'controllers/contabil_operacoes_farol_ndd_app/form_notas_tratadas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_relatorio_pagamento_terceiros_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_evolucao_precos_app/form_gera_evolucao_precos_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_justifica_precos_diesel_app/form_justifica_preco_diesel_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_evolucao_precos_app/dash_evolucao_precos_controller.js' %}"
+        type="text/javascript">
+  </script>
+
+  <script defer src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_periodo_fecha_folha_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script defer src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_rel_folha_pagamento_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script defer src="{% static 'controllers/plan_controle_folha_pag_analitico_app/form_libera_projetos_usuario_folha_pag_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script defer src="{% static 'controllers/plan_controle_provisoes_folha_app/form_rel_provisoes_senior_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+
+  <script src="{% static 'controllers/ti_tma_app/form_gera_tma_ti_controller.js' %}" type="text/javascript">
+
+  </script>
+
+  <script src="{% static 'controllers/safety_layout_checklist_app/frm_cad_check_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/safety_gab_op_emp_app/frm_gab_op_emp_app.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/safety_relatos_app/frm_relatos_app.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_importa_2art_app/form_importa_2art_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_frete_spot_controller.js' %}" type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_cad_placa_terceiros_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_importa_arquivo_fat_terc_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_disponibilidade_app/form_importa_plan_promax_apontamento_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_disponibilidade_app/form_lanc_frota_contratada_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_disponibilidade_empilhadeira_app/form_gera_disp_empilhadeira_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/frota_vpo_app/form_vincula_roteiros_pecas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_rel_filial_comprador_app/form_cad_rel_filial_comprador_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/suprimentos_tma_app/form_requisicoes_gera_tma_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/usuario_app/form_libera_modulos_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/usuario_app/form_libera_projetos_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/contabil_composicao_app/form_vincula_resp_contas_controller.js' %}"
+          type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/plan_controle_fat_2art_terc_app/form_gerar_pag_2art_terc_controller.js' %}"
+        type="text/javascript">
+  </script>
+
+  <script src="{% static 'controllers/cco_sinistro_app/form_cco_cad_sinistros_controller.js' %}"
+          type="text/javascript"></script>
+
+
+<script src="{% static 'controllers/cco_multas_app/cad_multas_controller.js' %}"
+          type="text/javascript"></script>
+
+
+
+<script src="{% static 'controllers/frota_vendas_veic_app/frm_vendas_veic.js' %}"
+          type="text/javascript"></script>
+
+
+<script src="{% static 'controllers/gente_gestao_rateio_unimed/form_rateio_unimed.js' %}?v='{{1.0}}' %}"
+          type="text/javascript">
+</script>
+
+<script src="{% static 'controllers/ti_comitec_app/frm_cad_ideias_controller.js' %}"
+          type="text/javascript">
+</script>
+
+
+<script src="{% static 'controllers/conecta_rv_app/frm_params_rv.js' %}"
+          type="text/javascript">
+</script>
+
+<script defer src="{% static 'controllers/frota_custos_placa_app/frm_custos_placa.js' %}"
+          type="text/javascript">
+</script>
+
+<script defer src="{% static 'controllers/freightech_remunerado_qlp_app/frm_importa_plan_freightech.js' %}"
+          type="text/javascript">
+</script>
+
+
+
+<script defer src="{% static 'controllers/home_app/form_solicita_acesso_controller.js' %}"></script>
+
+{% endblock %}

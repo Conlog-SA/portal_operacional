@@ -139,7 +139,8 @@ $(document).on('click', 'a', function(){
                             }
                         }
                     });
-                } else if ( let_url_menu == '/suprimentos_rel_filial_comprador_app/'){
+                }
+                else if ( let_url_menu == '/suprimentos_rel_filial_comprador_app/'){
                     $("#tabCadRelFilialComprador").DataTable( {
                         "bJQueryUI": true,
                         "pageLength": 7,
@@ -181,7 +182,8 @@ $(document).on('click', 'a', function(){
                             }
                         }
                         } );
-                } else {
+                }
+                else {
                     $(".display").DataTable( {
                         "bJQueryUI": true,
                         "destroy": true,
