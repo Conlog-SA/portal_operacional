@@ -315,7 +315,7 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
                         ('000000'+despesa['Cpf'].split('.')[0]).slice(-11),
                         despesa['Dependencia'],
                         despesa['Titular'],
-                        ('000000'+despesa['Cpf_Titular'].split('.')[0]).slice(-11),
+                        despesa['Cpf_Titular'].split('.')[0],
                         despesa['Desc_Despesa'],
                         despesa['Valor'].split('.')[0]+','+despesa['Valor'].split('.')[1].substring(0,2),
                         let_html_matricula,
