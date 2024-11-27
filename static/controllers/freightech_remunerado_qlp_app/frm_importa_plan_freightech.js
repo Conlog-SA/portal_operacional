@@ -241,7 +241,9 @@ $(document).on('click','button', function(){
                         item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
-                        item.val_ordenados
+                        item.val_ordenados,
+                        item.qlp_rem,
+                        item.val_ordenado_rem
                     ];
                     let_lista_qlp.push(let_reg);
                 });
@@ -270,7 +272,9 @@ $(document).on('click','button', function(){
                         { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
-                        { title: "R$ TT Ordenados" }
+                        { title: "R$ TT Ordenados" },
+                        { title: "Qlp Rem" },
+                        { title: "R$ TT Ordenados Rem" }
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": [0,1]},
@@ -343,7 +347,9 @@ $(document).on('click','button', function(){
                         item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
-                        item.val_ordenados
+                        item.val_ordenados,
+                        item.qlp_rem,
+                        item.val_ordenado_rem
                     ];
                     let_lista_qlp_filial.push(let_reg);
                 });
@@ -372,7 +378,9 @@ $(document).on('click','button', function(){
                         { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
-                        { title: "R$ TT Ordenados" }
+                        { title: "R$ TT Ordenados" },
+                        { title: "Qlp Rem" },
+                        { title: "R$ TT Ordenados Rem" }
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": [0,1]},
