@@ -8,7 +8,7 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-comment-dollar fa-2xl" alt="Importar 2artd" style="color: #f46424;"></i>
+            <i class="fa-solid fa-comment-dollar" alt="Importar 2artd" style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Gerar Pagamento 2Art Terceiros</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -29,7 +29,8 @@
             {% csrf_token %}
 
             <div class="d-flex justify-content-between align-items-between w-100 mb-3">
-                <div class="d-flex align-items-end w-75">
+                <div class="d-flex flex-column align-items-start" style="width: 40%;">
+                    <label>Projeto</label>
                     <select class="selectpicker form-control" id="cb_projetos_pesq_mapas_terc"
                             name="cb_projetos_pesq_mapas_terc"
                             data-live-search="true"
@@ -40,44 +41,28 @@
                     </select>
                 </div>
 
-                <div class="input_dataTerceiros">
-                    <label for="dt_pesq_mapas_terc_periodo_ini">Data inicial *</label>
-                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_ini">
-                </div>
-
-                <div class="input_dataTerceiros">
-                    <label for="dt_pesq_mapas_terc_periodo_fim">Data final *</label>
-                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_fim">
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-between w-100 mb-2">
-                <div class="d-flex align-items-end w-75">
+                <div class="d-flex flex-column align-items-start" style="width: 40%; margin-left: 0.25rem; margin-right: 0.25rem;">
+                    <label>Beneficiários</label>
                     <select class="selectpicker form-control" id="cb_benef_pesq_mapas_terc" name="cb_benef_pesq_mapas_terc"
                             data-live-search="true" title="Selecione o beneficiário">
                         <option value="0" selected="selected">-- Todos os Beneficiários --</option>
                     </select>
                 </div>
 
-                <div class="d-flex justify-content-center align-items-center">
-                    <label class="col-form-label text-white text-left cursor-pointer" for="chk_mapa_desativado">
-                        Mapas Desativados?</label>
-                    <div class="d-flex flex-column ">
-                        <div class="container">
-                            <input type="checkbox" class="checkbox" name="chk_mapa_desativado"
-                            id="chk_mapa_desativado">
-                            <label class="switch" for="chk_mapa_desativado">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
-                    </div>
+                <div class="d-flex flex-column align-items-start" style="width: 10%; margin-right: 0.25rem;">
+                    <label for="dt_pesq_mapas_terc_periodo_ini">Data inicial *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_ini">
                 </div>
 
-
+                <div class="d-flex flex-column align-items-start" style="width: 10%;">
+                    <label for="dt_pesq_mapas_terc_periodo_fim">Data final *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_terc_periodo_fim">
+                </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
-                <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+
+                <div class="d-flex align-items-start" style="width: 60%;">
                     <div class="loader" id="loader_gera_pag_terc_2art">
                         <div class="loader-inner">
                             <div class="loader-block"></div>
@@ -91,13 +76,16 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex align-items-end w-100">
-                    &nbsp;&nbsp;
+
+
+                <div class="d-flex justify-content-end align-items-center" style="width:30%;">
+                    <label for="chk_mapa_desativado">
+                        Mapas Desativados?</label>
+                   <input type="checkbox" class="checkbox" name="chk_mapa_desativado"
+                            id="chk_mapa_desativado"/>
                 </div>
-                <div class="d-flex align-items-end w-100">
-                    &nbsp;&nbsp;
-                </div>
-                <div class="d-flex flex-column w-100 cl_div_btn_pesq_mapas_terceiros">
+
+                <div class="d-flex justify-content-end align-items-center" style="width:10%;">
                     <button type='button' id="btn_pesq_mapas_terceiros" name="btn_pesq_mapas_terceiros"
                         class="btn btn-primary btn-rounded botaoPrincipal" >
                         <i class="fa-solid fa-magnifying-glass"></i>
@@ -105,12 +93,8 @@
                     </button>
                 </div>
 
+
             </div>
-
-
-
-
-
 
         </form>
         <!-- cl_div_tab_mapas_terceitos_2art -->
