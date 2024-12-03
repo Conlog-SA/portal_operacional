@@ -153,7 +153,7 @@ $(document).on('click','button', function(){
                                             <br/>
                                         </div>
                                         <div id="collapse${pag.cod_pag}" aria-labelledby="heading${pag.cod_pag}" data-parent="#accordion${pag.cod_pag}" class="collapse">
-                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;">
+                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
 
 
                                             </div>
@@ -245,7 +245,7 @@ $(document).on('click','button', function(){
                                             <br/>
                                         </div>
                                         <div id="collapse${pag.cod_pag}" aria-labelledby="heading${pag.cod_pag}" data-parent="#accordion${pag.cod_pag}" class="collapse">
-                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;">
+                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
 
 
                                             </div>

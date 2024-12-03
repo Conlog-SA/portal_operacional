@@ -8,6 +8,7 @@
 .hr_title{
     width: 100%;
     margin-top: 0 !important;
+    margin-bottom: 0.25rem;
     color: white !important;
     border-top: 1px solid white !important;
     background-color:var(--cor_bg_cinza_escuro) !important;

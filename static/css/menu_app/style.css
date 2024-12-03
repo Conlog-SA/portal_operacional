@@ -22,6 +22,7 @@ main {
     position: fixed;
     z-index: 1;
     padding-left: calc(82px + 20px);
+    overflow-y: scroll;
 }
 
 #sidebar {

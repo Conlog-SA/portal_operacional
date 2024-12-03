@@ -5,9 +5,9 @@
 {% endblock %}
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
-    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-gavel fa-2xl icon-color-e" alt="Conciliação Composição x Benner(Detalhado)" ></i>
+            <i class="fa-solid fa-gavel"></i>
             <h1 class=" titlePadraoMenu">{{desc_menu}}</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -17,28 +17,27 @@
         {% endif %}
     </div>
 
+    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+
 
     <div class="containerApp">
 
         <form id="frm_conciliacao_com_benner_aud" name="frm_conciliacao_com_benner_aud"
-              class="d-flex flex-column align-items-center justify-content-between cl_frm_conciliacao_com_benner"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
               method="POST">
             <input type="hidden" id="hd_tipo_rel" value="A">
+
             <div class="d-flex justify-content-between align-items-between w-100">
-                <hr class="hr_title">
-            </div>
-            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
-
-                <div class="d-flex flex-column w-100 cl_div_competencia_conciliacao_detalhada">
-                    <label>
-                        Competência
-                        <input type="month" class="form-control" name="dt_conciliacao_comp_benner"
-                               id="dt_conciliacao_comp_benner" required>
-                    </label>
-
+                <div class="d-flex flex-column w-100 align-items-start" style="margin-top: 1.3rem;">
+                    <label>Competência</label>
+                    <input type="month" class="form-control" name="dt_conciliacao_comp_benner"
+                           id="dt_conciliacao_comp_benner" required>
 
                 </div>
-                <div class="d-flex flex-column w-100 ">
+
+                <div class="d-flex flex-column w-100 align-items-between" style="margin-top: 1rem;">
                     <fieldset>
                         <legend style="font-size: 1.05rem;">Modelo:</legend>
                         <div class="form-check-inline" style="font-size: 1.25rem;">
@@ -106,7 +105,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-3 cl_div_loader_cad_comp_detalhada">
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3 mt-3">
                 <div class="d-flex flex-column w-100 cl_div_competencia_conciliacao_detalhada">
                     <div class="loader" id="loader_comp_aud">
                         <div class="loader-inner">
@@ -126,10 +125,10 @@
                     &nbsp
                 </div>
 
-                <div class="d-flex flex-column w-100">
+                <div class="d-flex flex-column align-items-end w-100">
                     <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado_aud"
                             name="btn_gera_conciliacao_comp_benner_detalhado_aud"
-                            class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado" >
+                            class="btn btn-primary btn-rounded botaoPrincipal" >
                         <i class="fa-solid fa-magnifying-glass"></i>
                         <span>Gerar</span>
                     </button>

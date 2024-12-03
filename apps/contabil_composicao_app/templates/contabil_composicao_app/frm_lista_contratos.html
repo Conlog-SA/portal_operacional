@@ -11,7 +11,7 @@
                 <div style="font-size:12px; width:80%">
                     <div class="row" style="background-color: var(--cor_empresa) !important;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;padding-top: 0.5rem;padding-bottom: 0.5rem;">
                     <div class="col-md-3">
-                        <i class="fa-solid fa-receipt" style="color: #000000;"></i>
+                        <i class="fa-solid fa-handshake" style="color: #000000 !important;"></i>
                         <strong>Contrato:</strong> {{ctr.num_contrato}}
                     </div>
                     <div class="col-md-3">
@@ -43,18 +43,18 @@
                     <div class="row" >
                         <div class="col-md-12">
                             <strong>Operação:</strong> {{ctr.nome_operacao}}
-                            <hr>
+                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
                         </div>
                     </div>
 
-                    <div class="row" style="margin-top: 0.5rem;">
+                    <div class="row">
                         <div class="col-md-12">
                             <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
                             <strong>CONTA EM CURTO PRAZO</strong>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_cp}}
-                            <strong>Val. total:</strong>{{ctr.val_tt_contrato_reajustado_cp}}
-                            <hr>
+                            <strong>Val. total líq.:&nbsp;&nbsp;</strong>{{ctr.val_tt_liq_cp}}
+                            <strong>Val. total:&nbsp;&nbsp;</strong>{{ctr.val_tt_contrato_reajustado_cp}}
+                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
                         </div>
                     </div>
 
@@ -63,40 +63,40 @@
                             <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
                             <strong>CONTA EM LONGO PRAZO</strong>
                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:</strong>{{ctr.val_tt_liq_lp}}
-                            <strong>Val. total:</strong>{{ctr.val_tt_contrato_reajustado_lp}}
+                            <strong>Val. total líq.:&nbsp;&nbsp;</strong>{{ctr.val_tt_liq_lp}}
+                            <strong>Val. total:&nbsp;&nbsp;</strong>{{ctr.val_tt_contrato_reajustado_lp}}
                         </div>
                     </div>
 
                     <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;margin-top: 0.5rem;">
                         <div class="col-md-12" style="margin-top: 0.5rem;">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: #FFFFFF;"></i>
+                            <i class="fa-solid fa-circle-info" style="color: #FFFFFF !important;"></i>
                             <strong>INFO TOTAIS CONTA</strong>
-                            <hr>
+                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
                         </div>
                     </div>
                     <div class="row" style="background-color: var(--cor_empresa) !important; color:#FFFFFF;" >
                         <div class="col-md-3">
-                            <strong>Valor Total Líquido:</strong> {{ctr.val_liquido}}
+                            <strong>Valor Total Líquido:&nbsp;&nbsp;</strong> {{ctr.val_liquido}}
                         </div>
                         <div class="col-md-3">
-                            <strong>Valor Total Reajustado:</strong> {{ctr.val_tt_contrato_reajustado}}
+                            <strong>Valor Total Reajustado:&nbsp;&nbsp;</strong> {{ctr.val_tt_contrato_reajustado}}
                         </div>
                         <div class="col-md-3">
-                            <strong>Total Liquidado:</strong> {{ctr.total_pago}}
+                            <strong>Total Liquidado:&nbsp;&nbsp;</strong> {{ctr.total_pago}}
                         </div>
                     </div>
 
                     <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;padding-bottom: 0.5rem;border-radius: 0rem 0rem 0.3rem 0.3rem;">
                         <div class="col-md-3">
-                            <strong>Próxima parcela:</strong>{{ctr.proxima_parc_pendente}}
+                            <strong>Próxima parcela:&nbsp;&nbsp;</strong>{{ctr.proxima_parc_pendente}}
                         </div>
                         <div class="col-md-3">
-                            <strong>Venc. próxima parcela:</strong>
+                            <strong>Venc. próxima parcela:&nbsp;&nbsp;</strong>
                             {{ctr.data_venc_proxima_parc_pendente}}
                         </div>
                         <div class="col-md-3">
-                            <strong>Valor próxima parcela:</strong>{{ctr.val_proxima_parc_pendente}}
+                            <strong>Valor próxima parcela:&nbsp;&nbsp;</strong>{{ctr.val_proxima_parc_pendente}}
                         </div>
                     </div>
                 </div>
@@ -151,29 +151,22 @@
                     {% endif %}
 
                 </div>
-                <div class="d-flex flex-column w-100">
+                <div class="d-flex flex-column align-items-center w-100">
                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <label class="col-form-label text-left cursor-pointer"
-                               for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}"
-                               style="padding-top: 3px;padding-bottom: 3px;">
+                        <label for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}"
+                               style="padding-top: 3px;padding-bottom: 3px;color:#000;">
                             Atualiza com o Benner ?
                         </label>
-                        <div class="container">
-                            {% if ctr.atualiza_benner == 'SIM' %}
-                            <input type="checkbox" checked="checked" class="checkbox"
-                               name="chk_atualiza_dados_benner_contrato"
-                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                            {% endif %}
-                            {% if ctr.atualiza_benner == 'NÃO' %}
-                            <input type="checkbox" class="checkbox"
-                               name="chk_atualiza_dados_benner_contrato"
-                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                            {% endif %}
-                            <label class="switch"
-                                   for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
-                                <span class="slider"></span>
-                            </label>
-                        </div>
+                        {% if ctr.atualiza_benner == 'SIM' %}
+                        <input type="checkbox" checked="checked" class="checkbox"
+                           name="chk_atualiza_dados_benner_contrato"
+                           id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
+                        {% endif %}
+                        {% if ctr.atualiza_benner == 'NÃO' %}
+                        <input type="checkbox" class="checkbox"
+                           name="chk_atualiza_dados_benner_contrato"
+                           id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
+                        {% endif %}
                     {% endif %}
                 </div>
                 <div class="d-flex flex-column w-100">

@@ -1399,7 +1399,7 @@ function monta_tabela_imp_pac_m1(cod_pacote){
             let_thead.append(let_tr)
             let_table_layout_contas_mod_1.append(let_thead);
 
-            let let_body = $("<body/>");
+            let let_body = $("<tbody/>");
             let_table_layout_contas_mod_1.append(let_body);
 
             $("#div_tab_imp_doc_pac_modelo_1").html("");
@@ -1536,17 +1536,17 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                 let let_resumo_docs = ``;
                 dados.resumo_docs.forEach( resumo => {
                     let_resumo_docs = `
-                        <label for="txt_val_rel">R$ Rel.
-                        <input class="form-control" id="txt_val_rel" style="text-align: right;margin" value="${resumo.tt_val_rel}" readonly/>
-                        </label>
+                        <label for="txt_val_rel">R$ Rel.</label>
+                        <input class="form-control" id="txt_val_rel" style="text-align: right;" value="${resumo.tt_val_rel}" readonly/>
+
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label for="txt_val_balancete">R$ Balancete
+                        <label for="txt_val_balancete">R$ Balancete</label>
                         <input class="form-control" id="txt_val_balancete" style="text-align: right;" value="${resumo.val_balancete}" readonly/>
-                        </label>
+
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label for="txt_val_dif">R$ Dif.
+                        <label for="txt_val_dif">R$ Dif.</label>
                         <input class="form-control" id="txt_val_dif" style="text-align: right;" value="${resumo.val_dif_comp_bal}" readonly/>
-                        </label>
+
 
                     `;
                 });
