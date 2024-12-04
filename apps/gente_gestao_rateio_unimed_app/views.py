@@ -166,14 +166,13 @@ class Form_Importa_Plan_Despesas_View(View):
                     cod_empresa_senior = 2
                 if 'CPF_TITULAR' in colunas_list or 'titular' in tipo_depencencia.lower():
                     if 'titular' in tipo_depencencia.lower():
-                        print('chegamos aqui')
                         cpf_titular = cpf_beneficiario
                     else:
                         cpf_titular = str(row['CPF_TITULAR']).strip().zfill(11)
-                    cpf_titular_encontrado = cpf_titular.zfill(11)
+                    cpf_titular_encontrado = cpf_titular
                     titular_senior = conexao_senior.pesquisar_dados_colaborador_por_cpf_emp(cpf_titular, cod_empresa_senior)
                 else:
-                    cpf_titular = 'N/A'
+                    cpf_titular_encontrado = 'N/A'
                     titular_senior = conexao_senior.pesquisar_dados_dependente_por_cpf_emp(cpf_beneficiario)
 
                 if 'erro' not in titular_senior:
@@ -184,7 +183,7 @@ class Form_Importa_Plan_Despesas_View(View):
                     desc_filial = titular_senior['nom_filial_colab']
 
                     if 'CPF_TITULAR' not in colunas_list:
-                        cpf_titular_encontrado = titular_senior['cpf_colab']
+                        cpf_titular_encontrado = str(titular_senior['cpf_colab']).zfill(11)
                     for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
                                                     'desc_proj_colab_excecao', 'cod_filial_colab_excecao',
                                                     'desc_filial_colab_excecao').distinct():
@@ -200,7 +199,7 @@ class Form_Importa_Plan_Despesas_View(View):
                         nome_beneficiario=nome_beneficiario,
                         tipo_depencencia=tipo_depencencia,
                         nome_titular=nome_titular,
-                        cpf_titular=cpf_titular,
+                        cpf_titular=cpf_titular_encontrado,
                         desc_despesa=desc_despesa,
                         valor=valor,
                         cod_arq_despesa=arquivo_despesa,
@@ -234,7 +233,7 @@ class Form_Importa_Plan_Despesas_View(View):
                         nome_beneficiario=nome_beneficiario,
                         tipo_depencencia=tipo_depencencia,
                         nome_titular=nome_titular,
-                        cpf_titular=cpf_titular,
+                        cpf_titular=cpf_titular_encontrado,
                         desc_despesa=desc_despesa,
                         valor=valor,
                         cod_arq_despesa=arquivo_despesa,
@@ -255,7 +254,7 @@ class Form_Importa_Plan_Despesas_View(View):
                         'cpf': cpf_beneficiario.strip(),
                         'dependencia': tipo_depencencia.strip(),
                         'titular': nome_titular.strip().replace(' ', '_'),
-                        'cpf_titular': cpf_titular.strip(),
+                        'cpf_titular': cpf_titular_encontrado.strip(),
                         'desc_despesa': desc_despesa.strip().replace(' ', '_'),
                         'valor': str(valor),
                         'cod_despesa': str(obj_registro_despesa_new.cod_despesa_unimed)

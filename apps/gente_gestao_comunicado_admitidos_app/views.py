@@ -8,11 +8,9 @@ from django.views.decorators.csrf import csrf_exempt
 from apps.phishing_app import models
 
 
-class Phishing(View):
+class Preencher_Perfil(View):
     def get(self, request):
-        email = request.GET['email']
-        context = {'email': email}
-        return render(request, 'phishing_app/form_phishing.html', context)
+        return render(request, 'gente_gestao_comunicado_admitidos_app/form_colaborador_admitido.html')
 
     @csrf_exempt
     def post(self, request):
