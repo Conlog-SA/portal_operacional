@@ -1,7 +1,7 @@
 
 /* PAINEL DE CONTROLE*/
 
-    p, span{
+    .conteudo-desc p{
         font-weight: 700;
     }
     .caixa {

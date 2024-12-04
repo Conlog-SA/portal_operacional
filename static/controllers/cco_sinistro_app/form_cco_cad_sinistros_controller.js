@@ -548,9 +548,16 @@ function atualiza_tab_pesq_sinistro (tipo_pesquisa){
 
             $('#table_sinistros_cargas').DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 10,
                 "destroy": true,
+                "fixedHeader": true,
+                "scrollY": "600px", //"50vh" 770px
+                "scrollX": true,
+                "scrollCollapse": true,
+                "paging": true,
+                "pageLength": 10,
+                "searching": true,
                 "dom": 'Bfrtip',
+                "table-layout":'fixed',
                 "buttons": [
                     'copyHtml5'
                 ],
