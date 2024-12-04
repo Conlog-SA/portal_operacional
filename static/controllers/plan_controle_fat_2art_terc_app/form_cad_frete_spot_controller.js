@@ -497,7 +497,7 @@ function povoa_tab_fretes_terc(){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 7,
+                "pageLength": 10,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'

@@ -495,6 +495,10 @@ class Conexao_Senior_BD():
                     END					AS	status_colab,
                     CAST(USU_TDIAEMP.USU_DIADAT AS DATE)
                                         AS	data_qlp,
+                    MONTH(CAST(USU_TDIAEMP.USU_DIADAT AS DATE))
+                                        AS	vigencia__month,  
+                    YEAR(CAST(USU_TDIAEMP.USU_DIADAT AS DATE))
+                                        AS	vigencia__year, 
                     R030FIL.CODFIL		AS	cod_filial,
                     R030FIL.NOMFIL		AS	nome_filial,
                     R018CCU.CODCCU		AS 	cod_ccu_colab,
@@ -634,7 +638,6 @@ class Conexao_Senior_BD():
             ORDER	BY R034FUN.NOMFUN
         '''
         )
-        print(sql_qlp)
         df_qlp = pd.read_sql(sql_qlp, self.__conn)
         self.__conn.close()
         return df_qlp

@@ -63,9 +63,9 @@ function atualiza_dados_conta_acao_cb_contas(){
     $("#dt_ini_resp").val("");
     $("#dt_fim_resp").val("");
     let let_img_btn_atualizar_dados_resp = `
-        <i class="fa-solid fa-plus" ></i>
+        <i class="fa-solid fa-paperclip" ></i>
     `;
-    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar");
     $("#btn_associar_responsaveis_conta").val(0);
     /* Limpa form anexos */
     $("#file_anexo_contrato").val("");
@@ -355,9 +355,9 @@ $(document).on('click','button', function(){
                         time: '',
                     });
                     let let_img_btn_atualizar_dados_resp = `
-                        <i class="fa-solid fa-plus" ></i>
+                        <i class="fa-solid fa-paperclip" ></i>
                     `;
-                    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+                    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar");
                     $("#btn_associar_responsaveis_conta").val(dados.cod_conta);
                     atualiza_tabela_resp_conta(dados.cod_conta);
                 },
@@ -943,7 +943,7 @@ $(document).on('click','button', function(){
         let let_img_btn_atualizar_dados_resp = `
             <i class="fa-solid fa-rotate" ></i>
         `;
-        $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Atualiza dados");
+        $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Atualiza");
         $("#btn_associar_responsaveis_conta").val(let_val_btn);
 
     }
@@ -3015,9 +3015,9 @@ function limpa_campos_form_cad_contas(){
     $("#dt_ini_resp").val("");
     $("#dt_fim_resp").val("");
     let let_img_btn_atualizar_dados_resp = `
-        <i class="fa-solid fa-plus" ></i>
+        <i class="fa-solid fa-paperclip" ></i>
     `;
-    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar responsáveis");
+    $("#btn_associar_responsaveis_conta").html(let_img_btn_atualizar_dados_resp + "Associar");
     $("#btn_associar_responsaveis_conta").val(0);
 
 

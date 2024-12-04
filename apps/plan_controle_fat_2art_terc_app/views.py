@@ -640,8 +640,8 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
         registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(
             cod_projeto=projeto).extra(
             where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " OR MONTH(data_fim_vigencia) = " + mes_vigencia + " ) " +
-                " AND (YEAR(data_ini_vigencia) = " + ano_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
+                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
+                " AND (MONTH(data_fim_vigencia) = " + mes_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
         tab_form_cad_placa_terc = []
         for reg in registros_cad_placa_terc:
             reg_tab_cad_placa = Tab_Cad_Placa_Terc_Financ(
@@ -1014,9 +1014,17 @@ class Tab_Cad_Fretes_Terc_View(View):
         registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
             cod_projeto=projeto).extra(
             where=[
+                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
+                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
+                                        .values())
+
+        '''registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
+            cod_projeto=projeto).extra(
+            where=[
                 " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " OR MONTH(data_fim_vigencia) = " + mes_vigencia + " ) " +
                 " AND (YEAR(data_ini_vigencia) = " + ano_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
                                         .values())
+        '''
 
         data = dict()
         data = {

@@ -26,11 +26,12 @@ class Processo(models.Model):
     data_desativacao = models.DateField(null=True, blank=True)
     frequencia = models.CharField(max_length=200, blank=False, null=False)
     eh_ativo = models.IntegerField(blank=True, null=True, default=0)
-    cod_usu= models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_uso', null=True, blank=True)
+    cod_usu= models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)
     cod_tipo_processo = models.ForeignKey(Tipo_Processo, models.DO_NOTHING, db_column='cod_tipo_processo',
                                       null=True, blank=True)
     #cod_da_area
     cod_atividade = models.ForeignKey(Atividade, models.DO_NOTHING, db_column='cod_atividade', null=True, blank=True)
+    cod_prioridade = models.CharField(max_length=1, blank=False, null=False)
     class Meta:
         managed=True
         db_table='op_ti_painel_processos'

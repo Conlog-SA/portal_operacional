@@ -703,7 +703,7 @@ function povoa_tab_cad_placas_terc(){
                 "scrollCollapse": true,
                 "paging": true,
                 "searching": true,
-                "pageLength": 7,
+                "pageLength": 10,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'
