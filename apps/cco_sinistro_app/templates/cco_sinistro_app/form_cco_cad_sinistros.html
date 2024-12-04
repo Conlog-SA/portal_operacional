@@ -52,35 +52,39 @@
                          role="tabpanel"
                          aria-labelledby="a_tab_pesq_sinistros_cargas" style="padding-left:5px;">
                         <!-- Form pesquisa de sinistros de cargas-->
-                        <div class="row align-items-center" id="frm_cco_pesq_sinistros" name="frm_cco_pesq_sinistros">
-                            <div class="col-sm-2 justify-content-between" style="padding-right: 0px; margin-top: 2rem;">
+
+                        <div class="d-flex w-100 justify-content-between align-items-center w-100 mb-3 mt-3"
+                             id="frm_cco_pesq_sinistros" name="frm_cco_pesq_sinistros">
+                            <div class="d-flex align-items-end w-100">
                                 <select class="selectpicker form-control" id="cb_placa_pesq_sinistros_carga"
                                         name="cb_placa_pesq_sinistros_carga"
-                                        style="color: #999999; font-size: 20px; height: 54.65px; width:250px;"
                                         data-live-search="true" title="Placa">
                                     {% for placa in lista_placas %}
                                     <option value="{{ placa.placa_veiculo_cavalo }}">{{ placa.placa_veiculo_cavalo }}</option>
                                     {% endfor %}
                                 </select>
-                            </div>
-                            <div class="col-sm-auto" style="padding-left: 0px; margin-top: 2rem;">
-                                <button type="button" id="btn_pesq_sinistros_carga" class="btn btn-primary btn-rounded button-primary" name="btn_pesq_sinistros_carga"
-                                        style="margin-left:10px; width:150px;">
+                                &nbsp;&nbsp;
+                                <button type="button" id="btn_pesq_sinistros_carga"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        name="btn_pesq_sinistros_carga" style="padding: 0.6rem 1.2rem">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    Pesquisar
                                 </button>
                             </div>
-                            <div class="col-sm-auto ml-auto" style="padding-right:10px; margin-top:15px">
-                                <label for="competencia_selecionada" class="label-padrao"></label>
+
+                            <div class="d-flex align-items-end w-100" style="padding-right:10px; margin-left: 2rem">
+                                <label for="competencia_selecionada"></label>
                                 <input required type="month" class="form-control " id="competencia_selecionada"
                                        style="width: 200px;">
-                            </div>
-                            <div class="col-sm-auto" style="padding-left:0px; margin-top: 2rem;">
-                                <button type='button' id="btn_pesq_sinistros_date" class="btn btn-primary btn-rounded button-primary" name="btn_pesq_sinistros_date"
-                                        style="width: 150px;">
+                                &nbsp;&nbsp;
+                                <button type='button' id="btn_pesq_sinistros_date"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        name="btn_pesq_sinistros_date" style="padding: 0.6rem 1.2rem">
                                     <i class="fa-solid fa-magnifying-glass"></i>
-                                    Pesquisar
                                 </button>
+                            </div>
+
+                            <div class="d-flex align-items-end w-100" style="padding-right:10px; margin-left: 2rem">
+                                &nbsp;&nbsp;
                             </div>
                         </div>
                         <!---Tabela pesquisa Sinistros--->
