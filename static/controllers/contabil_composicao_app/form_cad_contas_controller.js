@@ -2869,6 +2869,7 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                 dados.lista_status_contratos_comp.forEach( status => {
                 let let_periodo_comp = status.data_competencia.split('-')[1] + '/' +
                      status.data_competencia.split('-')[0];
+                /*
                 let desc_status = ''
                 if(status.status == '1'){
                     desc_status = 'OK';
@@ -2879,6 +2880,17 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                 } else if(status.status == '4'){
                     desc_status = 'Falta compor';
                 }
+                */
+                let let_desc_comp = `
+                    ${status.cod_status_comp__desc_status}: ${status.obs_status_comp}
+                `;
+                let let_desc_ana = `
+                    ${status.cod_status_ana__desc_status}: ${status.obs_status_ana}
+                `;
+                let let_desc_reg = `
+                    ${status.cod_status_reg__desc_status}: ${status.obs_status_reg}
+                `;
+
                 let let_reg = [
                     `<i class="fa-solid fa-caret-right icon-color-e"></i>`,
                     status.cod_contrato__num_contrato,
@@ -2888,8 +2900,9 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     status.val_balancete,
                     status.val_diferenca,
                     status.cod_usu__nome_usu,
-                    desc_status,
-                    status.obs_status
+                    let_desc_comp,
+                    let_desc_ana,
+                    let_desc_reg
                 ];
                 let_lista_status.push(let_reg);
             });
@@ -2909,8 +2922,9 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     { title: "Balancete" },
                     { title: "Diferença" },
                     { title: "Usuário" },
-                    { title: "Status" },
-                    { title: "Observação" }
+                    { title: "Composição" },
+                    { title: "Análise" },
+                    { title: "Regularização" }
                 ],
                 "columnDefs": [
                     {"className": "dt-center", "targets": [2, ]},

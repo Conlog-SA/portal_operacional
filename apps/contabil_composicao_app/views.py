@@ -2120,10 +2120,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if val_parcelas_atrasadas['sum_val_pago_parc_atrasadas'] != None:
                         val_pago_parc_atrasadas = val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
                     val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_pago_parc_atrasadas
-<<<<<<< HEAD
 
-=======
->>>>>>> 04e88c3e13cac820bad0cc17b56d28b2e4ad74e4
 
                 val_composicao = val_composicao_ano - val_pago
 
@@ -2529,14 +2526,31 @@ class Form_Status_Contrato_Composicao_View(View):
                                            .filter(cod_conta=obj_conta,
                                                    cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
                                            .order_by('cod_contrato__cod_contrato', 'tipo_prazo', 'data_competencia')
-                                           .values('cod_auditoria_composicao', 'status', 'data_lan_auditoria',
-                                                   'data_competencia', 'obs_status', 'cod_usu__nome_usu',
+                                           .values('cod_auditoria_composicao', 'status', 'data_lan_auditoria','obs_status_ana',
+                                                   'data_competencia', 'obs_status_comp', 'cod_usu__nome_usu','obs_status_reg',
                                                    'cod_contrato__cod_contrato', 'cod_contrato__num_contrato',
-                                                   'tipo_prazo', 'val_composicao', 'val_balancete', 'val_diferenca'))
+                                                   'tipo_prazo', 'val_composicao', 'val_balancete', 'val_diferenca',
+                                                   'cod_status_comp__desc_status', 'cod_status_ana__desc_status',
+                                                   'cod_status_reg__desc_status'))
         for reg in lista_status_contratos_comp:
             reg['val_composicao'] = locale.currency(round(float(reg['val_composicao']), 2), grouping=True, symbol=None)
             reg['val_balancete'] = locale.currency(round(float(reg['val_balancete']), 2), grouping=True, symbol=None)
             reg['val_diferenca'] = locale.currency(round(float(reg['val_diferenca']), 2), grouping=True, symbol=None)
+
+            if reg['cod_status_comp__desc_status'] == None:
+                reg['cod_status_comp__desc_status'] = ''
+            if reg['cod_status_ana__desc_status'] == None:
+                reg['cod_status_ana__desc_status'] = ''
+            if reg['cod_status_reg__desc_status'] == None:
+                reg['cod_status_reg__desc_status'] = ''
+
+            if reg['obs_status_comp'] == None:
+                reg['obs_status_comp'] = ''
+            if reg['obs_status_ana'] == None:
+                reg['obs_status_ana'] = ''
+            if reg['obs_status_reg'] == None:
+                reg['obs_status_reg'] = ''
+
         data = dict()
         data = {
             'lista_status_contratos_comp': lista_status_contratos_comp
