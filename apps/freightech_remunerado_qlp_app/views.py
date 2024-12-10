@@ -234,7 +234,6 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                 'periodo': df_qlp_total.loc[index, 'data_qlp'],
                 'nome_filial': df_qlp_total.loc[index, 'nome_filial'],
                 'desc_proj': df_qlp_total.loc[index, 'nome_ccu_colab'],
-                'desc_cargo_senior': df_qlp_total.loc[index, 'nome_cargo_colab'],
                 'desc_cargo_freightech': df_qlp_total.loc[index, 'desc_cargo_freightech'],
                 'qlp': int(df_qlp_total.loc[index, 'matricula_colab']),
                 'val_ordenados': locale.currency(round(float(df_qlp_total.loc[index, 'sal_base_colab']),2), grouping=True, symbol=None),
@@ -246,7 +245,7 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
 
         lista_qlp_filial = []
         df_qlp_filial = df_qlp_total.groupby(['data_qlp', 'vigencia', 'quinzena','cod_filial', 'nome_filial',
-                                              'cod_cargo', 'nome_cargo_colab', 'desc_cargo_freightech',
+                                              'desc_cargo_freightech',
                                               'qtd_qlp_bench', 'qtd_ordenados', 'val_unit_ordenados'])[
             ['matricula_colab', 'sal_base_colab']].sum().reset_index()
         df_qlp_filial.fillna(0, inplace=True)
@@ -259,7 +258,6 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                 'quinz': int(df_qlp_filial.loc[index, 'quinzena']),
                 'periodo': df_qlp_filial.loc[index, 'data_qlp'],
                 'nome_filial': df_qlp_filial.loc[index, 'nome_filial'],
-                'desc_cargo_senior': df_qlp_filial.loc[index, 'nome_cargo_colab'],
                 'desc_cargo_freightech': df_qlp_filial.loc[index, 'desc_cargo_freightech'],
                 'qlp': int(df_qlp_filial.loc[index, 'matricula_colab']),
                 'val_ordenados': locale.currency(round(float(df_qlp_filial.loc[index, 'sal_base_colab']),2), grouping=True, symbol=None),

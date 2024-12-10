@@ -238,7 +238,6 @@ $(document).on('click','button', function(){
                         item.quinz,
                         item.periodo,
                         item.desc_proj,
-                        item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
                         item.val_ordenados,
@@ -269,7 +268,6 @@ $(document).on('click','button', function(){
                         { title: "Quinzena" },
                         { title: "Dia" },
                         { title: "Projeto" },
-                        { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
                         { title: "R$ TT Ordenados" },
@@ -283,7 +281,7 @@ $(document).on('click','button', function(){
                     ],
                     "initComplete": function () {
                         this.api()
-                            .columns([0,1,2,3,4])
+                            .columns([0,1,2,3])
                             .every(function () {
                                 let column = this;
 
@@ -344,7 +342,6 @@ $(document).on('click','button', function(){
                         item.quinz,
                         item.periodo,
                         item.nome_filial,
-                        item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
                         item.val_ordenados,
@@ -375,7 +372,6 @@ $(document).on('click','button', function(){
                         { title: "Quinzena" },
                         { title: "Dia" },
                         { title: "Filial" },
-                        { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
                         { title: "R$ TT Ordenados" },
@@ -389,7 +385,7 @@ $(document).on('click','button', function(){
                     ],
                     "initComplete": function () {
                         this.api()
-                            .columns([0,1,2,3,4])
+                            .columns([0,1,2,3,])
                             .every(function () {
                                 let column = this;
 

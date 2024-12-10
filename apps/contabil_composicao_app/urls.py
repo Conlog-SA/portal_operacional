@@ -162,6 +162,14 @@ urlpatterns = [
          name='atualiza_cb_contas_responsaveis_contas'),
     path('desativa_resp_contas_em_lote', views.Form_Vincula_Resp_Contas_View.as_view(),
          name='desativa_resp_contas_em_lote'),
+    path('povoa_tabela_status_proc_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
+         name='povoa_tabela_status_proc_contabil'),
+    path('adiciona_novo_status_processo_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
+         name='adiciona_novo_status_processo_contabil'),
+    path('atualiza_data_fim_status_proc_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
+         name='atualiza_data_fim_status_proc_contabil'),
+    path('povo_status_pesq_comp_detalhado', views.Comp_Status_Pesq_Comp_Detalhada_View.as_view(),
+         name='povo_status_pesq_comp_detalhado'),
 
 ]
 

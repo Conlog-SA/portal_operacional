@@ -27,7 +27,7 @@ from apps.contabil_composicao_app.models import Pacote_Conta, Conta, Contrato, P
     Arquivo_Docs_Pac_Contas_Modelo_1, Docs_Pac_Contas_Pagar_Receber_M1, Docs_Pac_Estoque_M1, \
     Docs_Pac_Folha_Pag_M1, Docs_Pac_Contas_Compensacao_M1, Docs_Pac_Tributos_M1, \
     Docs_Pac_Finac_Disponib_M1, Docs_Pac_Intercompany_M1, Docs_Pac_Imobilizado_M1, \
-    Docs_Pac_Consorcio_Ativo_M1, Docs_Demais_Contas_M1, Docs_Pac_Contas_Pagar_Receber_M1
+    Docs_Pac_Consorcio_Ativo_M1, Docs_Demais_Contas_M1, Docs_Pac_Contas_Pagar_Receber_M1, Status_Processos_Contabil
 from apps.estrut_org_app.models import Empresa, Filial
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -37,7 +37,6 @@ class Form_Imp_Cad_Conta_View(View):
     def get(self, request):
         # lista_contas_benner = ConexaoBancoBenner().retorna_dados_contas()
         cod_usuario_sessao = request.session['cod_usuario_logado']
-        obj_usuario_logado = Usuario.objects.get(pk=cod_usuario_sessao)
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_contas = Conta.objects.filter(tipo_modelo=1)
@@ -88,7 +87,7 @@ class Form_Imp_Cad_Conta_View(View):
             'qtd_arquivos_postados': qtd_arquivos_postados,
             'obj_usuario_sessao': obj_usuario_sessao,
             'lista_usuarios_contabil': lista_usuarios_contabil,
-            'obj_usuario_logado': obj_usuario_logado,
+            'obj_usuario_logado': obj_usuario_sessao,
             'cod_empresa': obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa,
             'logo_empresa': logo_empresa,
             'cor_padrao': cor_padrao,
@@ -1182,6 +1181,9 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
 
 class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
     def get(self, request):
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
@@ -1193,6 +1195,21 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
+        lista_status_composicao = (Status_Processos_Contabil.objects
+                                   .filter((Q(vigencia_fim__gte=data_hora_atual) | Q(vigencia_fim__isnull=True)),
+                                           tipo_status='C',
+                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                           vigencia_ini__lte=data_hora_atual))
+        lista_status_analise = (Status_Processos_Contabil.objects
+                                   .filter((Q(vigencia_fim__gte=data_hora_atual) | Q(vigencia_fim__isnull=True)),
+                                           tipo_status='A',
+                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                           vigencia_ini__lte=data_hora_atual))
+        lista_status_reg = (Status_Processos_Contabil.objects
+                                   .filter((Q(vigencia_fim__gte=data_hora_atual) | Q(vigencia_fim__isnull=True)),
+                                           tipo_status='R',
+                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                           vigencia_ini__lte=data_hora_atual))
 
         lista_pacotes = Pacote_Conta.objects.all()
         contexto = {
@@ -1200,7 +1217,10 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             'desc_menu': 'Conciliação Composição x Benner Detalhado',
             'lista_usuarios_contabil': lista_usuarios_contabil,
             'lista_pacotes': lista_pacotes,
-            'obj_usuario_logado': obj_usuario_logado
+            'obj_usuario_logado': obj_usuario_logado,
+            'lista_status_composicao': lista_status_composicao,
+            'lista_status_analise': lista_status_analise,
+            'lista_status_reg': lista_status_reg
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
@@ -1212,6 +1232,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             cod_contrato_form = reg['cod_contrato']
             tipo_prazo_form = reg['tipo_prazo']
             cod_status_form = reg['cod_status']
+            tipo_status_frm = reg['tipo_status']
             obs_status_form = reg['obs_status']
             competencia_form = reg['competencia']
             val_composicao_form = reg['val_composicao']
@@ -1248,27 +1269,88 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
 
 
             if obj_status_competencia != None:
-                obj_status_competencia.status = cod_status_form
                 obj_status_competencia.data_lan_auditoria = data_hora_atual
                 obj_status_competencia.data_competencia = competencia_date
-                obj_status_competencia.obs_status = obs_status_form.strip()
                 obj_status_competencia.val_composicao = val_comp_dec
                 obj_status_competencia.val_balancete = val_bal_dec
                 obj_status_competencia.val_diferenca = val_dif_dec
                 obj_status_competencia.cod_usu = obj_usuario_sessao
+
+                if tipo_status_frm == 'C':
+                    obj_status_comp = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='C', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    obj_status_competencia.status = obj_status_comp.cod_status_aud
+                    obj_status_competencia.cod_status_comp = obj_status_comp
+                    obj_status_competencia.obs_status_comp = obs_status_form.strip()
+                elif tipo_status_frm == 'A':
+                    obj_status_ana = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='A', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    obj_status_competencia.cod_status_ana = obj_status_ana
+                    obj_status_competencia.obs_status_ana = obs_status_form.strip()
+                elif tipo_status_frm == 'R':
+                    obj_status_reg = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='R', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    obj_status_competencia.cod_status_reg = obj_status_reg
+                    obj_status_competencia.obs_status_reg = obs_status_form.strip()
+
                 obj_status_competencia.save()
             else:
+                status_auditoria = 0
+                cod_status_comp_frm = None
+                obs_status_comp_frm = ''
+                cod_status_ana_frm = None
+                obs_status_ana_frm = ''
+                cod_status_reg_frm = None
+                obs_status_reg_frm = ''
+
+                if tipo_status_frm == 'C':
+                    obj_status_comp = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='C', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    status_auditoria = obj_status_comp.cod_status_aud
+                    cod_status_comp_frm = obj_status_comp
+                    obs_status_comp_frm = obs_status_form.strip()
+
+                elif tipo_status_frm == 'A':
+                    obj_status_ana = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='A', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    cod_status_ana_frm = obj_status_ana
+                    obs_status_ana_frm = obs_status_form.strip()
+
+                elif tipo_status_frm == 'R':
+                    obj_status_reg = ((Status_Processos_Contabil.objects
+                                  .filter(tipo_status='R', cod_status_processos_contabil=cod_status_form,
+                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
+                                  .first())
+                    cod_status_reg_frm = obj_status_reg
+                    obs_status_reg_frm = obs_status_form.strip()
+
+
                 obj_status_competencia = Auditoria_Status_Composicao_Competencia(
-                    status = cod_status_form,
+                    status = status_auditoria,
                     tipo_prazo = tipo_prazo_form,
                     data_competencia = competencia_date,
                     val_composicao = val_comp_dec,
                     val_balancete = val_bal_dec ,
                     val_diferenca = val_dif_dec,
-                    obs_status = obs_status_form.strip(),
                     cod_usu = obj_usuario_sessao,
                     cod_contrato = obj_contrato,
-                    cod_conta= obj_conta
+                    cod_conta= obj_conta,
+                    cod_status_comp = cod_status_comp_frm,
+                    obs_status_comp= obs_status_comp_frm,
+                    cod_status_ana= cod_status_ana_frm,
+                    obs_status_ana=obs_status_ana_frm,
+                    cod_status_reg=cod_status_reg_frm,
+                    obs_status_reg=obs_status_reg_frm
                 ).save()
 
         data = dict()
@@ -1433,7 +1515,8 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     val_balancete = 0
                     conta_auditada = (Auditoria_Status_Composicao_Competencia.objects
                                       .filter(cod_conta=obj_conta,data_competencia=data_competencia,
-                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,status=1)
+                                              cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
+                                              status=1)
                                       .first())
                     if conta_auditada == None:
                         if obj_conta.cod_pacote_conta.cod_pacote_conta == 3:
@@ -1643,9 +1726,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             lista_contas = []
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
             cod_status_analise_form = request.GET['cod_status_analise']
+            chk_contas_zeradas_frm = request.GET['chk_contas_zeradas']
             if cod_status_analise_form == '0':
                 lista_contas = lista_cod_conta_form.split(',')
-            elif cod_status_analise_form == '5':
+            elif cod_status_analise_form == 'S':
                 for reg in lista_cod_conta_form.split(','):
                     conta_auditada = Auditoria_Status_Composicao_Competencia.objects.filter(
                         data_competencia=competencia_date, cod_conta__cod_conta=reg,
@@ -1655,7 +1739,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         lista_contas.append(reg)
             else:
                 lista_contas_auditadas = Auditoria_Status_Composicao_Competencia.objects.filter(
-                        data_competencia=competencia_date, status=int(cod_status_analise_form),
+                        data_competencia=competencia_date, cod_status_comp=int(cod_status_analise_form),
                     cod_conta__tipo_modelo=cod_modelo_selecionado_form,
                     cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
                 )
@@ -1781,28 +1865,67 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
                     '''Verifica se há status da conta na competencia'''
                     cod_status_auditoria_comp = 0
+                    peso_status_auditoria_comp = 0
                     obs_status_auditoria_comp = ''
+
+                    peso_status_auditoria_ana = 0
+                    obs_status_auditoria_ana = ''
+
+                    peso_status_auditoria_reg = 0
+                    obs_status_auditoria_reg = ''
+
+                    peso_total_proc_contabil = 0
                     obj_status_contrato_competencia = Auditoria_Status_Composicao_Competencia.objects.filter(
                         cod_conta=obj_conta, data_competencia=competencia_date,
                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
                     ).first()
                     if obj_status_contrato_competencia != None:
                         cod_status_auditoria_comp = obj_status_contrato_competencia.status
-                        obs_status_auditoria_comp = obj_status_contrato_competencia.obs_status
+                        if obj_status_contrato_competencia.cod_status_comp != None:
+                            peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
+                            obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
+                                                         ' / ' + obj_status_contrato_competencia.obs_status_comp)
 
+                        if obj_status_contrato_competencia.cod_status_ana != None:
+                            peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
+                            obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
+                                                        obj_status_contrato_competencia.obs_status_ana)
+
+                        if obj_status_contrato_competencia.cod_status_reg != None:
+                            peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
+                            obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
+                                                        obj_status_contrato_competencia.obs_status_reg)
+
+                        peso_total_proc_contabil = (peso_status_auditoria_comp + peso_status_auditoria_ana +
+                                                    peso_status_auditoria_reg)
 
                     linha = []
-                    linha.append(obj_conta.cod_conta) #0
-                    linha.append(obj_conta.cod_red_conta_contabil_cp) #1
-                    linha.append(obj_conta.cod_estrut_cp) #2
-                    linha.append(str(obj_conta.cod_conta) + '-' + obj_conta.desc_conta) #3
-                    linha.append(locale.currency(round(val_composicao, 2), grouping=True, symbol=None)) #4
-                    linha.append(locale.currency(round(val_balancete, 2), grouping=True, symbol=None)) #5
-                    linha.append(locale.currency(round(val_dif, 2), grouping=True, symbol=None)) #6
-                    linha.append(cod_status_auditoria_comp) #7
-                    linha.append(obs_status_auditoria_comp) #8
-                    linha.append(lista_anexos_competencia) #9
-                    lista_contas_conciliacao.append(linha) #10
+                    linha.append(obj_conta.cod_conta)  # 0
+                    linha.append(obj_conta.cod_red_conta_contabil_cp)  # 1
+                    linha.append(obj_conta.cod_estrut_cp)  # 2
+                    linha.append(str(obj_conta.cod_conta) + '-' + obj_conta.desc_conta)  # 3
+                    linha.append(locale.currency(round(val_composicao, 2), grouping=True, symbol=None))  # 4
+                    linha.append(locale.currency(round(val_balancete, 2), grouping=True, symbol=None))  # 5
+                    linha.append(locale.currency(round(val_dif, 2), grouping=True, symbol=None))  # 6
+                    linha.append(cod_status_auditoria_comp)  # 7
+                    linha.append(obs_status_auditoria_comp)  # 8
+                    linha.append(lista_anexos_competencia)  # 9
+                    linha.append(peso_status_auditoria_comp)  # 10
+                    linha.append(peso_status_auditoria_ana)  # 11
+                    linha.append(obs_status_auditoria_ana)  # 12
+                    linha.append(peso_status_auditoria_reg)  # 13
+                    linha.append(obs_status_auditoria_reg)  # 14
+                    linha.append(peso_total_proc_contabil)  # 15
+
+                    if chk_contas_zeradas_frm == 'N':
+                        lista_contas_conciliacao.append(linha)
+                    else:
+                        if linha[4] == '0,00' and linha[5] == '0,00':
+                            lista_contas_conciliacao.append(linha)
+
+
+
+
 
             elif cod_modelo_selecionado_form == '3':
                 for cod_conta_form in lista_contas:
@@ -1813,14 +1936,22 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         '''Calcula dados CP'''
                         dados_conciliacao_cp = self.gera_reg_conciliacao_por_tipo_prazo(conta, contrato, primeiro_dia_ano,
                                                                  ultimo_dia_ano, ultimo_dia_mes_date,'CP', competencia_form)
-                        lista_contas_conciliacao.append(dados_conciliacao_cp)
+                        if chk_contas_zeradas_frm == 'N':
+                            lista_contas_conciliacao.append(dados_conciliacao_cp)
+                        else:
+                            if dados_conciliacao_cp[7] == '0,00' and dados_conciliacao_cp[8] == '0,00':
+                                lista_contas_conciliacao.append(dados_conciliacao_cp)
 
                         '''Calcula dados LP'''
                         dados_conciliacao_lp = self.gera_reg_conciliacao_por_tipo_prazo(conta, contrato,
                                                                                         primeiro_dia_ano,
                                                                                         ultimo_dia_ano,
                                                                                         ultimo_dia_mes_date, 'LP', competencia_form)
-                        lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        if chk_contas_zeradas_frm == 'N':
+                            lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        else:
+                            if dados_conciliacao_lp[7] == '0,00' and dados_conciliacao_lp[8] == '0,00':
+                                lista_contas_conciliacao.append(dados_conciliacao_lp)
 
         elif tipo_visualizacao_form == 'A':
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
@@ -1914,7 +2045,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         val_balancete = 0
         val_dif_comp_balanc = 0
         cod_status_auditoria_comp = 0
+        peso_status_auditoria_comp = 0
         obs_status_auditoria_comp = ''
+        peso_status_auditoria_ana = 0
+        obs_status_auditoria_ana = ''
+        peso_status_auditoria_reg = 0
+        obs_status_auditoria_reg = ''
+        peso_total_proc_contabil = 0
 
         data_competencia = datetime(int(competencia.split('-')[0]), int(competencia.split('-')[1]), 1)
         data_competencia_mais_um = data_competencia + relativedelta(months=1)
@@ -1979,7 +2116,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     val_pago = val_composicao_ano_dic['sum_val_pago']
 
                 if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
-                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
+                    val_pago_parc_atrasadas = 0
+                    if val_parcelas_atrasadas['sum_val_pago_parc_atrasadas'] != None:
+                        val_pago_parc_atrasadas = val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
+                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_pago_parc_atrasadas
 
 
                 val_composicao = val_composicao_ano - val_pago
@@ -2011,7 +2151,21 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             ).first()
             if obj_status_contrato_competencia != None:
                 cod_status_auditoria_comp = obj_status_contrato_competencia.status
-                obs_status_auditoria_comp = obj_status_contrato_competencia.obs_status
+                if obj_status_contrato_competencia.cod_status_comp != None:
+                    peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
+                    obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
+                                                         ' / ' + obj_status_contrato_competencia.obs_status_comp)
+                if obj_status_contrato_competencia.cod_status_ana != None:
+                    peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
+                    obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
+                                                obj_status_contrato_competencia.obs_status_ana)
+                if obj_status_contrato_competencia.cod_status_reg != None:
+                    peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
+                    obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
+                                                obj_status_contrato_competencia.obs_status_reg)
+
+                peso_total_proc_contabil = (peso_status_auditoria_comp + peso_status_auditoria_ana +
+                                            peso_status_auditoria_reg)
 
         elif tipo_prazo == 'LP':
             cod_red = conta.cod_red_conta_contabil_lp
@@ -2070,7 +2224,21 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             ).first()
             if obj_status_contrato_competencia != None:
                 cod_status_auditoria_comp = obj_status_contrato_competencia.status
-                obs_status_auditoria_comp = obj_status_contrato_competencia.obs_status
+                if obj_status_contrato_competencia.cod_status_comp != None:
+                    peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
+                    obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
+                                                 ' / ' + obj_status_contrato_competencia.obs_status_comp)
+                if obj_status_contrato_competencia.cod_status_ana != None:
+                    peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
+                    obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
+                                                obj_status_contrato_competencia.obs_status_ana)
+                if obj_status_contrato_competencia.cod_status_reg != None:
+                    peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
+                    obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
+                                                obj_status_contrato_competencia.obs_status_reg)
+
+                peso_total_proc_contabil = (peso_status_auditoria_comp + peso_status_auditoria_ana +
+                                            peso_status_auditoria_reg)
 
 
 
@@ -2098,6 +2266,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         linha.append(cod_status_auditoria_comp) #11
         linha.append(obs_status_auditoria_comp) #12
         linha.append(lista_anexos_competencia) #13
+        linha.append(peso_status_auditoria_ana) #14
+        linha.append(obs_status_auditoria_ana) #15
+        linha.append(peso_status_auditoria_reg) #16
+        linha.append(obs_status_auditoria_reg) #17
+        linha.append(peso_total_proc_contabil)  # 18
+        linha.append(peso_status_auditoria_comp)  # 19
 
         return linha
 
@@ -5338,5 +5512,100 @@ class Comp_Contas_Resp_View(View):
         data = dict()
         data = {
             'lista_contas': lista_contas
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Form_Status_Proc_Contabil_View(View):
+    def get(self, request):
+        transacao_frm = request.GET['transacao']
+        tipo_status_frm = request.GET['tipo_status']
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_status = None
+        if transacao_frm == 'todos':
+
+            lista_status = list(Status_Processos_Contabil
+                                .objects
+                                .filter(tipo_status=tipo_status_frm, cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                .values('cod_status_processos_contabil', 'desc_status', 'vigencia_ini', 'vigencia_fim',
+                                        'peso', 'cod_status_aud'))
+
+            for reg in lista_status:
+                reg['vigencia_ini'] = datetime.strftime(reg['vigencia_ini'], '%d-%m-%Y')
+                '''if reg['vigencia_fim'] != None:
+                    reg['vigencia_fim'] = datetime.strftime(reg['vigencia_fim'], '%d-%m-%Y')'''
+
+        data = dict()
+        data = {
+            'lista_status': lista_status
+        }
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        transacao_frm = request.POST['transacao']
+
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        msg = ''
+        if transacao_frm == 'novo':
+            desc_frm = request.POST['desc']
+            tipo_status_frm = request.POST['tipo_status']
+            vig_ini_frm = request.POST['vig_ini']
+            vig_fim_frm = request.POST['vig_fim']
+            peso_frm = request.POST['peso']
+            cod_status_aud_frm = request.POST['cod_status_aud']
+
+            if vig_fim_frm == '':
+                vig_fim_frm = None
+
+            objs_status = Status_Processos_Contabil(
+                desc_status=desc_frm,
+                tipo_status=tipo_status_frm,
+                cod_status_aud=cod_status_aud_frm,
+                vigencia_ini=vig_ini_frm,
+                vigencia_fim=vig_fim_frm,
+                peso=peso_frm,
+                cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+            )
+            objs_status.save()
+            msg = 'Status adicionado com sucesso'
+        elif transacao_frm == 'update_dt_fim':
+            cod_status_frm = request.POST['cod_status']
+            dt_fim_frm = request.POST['dt_fim']
+            obj_status = (Status_Processos_Contabil.objects
+                          .filter(cod_status_processos_contabil=cod_status_frm,
+                                  cod_empresa = obj_usuario_sessao.cod_filial.cod_empresa)
+                          .first())
+            obj_status.vigencia_fim = dt_fim_frm
+            obj_status.save()
+            msg = 'Dados atualizados!'
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Comp_Status_Pesq_Comp_Detalhada_View(View):
+    def get(self, request):
+        data_comp_frm = request.GET['data_comp']
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        data_comp = data_comp_frm + '-01'
+        lista_status = list(Auditoria_Status_Composicao_Competencia.objects
+                        .filter(data_competencia=data_comp,
+                                cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                        .distinct()
+                        .values('cod_status_comp__cod_status_processos_contabil', 'cod_status_comp__desc_status'))
+        data = dict()
+        data = {
+            'lista_status': lista_status
         }
         return JsonResponse(data, safe=False)
