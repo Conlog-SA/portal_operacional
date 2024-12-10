@@ -1,0 +1,84 @@
+
+/* PAINEL DE CONTROLE*/
+
+    .conteudo-desc p{
+        font-weight: 700;
+    }
+    .caixa {
+        position: relative;
+        border: 1px solid rgb(0 0 0 / 19%);
+        padding: 50px 160px 80px 50px;
+        font-size: 0.9;
+        box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);
+        font-size: 0.8rem;
+
+        & .caixa3{
+        padding: 50px 50px 80px 160px;
+        }
+    }
+
+    .sub-caixa-esq {
+        position: absolute;
+        padding: 15px;
+        border-radius: 0.3rem;
+        top: 10px;
+        left: 10px;
+        height: 110px;
+        right: 80px;
+        background-color: rgb(0 0 0 / 12%);
+
+
+    }
+
+    .sub-caixa-dir {
+        display: inline-block;
+        position: absolute;
+        padding: 15px;
+        border-radius: 0.3rem;
+        top: 10px;
+        left: 120px;
+        height: 110px;
+        right: 0;
+        color: #fff;
+
+
+        & p {
+            top: 2rem;
+            font-size: 1.3rem;
+        }
+
+
+    }
+
+    .prox-exe {
+        border-right: 1px solid white;
+        background-color: red;
+    }
+
+         /* Tabela  */
+
+    .table{
+        margin-top: 3.3rem;
+        border: 1px solid rgba(248, 241, 241, 0.685);
+        width: 90%;
+        font-size: 5rem;
+    }
+    .col-ult, .col-prox, .col-processo{
+        font-size: 1.25rem
+
+    }
+
+    .col-processo {
+        color: #00BFFF;
+    }
+
+    .col-ult {
+        color: #00FA9A;
+    }
+
+    tr{
+      box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);
+    }
+
+
+

@@ -1,3 +1,146 @@
-<h1>Painel Processos</h1>
+{% load static %}
 
-<h3>{{desc_menu}}</h3>
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/ti_painel_processos_automaticos_app/painel_de_controle.css' %}" />
+{% endblock %}
+
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-users" alt="Usuários"></i>
+            <h1 class="titlePadraoMenu">Torre de Controle - Automatizações</h1>
+        </div>
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
+    </div>
+
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+
+    <div class="containerApp">
+        <form id="frm_pain_control" name="frm_pain_control"  method="POST"
+          class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+          {% csrf_token %}
+          <div class="d-flex justify-content-between align-items-between w-100">
+            <div class="d-flex flex-column align-items-start w-100">
+                <label>De</label>
+                <input type="date" class="form-control" id="dt_ini_atv_benner">
+            </div>
+            <div class="d-flex flex-column align-items-start w-100"
+                 style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                <label>Até</label>
+                <input type="date" class="form-control" id="dt_fim_atv_benner">
+            </div>
+
+            <div class="d-flex flex-column align-items-start w-100"
+                style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                &nbsp;&nbsp;
+            </div>
+
+            <div class="d-flex flex-column align-items-end w-100" >
+              <button type='button' id="btn_pain_control_proc"
+                    name="btn_pain_control_proc"
+                    class="mr-2 btn btn-primary btn-rounded botaoPrincipal icon-colorb"
+                    value="0" style="margin-top:1rem; padding: 0.5rem">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span>Pesquisar Processos</span>
+              </button>
+            </div>
+          </div>
+    </form>
+
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <!-- Conteúdo -->
+             <div class="d-flex justify-content-between align-items-between w-100 h-100">
+                <div class="d-flex flex-column align-items-center w-100">
+                   <span style="font-size: 20px">Painel</span>
+                    <div class="d-flex justify-content-between align-items-center w-100">
+                         <div class="conteudo-desc">
+                             <h5>Processo de Envio </h5>
+                             <div class="caixa caixa1">
+                                 <div class="sub-caixa-esq" style="color: #FF0000; ">
+                                    <p class="ult-exe">ULTIMA EXE.</p> <hr/>
+                                    <p>02/12/2024  <b>12:00</b></p>
+                                 </div>
+                                 <div class="sub-caixa-dir">
+                                   <span>PRÓX.</span>
+                                   <p style="font-size: 0.8rem">03/12/2024</p>
+                                   <p> 13:00 </p>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <div class="conteudo-desc">
+                            <h5 style="margin">Processo de Frota</h5>
+                            <div class="caixa caixa2">
+                               <div class="sub-caixa-esq" style="color: #00FA9A; ">
+                                   <p class="ult-exe">ULTIMA EXE.</p>  <hr/>
+                                   <p>02/12/2024  <b>12:00</b></p>
+                               </div>
+                               <div class="sub-caixa-dir">
+                                   <span>PRÓX.</span>
+                                   <p style="font-size: 0.8rem">03/12/2024</p>
+                                   <p> 12:00 </p>
+                               </div>
+                            </div>
+                         </div>
+                         <div class="conteudo-desc">
+                            <h5>Processo de OS </h5>
+                            <div class="caixa caixa3">
+                                <div class="sub-caixa-esq" style="color: #FFFF00; ">
+                                    <p class="ult-exe">ULTIMA EXE.</p> <hr/>
+                                    <p>02/12/2024  <b>12:00</b></p>
+                                </div>
+                                <div class="sub-caixa-dir">
+                                    <span>PRÓX.</span>
+                                    <p style="font-size: 0.8rem">03/12/2024</p>
+                                    <p>12:00</p>
+                                </div>
+                            </div>
+                      </div>
+                    </div>
+                </div>
+
+
+                <div class="d-flex flex-column align-items-center w-100 ">
+                    <table class="table" style="background-color: rgb(0 0 0 / 12%);">
+                        <br/>
+                        <thead>
+                            <tr style="font-weight: 400; font-size: 1.25rem;box-shadow: 0 0 0.1rem 2px rgba(235, 248, 241, 0.532) ">
+                                <th>PROCESSO</th>
+                                <th style="box-shadow: 0 0 0.5rem 0.1px rgba(235, 248, 241, 0.532)">ULTIMA EXE.</th>
+                                <th >PRÓXIMA EXE.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <td class="col-processo">Processo de Envio</td>
+                                <td class="col-ult"  style="box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);">2min</td>
+                                <td class="col-prox" >5min</td>
+                            </tr>
+                            <tr>
+                                <td class="col-processo" >Processo de Teste</td>
+                                <td class="col-ult"  style="box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);">2min</td>
+                                <td class="col-prox">25min</td>
+                            </tr>
+
+                            <tr>
+                                <td class="col-processo" >Processo de Frota</td>
+                                <td class="col-ult" style="box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);">155min</td>
+                                <td class="col-prox" >235min</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+          </div>
+        </div>
+    </div>
+</div>
+
+
+

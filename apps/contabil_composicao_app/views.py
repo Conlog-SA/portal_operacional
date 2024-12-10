@@ -2120,7 +2120,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if val_parcelas_atrasadas['sum_val_pago_parc_atrasadas'] != None:
                         val_pago_parc_atrasadas = val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
                     val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_pago_parc_atrasadas
+<<<<<<< HEAD
 
+=======
+>>>>>>> 04e88c3e13cac820bad0cc17b56d28b2e4ad74e4
 
                 val_composicao = val_composicao_ano - val_pago
 

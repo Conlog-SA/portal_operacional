@@ -4,7 +4,7 @@ from django.views import View
 from apps.estrut_org_app.models import Filial
 from apps.home_app.views import Index_View
 from apps.usuario_app.models import Usuario, Usu_Menu
-
+from proj_portal_operacional.settings import VERSAO_PORTAL
 
 class Menu_View(View):
     def get(self, request):
@@ -33,7 +33,8 @@ class Menu_View(View):
             'sub_menu_usuario': sub_menu_usuario,
             'lista_filiais': lista_filiais,
             'str_bg': str_bg,
-            'cor_emp_hex': cor_emp_hex
+            'cor_emp_hex': cor_emp_hex,
+            'VERSAO_PORTAL': VERSAO_PORTAL,
         }
         return render(request, 'menu_app/main_menu1.html', context)
 

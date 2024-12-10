@@ -30,7 +30,7 @@ class Phishing(View):
 
         objeto.save()
 
-        return JsonResponse('deu bom', safe=False)
+        return JsonResponse('Ok', safe=False)
 
 class Phishing_Enviados(View):
 

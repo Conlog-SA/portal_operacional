@@ -58,6 +58,10 @@ urlpatterns = [
     path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
     path('contratos_frete_deep_app/', include('apps.contratos_frete_deep_app.urls')),
     path('nps_ti_app/', include('apps.nps_ti_app.urls')),
+    path('gente_gestao_comunicado_admitidos_app/', include('apps.gente_gestao_comunicado_admitidos_app.urls')),
+    path('contabil_indicadores_financeiros_app/', include('apps.contabil_indicadores_financeiros_app.urls')),
+    path('gente_gestao_entrevista_desligamento_app/', include('apps.gente_gestao_entrevista_desligamento_app.urls')),
+    path('gente_gestao_comun_encarreiramentos_app/', include('apps.gente_gestao_comun_encarreiramentos_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

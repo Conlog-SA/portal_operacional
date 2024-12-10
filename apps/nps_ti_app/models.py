@@ -12,7 +12,7 @@ class Pesquisa_Satisfacao(models.Model):
     cod_pesquisa = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     cod_filial_nps = models.ForeignKey(Filial_Nps, models.DO_NOTHING, db_column='cod_filial_nps', blank=True,
                                          null=True)
-    questoes_respondidas = models.CharField(max_length=3000, blank=True, null=True)
+    questoes_respondidas = models.CharField(max_length=2500, blank=True, null=True)
     email = models.CharField(max_length=100, blank=False, null=False)
     data_resposta = models.DateTimeField(blank=True, null=True)
 
