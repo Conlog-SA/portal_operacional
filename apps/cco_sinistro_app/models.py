@@ -26,7 +26,7 @@ class CCO_Sinistro(models.Model):
     num_processo = models.CharField(max_length=15, null=True, blank=True)
     tipo_sinistro = models.CharField(null=True, blank=True, max_length=20)
     obs = models.CharField(max_length=500, null=True, blank=True)
-    cod_motivo_sinistro = models.ForeignKey(Motivo_Sinistro, models.DO_NOTHING, db_column='cod_motivo_sinistro')
+    cod_motivo_sinistro = models.ForeignKey(Motivo_Sinistro, models.DO_NOTHING, db_column='cod_motivo_sinistro', null=True, blank=True)
     cod_projeto = models.ForeignKey(Projeto, models.DO_NOTHING, db_column='cod_projeto', null=True, blank=True)
     cod_estado = models.ForeignKey(OP_Estados, models.DO_NOTHING, db_column='cod_estado', null=True, blank=True)
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)

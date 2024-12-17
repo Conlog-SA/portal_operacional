@@ -6,8 +6,8 @@
     <div class="modal-content">
       <div class="modal-header div_Titulo">
           <div class="d-flex align-items-center justify-content-center">
-              <i class="fa-solid fa-code-compare" alt="Usuários"></i>
-              <h1 class="titlePadraoMenu">Replica acesso aos módulos ativos</h1>
+              <i class="fa-solid fa-code-compare"></i>
+              <h1 class="titlePadraoMenu">Replica acesso</h1>
           </div>
           <div class="col-md-6" align="right">
             <button type="button" name="bnt_fecha_modal_replicacao_acesso_modulos"
@@ -19,8 +19,6 @@
 
       </div>
       <div class="modal-body">
-        <div class="text-center">
-          <br/>
           <form id="frm_replica_acessos" name="frm_replica_acessos"  method="POST"
                 class="d-flex justify-content-center align-items-center flex-column">
             {% csrf_token %}
@@ -39,7 +37,6 @@
                 <i class="fa-solid fa-check" ></i>Replicar acessos
             </button>
           </form>
-        </div>
       </div>
     </div>
   </div>

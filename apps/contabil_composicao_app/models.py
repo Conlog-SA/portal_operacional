@@ -112,7 +112,20 @@ class Parcela_Contrato(models.Model):
         managed = True
         db_table = 'op_contabil_comp_parcelas_contratos'
 
-
+class Status_Processos_Contabil(models.Model):
+    cod_status_processos_contabil = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    desc_status = models.CharField(max_length=30, blank=False, null=False)
+    '''C - Composicao / A - Analise / R - Regularização'''
+    tipo_status = models.CharField(max_length=1, blank=False, null=False)
+    cod_status_aud = models.IntegerField(blank=True, null=True)
+    vigencia_ini = models.DateField(blank=True, null=True)
+    vigencia_fim = models.DateField(blank=True, null=True)
+    peso = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
+    cod_empresa = models.ForeignKey(Empresa, models.DO_NOTHING, db_column='cod_empresa', null=True)
+    class Meta:
+        managed = True
+        unique_together = ('cod_status_processos_contabil', 'cod_empresa')
+        db_table = 'op_contabil_status_processos_contabil'
 
 class Auditoria_Status_Composicao_Competencia(models.Model):
     cod_auditoria_composicao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -123,13 +136,30 @@ class Auditoria_Status_Composicao_Competencia(models.Model):
     val_composicao = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     val_balancete = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
     val_diferenca = models.DecimalField(max_digits=12, decimal_places=2, blank=True, null=True)
-    obs_status = models.CharField(max_length=300, blank=True, null=True)
+
+
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
     cod_contrato = models.ForeignKey(Contrato, models.DO_NOTHING, db_column='cod_contrato', null=True, blank=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True, blank=True)
+
+    cod_status_comp = models.ForeignKey(Status_Processos_Contabil, models.DO_NOTHING,
+                                        db_column='cod_status_comp', related_name='cod_status_comp', null=True, blank=True)
+    obs_status_comp = models.CharField(max_length=300, blank=True, null=True)
+    cod_status_ana = models.ForeignKey(Status_Processos_Contabil, models.DO_NOTHING,
+                                        db_column='cod_status_ana', related_name='cod_status_ana', null=True, blank=True)
+    obs_status_ana = models.CharField(max_length=300, blank=True, null=True)
+    cod_status_reg = models.ForeignKey(Status_Processos_Contabil, models.DO_NOTHING,
+                                        db_column='cod_status_reg', related_name='cod_status_reg', null=True, blank=True)
+    obs_status_reg = models.CharField(max_length=300, blank=True, null=True)
     class Meta:
         managed = True
         db_table = 'op_contabil_auditorias_status_composicao'
+
+
+
+
+
+
 
 
 class Campos_Contas_Modelo_1(models.Model):
