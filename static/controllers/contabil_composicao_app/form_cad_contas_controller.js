@@ -721,7 +721,7 @@ $(document).on('click','button', function(){
         }
         if(let_cod_conta != "0"){
             var formDataImg = new FormData();
-            formDataImg.append("file", $('input[type=file]')[0].files[0]);
+            formDataImg.append("file", $('#file_anexo_contrato')[0].files[0]);
             formDataImg.append("cod_conta", let_cod_conta);
             formDataImg.append("desc_arq_anexo", $("#txt_desc_anexo_contrato").val());
             formDataImg.append("eh_anexo_principal", let_eh_anexo_principal);

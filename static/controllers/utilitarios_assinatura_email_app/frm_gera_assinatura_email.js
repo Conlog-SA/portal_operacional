@@ -216,7 +216,8 @@ $(document).on('click', '#dv_foto_colab', function(){
 */
 
 const div = document.getElementById('dv_foto_colab');
-    const fileInput = document.getElementById('file-input');
+const img = document.getElementById('img_foto_colab')
+const fileInput = document.getElementById('file-input');
 
     // Adiciona evento de clique na div
     div.addEventListener('click', () => {
@@ -226,17 +227,39 @@ const div = document.getElementById('dv_foto_colab');
     // Adiciona evento ao input de arquivo para alterar o fundo da div
     fileInput.addEventListener('change', function (event) {
       const file = event.target.files[0]; // Obtém o arquivo selecionado
-        importa_arquivo_server();
 
-        let caminho_foto_server = 'https://operacional.conlogsa.com.br/media/fotos/' + file.name;
-        console.log(caminho_foto_server);
       if (file) {
         const reader = new FileReader();
 
         // Executa quando o arquivo é carregado
         reader.onload = function (e) {
-          div.style.backgroundImage = `url('${e.target.result}')`; // Define a imagem como fundo
-          div.textContent = ''; // Remove o texto da div
+            let let_frm_data = new FormData();
+			let_frm_data.append("file", $('#file-input')[0].files[0]);
+			let_frm_data.append('transacao', 'update_foto')
+			$.ajax({
+				type: 'POST',
+				enctype: "multipart/form-data; charset=utf-8",
+				url: "/utilitarios_assinatura_email_app/carrega_salva_foto_colab",
+				data: let_frm_data,
+				dataType: 'json',
+				processData: false,
+				contentType: false,
+				cache: false,
+				success: function(data){
+					let caminho_foto_server = 'https://operacional.conlogsa.com.br/media/' + data.foto_postada;
+					console.log(data.foto_postada);
+					const timestamp = new Date().getTime();
+					img.src = `{caminho_foto_server}?_=${timestamp}`;
+					div.style.backgroundImage = `url('${caminho_foto_server}?_=${timestamp}')`;
+					//div.textContent = ''; // Remove o texto da div
+				},
+				error: function (request, status, error) {
+					let caminho_foto_server = 'https://operacional.conlogsa.com.br/media/fotos/user_default.jpg';
+					div.style.backgroundImage = `url('${caminho_foto_server}?_=${timestamp}')`;
+					img.src = `{caminho_foto_server}?_=${timestamp}`;
+					console.log(error);
+				}
+			});
         };
 
         reader.readAsDataURL(file); // Lê o arquivo como uma URL base64
@@ -245,28 +268,5 @@ const div = document.getElementById('dv_foto_colab');
 
 
 
-function importa_arquivo_server() {
-    let let_frm_data = new FormData();
-    let_frm_data.append("file", $('#file-input')[0].files[0]);
-    let_frm_data.append('transacao', 'update_foto')
-    $.ajax({
-        type: 'POST',
-        enctype: "multipart/form-data; charset=utf-8",
-        url: "/utilitarios_assinatura_email_app/carrega_salva_foto_colab",
-        data: let_frm_data,
-        dataType: 'json',
-        processData: false,
-        contentType: false,
-        cache: false,
-        success: function(data){
-            console.log(data.msg)
 
-
-        },
-        error: function (request, status, error) {
-            console.log(error);
-        }
-    });
-
-}
 

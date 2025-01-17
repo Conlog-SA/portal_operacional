@@ -1923,10 +1923,6 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         if linha[4] == '0,00' and linha[5] == '0,00':
                             lista_contas_conciliacao.append(linha)
 
-
-
-
-
             elif cod_modelo_selecionado_form == '3':
                 for cod_conta_form in lista_contas:
                     conta = Conta.objects.get(pk=int(cod_conta_form))
@@ -2079,7 +2075,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date]) \
-                    .aggregate(sum_principal=Sum('val_principal'), sum_val_pago=Sum('val_pago'))
+                    .aggregate(sum_principal=Sum('val_principal'), sum_taxas=Sum('val_taxas'), sum_val_pago=Sum('val_pago'))
 
 
                 '''parcelas = Parcela_Contrato.objects \
@@ -2088,14 +2084,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                     ultimo_dia_data_competencia_mais_12_meses_date])
 
                 for parc in parcelas:
-                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val pago {parc.val_pago}')'''
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')'''
 
                 #data_vencimento__lte=data_competencia_mais_um
                 val_parcelas_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  #val_pago=0
                             data_vencimento__lt=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "]) \
-                    .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'), sum_val_pago_parc_atrasadas=Sum('val_pago'))
+                    .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'), sum_taxas_parc_atrasadas=Sum('val_taxas'), sum_val_pago_parc_atrasadas=Sum('val_pago'))
 
                 # data_vencimento__lte
                 '''val_parc_atrasadas = Parcela_Contrato.objects \
@@ -2112,18 +2108,27 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 if val_composicao_ano_dic['sum_principal'] != None:
                     val_composicao_ano = val_composicao_ano_dic['sum_principal']
 
+                val_taxas = 0
+                if val_composicao_ano_dic['sum_taxas'] != None:
+                    val_taxas = val_composicao_ano_dic['sum_taxas']
+
                 val_pago = 0
                 if val_composicao_ano_dic['sum_val_pago'] != None:
                     val_pago = val_composicao_ano_dic['sum_val_pago']
 
                 if val_parcelas_atrasadas['sum_principal_parc_atrasadas'] != None:
+                    val_taxas_parc_atrasadas = 0
+                    if val_parcelas_atrasadas['sum_taxas_parc_atrasadas'] != None:
+                        val_taxas_parc_atrasadas = val_parcelas_atrasadas['sum_taxas_parc_atrasadas']
+
                     val_pago_parc_atrasadas = 0
                     if val_parcelas_atrasadas['sum_val_pago_parc_atrasadas'] != None:
                         val_pago_parc_atrasadas = val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
-                    val_composicao_ano += val_parcelas_atrasadas['sum_principal_parc_atrasadas'] - val_pago_parc_atrasadas
+
+                    val_composicao_ano += (val_parcelas_atrasadas['sum_principal_parc_atrasadas'] + val_taxas_parc_atrasadas) - val_pago_parc_atrasadas
 
 
-                val_composicao = val_composicao_ano - val_pago
+                val_composicao = (val_composicao_ano + val_taxas) - val_pago
 
                 val_balancete = ConexaoBancoBenner() \
                                     .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
@@ -2182,18 +2187,22 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 val_composicao_ano_dic = (Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato, data_vencimento__gt=ultimo_dia_data_competencia_mais_12_meses_date)
                                           .exclude(tipo_prazo='PG') \
-                    .aggregate(sum_principal=Sum('val_principal'), sum_val_pago=Sum('val_pago')))
+                    .aggregate(sum_principal=Sum('val_principal'), sum_taxas=Sum('val_taxas'), sum_val_pago=Sum('val_pago')))
 
                 val_composicao_ano = 0
                 if val_composicao_ano_dic['sum_principal'] != None:
                     val_composicao_ano = val_composicao_ano_dic['sum_principal']
+
+                val_taxas = 0
+                if val_composicao_ano_dic['sum_taxas'] != None:
+                    val_taxas = val_composicao_ano_dic['sum_taxas']
 
                 val_pago = 0
                 if val_composicao_ano_dic['sum_val_pago'] != None:
                     val_pago = val_composicao_ano_dic['sum_val_pago']
 
 
-                val_composicao = val_composicao_ano - val_pago
+                val_composicao = (val_composicao_ano + val_taxas) - val_pago
                 '''if val_composicao < 0:
                     val_composicao *= -1'''
 

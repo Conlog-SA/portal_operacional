@@ -43,29 +43,33 @@ class Frm_Assinatura_Email_View(View):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
+        dados = dict()
         if transacao_frm == 'update_foto':
             myfile = request.FILES['file']
             extensao_file = (myfile.name).split('.')[-1]
             caminho_arq_importado = 'fotos/' + obj_usuario_logado.login_usu + '.' + extensao_file
             fs = FileSystemStorage()
-
-            file_path = fs.path(caminho_arq_importado)
+            uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
+            file_path = fs.path(uploaded_file_url)
             if os.path.exists(file_path):
                 os.remove(file_path)
 
             filename = fs.save(caminho_arq_importado, myfile)
-            uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
+            #uploaded_file_url = os.path.join(BASE_DIR, 'static/img/' + caminho_arq_importado)
             obj_usuario_logado.caminho_foto = caminho_arq_importado
             obj_usuario_logado.save()
+            dados = {
+                'foto_postada': caminho_arq_importado
+            }
         elif transacao_frm == 'update_tel':
             tel_frm = request.POST['tel']
             obj_usuario_logado.tel = tel_frm
             obj_usuario_logado.save()
+            dados = {
+                'msg': 'ok'
+            }
 
-        dados = dict()
-        dados = {
-            'msg': 'ok'
-        }
+
         return JsonResponse(dados, safe=False)
 
 
