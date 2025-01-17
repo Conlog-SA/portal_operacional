@@ -30,16 +30,16 @@ const div_menu = document.getElementById('div_foto_colab_menu');
                 contentType: false,
                 cache: false,
                 success: function(data){
-                    let caminho_foto_server = 'https://operacional.conlogsa.com.br/static/img/' + data.foto_postada;
+                    let caminho_foto_server = 'https://operacional.conlogsa.com.br/media/' + data.foto_postada;
                     console.log(data.foto_postada);
                     const timestamp = new Date().getTime();
                     div_menu.style.backgroundImage = `url('${caminho_foto_server}?_=${timestamp}')`;
-                    div_menu.textContent = ''; // Remove o texto da div
+                    //div_menu.textContent = ''; // Remove o texto da div
                 },
                 error: function (request, status, error) {
-                    let caminho_foto_server = 'https://operacional.conlogsa.com.br/static/img/fotos/user_default.jpg';
+                    let caminho_foto_server = 'https://operacional.conlogsa.com.br/media/fotos/user_default.jpg';
                     div_menu.style.backgroundImage = `url('${caminho_foto_server}?_=${timestamp}')`;
-                    div_menu.textContent = ''; // Remove o texto da div
+                    //div_menu.textContent = ''; // Remove o texto da div
                     console.log(error);
                 }
             });
