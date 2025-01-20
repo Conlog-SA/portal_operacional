@@ -3384,6 +3384,7 @@ function gera_conciliacao_comp_benner_detalhado(){
     let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
     let let_competencia = $("#dt_conciliacao_comp_benner").val();
     let let_status_analise = $("#cb_status_analise_conciliacao_detalhada").val();
+    let let_filtros_pesq_comp_detalhada = $("#cb_filtros_pesq_comp_detalhada").val();
     let let_chk_contas_zeradas = 'N';
     if ( $("#rd_pesq_contas_zeradas_comp_detalhada").is(':checked') == true ) {
         let_chk_contas_zeradas = 'S';
@@ -3408,7 +3409,8 @@ function gera_conciliacao_comp_benner_detalhado(){
                 'cod_conta'     :   let_cod_conta,
                 'competencia'   :   let_competencia,
                 'cod_status_analise':   let_status_analise,
-                'chk_contas_zeradas': let_chk_contas_zeradas,
+                'filtros_pesq_comp_detalhada': let_filtros_pesq_comp_detalhada,
+                //'chk_contas_zeradas': let_chk_contas_zeradas,
                 'tipo_visualizacao' :   'D'
             },
             dataType: 'json',

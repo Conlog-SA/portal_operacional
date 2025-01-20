@@ -163,7 +163,7 @@
 
 
             <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: 0.5rem;">
-                <div class="d-flex flex-column w-100">
+                <div class="d-flex justify-content-start align-items-center w-100">
                     <div class="loader" id="loader_gera_comp_det">
                         <div class="loader-inner">
                             <div class="loader-block"></div>
@@ -178,7 +178,7 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-start w-100">
-                    &nbsp;&nbsp;&nbsp;
+                    &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column align-items-start w-100">
                     <label>
@@ -194,14 +194,18 @@
                             <option value="5">Não sinalizado</option> -->
                     </select>
                 </div>
-                <div class="d-flex justify-content-center align-items-center w-100" style="padding-left: 2rem;">
-                    <input type="checkbox" name="rd_pesq_contas_zeradas_comp_detalhada"
-                                       id="rd_pesq_contas_zeradas_comp_detalhada"/>
-                    <label>Trazer somente contas sem movimentações</label>
-
-
+                <div class="d-flex flex-column justify-content-between align-items-start w-100" style="padding-left: .25rem;">
+                    <label>
+                        Demais Filtros
+                    </label>
+                    <select class="selectpicker form-control" id="cb_filtros_pesq_comp_detalhada"
+                        name="cb_filtros_pesq_comp_detalhada">
+                            <option value="0" selected="selected">Todos</option>
+                            <option value="1">Somente contas sem movimentações</option>
+                            <option value="2">Somente composição e balancete > 0, dif. zerada e com anexo</option>
+                    </select>
                 </div>
-                <div class="d-flex flex-column align-items-end w-100">
+                <div class="d-flex flex-column align-items-end justify-content-center w-100">
                     <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
                             name="btn_gera_conciliacao_comp_benner_detalhado"
                             class="btn btn-primary btn-rounded botaoPrincipal" >

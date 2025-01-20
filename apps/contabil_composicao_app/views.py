@@ -1726,7 +1726,8 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             lista_contas = []
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
             cod_status_analise_form = request.GET['cod_status_analise']
-            chk_contas_zeradas_frm = request.GET['chk_contas_zeradas']
+            #chk_contas_zeradas_frm = request.GET['chk_contas_zeradas']
+            filtros_pesq_comp_detalhada_frm = request.GET['filtros_pesq_comp_detalhada']
             if cod_status_analise_form == '0':
                 lista_contas = lista_cod_conta_form.split(',')
             elif cod_status_analise_form == 'S':
@@ -1917,11 +1918,15 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     linha.append(obs_status_auditoria_reg)  # 14
                     linha.append(peso_total_proc_contabil)  # 15
 
-                    if chk_contas_zeradas_frm == 'N':
-                        lista_contas_conciliacao.append(linha)
-                    else:
+                    if filtros_pesq_comp_detalhada_frm == '1':
                         if linha[4] == '0,00' and linha[5] == '0,00':
                             lista_contas_conciliacao.append(linha)
+                    elif filtros_pesq_comp_detalhada_frm == '2':
+                        if val_composicao > 0 and val_balancete > 0 and val_dif > -1 and val_dif < 1:
+                            lista_contas_conciliacao.append(linha)
+                    else:
+                        lista_contas_conciliacao.append(linha)
+
 
             elif cod_modelo_selecionado_form == '3':
                 for cod_conta_form in lista_contas:
@@ -1932,22 +1937,33 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         '''Calcula dados CP'''
                         dados_conciliacao_cp = self.gera_reg_conciliacao_por_tipo_prazo(conta, contrato, primeiro_dia_ano,
                                                                  ultimo_dia_ano, ultimo_dia_mes_date,'CP', competencia_form)
-                        if chk_contas_zeradas_frm == 'N':
-                            lista_contas_conciliacao.append(dados_conciliacao_cp)
-                        else:
+
+                        if filtros_pesq_comp_detalhada_frm == '1':
                             if dados_conciliacao_cp[7] == '0,00' and dados_conciliacao_cp[8] == '0,00':
                                 lista_contas_conciliacao.append(dados_conciliacao_cp)
+                        elif filtros_pesq_comp_detalhada_frm == '2':
+                            if dados_conciliacao_cp[20] > 0 and dados_conciliacao_cp[21] > 0 and dados_conciliacao_cp[22] > -1 and dados_conciliacao_cp[22] < 1:
+                                lista_contas_conciliacao.append(dados_conciliacao_cp)
+                        else:
+                            lista_contas_conciliacao.append(dados_conciliacao_cp)
+
 
                         '''Calcula dados LP'''
                         dados_conciliacao_lp = self.gera_reg_conciliacao_por_tipo_prazo(conta, contrato,
                                                                                         primeiro_dia_ano,
                                                                                         ultimo_dia_ano,
                                                                                         ultimo_dia_mes_date, 'LP', competencia_form)
-                        if chk_contas_zeradas_frm == 'N':
-                            lista_contas_conciliacao.append(dados_conciliacao_lp)
-                        else:
+
+                        if filtros_pesq_comp_detalhada_frm == '1':
                             if dados_conciliacao_lp[7] == '0,00' and dados_conciliacao_lp[8] == '0,00':
                                 lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        elif filtros_pesq_comp_detalhada_frm == '2':
+                            if dados_conciliacao_lp[20] > 0 and dados_conciliacao_lp[21] > 0 and dados_conciliacao_lp[22] > -1 and dados_conciliacao_lp[22] < 1:
+                                lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        else:
+                            lista_contas_conciliacao.append(dados_conciliacao_lp)
+
+
 
         elif tipo_visualizacao_form == 'A':
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
@@ -2282,6 +2298,11 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         linha.append(obs_status_auditoria_reg) #17
         linha.append(peso_total_proc_contabil)  # 18
         linha.append(peso_status_auditoria_comp)  # 19
+        linha.append(val_composicao) #20
+        linha.append(val_balancete) #21
+        linha.append(val_dif_comp_bal) #22
+
+
 
         return linha
 

@@ -268,5 +268,86 @@ const fileInput = document.getElementById('file-input');
 
 
 
+document.getElementById("btn_copiar_assinatura").addEventListener("click", function () {
+            const div = document.getElementById("dv_assinatura");
+
+            // Criar um range e selecionar o conteúdo da div
+            const range = document.createRange();
+            range.selectNodeContents(div);
+
+            // Limpar seleções anteriores e adicionar o range à seleção atual
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+
+            try {
+                // Copiar o conteúdo selecionado para a área de transferência
+                const success = document.execCommand("copy");
+                if (success) {
+					$.gritter.add({
+                        title: 'Atenção!',
+                        text: "Conteúdo copiado para a área de transferência!",
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                } else {
+					$.gritter.add({
+                        title: 'Atenção!',
+                        text: "Falha ao copiar o conteúdo.",
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            } catch (err) {
+				$.gritter.add({
+                        title: 'Atenção!',
+                        text: err,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+            }
+
+            // Limpar a seleção
+            selection.removeAllRanges();
+        });
 
 
+
+/* Copia como imagem
+Usar esta bibliote no html : <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+document.getElementById("btn_copiar_assinatura").addEventListener("click", function () {
+            const div = document.getElementById("dv_assinatura");
+
+            // Captura a div com html2canvas
+            html2canvas(div, {
+                useCORS: true, // Garante que imagens externas sejam carregadas
+                allowTaint: false, // Impede problemas de segurança ao renderizar imagens
+            }).then((canvas) => {
+                // Converte o canvas para um Blob
+                canvas.toBlob(async (blob) => {
+                    if (blob) {
+                        try {
+                            // Copia o Blob para a área de transferência
+                            await navigator.clipboard.write([
+                                new ClipboardItem({
+                                    "image/png": blob
+                                })
+                            ]);
+                            alert("Imagem copiada para a área de transferência!");
+                        } catch (err) {
+                            console.error("Erro ao copiar a imagem: ", err);
+                        }
+                    } else {
+                        alert("Erro ao gerar a imagem.");
+                    }
+                });
+            }).catch((err) => {
+                console.error("Erro ao renderizar a div como imagem: ", err);
+            });
+        });
+
+
+*/

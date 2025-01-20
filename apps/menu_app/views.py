@@ -24,7 +24,8 @@ class Menu_View(View):
             str_bg = 'background.jpg'
             cor_emp_hex = '#f46424 !important;'
         elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
-            str_bg = 'background-deep.jpg'
+            #str_bg = 'background-deep.jpg'
+            str_bg = 'background-deep_menu.png'
             cor_emp_hex = '#3b8eed !important;'
 
         caminho_foto_perfil_usu = 'https://operacional.conlogsa.com.br/media/fotos/user_default.jpg'

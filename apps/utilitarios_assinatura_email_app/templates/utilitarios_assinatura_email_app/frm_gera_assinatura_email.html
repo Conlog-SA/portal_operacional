@@ -24,7 +24,7 @@
             {% csrf_token %}
 
 
-            <div class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding: 10rem;">
+            <div id="dv_assinatura" class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding-top: 5rem;padding-bottom: 3rem;padding-left: 10rem;padding-right: 10rem;">
                <table style="width: 90%;background-color: #fff;">
                    <tr>
                        <td style="text-align: left;padding-left: 2rem;padding-top: 3rem;padding-bottom: 3rem;
@@ -38,7 +38,7 @@
                             background-image: url({{ caminho_foto }});
                             background-size: cover; background-position: center; background-repeat: no-repeat;
                             border-radius: 50%;border: 0px solid #000; cursor: pointer;">
-                               <img id="img_foto_colab" src="https://operacional.conlogsa.com.br/static/fotos/danilo.costa.png"
+                               <img id="img_foto_colab" src="{{ caminho_foto }}"
                                     style="width: 100px;height: 100px;border-radius: 50%;border: 0px solid #000; cursor: pointer;"/>
 
                            </div>
@@ -67,24 +67,20 @@
                                    <img src="https://operacional.conlogsa.com.br/static/img/logo-deep.png" width="100px">
                                </td>
                                <td style="padding-left: 2rem;padding-bottom: 2rem;text-align: right;padding-right: 2rem;">
-                                   <a id="a_page" href="https://www.deeplogistica.com.br/" target="_blank"
-                                      style="cursor: pointer; text_decoration: none;">
-                                       <img src="https://operacional.conlogsa.com.br/static/img/icon-site_deep.png">
+                                   <a id="a_page" href="https://www.deeplogistica.com.br/" target="blank" style="cursor: pointer; padding: 0.3rem; color: #FFF;">
+                                       <img src="https://operacional.conlogsa.com.br/static/img/globe_deep.png" style="width: 29px;" />
                                    </a>
-                                   &nbsp;
-                                   <a id="a_facebook" href="https://www.facebook.com/deeplogistica" target="_blank"
-                                      style="cursor: pointer; text_decoration: none;">
-                                       <img src="https://operacional.conlogsa.com.br/static/img/icon-facebook_deep.png">
+                                   <a id="a_facebook" href="https://www.facebook.com/deeplogistica" target="blank"
+                                      style="cursor: pointer; padding: 00.3rem; color: #FFF;">
+                                       <img src="https://operacional.conlogsa.com.br/static/img/facebook_deep.png" style="width: 30px;"/>
                                    </a>
-                                   &nbsp;
-                                   <a id="a_linkdin" href="https://br.linkedin.com/company/deeplogistica" target="_blank"
-                                      style="cursor: pointer; text_decoration: none;">
-                                       ><img src="https://operacional.conlogsa.com.br/static/img/icon-linkedin_deep.png">
+                                   <a id="a_linkdin" href="https://br.linkedin.com/company/deeplogistica" target="blank"
+                                      style="cursor: pointer; padding: .3rem; color: #FFF;">
+                                       <img src="https://operacional.conlogsa.com.br/static/img/linkdin_deep.png"style="width: 30px;"/>
                                    </a>
-                                   &nbsp;
-                                   <a id="a_instagram" href="https://www.instagram.com/deeplogistica/#" target="_blank"
-                                      style="cursor: pointer; text_decoration: none;">
-                                       <img src="https://operacional.conlogsa.com.br/static/img/icon-insta_deep.png">
+                                   <a id="a_instagram" href="https://www.instagram.com/deeplogistica" target="blank"
+                                      style="cursor: pointer; padding: 0.3rem; color: #FFF;">
+                                       <img src="https://operacional.conlogsa.com.br/static/img/instagram_deep.png" style="width: 30px;"/>
                                    </a>
                                </td>
                            </tr>
@@ -94,6 +90,17 @@
                    </tr>
 
                </table>
+            </div>
+
+			<div class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding: 1rem;">
+                <div class="d-flex flex-column align-items-end w-100">
+                    <button type='button' id="btn_copiar_assinatura"
+                            name="btn_copiar_assinatura"
+                            class="mr-2 btn btn-primary btn-rounded botaoPrincipal icon-colorb"
+                            value="0">
+                        Copiar Assinatura
+                    </button>
+                </div>
             </div>
 
 
