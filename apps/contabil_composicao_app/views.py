@@ -2141,10 +2141,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     if val_parcelas_atrasadas['sum_val_pago_parc_atrasadas'] != None:
                         val_pago_parc_atrasadas = val_parcelas_atrasadas['sum_val_pago_parc_atrasadas']
 
-                    val_composicao_ano += (val_parcelas_atrasadas['sum_principal_parc_atrasadas'] + val_taxas_parc_atrasadas) - val_pago_parc_atrasadas
+                    #val_composicao_ano += (val_parcelas_atrasadas['sum_principal_parc_atrasadas'] + val_taxas_parc_atrasadas) - val_pago_parc_atrasadas
+                    val_composicao_ano += (val_parcelas_atrasadas['sum_principal_parc_atrasadas']) - val_pago_parc_atrasadas
 
 
-                val_composicao = (val_composicao_ano + val_taxas) - val_pago
+                #val_composicao = (val_composicao_ano + val_taxas) - val_pago
+                val_composicao = val_composicao_ano - val_pago
 
                 val_balancete = ConexaoBancoBenner() \
                                     .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,
