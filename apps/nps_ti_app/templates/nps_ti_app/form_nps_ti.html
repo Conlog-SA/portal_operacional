@@ -92,6 +92,7 @@
             color: white;
             padding: 15px;
             border-radius: 8px 8px 0 0;
+            font-family: serif;
         }
         .form-content {
             border: 1px solid #ddd;
@@ -138,6 +139,31 @@
             color: #666;
             float: right;
             font-size: 0.9em;
+        }
+        .gritter-top{
+            {% if flag_empresa == 0 %}
+                background: #f46424;
+            {% elif flag_empresa == 1 %}
+                background: #3b8eed;
+            {% endif %}
+            border-radius: 10px 10px 0px 0px;
+        }
+
+        .gritter-item{
+            {% if flag_empresa == 0 %}
+                background: #f46424;
+            {% elif flag_empresa == 1 %}
+                background: #3b8eed;
+            {% endif %}
+        }
+
+        .gritter-bottom{
+            {% if flag_empresa == 0 %}
+                background: #f46424;
+            {% elif flag_empresa == 1 %}
+                background: #3b8eed;
+            {% endif %}
+            border-radius: 0px 0px 10px 10px;
         }
     </style>
 </head>

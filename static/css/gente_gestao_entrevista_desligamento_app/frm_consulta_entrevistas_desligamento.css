@@ -1,0 +1,31 @@
+.containerApp {
+    background: rgba(0, 0, 0, 0.7); /* Cor preta com 50% de opacidade */
+    color: white; /* Cor do texto, por exemplo, branco */
+}
+
+label[for="liberado_filiais"] {
+    text-align: left !important; /* Tente usar !important para forçar a aplicação do estilo */
+}
+
+.divider {
+    border-bottom: 1px solid #ffffff; /* Adicione a cor e largura desejadas para a linha */
+    margin-top: 10px;
+  }
+
+button .btn-cadastro{
+    background-color: var(--cor_empresa)!important;
+    border-color: var(--cor_empresa)!important;
+}
+
+label{
+    text-align: left !important;
+}
+
+.w-95{
+    width: 95%;
+}
+
+.sortable{
+    width:100%;
+    padding-inline-start: 0px;
+}
