@@ -257,8 +257,10 @@
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
                                     <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}"
-                                           readonly value="{{parc.data_liquidacao}}">
+                                           readonly value="{{parc.data_liquidacao}}"> <br/>
+                                    <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.data_liquidacao}}</span>
                                 {% endif %}
+
                             </td>
                             <td>
                                 {{parc.data_vencimento}}
@@ -289,8 +291,9 @@
                                     <input type="text" id="txt_val_conta_{{parc.handle_parc}}" readonly
                                            name="txt_val_conta" value="{{parc.valor_conta}}"
                                            style="width: 87.2px;text-align:right;">
-
                                 {% endif %}
+                                <br/>
+                                <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.valor_conta}}</span>
 
                             </td>
                             <td>
@@ -312,7 +315,8 @@
                                            style="width: 87.2px;text-align:right;">
 
                                 {% endif %}
-
+                                <br/>
+                                <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.valor_principal}}</span>
                             </td>
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
@@ -332,7 +336,8 @@
                                            name="txt_val_taxas" value="{{parc.valor_taxas}}"
                                            style="width: 87.2px;text-align:right;">
                                 {% endif %}
-
+                                <br/>
+                                <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.valor_taxas}}</span>
                             </td>
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
@@ -352,7 +357,8 @@
                                            name="txt_val_fundo" value="{{parc.valor_fundo}}"
                                            style="width: 87.2px;text-align:right;">
                                 {% endif %}
-
+                                <br/>
+                                <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.valor_fundo}}</span>
                             </td>
                             <td id="td_val_total_{{parc.handle_parc}}" >
                                 {{parc.valor_total}}
@@ -376,6 +382,8 @@
                                            style="width: 87.2px;text-align:right;">
 
                                 {% endif %}
+                                <br/>
+                                <span style="color: rgba(33, 37, 41, 0.9) !important;">{{parc.val_total_pago}}</span>
                             </td>
                             <td>
                                 {{ parc.val_balancete }}
