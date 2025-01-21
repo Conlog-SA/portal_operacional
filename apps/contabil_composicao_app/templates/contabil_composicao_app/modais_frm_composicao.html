@@ -84,3 +84,98 @@
         </div>
     </div>
 </div>
+
+
+<!-- Modal adiciona status auditoria -->
+<div id="modal_cad_status_auditoria" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;">
+    <div class="modal-content">
+      <div class="modal-header div_Titulo">
+          <div class="d-flex justify-content-between align-items-between w-100" >
+              <div class="d-flex justify-content-start align-items-center w-100">
+                  <i class="fa-solid fa-sitemap"></i>
+                  <h1 class="titlePadraoMenu" id="h_titulo_modal_cad_status"></h1>
+              </div>
+              <div class="d-flex flex-column align-items-end w-100">
+                  <button type="button" name="btn_fecha_modal_cad_status_auditoria"
+                          id="btn_fecha_modal_cad_status_auditoria" class="btn btn-sm btn-rounded btn_fecha_modais">
+                    <i class="fa-solid fa-circle-xmark fa-2xl" ></i>
+                  </button>
+              </div>
+          </div>
+      </div>
+      <div class="modal-body">
+          <form name="frm_cad_status_processos_contabeis"
+                class="d-flex flex-column align-items-center justify-content-between"
+                id="frm_cad_status_processos_contabeis" method="post">
+              {% csrf_token %}
+              <input type="hidden" id="hd_tipo_status_proc_contabil" name="hd_tipo_status_proc_contabil"/>
+              <div class="d-flex justify-content-between align-items-between w-100" >
+                  <div class="d-flex flex-column align-items-start w-100">
+                      <label class="label_comp_forms">Descrição</label>
+                      <input class="form-control comp_frm_cad_status" type="text" id="txt_desc_status_proc_contabil"
+                             name="txt_desc_status_proc_contabil">
+                  </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-between w-100" >
+                  <div class="d-flex flex-column align-items-start w-100">
+                      <label class="label_comp_forms">Vigência Inícial</label>
+                      <input class="form-control comp_frm_cad_status" type="date" id="dt_vig_ini_status_proc_contabil"
+                             name="dt_vig_ini_status_proc_contabil">
+                  </div>
+
+                  <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                      <label class="label_comp_forms ">Vigência Final</label>
+                      <input class="form-control comp_frm_cad_status" type="date" id="dt_vig_fim_status_proc_contabil"
+                             name="dt_vig_fim_status_proc_contabil">
+                  </div>
+              </div>
+
+              <div class="d-flex justify-content-between align-items-between w-100 mb-3" >
+                  <div class="d-flex flex-column align-items-start w-100">
+                      <label class="label_comp_forms">Peso</label>
+                      <input class="form-control comp_frm_cad_status" type="number" id="nm_peso_status_proc_contabil"
+                             name="nm_peso_status_proc_contabil">
+                  </div>
+
+                  <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                      <label class="label_comp_forms">Auditoria sera ?</label>
+                      <select class="selectpicker form-control" id="sl_cod_status_auditoria"
+                              name="sl_cod_status_auditoria">
+                      </select>
+                  </div>
+
+                  <div class="d-flex flex-column align-items-end w-100" style="margin-top: 1.3rem;">
+                      <button type="button" name="btn_cad_status_proc_contabil"
+                              id="btn_cad_status_proc_contabil"
+                              class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-check"></i>
+                          Confirma
+                      </button>
+                  </div>
+              </div>
+          </form>
+
+          <div class="form-group w-100 cl_div_tabela_principal_pagina">
+                <div class="col-md-12 w-100 h-100">
+                    <table id="tab_status_proc_contabil"  class="display cl_tab_principal_pagina"
+                           style="width:100%">
+                        <thead>
+                          <tr>
+                            <th scope="col">Status</th>
+                            <th scope="col">Vig. Inícial</th>
+                            <th scope="col">Vig. Final</th>
+                            <th scope="col">Peso</th>
+                            </tr>
+                          </thead>
+                         <tbody>
+
+                          </tbody>
+                    </table>
+                </div>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>

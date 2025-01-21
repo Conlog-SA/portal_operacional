@@ -1367,7 +1367,7 @@ function povoa_tab_mapas_terceitos_2art(){
                 "scrollX": true,
                 "scrollCollapse": true,
                 "paging": true,
-                "pageLength": 7,
+                "pageLength": 10,
                 "responsive": false,
                 "stateSave": true,
                 "select": true,

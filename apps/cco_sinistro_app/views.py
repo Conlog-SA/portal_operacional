@@ -46,15 +46,16 @@ class Form_Pesq_Cad_Sinistros(View):
             placa_selecionada = request.GET['placa_selecionada']
             querySinistrosPlaca = CCO_Sinistro.objects.filter(placa_veiculo_cavalo = placa_selecionada)
             for registro in querySinistrosPlaca:
+
                 dadosregistro = {
                     'cod_sinistro': registro.cod_sinistro,
                     'nome_mot': registro.nome_mot,
                     'cpf_mot': registro.cpf_mot,
                     'data_nasc': registro.data_nasc,
-                    'desc_projeto': registro.cod_projeto.desc_proj if registro.cod_projeto else None,
+                    'desc_projeto': registro.cod_projeto.desc_proj if registro.cod_projeto else '',
                     'placa_veiculo_cavalo': registro.placa_veiculo_cavalo,
                     'data_ocorre_sinistro': registro.data_ocorre_sinistro,
-                    'desc_motivo_sinistro': registro.cod_motivo_sinistro.desc_motivo_sinistro,
+                    'desc_motivo_sinistro': registro.cod_motivo_sinistro.desc_motivo_sinistro if registro.cod_motivo_sinistro else '',
                     'acionado_seguro': registro.acionado_seguro,
                     'num_processo': registro.num_processo,
                     'tipo_sinistro': registro.tipo_sinistro

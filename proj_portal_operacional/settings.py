@@ -104,6 +104,7 @@ INSTALLED_APPS = [
     'apps.contabil_indicadores_financeiros_app',
     'apps.gente_gestao_entrevista_desligamento_app',
     'apps.gente_gestao_comun_encarreiramentos_app',
+    'apps.utilitarios_assinatura_email_app',
 ]
 
 MIDDLEWARE = [

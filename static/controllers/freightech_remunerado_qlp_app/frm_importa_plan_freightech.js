@@ -238,10 +238,11 @@ $(document).on('click','button', function(){
                         item.quinz,
                         item.periodo,
                         item.desc_proj,
-                        item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
-                        item.val_ordenados
+                        item.val_ordenados,
+                        item.qlp_rem,
+                        item.val_ordenado_rem
                     ];
                     let_lista_qlp.push(let_reg);
                 });
@@ -267,10 +268,11 @@ $(document).on('click','button', function(){
                         { title: "Quinzena" },
                         { title: "Dia" },
                         { title: "Projeto" },
-                        { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
-                        { title: "R$ TT Ordenados" }
+                        { title: "R$ TT Ordenados" },
+                        { title: "Qlp Rem" },
+                        { title: "R$ TT Ordenados Rem" }
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": [0,1]},
@@ -279,7 +281,7 @@ $(document).on('click','button', function(){
                     ],
                     "initComplete": function () {
                         this.api()
-                            .columns([0,1,2,3,4])
+                            .columns([0,1,2,3])
                             .every(function () {
                                 let column = this;
 
@@ -340,10 +342,11 @@ $(document).on('click','button', function(){
                         item.quinz,
                         item.periodo,
                         item.nome_filial,
-                        item.desc_cargo_senior,
                         item.desc_cargo_freightech,
                         item.qlp,
-                        item.val_ordenados
+                        item.val_ordenados,
+                        item.qlp_rem,
+                        item.val_ordenado_rem
                     ];
                     let_lista_qlp_filial.push(let_reg);
                 });
@@ -369,10 +372,11 @@ $(document).on('click','button', function(){
                         { title: "Quinzena" },
                         { title: "Dia" },
                         { title: "Filial" },
-                        { title: "Cargo Senior" },
                         { title: "Cargo Freightech" },
                         { title: "Qlp." },
-                        { title: "R$ TT Ordenados" }
+                        { title: "R$ TT Ordenados" },
+                        { title: "Qlp Rem" },
+                        { title: "R$ TT Ordenados Rem" }
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": [0,1]},
@@ -381,7 +385,7 @@ $(document).on('click','button', function(){
                     ],
                     "initComplete": function () {
                         this.api()
-                            .columns([0,1,2,3,4])
+                            .columns([0,1,2,3,])
                             .every(function () {
                                 let column = this;
 

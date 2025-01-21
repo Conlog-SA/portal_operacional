@@ -1,11 +1,7 @@
 {% load static %}
 
 {% block link_static_css %}
-    {% if cod_empresa == 17 %}
-        <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app_deep.css' %}" />
-    {% else %}
-        <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app.css' %}" />
-    {% endif %}
+    <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/contabil_composicao_app.css' %}" />
 
 
 {% endblock %}
@@ -139,7 +135,7 @@
 
 
             <div class="d-flex justify-content-between align-items-between w-100 mt-3 mb-2">
-                <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex justify-content-between align-items-center w-100">
                     <div class="loader" id="loader_frm_cad_contas">
                         <div class="loader-inner">
                             <div class="loader-block"></div>
@@ -207,7 +203,7 @@
                               class="d-flex flex-column align-items-start justify-content-between">
 
                             <div class="d-flex justify-content-between align-items-between w-100">
-                                <div class="d-flex flex-column align-items-start w-100 mt-3">
+                                <div class="d-flex flex-column align-items-start w-100">
                                     <label>
                                         Descrição da Conta
                                     </label>
@@ -229,7 +225,7 @@
                             </div>
 
                             <div id="div_dados_curto_prazo"
-                                 class="d-flex justify-content-between align-items-between w-100 mb-3">
+                                 class="d-flex justify-content-between align-items-between w-100">
                                 <div class="d-flex flex-column align-items-start w-100">
                                     <label>Handle</label>
                                     <input type="text" id="tx_handle_conta_cp"
@@ -255,7 +251,7 @@
 
 
                             <div id="div_titulo_dados_longo_prazo"
-                                 class="d-flex justify-content-between align-items-between w-100">
+                                 class="d-flex justify-content-between align-items-between w-100 mt-3" >
 
                             </div>
 
@@ -270,7 +266,7 @@
                             </div>
 
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mt-3">
+                            <div class="d-flex justify-content-between align-items-between w-100">
                                 <div class="d-flex flex-column align-items-start w-100">
                                     <label>Pacote Conta</label>
                                     <select class="selectpicker form-control" id="cb_pacote_conta"
@@ -309,12 +305,12 @@
                                     {% endif %}
                                 </div>
 
-                                <div class="d-flex flex-column w-100 cl_div_vazia_cad_conta">
+                                <div class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
                                 <div id="div_btn_criar_nova_conta_manual"
-                                     class="d-flex flex-column w-100 cl_div_btn_criar_nova_conta_manual">
+                                     class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
@@ -357,7 +353,7 @@
                                         <th scope="col">Val. relatório(R$)</th>
                                         <th scope="col">Val. razão(R$)</th>
                                         <th scope="col">Excluir</th>
-                                        <th scope="col">Docs,</th>
+                                        <th scope="col">Docs</th>
                                       </tr>
                                 </thead>
                                 <tbody>
@@ -374,8 +370,9 @@
                         <form id="frm_responsaveis" name="frm_responsaveis"
                               class="d-flex flex-column align-items-center justify-content-between">
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column align-items-start w-100" >
+                            <div class="d-flex justify-content-between align-items-between w-100"
+                                 style="margin-bottom: 0.5rem;">
+                                <div class="d-flex flex-column align-items-start" style="width: 25%;" >
                                     <label>Resp. Composição</label>
                                      <select class="selectpicker form-control" id="cb_resp_composicao"
                                             name="cb_resp_composicao"
@@ -389,8 +386,8 @@
 
                                 </div>
 
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;margin-right:0.25rem;">
+                                <div class="d-flex flex-column align-items-start"
+                                     style="width: 25%; margin-left: 0.25rem;">
                                     <label>Resp. Validação</label>
                                      <select class="selectpicker form-control" id="cb_resp_validacao"
                                             name="cb_resp_validacao"
@@ -404,41 +401,29 @@
 
                                 </div>
 
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-right:0.25rem;">
+                                <div class="d-flex flex-column align-items-start"
+                                     style="width: 20%; margin-left:0.25rem;">
                                     <label>Início</label>
                                     <input type="date" id="dt_ini_resp" name="dt_ini_resp" class="form-control">
 
                                 </div>
 
-                                <div class="d-flex flex-column align-items-start w-100">
+                                <div class="d-flex flex-column align-items-start"
+                                     style="width: 20%; margin-left:0.25rem;">
                                     <label>Fim</label>
                                     <input type="date" id="dt_fim_resp" name="dt_fim_resp" class="form-control">
 
                                 </div>
-                            </div>
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                <div class="d-flex justify-content-end w-100">
+                                <div class="d-flex flex-column justify-content-end align-items-end" style="width: 10%; margin-left:0.25rem;">
                                     <input type="hidden" id="hd_tipo_transacao_resp" value="C">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_associar_responsaveis_conta"
                                             name="btn_associar_responsaveis_conta"
                                             class="btn btn-primary btn-rounded botaoPrincipal"
                                             value="0">
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Associar responsáveis</span>
+                                        <i class="fa-solid fa-paperclip"></i>
+                                        Associar
                                     </button>
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
@@ -446,12 +431,14 @@
                                             name="btn_associar_responsaveis_conta"
                                             class="btn btn-primary btn-rounded botaoPrincipal"
                                             value="0" disabled>
-                                        <i class="fa-solid fa-plus"></i>
-                                        <span>Associar responsáveis</span>
+                                        <i class="fa-solid fa-paperclip"></i>
+                                        Associar
                                     </button>
                                     {% endif %}
                                 </div>
                             </div>
+
+
                         </form>
 
                         <div class="form-group cl_div_tab_responsaveis_conta w-100">
@@ -480,50 +467,52 @@
                         <form id="frm_anexos_contratos" name="frm_anexos_contratos"
                               class="d-flex flex-column align-items-center justify-content-between"
                               enctype="multipart/form-data">
+                            {% csrf_token %}
 
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
-                                <div class="d-flex flex-column align-items-start w-100">
-                                    <label for="ck_eh_anexo_principal">Mostrar este anexo nas composições ?</label>
+                            <div class="d-flex justify-content-between align-items-between w-100">
+
+                                <div class="d-flex flex-column align-items-start" style="width: 13%;">
+                                    <label for="ck_eh_anexo_principal">Exibir na composição ?</label>
                                     <input type="checkbox" class="checkbox" id="ck_eh_anexo_principal"
                                            name="ck_eh_anexo_principal" unchecked>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;">
+                                <div class="d-flex flex-column align-items-start" style="width: 20%; margin-left: 0.25rem;">
                                     <label>Contrato</label>
-                                        <select id="list_contratos_conta_anexo" name="list_contratos_conta_anexo"
-                                                class="selectpicker form-control">
-                                        </select>
-
+                                    <select id="list_contratos_conta_anexo" name="list_contratos_conta_anexo"
+                                            class="selectpicker form-control">
+                                    </select>
                                 </div>
 
-                                <div class="d-flex flex-column align-items-start w-100">
+                                <div class="d-flex flex-column align-items-start" style="width: 15%;margin-left: 0.25rem;">
                                     <label for="dt_competencia_anexo_doc_contrato">Competência</label>
                                         <input type="month" class="form-control" id="dt_competencia_anexo_doc_contrato" required>
 
                                 </div>
 
-                            </div>
-
-                            <div class="d-flex justify-content-between align-items-between w-100 mb-3" >
-
-                                <div class="d-flex flex-column align-items-start w-100">
+                                <div class="d-flex flex-column align-items-start" style="width: 17%;margin-left: 0.25rem;">
                                     <label for="txt_desc_anexo_contrato">Descrição do arquivo</label>
                                     <input type="text" name="txt_desc_anexo_contrato"
                                                 id="txt_desc_anexo_contrato"
                                                 class="form-control"/>
                                 </div>
 
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;">
+                                <div class="d-flex flex-column align-items-start"
+                                     style="width: 35%; margin-left: 0.25rem;">
                                     <lable>Selecione o arquivo</lable>
                                     <input type="file" name="file_anexo_contrato"
                                                 id="file_anexo_contrato"
                                                 class="containerApp"
                                                 placeholder="Selecione o arquivo ..."
                                                 accept="application/pdf"
-                                    />{% csrf_token %}
+                                    />
                                 </div>
 
-                                <div class="d-flex flex-column align-items-end w-100" style="margin-top: 1.5rem;">
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100" >
+
+                                <div class="d-flex flex-column align-items-end w-100"
+                                     style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
                                         name="btn_anexa_doc_contrato"
@@ -603,8 +592,9 @@
                                             <th scope="col">Diferença</th>
 
                                             <th scope="col">Usuário</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Observação</th>
+                                            <th scope="col">Composição</th>
+                                            <th scope="col">Análise</th>
+                                            <th scope="col">Regularização</th>
                                         </tr>
                                     </thead>
                                     <tbody>

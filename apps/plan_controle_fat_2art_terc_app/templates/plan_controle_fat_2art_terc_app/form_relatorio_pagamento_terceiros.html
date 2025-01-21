@@ -6,9 +6,9 @@
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
-    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-filter fa-2xl"style="color: #f46424;"></i>
+            <i class="fa-solid fa-filter"></i>
             <h1 class=" titlePadraoMenu">Rel. Pagamento por Projeto / Período / Tipo Pagamento</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -18,18 +18,20 @@
         {% endif %}
     </div>
 
+    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
     <div class="containerApp">
         <form id="frm_rel_pag_terc_por_proj" name="frm_rel_pag_terc_por_proj"
               method="POST"
               class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
             {% csrf_token %}
 
-            <div class="d-flex justify-content-between align-items-between w-100">
-                <hr class="hr_title">
-            </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+
+            <div class="d-flex justify-content-between align-items-between w-100" style="margin-bottom: 0px !important;">
+                <div class="d-flex flex-column align-items-start" style="width: 30%;">
                     <label for="listProjetosRelPagTerc">Projeto</label>
                     <select class="selectpicker form-control" id="listProjetosRelPagTerc"
                         name="listProjetosRelPagTerc"
@@ -41,14 +43,14 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column align-items-start" style="width: 20%; padding-left: 0.25rem;">
                     <label for="textFieldPeriodoReferenciaRelPagTerc">Período</label>
                     <input type="month" class="form-control" name="textFieldPeriodoReferenciaRelPagTerc"
                            id="textFieldPeriodoReferenciaRelPagTerc" autocomplete="off" />
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                    <label for="listQuinzRelPagTerc">Projeto</label>
+                <div class="d-flex flex-column align-items-start" style="width: 15%; padding-left: 0.25rem;">
+                    <label for="listQuinzRelPagTerc">Quinzena</label>
                     <select class="selectpicker form-control" id="listQuinzRelPagTerc"
                         name="listQuinzRelPagTerc"
                         data-live-search="true">
@@ -58,8 +60,8 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                    <label for="listOcorrenciaPagamentoRelPagTerc">Projeto</label>
+                <div class="d-flex flex-column align-items-start" style="width: 25%; padding-left: 0.25rem;">
+                    <label for="listOcorrenciaPagamentoRelPagTerc">Tipo pagamento</label>
                     <select class="selectpicker form-control" id="listOcorrenciaPagamentoRelPagTerc"
                         name="listOcorrenciaPagamentoRelPagTerc"
                         data-live-search="true">
@@ -67,9 +69,19 @@
                         <option value="E">Pagamentos Extras</option>
                     </select>
                 </div>
+
+                <div class="d-flex flex-column" style="width: 10%; padding-left: 0.25rem; margin-top: 1.2rem;">
+                    <button type="button" name="btnPesqRelPagTerceirosProjPeriodoTipo"
+                            id="btnPesqRelPagTerceirosProjPeriodoTipo"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-filter"></i>
+                        Gerar Dados
+                    </button>
+                </div>
+
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+            <div class="d-flex justify-content-between align-items-between w-100">
                 <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
                     <div class="loader" id="loader_rel_pag_terc">
                         <div class="loader-inner">
@@ -93,14 +105,11 @@
                      style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
                      &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column w-100">
-                    <button type="button" name="btnPesqRelPagTerceirosProjPeriodoTipo"
-                            id="btnPesqRelPagTerceirosProjPeriodoTipo"
-                            class="btn btn-primary btn-rounded botaoPrincipal">
-                        <i class="fa-solid fa-filter"></i>
-                        Gerar Dados
-                    </button>
+                <div class="d-flex flex-column w-100"
+                     style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
+                     &nbsp;&nbsp;
                 </div>
+
             </div>
 
         </form>

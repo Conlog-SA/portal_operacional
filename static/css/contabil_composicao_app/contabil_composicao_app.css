@@ -26,7 +26,7 @@
     padding-left:0.5rem;
     padding-right:0.5rem;
     padding-top: 0.5rem;
-    padding-bottom: 1rem;
+    padding-bottom: 0.25rem;
     opacity: 1;
     position:relative;
     z-index:1000;
@@ -110,6 +110,7 @@
     border-radius:0rem 0rem 0.5rem 0.5rem;
     padding-left:1rem;
     padding-right:1rem;
+    padding-top: 0rem;
     opacity: 1;
 }
 
@@ -142,12 +143,6 @@
 
 
 
-
-.cl_div_vazia_cad_conta{
-    padding-left:0.5rem;
-    padding-right:0.5rem;
-}
-
 .cl_div_btn_criar_nova_conta_manual{
     padding-left:0.5rem;
     padding-right:0.5rem;
@@ -166,75 +161,6 @@
     height: 2rem;
 }
 
-
-.cl_div_txt_num_contrato{
-    padding-right: 0.25rem;
-}
-
-.cl_div_dt_emissao_contrato{
-    padding-right: 0.25rem;
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_handle_contrato{
-    padding-right: 0.25rem;
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_doc_contabil{
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_val_nominal{
-    padding-right: 0.25rem;
-}
-
-.cl_div_txt_total_liquido{
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_dia_util{
-    padding-right: 0.25rem;
-}
-
-.cl_div_txt_qtd_parcelas{
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-}
-
-.cl_div_dt_primeira_parcela{
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_handle_operacao{
-    padding-right: 0.25rem;
-}
-
-.cl_div_txt_desc_operacao{
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
-}
-
-.cl_div_chk_atualiza_com_benner{
-    padding-left: 0.25rem;
-}
-
-.cl_div_btn_cadastra_novo_contrato{
-    padding-right: 0.25rem;
-}
-
-.cl_div_btn_importar_contrato_benner{
-    padding-left: 0.25rem;
-}
-
-.cl_div_txt_num_contrato_importa{
-    padding-right: 0.25rem;
-}
-
-.cl_div_btn_importa_contrato_pelo_num{
-    padding-left: 0.25rem;
-    padding-top: 1.3rem;
-}
 
 
 
@@ -289,33 +215,7 @@
 }
 
 
-input[type=file] {
-    width: 100%;
-    max-width: 100%;
-    color: #444;
-    padding: 4px;
-    background: #fff;
-    border-radius: 0.5rem;
-    border: 1px solid #555;
-    height: 45px !important;
-    font-size: 0.85rem;
-  }
 
-input[type=file]::file-selector-button {
-    margin-right: 20px;
-    border: none;
-    background: var(--cor_empresa);
-    padding: 0.4rem;
-    /* font-size: 1.3rem; */
-    border-radius: 0.5rem;
-    color: #fff;
-    cursor: pointer;
-    transition: background .2s ease-in-out;
-  }
-
-input[type=file]::file-selector-button:hover {
-  background: var(--cor_empresa_hover);
-}
 
 
 .cl_div_loader_cad_comp_detalhada{
@@ -371,3 +271,6 @@ input[type=file]::file-selector-button:hover {
     padding: 4px !important;
 }
 
+.filter-option {
+    width: 222.38px !important;
+}

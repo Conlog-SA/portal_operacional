@@ -140,20 +140,20 @@ $(document).on('click','button', function(){
                                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;color:#ffffff;font-size:10px;background:#948c8c;padding-top: 5px;border-radius: 10px;">
                                                     &nbsp;Observação do Pagamento<br/>Data: ${pag.data}/ Ocorrência : ${pag.tipo_ocorrencia}/ ${pag.complemento}/ ${pag.obs_desc}<br/>${pag.obs_desc}&nbsp;
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonEstornoPagamento+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDF+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDFDescAcres+`
                                                 </div>
                                             </div>
                                             <br/>
                                         </div>
                                         <div id="collapse${pag.cod_pag}" aria-labelledby="heading${pag.cod_pag}" data-parent="#accordion${pag.cod_pag}" class="collapse">
-                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;">
+                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
 
 
                                             </div>
@@ -228,24 +228,24 @@ $(document).on('click','button', function(){
                                                         </div>
                                                 </button>
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                            <div class="d-flex justify-content-between align-items-between w-100">
                                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;color:#ffffff;font-size:10px;background:#948c8c;padding-top: 5px;border-radius: 10px;">
                                                     &nbsp;Observação do Pagamento<br/>Data: ${pag.data}/ Ocorrência : ${pag.tipo_ocorrencia}/ ${pag.complemento}/ ${pag.obs_desc}<br/>${pag.obs_desc}&nbsp;
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonEstornoPagamento+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDF+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDFDescAcres+`
                                                 </div>
                                             </div>
                                             <br/>
                                         </div>
                                         <div id="collapse${pag.cod_pag}" aria-labelledby="heading${pag.cod_pag}" data-parent="#accordion${pag.cod_pag}" class="collapse">
-                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;">
+                                            <div class="card-block" id="divMapasPagoBeneficiarioSelecionado${pag.cod_pag}" style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
 
 
                                             </div>

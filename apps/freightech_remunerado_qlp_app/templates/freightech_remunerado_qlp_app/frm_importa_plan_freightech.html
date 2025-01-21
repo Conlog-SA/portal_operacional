@@ -21,7 +21,7 @@
             {% csrf_token %}
 
             <div class="d-flex justify-content-between align-items-between w-100 ">
-                <div class="d-flex flex-column w-25" style="padding-right: 0.25rem;">
+                <div class="d-flex flex-column align-items-start w-25" style="padding-right: 0.25rem;">
                     <label>Tipo de planilha</label>
                     <select class="selectpicker form-control" id="sl_arquivo_remunerado"
                             name="sl_arquivo_remunerado"
@@ -39,7 +39,7 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-75" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column align-items-start w-75" style="padding-left: 0.25rem;">
                     <label>Selecione o arquivo </label>
                     <input type="file" name="fl_arquivo_remunerado" id="fl_arquivo_remunerado"
                            class="containerApp"
@@ -97,7 +97,7 @@
 
 
                 <div class="d-flex mt-3 justify-content-between align-items-between w-100 mb-6" >
-                    <div class="d-flex flex-column w-100"
+                    <div class="d-flex flex-column align-items-start w-100"
                          style="margin-left: 0.25rem;margin-right: 0.25rem;">
                         <label for="sl_unidade_pesq_qlp_freigh">Unidade</label>
                         <select class="selectpicker form-control" id="sl_unidade_pesq_qlp_freigh"
@@ -114,12 +114,12 @@
                             <option value="UDC GUARULHOS">UDC GUARULHOS</option>
                         </select>
                     </div>
-                    <div class="d-flex flex-column w-100"
+                    <div class="d-flex flex-column align-items-start w-100"
                          style="margin-left: 0.25rem;margin-right: 0.25rem;">
                         <label for="dt_comp_pesq_qlp_freigh_1">Data 1</label>
                         <input type="month" class="form-control" id="dt_comp_pesq_qlp_freigh_1" required>
                     </div>
-                    <div class="d-flex flex-column w-100"
+                    <div class="d-flex flex-column align-items-start w-100"
                          style="margin-left: 0.25rem;margin-right: 0.25rem;">
                         <label for="dt_quinz_pesq_qlp_freigh_1">Quinzena</label>
                         <select class="selectpicker form-control" id="dt_quinz_pesq_qlp_freigh_1"
@@ -129,12 +129,12 @@
                             <option value="2">Quinz. 2</option>
                         </select>
                     </div>
-                    <div class="d-flex flex-column w-100"
+                    <div class="d-flex flex-column align-items-start w-100"
                          style="margin-left: 0.25rem;margin-right: 0.25rem;">
                         <label for="dt_comp_pesq_qlp_freigh_2">Data 2</label>
                         <input type="month" class="form-control" id="dt_comp_pesq_qlp_freigh_2" required>
                     </div>
-                    <div class="d-flex flex-column w-100"
+                    <div class="d-flex flex-column align-items-start w-100"
                          style="margin-left: 0.25rem;margin-right: 0.25rem;">
                         <label for="dt_quinz_pesq_qlp_freigh_2">Quinzena</label>
                         <select class="selectpicker form-control" id="dt_quinz_pesq_qlp_freigh_2"
@@ -162,7 +162,7 @@
                                 data-bs-target="#div_tab_param_plan_rem" type="button" role="tab"
                                 aria-controls="div_tab_param_plan_rem" aria-selected="true">
                             <i class="fa-solid fa-user-graduate" style="color: #f46424;"></i>
-                            QLP ADM
+                            Remunerado QLP
                         </button>
                         <button class="nav-link" id="a_tab_cargos_rem_senior" data-bs-toggle="tab"
                                 data-bs-target="#div_tab_cargos_rem_senior" type="button" role="tab"
@@ -234,10 +234,6 @@
 
                         <!-- END QLP ADM -->
 
-
-
-
-
                     </div>
 
                     <div class="tab-pane" id="div_tab_cargos_rem_senior" role="tabpanel"
@@ -263,17 +259,17 @@
                                         <th scope="col">Quinz.</th>
                                         <th scope="col">Dia</th>
                                         <th scope="col">Filial</th>
-                                        <th scope="col">Cargo Senior</th>
                                         <th scope="col">Cargo Freightech</th>
                                         <th scope="col">Qlp</th>
                                         <th scope="col">R$ TT Ordenados</th>
+                                        <th scope="col">Qlp Rem</th>
+                                        <th scope="col">R$ TT Ordenados Rem</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>
@@ -305,17 +301,17 @@
                                         <th scope="col">Quinz.</th>
                                         <th scope="col">Dia</th>
                                         <th scope="col">Projeto</th>
-                                        <th scope="col">Cargo Senior</th>
                                         <th scope="col">Cargo Freightech</th>
                                         <th scope="col">Qlp</th>
                                         <th scope="col">R$ TT Ordenados</th>
+                                        <th scope="col">Qlp Rem</th>
+                                        <th scope="col">R$ TT Ordenados Rem</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <th></th>
                                         <th></th>
                                         <th></th>
                                         <th></th>

@@ -1,3 +1,7 @@
+/* Estilizando a barra de rolagem para Webkit */
+
+
+
 .titlePadraoMenu{
     font-weight: 200;
     font-size: 1rem;
@@ -8,6 +12,7 @@
 .hr_title{
     width: 100%;
     margin-top: 0 !important;
+    margin-bottom: 0.25rem;
     color: white !important;
     border-top: 1px solid white !important;
     background-color:var(--cor_bg_cinza_escuro) !important;
@@ -302,10 +307,9 @@ button i {
 }
 
 .btn_fecha_modais {
-    border: none;
     width: 0px;
-    position: absolute;
-    margin-top: -2.8rem;
+    margin-right: 2rem;
+    border: none;
 }
 
 .btn_fecha_modais:hover {

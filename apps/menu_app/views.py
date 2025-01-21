@@ -24,8 +24,13 @@ class Menu_View(View):
             str_bg = 'background.jpg'
             cor_emp_hex = '#f46424 !important;'
         elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
-            str_bg = 'background-deep.jpg'
+            #str_bg = 'background-deep.jpg'
+            str_bg = 'background-deep_menu.png'
             cor_emp_hex = '#3b8eed !important;'
+
+        caminho_foto_perfil_usu = 'https://operacional.conlogsa.com.br/media/fotos/user_default.jpg'
+        if obj_usuario_sessao.caminho_foto != None:
+            caminho_foto_perfil_usu = 'https://operacional.conlogsa.com.br/media/' + obj_usuario_sessao.caminho_foto
 
         context = {
             'obj_usuario_sessao': obj_usuario_sessao,
@@ -35,6 +40,7 @@ class Menu_View(View):
             'str_bg': str_bg,
             'cor_emp_hex': cor_emp_hex,
             'VERSAO_PORTAL': VERSAO_PORTAL,
+            'caminho_foto_perfil_usu': caminho_foto_perfil_usu
         }
         return render(request, 'menu_app/main_menu1.html', context)
 

@@ -57,22 +57,32 @@ class Conexao_Senior_BD():
     def listar_dados_colaborador(self, id_senior_colab):
         lista_colabs = {}
         cursor = self.__conn.cursor()
-        cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
-                A.NOMFUN   AS NOME_FUNC,
-                A.NUMCPF   AS CPF,
-                A.DATADM   AS DATA_ADMISSAO,
-                A.CODCAR   AS COD_CARGO,
-                B.TITCAR   AS DESC_CARGO,
-                CASE WHEN A.SITAFA = 7
-                        THEN 'Desligado'
-                        ELSE 'Ativo' END
-                        AS  SITUACAO_COLAB,
-                        A.SITAFA   AS  cod_situacao
-                FROM R034FUN A (NOLOCK)
-                LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
-                LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
-                WHERE A.NUMCAD = {id_senior_colab}
-                ORDER BY A.SITAFA, A.NOMFUN DESC''')
+        cursor.execute(f'''
+              SELECT    DISTINCT A.NUMCAD   AS ID, 
+                        A.NOMFUN    AS NOME_FUNC,
+                        A.NUMCPF    AS CPF,
+                        A.DATADM    AS DATA_ADMISSAO,
+                        A.CODCAR    AS COD_CARGO,
+                        B.TITCAR    AS DESC_CARGO,
+                        C.nomfil 	AS	NOME_FIL,
+                        D.NOMLOC	AS	NOME_LOC,
+                        CASE WHEN A.SITAFA = 7
+                            THEN 'Desligado'
+                            ELSE 'Ativo' END
+                                    AS  SITUACAO_COLAB,
+                        A.SITAFA    AS  cod_situacao
+                FROM    R034FUN (NOLOCK) A 
+                LEFT    JOIN R024CAR (NOLOCK) B 
+                  ON    (B.CODCAR = A.CODCAR) 
+                LEFT    JOIN R030FIL (NOLOCK) C  
+                  ON    ( C.CODFIL = A.CODFIL 
+                 AND    C.NUMEMP = A.NUMEMP)
+                LEFT	JOIN R016ORN (NOLOCK) D
+                  ON	(D.TABORG = A.TABORG
+                 AND	D.NUMLOC = A.NUMLOC)
+                WHERE   A.NUMCAD = {id_senior_colab}
+                ORDER   BY A.SITAFA, A.NOMFUN DESC
+        ''')
         if cursor is not None:
             data = []
             for row in cursor:
@@ -83,7 +93,9 @@ class Conexao_Senior_BD():
                     'data_admissao_colab': row.DATA_ADMISSAO,
                     'cpf_colab': row.CPF,
                     'matricula_colab': row.ID,
-                    'situacao_colab': row.SITUACAO_COLAB
+                    'situacao_colab': row.SITUACAO_COLAB,
+                    'nome_filial': row.NOME_FIL,
+                    'nome_local': row.NOME_LOC
                 }
                 data.append(colab)
             cursor.close()
@@ -495,6 +507,10 @@ class Conexao_Senior_BD():
                     END					AS	status_colab,
                     CAST(USU_TDIAEMP.USU_DIADAT AS DATE)
                                         AS	data_qlp,
+                    MONTH(CAST(USU_TDIAEMP.USU_DIADAT AS DATE))
+                                        AS	vigencia__month,  
+                    YEAR(CAST(USU_TDIAEMP.USU_DIADAT AS DATE))
+                                        AS	vigencia__year, 
                     R030FIL.CODFIL		AS	cod_filial,
                     R030FIL.NOMFIL		AS	nome_filial,
                     R018CCU.CODCCU		AS 	cod_ccu_colab,
@@ -634,10 +650,58 @@ class Conexao_Senior_BD():
             ORDER	BY R034FUN.NOMFUN
         '''
         )
-        print(sql_qlp)
         df_qlp = pd.read_sql(sql_qlp, self.__conn)
         self.__conn.close()
         return df_qlp
+
+    def pesq_colab_by_nome(self, nome_colab):
+        lista_colabs = {}
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''
+              SELECT    DISTINCT A.NUMCAD   AS ID, 
+                        A.NOMFUN    AS NOME_FUNC,
+                        A.NUMCPF    AS CPF,
+                        A.DATADM    AS DATA_ADMISSAO,
+                        A.CODCAR    AS COD_CARGO,
+                        B.TITCAR    AS DESC_CARGO,
+                        C.nomfil 	AS	NOME_FIL,
+                        D.NOMLOC	AS	NOME_LOC,
+                        CASE WHEN A.SITAFA = 7
+                            THEN 'Desligado'
+                            ELSE 'Ativo' END
+                                    AS  SITUACAO_COLAB,
+                        A.SITAFA    AS  cod_situacao
+                FROM    R034FUN (NOLOCK) A 
+                LEFT    JOIN R024CAR (NOLOCK) B 
+                  ON    (B.CODCAR = A.CODCAR) 
+                LEFT    JOIN R030FIL (NOLOCK) C  
+                  ON    ( C.CODFIL = A.CODFIL 
+                 AND    C.NUMEMP = A.NUMEMP)
+                LEFT	JOIN R016ORN (NOLOCK) D
+                  ON	(D.TABORG = A.TABORG
+                 AND	D.NUMLOC = A.NUMLOC)
+                WHERE   A.NOMFUN = '{nome_colab}'
+                  AND   A.SITAFA = 1
+                ORDER   BY A.SITAFA, A.NOMFUN DESC
+        ''')
+        result = cursor.fetchone()
+        colab = None
+        if result:
+            colab = {
+                'nome_colab': result.NOME_FUNC,
+                'cod_cargo_colab': result.COD_CARGO,
+                'desc_cargo_colab': result.DESC_CARGO,
+                'data_admissao_colab': result.DATA_ADMISSAO,
+                'cpf_colab': result.CPF,
+                'matricula_colab': result.ID,
+                'situacao_colab': result.SITUACAO_COLAB,
+                'nome_filial': result.NOME_FIL.split('-')[1],
+                'nome_local': result.NOME_LOC
+            }
+
+            cursor.close()
+            self.__conn.close()
+            return colab
 
 
     def retorna_df_ordenados_por_periodo_e_filial(self, data_ref, cod_filial):
