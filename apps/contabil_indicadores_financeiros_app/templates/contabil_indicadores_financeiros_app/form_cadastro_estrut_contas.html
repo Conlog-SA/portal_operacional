@@ -1,0 +1,87 @@
+{% load static %}
+
+{% block link_static_css %}
+
+<link rel="stylesheet" href="{% static 'css/contabil_indicadores_financeiros_app/indicadores_financeiros_estrutura_contas.css' %}"/>
+
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-layer-group"></i>
+            <h1 class="titlePadraoMenu">Estrutura Contas</h1>
+        </div>
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
+    </div>
+    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+    <div class="containerApp">
+        <div class="form-group form_div_check w-100 cl_frm_topo_paginas">
+            <div class="col-md-12 w-100 h-100" style="padding-left:1rem;padding-right:1rem;">
+                <div style="margin-top:3rem;height:85vh;">
+                    <div class="d-flex justify-content-between align-items-between w-100" style="height:40%">
+                        <div style="width:30%;">
+                            <div style="width:100%;height:13%;display:flex;justify-content:space-between">
+                                <b style="font-size:24px">Nivel 1</b>
+                                <button type='button' id="btn_nova_conta_nivel_1" name="btn_nova_conta_nivel_1"
+                                        class="btn btn-primary btn-rounded adiciona-conta-nivel-1" style="width:32%;">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span style="font-size:14px">Adicionar Conta</span>
+                                </button>
+                            </div>
+                            <div style="display:flex;justify-content:center;padding:4px;margin-top:0.4rem;border-style:groove;width:100%;height:80%">
+                                <ul id="sortable_nivel_1" class="sortable">
+                                    {% for item in lista_estrut_nivel_1 %}
+                                        <li class="ui-state-default item_li_sortable" value="{{item.cod_estrutura_conta}}">
+                                            <b>{{item.nome_estrutura}}</b>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <div style="width:30%;">
+                            <div style="width:100%;height:13%;display:flex;justify-content:space-between">
+                                <b style="font-size:24px">Nivel 2</b>
+                                <button type='button' id="btn_nova_conta_nivel_2" name="btn_nova_conta_nivel_2"
+                                        class="btn btn-primary btn-rounded adiciona-conta-nivel-2" style="width:32%;">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span style="font-size:14px">Adicionar Conta</span>
+                                </button>
+                            </div>
+                            <div style="padding:4px;margin-top:0.4rem;border-style:groove;width:100%;height:80%">
+                                <ul id="sortable_nivel_2" class="sortable">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 w-100 d-flex justify-content-center" style="height:50%;margin-top:4rem;">
+                        <div style="margin-right:1rem;width:50%;">
+                            <div style="width:100%;height:10%;display:flex;justify-content:space-between">
+                                <b style="font-size:24px">Nivel 3</b>
+                                <button type='button' id="btn_nova_conta_nivel_3" name="btn_nova_conta_nivel_3"
+                                        class="btn btn-primary btn-rounded adiciona-conta-nivel-3" style="width:19%;">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span style="font-size:14px">Adicionar Conta</span>
+                                </button>
+                            </div>
+                            <div style="display:flex;justify-content:center;padding:4px;margin-top:0.4rem;border-style:groove;width:100%;height:90%">
+                                <ul id="sortable_nivel_3" class="sortable">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'contabil_indicadores_financeiros_app/modal_form_cadastro_estrut_contas.html' %}
