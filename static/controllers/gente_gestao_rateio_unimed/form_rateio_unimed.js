@@ -42,7 +42,7 @@ $(document).on('click','.btn-realiza-importacao' , function(){
 
     let loader_imp_2art = document.getElementById("loader_imp_plan_despesas")
     let let_frm_data = new FormData();
-    let_frm_data.append("file", $('input[type=file]')[0].files[0]);
+    let_frm_data.append("file", $('input[type=file]')[1].files[0]);
     let_frm_data.append("cod_plano", let_val_plano);
     loader_imp_2art.style.display = "flex";
     $.ajax({
