@@ -1,0 +1,163 @@
+{% load static %}
+
+<div id="modalCadastraEstrutContas" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-plus fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Cadastrar Estrutura/Conta</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalAdicionaStrutContas"
+                                id="fechaModalAdicionaStrutContas"
+                                class="btn btn-sm btn-rounded fechaModalAdicionaStrutContas">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formBuscaColabSenior" name="formBuscaColabSenior"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="textFieldDescricaoStrut" class="label_comp_forms">Descrição</label>
+                            <div style="display:flex">
+                                <input type="text" class="form-control" name="textFieldDescricaoStrut" required
+                                       id="textFieldDescricaoStrut">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="align-items-between w-100 mb-3">
+                        <label for="checkboxUltimoNivel" class="label_comp_forms">É ultimo nivel?</label>
+                        <input id="checkboxUltimoNivel" name="checkboxUltimoNivel" type="checkbox">
+                    </div>
+
+                    <div class="align-items-between w-100 mb-3">
+                        <select class="selectpicker form-control conta-cadastro-estrut" id="contasBennerIndicadores"
+                                name="contasBennerIndicadores" data-live-search="true" title="Selecione a conta"
+                                disabled>
+                            <option value="teste1">teste1</option>
+                            <option value="teste2">teste2</option>
+                        </select>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <button type="button" name="btnSalvaColabSenior"
+                                    id="btnSalvaColabSenior"
+                                    class="btn btn-primary btn-rounded botaoPrincipal btnSalvaColabSenior">
+                            <i class="fa-solid fa-check"></i>
+                            Salvar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modalAdicionaExcecao" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p style="margin-bottom:2px;">
+                            <i class="fa-solid fa-square-plus fa-2xl" style="color: #FFFFFF;margin-right:10px;"></i>
+                            <span style="color:#ffffff; font-size:15px">Adicionar exceção</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalCadastraExcecao"
+                                id="fechaModalCadastraExcecao"
+                                class="btn btn-sm btn-rounded fechaModalCadastraExcecao">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formCadastraExcecao" name="formCadastraExcecao"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="nomeColabExcecao" class="label_comp_forms">Nome:</label>
+                            <input type="text" class="form-control" name="nomeColabExcecao" required
+                                   id="nomeColabExcecao">
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="cpfColabExcecao" class="label_comp_forms">
+                                CPF:
+                            </label>
+                            <input type="text" class="form-control" id="cpfColabExcecao"
+                                    name="cpfColabExcecao"/>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="filialColabExcecao" class="label_comp_forms">Filial:</label>
+                            <select class="selectpicker form-control filial-colab-excecao" id="filialColabExcecao"
+                                name="filialColabExcecao"
+                                data-live-search="true"
+                                title="Selecione a filial">
+                                {% for reg in lista_todas_filiais %}
+                                    <option value="{{reg.cod_filial}}">{{reg.desc_filial}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="projetoColabExcecao" class="label_comp_forms">
+                                Projeto:
+                            </label>
+                            <select class="selectpicker form-control" id="projetoColabExcecao"
+                                name="projetoColabExcecao"
+                                data-live-search="true"
+                                title="Selecione o projeto" disabled>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="input_competencia_inicio_excecao" class="label_comp_forms">Inicio de vigência:</label>
+                            <input type="month" class="form-control" id="input_competencia_inicio_excecao" name="input_competencia_inicio_excecao">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <button type="button" name="btnAdicionaExcecao"
+                                    id="btnAdicionaExcecao"
+                                    class="btn btn-primary btn-rounded botaoPrincipal btn-adiciona-excecao">
+                            <i class="fa-solid fa-check"></i>
+                            Salvar
+                        </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
