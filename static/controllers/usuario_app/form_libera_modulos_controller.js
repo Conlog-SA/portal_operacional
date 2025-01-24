@@ -39,7 +39,7 @@ $(document).on('change','input', function(){
     let let_name_input = $(this).attr('name');
     let let_id_input = $(this).attr('id');
 
-    if (let_name_input.includes("chk_ativa_menu")) {
+    if (let_name_input == "chk_ativa_menu") {
         let let_cod_usu = $("#cb_usuarios").val();
 
         let let_cod_menu = let_id_input.split('_')[3];
@@ -153,7 +153,7 @@ function retorna_menu_sub_menu(cod_usuario_param){
                 let let_check_menu = `
                     <div class="d-flex flex-column ">
                         <div class="container">
-                            <input type="checkbox" class="checkbox" name="chk_ativa_menu_${menu.cod_menu}"
+                            <input type="checkbox" class="checkbox" name="chk_ativa_menu"
                             id="chk_ativa_menu_${menu.cod_menu}">
                             <label class="switch" for="chk_ativa_menu_${menu.cod_menu}">
                                 <span class="slider"></span>

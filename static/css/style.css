@@ -340,3 +340,13 @@ button i {
     border: none;
 
 }
+
+table.dataTable tbody tr > .dtfc-fixed-start, table.dataTable tbody tr > .dtfc-fixed-end {
+    color: #363636 !important;
+    font-weight: 400 !important;
+}
+
+
+table.dataTable thead tr th > .dt-column-title {
+    font-weight: 600 !important;
+}

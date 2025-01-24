@@ -1,7 +1,7 @@
 from django.urls import path
 from django.conf.urls.static import static
 from django.conf import settings
-from apps.contabil_composicao_app import views
+from apps.contabil_composicao_app import views_dic, views
 
 urlpatterns = [
     path('acessa_form_cadastros_comp', views.Form_Imp_Cad_Conta_View.as_view(),
@@ -168,8 +168,6 @@ urlpatterns = [
          name='adiciona_novo_status_processo_contabil'),
     path('atualiza_data_fim_status_proc_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
          name='atualiza_data_fim_status_proc_contabil'),
-    path('povo_status_pesq_comp_detalhado', views.Comp_Status_Pesq_Comp_Detalhada_View.as_view(),
-         name='povo_status_pesq_comp_detalhado'),
 
 ]
 
