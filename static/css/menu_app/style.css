@@ -184,7 +184,7 @@ main {
 
 .item-description {
     display: flex;
-    justify-content: space-between;
+    justify-content: end; 
     width: 0px;
     overflow: hidden;
     white-space: nowrap;
@@ -210,7 +210,7 @@ main {
 }
 
 #sidebar.open-sidebar .item-description  {
-    min-width: 250px;
+    min-width: 280px;
     height: auto;
     color: #363636;
 
@@ -226,7 +226,7 @@ main {
 .dados-usu {
     display: flex;
     justify-content: center;
-    align-items: end;
+    align-items: center;
     flex-direction: column;
 
 }
