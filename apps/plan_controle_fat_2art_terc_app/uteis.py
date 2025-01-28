@@ -72,7 +72,7 @@ class Uteis():
 
             val_pagar_terc = (decimal.Decimal(val_pagar_terc) + decimal.Decimal(val_total_acres_mapa)) - \
                              decimal.Decimal(val_total_desc_mapa)
-            
+            git checko
             val_pagar_conlog = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - val_pagar_terc
 
             calc_dif_frete_val_calc = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - \
