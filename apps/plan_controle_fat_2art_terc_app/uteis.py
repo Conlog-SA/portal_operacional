@@ -72,10 +72,10 @@ class Uteis():
 
             val_pagar_terc = (decimal.Decimal(val_pagar_terc) + decimal.Decimal(val_total_acres_mapa)) - \
                              decimal.Decimal(val_total_desc_mapa)
+            
+            val_pagar_conlog = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - val_pagar_terc
 
-            val_pagar_conlog = decimal.Decimal(reg_ter.valorfrete_2art_terc_financ) - val_pagar_terc
-
-            calc_dif_frete_val_calc = decimal.Decimal(reg_ter.valorfrete_2art_terc_financ) - \
+            calc_dif_frete_val_calc = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - \
                                       decimal.Decimal(val_calc_mapa)
             val_dif_frete_val_calc = 0.00
             if calc_dif_frete_val_calc > 0.1 or calc_dif_frete_val_calc < -0.5:
@@ -108,8 +108,8 @@ class Uteis():
                 regiao_reg_terc = reg_ter.regiaospot_2art_terc_financ,
                 qtd_entr_reg_terc = reg_ter.entregas_2art_terc_financ,
                 tipo_imp_reg_terc = reg_ter.tipoimposto_2art_terc_financ,
-                perc_imposto_reg_terc = round(float(reg_ter.percimposto_2art_terc_financ),2),
-                val_frete_reg_terc = round(float(reg_ter.valorfrete_2art_terc_financ),2),
+                perc_imposto_reg_terc = round(float(str(reg_ter.percimposto_2art_terc_financ).replace(',','.')),2),
+                val_frete_reg_terc = round(float(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')),2),
                 val_calculado = round(float(val_calc_mapa),2),
                 diferenca = locale.currency(round(val_dif_frete_val_calc,2), grouping=True, symbol=None),
                 val_faturado_reg_terc = round(float(reg_ter.cod_reg_2art.valorfaturado),2),

@@ -24,7 +24,8 @@ class Form_Gera_Evolucao_Precos_View(View):
 
         lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
+            .retorna_familias(" WHERE handle not in (5,12,18,21,22,23,25,28,29,32,34,35,36,37,39,40,42,43,45,48,50,51,52,53,54,55,56,59,62,63,"
+                              "66,67,70,71,72,74,75,78,81,86,92,99,102)"
                               " AND nome not like '%SERVIÇO%' AND nome not like '%SERVICO%'")
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
