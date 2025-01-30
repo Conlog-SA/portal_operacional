@@ -104,40 +104,63 @@ class Conexao_Senior_BD():
 
     def pesquisar_dados_colaborador_por_cpf_emp(self, cpf, cod_empresa):
         cursor = self.__conn.cursor()
-        cursor.execute(f'''SELECT DISTINCT A.NUMCAD   AS ID, 
-                A.NOMFUN   AS NOME_FUNC,
-                A.NUMCPF   AS CPF,
-                B.TITCAR   AS DESC_CARGO,
-                C.CODFIL   AS COD_FIL,
-                C.NOMFIL   AS NOM_FIL,
-                A.SITAFA 	AS  SITUACAO_COLAB,
-                A.CODCCU AS COD_PROJ,
-                D.NOMCCU AS NOM_PROJ,
-                (SELECT COUNT(NUMCPF) FROM r034fun (NOLOCK) GROUP BY NUMCPF HAVING NUMCPF = ?) AS QTD_REGISTROS_COL
-                
-                FROM R034FUN A (NOLOCK)
-                LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
-                LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
-                LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
-                WHERE A.NUMCPF = ?
-                AND C.NUMEMP = ?
-                GROUP BY 
-                        A.NUMCAD, 
-                        A.NOMFUN,
-                        A.NUMCPF,
-                        B.TITCAR,
-                        C.CODFIL,
-                        C.NOMFIL,
-                        A.SITAFA,
-                        A.CODCCU,
-                        D.NOMCCU''', [int(cpf.split('.')[0]), int(cpf.split('.')[0]), int(cod_empresa)])
+        cursor.execute(f'''SELECT DISTINCT 
+                                A.NUMCAD   AS ID, 
+                                A.NOMFUN   AS NOME_FUNC,
+                                A.NUMCPF   AS CPF,
+                                C.CODFIL   AS COD_FIL,
+                                C.NOMFIL   AS NOM_FIL,
+                                A.SITAFA 	AS  SITUACAO_COLAB,
+                                A.CODCCU AS COD_PROJ,
+                                D.NOMCCU AS NOM_PROJ,
+                                
+                                (SELECT COUNT(NUMCPF) 
+                                FROM r034fun (NOLOCK) 
+                                GROUP BY NUMCPF 
+                                HAVING NUMCPF = ?
+                                ) AS QTD_REGISTROS_COL,
+                                
+                                (SELECT TOP 1 hist_pos.postra
+                                FROM R038HPO hist_pos
+                                WHERE hist_pos.numemp = A.numemp 
+                                AND hist_pos.tipcol = A.tipcol
+                                AND hist_pos.numcad = A.numcad
+                                ORDER BY hist_pos.INIATU DESC) as cod_pos
+   
+                           FROM R034FUN A (NOLOCK)
+                           LEFT JOIN R024CAR B (NOLOCK) ON B.CODCAR = A.CODCAR 
+                           LEFT JOIN R030FIL C (NOLOCK) ON ( C.CODFIL = A.CODFIL AND C.NUMEMP = A.NUMEMP)
+                           LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
+                           WHERE A.NUMCPF = ?
+                           AND  C.NUMEMP = ?
+                           AND A.SITAFA != 7
+                           AND  (
+                                SELECT TOP 1 hist_pos.postra
+                                FROM R038HPO hist_pos
+                                WHERE hist_pos.numemp = A.numemp 
+                                AND hist_pos.tipcol = A.tipcol
+                                AND hist_pos.numcad = A.numcad
+                                ORDER BY hist_pos.INIATU DESC 
+                                ) <> '99_9999'
+                           GROUP BY 
+                                   A.NUMEMP,
+                                   A.TIPCOL,
+                                   A.NUMCAD, 
+                                   A.NOMFUN,
+                                   A.NUMCPF,
+                                   B.TITCAR,
+                                   C.CODFIL,
+                                   C.NOMFIL,
+                                   A.SITAFA,
+                                   A.CODCCU,
+                                   D.NOMCCU
+                                   ''', [int(cpf.split('.')[0]), int(cpf.split('.')[0]), int(cod_empresa)])
         result = list(cursor.fetchall())
-        result = [reg for reg in result if reg.QTD_REGISTROS_COL == 1 or reg.QTD_REGISTROS_COL > 1 and reg.SITUACAO_COLAB == 1]
+        #result = [reg for reg in result if reg.QTD_REGISTROS_COL == 1 or reg.QTD_REGISTROS_COL > 1 and reg.SITUACAO_COLAB == 1]
         if cursor is not None and len(result) == 1:
             colaborador = result[0]
             data = {
                     'nome_colab': colaborador.NOME_FUNC,
-                    'desc_cargo_colab': colaborador.DESC_CARGO,
                     'cod_filial_colab': colaborador.COD_FIL,
                     'nom_filial_colab': colaborador.NOM_FIL,
                     'cod_projeto_colab': colaborador.COD_PROJ,
@@ -166,12 +189,24 @@ class Conexao_Senior_BD():
 
     def pesquisar_dados_dependente_por_cpf_emp(self, cpf):
         cursor = self.__conn.cursor()
-        cursor.execute(f'''SELECT TOP 1
+        cursor.execute(f'''SELECT
                                 dep.numemp AS NUMEMP,
-                                col.numcpf AS CPF
+                                col.numcpf AS CPF,
+                                col.numcad AS MATRICULA,
+                                col.nomfun AS NOME,
+                                col.sitafa AS SITUACAO,
+                                col.numcpf AS CPF,
+                                col.codccu AS COD_PROJ,
+                                fil.codfil AS COD_FIL,
+                                fil.nomfil AS NOM_FIL,
+                                proj.nomccu AS NOM_PROJ
                             FROM vetorh.dbo.r036dep dep
                             LEFT JOIN R034FUN col (NOLOCK)
                             ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
+                            LEFT JOIN R030FIL fil (NOLOCK) 
+                            ON ( fil.CODFIL = col.CODFIL AND fil.NUMEMP = col.NUMEMP)
+                            LEFT JOIN R018CCU proj (NOLOCK) 
+                            ON (proj.NUMEMP = col.NUMEMP AND proj.CODCCU = col.CODCCU)
                             WHERE dep.numemp = 1
                             AND dep.numcpf = ?
                             ORDER BY col.datafa DESC
@@ -186,6 +221,18 @@ class Conexao_Senior_BD():
             info_titular = self.pesquisar_dados_colaborador_por_cpf_emp(str(dependente.CPF), numemp)
 
             return info_titular
+        # Mais de um colaborador encontrado com o mesmo dependente, retornar todos para resolução no frontend:
+        elif len(result) > 1:
+            lista_colaboradores = []
+
+            for colaborador in result:
+                lista_colaboradores.append({'matricula_colab': colaborador.MATRICULA, 'nome_colab': colaborador.NOME,
+                                            'situacao':colaborador.SITUACAO, 'cpf':colaborador.CPF,
+                                            'cod_fil':colaborador.COD_FIL, 'nom_fil': colaborador.NOM_FIL,
+                                            'cod_proj': colaborador.COD_PROJ, 'nom_proj': colaborador.NOM_PROJ})
+
+            return lista_colaboradores
+
         else:
             return {'erro': 'Titular não encontrado'}
 
