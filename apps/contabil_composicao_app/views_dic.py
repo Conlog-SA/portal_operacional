@@ -1725,8 +1725,27 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         elif tipo_visualizacao_form == 'D':
             lista_contas = []
             competencia_date = datetime(int(competencia_form.split('-')[0]), int(competencia_form.split('-')[1]), 1)
-            lista_contas = lista_cod_conta_form.split(',')
-
+            cod_status_analise_form = request.GET['cod_status_analise']
+            #chk_contas_zeradas_frm = request.GET['chk_contas_zeradas']
+            filtros_pesq_comp_detalhada_frm = request.GET['filtros_pesq_comp_detalhada']
+            if cod_status_analise_form == '0':
+                lista_contas = lista_cod_conta_form.split(',')
+            elif cod_status_analise_form == 'S':
+                for reg in lista_cod_conta_form.split(','):
+                    conta_auditada = Auditoria_Status_Composicao_Competencia.objects.filter(
+                        data_competencia=competencia_date, cod_conta__cod_conta=reg,
+                        cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+                    ).first()
+                    if conta_auditada == None:
+                        lista_contas.append(reg)
+            else:
+                lista_contas_auditadas = Auditoria_Status_Composicao_Competencia.objects.filter(
+                        data_competencia=competencia_date, cod_status_comp=int(cod_status_analise_form),
+                    cod_conta__tipo_modelo=cod_modelo_selecionado_form,
+                    cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
+                )
+                for reg in lista_contas_auditadas:
+                    lista_contas.append(reg.cod_conta.cod_conta)
 
             if cod_modelo_selecionado_form == '1':
                 for cod_conta_form in lista_contas:
@@ -1846,16 +1865,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
 
                     '''Verifica se há status da conta na competencia'''
-                    cod_status_auditoria = 0
                     cod_status_auditoria_comp = 0
                     peso_status_auditoria_comp = 0
                     obs_status_auditoria_comp = ''
 
-                    cod_status_auditoria_ana = 0
                     peso_status_auditoria_ana = 0
                     obs_status_auditoria_ana = ''
 
-                    cod_status_auditoria_reg = 0
                     peso_status_auditoria_reg = 0
                     obs_status_auditoria_reg = ''
 
@@ -1865,21 +1881,18 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa
                     ).first()
                     if obj_status_contrato_competencia != None:
-                        cod_status_auditoria = obj_status_contrato_competencia.status
+                        cod_status_auditoria_comp = obj_status_contrato_competencia.status
                         if obj_status_contrato_competencia.cod_status_comp != None:
-                            cod_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.cod_status_processos_contabil
                             peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
                             obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
                                                          ' / ' + obj_status_contrato_competencia.obs_status_comp)
 
                         if obj_status_contrato_competencia.cod_status_ana != None:
-                            cod_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.cod_status_processos_contabil
                             peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
                             obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
                                                         obj_status_contrato_competencia.obs_status_ana)
 
                         if obj_status_contrato_competencia.cod_status_reg != None:
-                            cod_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.cod_status_processos_contabil
                             peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
                             obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
                                                         obj_status_contrato_competencia.obs_status_reg)
@@ -1887,39 +1900,29 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         peso_total_proc_contabil = (peso_status_auditoria_comp + peso_status_auditoria_ana +
                                                     peso_status_auditoria_reg)
 
-                    linha = []
-                    linha.append(obj_conta.cod_conta)  # 0
-                    linha.append(obj_conta.cod_red_conta_contabil_cp)  # 1
-                    linha.append(obj_conta.cod_estrut_cp)  # 2
-                    linha.append(str(obj_conta.cod_conta) + '-' + obj_conta.desc_conta)  # 3
-                    linha.append(locale.currency(round(val_composicao, 2), grouping=True, symbol=None))  # 4
-                    linha.append(locale.currency(round(val_balancete, 2), grouping=True, symbol=None))  # 5
-                    linha.append(locale.currency(round(val_dif, 2), grouping=True, symbol=None))  # 6
-                    linha.append(cod_status_auditoria)  # 7
-                    linha.append(obs_status_auditoria_comp)  # 8
-                    linha.append(lista_anexos_competencia)  # 9
-                    linha.append(peso_status_auditoria_comp)  # 10
-                    linha.append(peso_status_auditoria_ana)  # 11
-                    linha.append(obs_status_auditoria_ana)  # 12
-                    linha.append(peso_status_auditoria_reg)  # 13
-                    linha.append(obs_status_auditoria_reg)  # 14
-                    linha.append(peso_total_proc_contabil)  # 15
-                    linha.append(cod_status_auditoria_comp) # 16
-                    linha.append(cod_status_auditoria_ana) # 17
-                    linha.append(cod_status_auditoria_reg) # 18
-                    linha.append(val_composicao) #19
-                    linha.append(val_balancete) #20
-                    linha.append(val_dif) #21
-
+                    linha = {
+                        'cod_conta' : obj_conta.cod_conta,
+                        'cod_red' : obj_conta.cod_red_conta_contabil_cp,
+                        'cod_str' : obj_conta.cod_estrut_cp,
+                        'desc_conta' : str(obj_conta.cod_conta) + '-' + obj_conta.desc_conta,
+                        'val_comp_str' : locale.currency(round(val_composicao, 2), grouping=True, symbol=None),
+                        'val_bal_str' : locale.currency(round(val_balancete, 2), grouping=True, symbol=None),
+                        'val_dif_str' : locale.currency(round(val_dif, 2), grouping=True, symbol=None),
+                        'cod_status_auditoria_comp' : cod_status_auditoria_comp,
+                        'obs_status_auditoria_comp' : obs_status_auditoria_comp,
+                        'lista_anexos_competencia' : lista_anexos_competencia,
+                        'peso_status_auditoria_comp' : peso_status_auditoria_comp,
+                        'peso_status_auditoria_ana' : peso_status_auditoria_ana,
+                        'obs_status_auditoria_ana' : obs_status_auditoria_ana,
+                        'peso_status_auditoria_reg' : peso_status_auditoria_reg,
+                        'obs_status_auditoria_reg' : obs_status_auditoria_reg,
+                        'peso_total_proc_contabil' : peso_total_proc_contabil,
+                        'val_comp': val_composicao,
+                        'val_bal': val_balancete,
+                        'val_dif': val_dif
+                    }
                     lista_contas_conciliacao.append(linha)
-                    '''if filtros_pesq_comp_detalhada_frm == '1':
-                        if linha[4] == '0,00' and linha[5] == '0,00':
-                            lista_contas_conciliacao.append(linha)
-                    elif filtros_pesq_comp_detalhada_frm == '2':
-                        if val_composicao > 0 and val_balancete > 0 and val_dif > -1 and val_dif < 1:
-                            lista_contas_conciliacao.append(linha)
-                    else:
-                        lista_contas_conciliacao.append(linha)'''
+
 
 
             elif cod_modelo_selecionado_form == '3':
@@ -1932,18 +1935,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         dados_conciliacao_cp = self.gera_reg_conciliacao_por_tipo_prazo(conta, contrato, primeiro_dia_ano,
                                                                  ultimo_dia_ano, ultimo_dia_mes_date,'CP', competencia_form)
 
-
-                        '''if filtros_pesq_comp_detalhada_frm == '1':
+                        if filtros_pesq_comp_detalhada_frm == '1':
                             if dados_conciliacao_cp[7] == '0,00' and dados_conciliacao_cp[8] == '0,00':
                                 lista_contas_conciliacao.append(dados_conciliacao_cp)
                         elif filtros_pesq_comp_detalhada_frm == '2':
                             if dados_conciliacao_cp[20] > 0 and dados_conciliacao_cp[21] > 0 and dados_conciliacao_cp[22] > -1 and dados_conciliacao_cp[22] < 1:
                                 lista_contas_conciliacao.append(dados_conciliacao_cp)
                         else:
-                            lista_contas_conciliacao.append(dados_conciliacao_cp)'''
-
-                        lista_contas_conciliacao.append(dados_conciliacao_cp)
-
+                            lista_contas_conciliacao.append(dados_conciliacao_cp)
 
 
                         '''Calcula dados LP'''
@@ -1952,7 +1951,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                                                                                         ultimo_dia_ano,
                                                                                         ultimo_dia_mes_date, 'LP', competencia_form)
 
-                        lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        if filtros_pesq_comp_detalhada_frm == '1':
+                            if dados_conciliacao_lp[7] == '0,00' and dados_conciliacao_lp[8] == '0,00':
+                                lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        elif filtros_pesq_comp_detalhada_frm == '2':
+                            if dados_conciliacao_lp[20] > 0 and dados_conciliacao_lp[21] > 0 and dados_conciliacao_lp[22] > -1 and dados_conciliacao_lp[22] < 1:
+                                lista_contas_conciliacao.append(dados_conciliacao_lp)
+                        else:
+                            lista_contas_conciliacao.append(dados_conciliacao_lp)
 
 
 
@@ -2033,29 +2039,9 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                         lista_contas_conciliacao.append(linha)
 
 
-        '''Retorna status '''
-        lista_status_composicao = list(Status_Processos_Contabil.objects
-                                   .filter((Q(vigencia_fim__gte=data_competencia) | Q(vigencia_fim__isnull=True)),
-                                           tipo_status='C',
-                                           cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
-                                           vigencia_ini__lte=data_competencia).values('cod_status_processos_contabil', 'desc_status'))
-        lista_status_analise = list(Status_Processos_Contabil.objects
-                                .filter((Q(vigencia_fim__gte=data_competencia) | Q(vigencia_fim__isnull=True)),
-                                        tipo_status='A',
-                                        cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
-                                        vigencia_ini__lte=data_competencia).values('cod_status_processos_contabil', 'desc_status'))
-        lista_status_reg = list(Status_Processos_Contabil.objects
-                            .filter((Q(vigencia_fim__gte=data_competencia) | Q(vigencia_fim__isnull=True)),
-                                    tipo_status='R',
-                                    cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
-                                    vigencia_ini__lte=data_competencia).values('cod_status_processos_contabil', 'desc_status'))
-
         data = dict()
         data = {
-            'lista_contas_conciliacao': lista_contas_conciliacao,
-            'lista_status_composicao': lista_status_composicao,
-            'lista_status_analise': lista_status_analise,
-            'lista_status_reg': lista_status_reg
+            'lista_contas_conciliacao': lista_contas_conciliacao
         }
         return JsonResponse(data, safe=False)
 
@@ -2068,15 +2054,10 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         val_balancete = 0
         val_dif_comp_balanc = 0
         cod_status_auditoria_comp = 0
-        cod_status_comp = 0
         peso_status_auditoria_comp = 0
         obs_status_auditoria_comp = ''
-
-        cod_status_ana = 0
         peso_status_auditoria_ana = 0
         obs_status_auditoria_ana = ''
-
-        cod_status_reg = 0
         peso_status_auditoria_reg = 0
         obs_status_auditoria_reg = ''
         peso_total_proc_contabil = 0
@@ -2210,17 +2191,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             if obj_status_contrato_competencia != None:
                 cod_status_auditoria_comp = obj_status_contrato_competencia.status
                 if obj_status_contrato_competencia.cod_status_comp != None:
-                    cod_status_comp = obj_status_contrato_competencia.cod_status_comp.cod_status_processos_contabil
                     peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
                     obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
                                                          ' / ' + obj_status_contrato_competencia.obs_status_comp)
                 if obj_status_contrato_competencia.cod_status_ana != None:
-                    cod_status_ana = obj_status_contrato_competencia.cod_status_ana.cod_status_processos_contabil
                     peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
                     obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
                                                 obj_status_contrato_competencia.obs_status_ana)
                 if obj_status_contrato_competencia.cod_status_reg != None:
-                    cod_status_reg = obj_status_contrato_competencia.cod_status_reg.cod_status_processos_contabil
                     peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
                     obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
                                                 obj_status_contrato_competencia.obs_status_reg)
@@ -2291,17 +2269,14 @@ class Gera_Conciliacao_Comp_Benner_View(View):
             if obj_status_contrato_competencia != None:
                 cod_status_auditoria_comp = obj_status_contrato_competencia.status
                 if obj_status_contrato_competencia.cod_status_comp != None:
-                    cod_status_comp = obj_status_contrato_competencia.cod_status_comp.cod_status_processos_contabil
                     peso_status_auditoria_comp = obj_status_contrato_competencia.cod_status_comp.peso
                     obs_status_auditoria_comp = (obj_status_contrato_competencia.cod_status_comp.desc_status +
                                                  ' / ' + obj_status_contrato_competencia.obs_status_comp)
                 if obj_status_contrato_competencia.cod_status_ana != None:
-                    cod_status_ana = obj_status_contrato_competencia.cod_status_ana.cod_status_processos_contabil
                     peso_status_auditoria_ana = obj_status_contrato_competencia.cod_status_ana.peso
                     obs_status_auditoria_ana = (obj_status_contrato_competencia.cod_status_ana.desc_status + ' / ' +
                                                 obj_status_contrato_competencia.obs_status_ana)
                 if obj_status_contrato_competencia.cod_status_reg != None:
-                    cod_status_reg = obj_status_contrato_competencia.cod_status_reg.cod_status_processos_contabil
                     peso_status_auditoria_reg = obj_status_contrato_competencia.cod_status_reg.peso
                     obs_status_auditoria_reg = (obj_status_contrato_competencia.cod_status_reg.desc_status + ' / ' +
                                                 obj_status_contrato_competencia.obs_status_reg)
@@ -2320,36 +2295,31 @@ class Gera_Conciliacao_Comp_Benner_View(View):
         '''if obj_anexo_competencia != None:
             cod_anexo_competencia = obj_anexo_competencia.cod_anexo_contrato'''
 
-        linha = []
-        linha.append(conta.cod_conta) #0
-        linha.append(cod_red) #1
-        linha.append(cod_estrutura) #2
-        linha.append(str(conta.cod_conta)+'-'+conta.desc_conta) #3
-        linha.append(contrato.cod_contrato) #4
-        linha.append(contrato.num_contrato) #5
-        linha.append(contrato.num_doc_contabil) #6
-        linha.append(locale.currency(round(val_composicao, 2), grouping=True, symbol=None)) #7
-        linha.append(locale.currency(round(val_balancete, 2), grouping=True, symbol=None)) #8
-        linha.append(locale.currency(round(val_dif_comp_bal, 2), grouping=True, symbol=None)) #9
-        linha.append(tipo_prazo) #10
-        linha.append(cod_status_auditoria_comp) #11
-        linha.append(obs_status_auditoria_comp) #12
-        linha.append(lista_anexos_competencia) #13
-        linha.append(peso_status_auditoria_ana) #14
-        linha.append(obs_status_auditoria_ana) #15
-        linha.append(peso_status_auditoria_reg) #16
-        linha.append(obs_status_auditoria_reg) #17
-        linha.append(peso_total_proc_contabil)  # 18
-        linha.append(peso_status_auditoria_comp)  # 19
-        linha.append(val_composicao) #20
-        linha.append(val_balancete) #21
-        linha.append(val_dif_comp_bal) #22
-        linha.append(cod_status_comp) #23
-        linha.append(cod_status_ana) #24
-        linha.append(cod_status_reg) #25
-
-
-
+        linha = {
+            'cod_conta': conta.cod_conta,
+            'cod_red': cod_red,
+            'cod_str_cp': cod_estrutura,
+            'desc_conta': str(conta.cod_conta)+'-'+conta.desc_conta,
+            'cod_contrato' : contrato.cod_contrato,
+            'num_contrato' : contrato.num_contrato,
+            'num_doc_contabil' : contrato.num_doc_contabil,
+            'val_comp_str': locale.currency(round(val_composicao, 2), grouping=True, symbol=None),
+            'val_bal_str': locale.currency(round(val_balancete, 2), grouping=True, symbol=None),
+            'val_dif_str': locale.currency(round(val_dif_comp_bal, 2), grouping=True, symbol=None),
+            'tipo_prazo' : tipo_prazo,
+            'cod_status_auditoria_comp': cod_status_auditoria_comp,
+            'obs_status_auditoria_comp': obs_status_auditoria_comp,
+            'lista_anexos_competencia': lista_anexos_competencia,
+            'peso_status_auditoria_comp': peso_status_auditoria_comp,
+            'peso_status_auditoria_ana': peso_status_auditoria_ana,
+            'obs_status_auditoria_ana': obs_status_auditoria_ana,
+            'peso_status_auditoria_reg': peso_status_auditoria_reg,
+            'obs_status_auditoria_reg': obs_status_auditoria_reg,
+            'peso_total_proc_contabil': peso_total_proc_contabil,
+            'val_comp': val_composicao,
+            'val_bal': val_balancete,
+            'val_dif': val_dif_comp_bal
+        }
         return linha
 
 class Form_Anexos_Conta_View(View):
@@ -5685,7 +5655,7 @@ class Form_Status_Proc_Contabil_View(View):
         return JsonResponse(data, safe=False)
 
 
-'''class Comp_Status_Pesq_Comp_Detalhada_View(View):
+class Comp_Status_Pesq_Comp_Detalhada_View(View):
     def get(self, request):
         data_comp_frm = request.GET['data_comp']
 
@@ -5702,4 +5672,4 @@ class Form_Status_Proc_Contabil_View(View):
         data = {
             'lista_status': lista_status
         }
-        return JsonResponse(data, safe=False)'''
+        return JsonResponse(data, safe=False)

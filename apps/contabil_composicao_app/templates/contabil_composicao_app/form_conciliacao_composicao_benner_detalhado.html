@@ -28,6 +28,7 @@
               class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
               method="POST">
             <input type="hidden" id="hd_tipo_rel" value="D">
+            <input type="hidden" id="hd_perfil_usu" value={{ obj_usuario_logado.tipo_colab }}>
 
             <div class="d-flex justify-content-between align-items-between w-100">
                     <div class="d-flex flex-column w-100 align-items-start">
@@ -181,21 +182,17 @@
                     &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column align-items-start w-100">
-                    <label>
+                    &nbsp;&nbsp;
+                    <!-- <label>
                         Status composição
                     </label>
                     <select class="selectpicker form-control" id="cb_status_analise_conciliacao_detalhada"
                         name="cb_status_analise_conciliacao_detalhada" style="width: 220px;">
-                            <!-- <option value="0">Todos os status</option>
-                            <option value="1">OK</option>
-                            <option value="2">Com diferença</option>
-                            <option value="3">Falta analisar</option>
-                            <option value="4">Falta compor</option>
-                            <option value="5">Não sinalizado</option> -->
                     </select>
+                    -->
                 </div>
                 <div class="d-flex flex-column justify-content-between align-items-start w-100" style="padding-left: .25rem;">
-                    <label>
+                    <!-- <label>
                         Demais Filtros
                     </label>
                     <select class="selectpicker form-control" id="cb_filtros_pesq_comp_detalhada"
@@ -204,6 +201,7 @@
                             <option value="1">Somente contas sem movimentações</option>
                             <option value="2">Somente composição e balancete > 0, dif. zerada e com anexo</option>
                     </select>
+                    -->
                 </div>
                 <div class="d-flex flex-column align-items-end justify-content-center w-100">
                     <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
@@ -220,7 +218,8 @@
             </div>
 
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <!-- Form status composicção -->
 
                 <div class="d-flex flex-column w-100"
                      style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
@@ -267,8 +266,10 @@
                         </div>
                     </div>
                 </div>
+                <!-- Fim Form status composicção -->
 
-
+                <!-- Form status análise -->
+                {% if obj_usuario_logado.tipo_colab == 'L' or obj_usuario_logado.tipo_colab == 'H' %}
                 <div class="d-flex flex-column w-100"
                      style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
                         padding: 0.5rem; margin-left: 0.5rem;">
@@ -314,7 +315,17 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        &nbsp;&nbsp;
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Fim Form status análise -->
 
+                <!-- Form status regularização -->
+                {% if obj_usuario_logado.tipo_colab == 'H' %}
                 <div class="d-flex flex-column w-100"
                      style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
                         padding: 0.5rem; margin-left: 0.5rem;">
@@ -360,12 +371,72 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                <div class="d-flex flex-column w-100">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        &nbsp;&nbsp;
+                    </div>
+                </div>
+                {% endif %}
+                <!-- Fim Form status análise -->
 
             </div>
 
         </form>
 
         <div class="form-group cl_div_tabela_principal_pagina w-100" style="height: 720px !important;">
+            <div class="d-flex justify-content-center align-items-center w-100">
+                <div class="d-flex flex-column align-items-start w-100">
+                    <label>
+                        Status composição
+                    </label>
+                    <select class="selectpicker form-control" id="cb_pesq_status_comp_conciliacao_detalhada"
+                        name="comp_pesq_status_conciliacao_detalhada" style="width: 220px;">
+
+                    </select>
+                </div>
+                {% if obj_usuario_logado.tipo_colab == 'L' or obj_usuario_logado.tipo_colab == 'H' %}
+                    <div class="d-flex flex-column align-items-start w-100" style="margin-left: .25rem;">
+                        <label>
+                            Status Análise
+                        </label>
+                        <select class="selectpicker form-control" id="cb_pesq_status_ana_conciliacao_detalhada"
+                            name="comp_pesq_status_conciliacao_detalhada" style="width: 220px;">
+
+                        </select>
+                    </div>
+                {% endif %}
+
+                {% if obj_usuario_logado.tipo_colab == 'H' %}
+                    <div class="d-flex flex-column align-items-start w-100" style="margin-left: .25rem;">
+                        <label>
+                            Status Regularização
+                        </label>
+                        <select class="selectpicker form-control" id="cb_pesq_status_reg_conciliacao_detalhada"
+                            name="comp_pesq_status_conciliacao_detalhada" style="width: 220px;">
+
+                        </select>
+                    </div>
+                {% endif %}
+                <div class="d-flex flex-column align-items-start w-100" style="margin-left: .25rem;">
+                    <label>
+                        Demais Filtros
+                    </label>
+                    <select class="selectpicker form-control" id="cb_pesq_demais_filtros_conciliacao_detalhada"
+                        name="comp_pesq_status_conciliacao_detalhada" style="width: 220px;">
+                        <option value="T" selected="selected">Todos</option>
+                        <option value="Z">Contas sem movimentações</option>
+                        <option value="CA">Val. Compposição e Balance > 0(COM anexo)</option>
+                        <option value="SA">Val. Compposição e Balance > 0(SEM anexo)</option>
+                    </select>
+
+                </div>
+                <div class="d-flex justify-content-center align-items-center w-100" style="margin-left: .25rem;">
+                    &nbsp;&nbsp;
+                </div>
+
+            </div>
+
             <div id="div_tab_conciliacao_composicao_benner_detalhado" class="col-md-12 w-100 h-100">
 
             </div>

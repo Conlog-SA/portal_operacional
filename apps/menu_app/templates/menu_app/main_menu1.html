@@ -74,11 +74,11 @@
                                 {% else %}
                                   Usuário
                                 {% endif %}
-                                (
+
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
-                                  Corporativo
+                                  (Corporativo)
                                 {% endif %}
-                                )<br/>
+                                <br/>
                                 {{obj_usuario_sessao.cod_filial.cod_empresa.desc_empresa}}
                                 <br/>
                                 {{obj_usuario_sessao.cod_filial.desc_filial}}
@@ -146,7 +146,7 @@
               {% csrf_token %}
               <button type="submit" id="logout_btn">
                 <i class="fa-solid fa-right-from-bracket" style="color: {{ cor_emp_hex }}"></i>
-                  <span class="item-description">
+                  <span style="color: #FFF; margin-left: .25rem;">
                       Logout
                   </span>
               </button>
