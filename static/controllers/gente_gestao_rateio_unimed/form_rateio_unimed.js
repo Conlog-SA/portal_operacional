@@ -33,6 +33,7 @@ $.ajaxSetup({
     tabelaCalculaRateio = null;
     tabelaHistoricoImportacao = null;
     tabelaCadastroExcecao = null;
+    botao_salvar_titular = null;
 }
 
 $(document).on('click','.btn-realiza-importacao' , function(){
@@ -57,6 +58,22 @@ $(document).on('click','.btn-realiza-importacao' , function(){
         success: function(data){
             let let_lista_dados_rateio = [];
             data.tab_rateio_despesas_nao_importadas.forEach( despesa => {
+                let let_botao_informa_titular = ''
+                if (!("colaboradores_encontrados_dependente" in despesa)) {
+                    let_botao_informa_titular = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa.cod_despesa+'_1">Buscar</button>'
+                }
+                else {
+                    let_name_btn = despesa["cod_despesa"]+'_2';
+                    let parse_colaboradores = JSON.parse(despesa['colaboradores_encontrados_dependente']);
+                    parse_colaboradores.forEach((colaborador) => {
+                        let_name_btn = let_name_btn + '-_-' + colaborador.matricula_colab + '_' +
+                        colaborador.nome_colab.replaceAll(' ', '==') + '_' + colaborador.situacao + '_' + colaborador.cpf + '_' +
+                        colaborador.cod_fil + '_' + colaborador.nom_fil.replaceAll(' ', '==') + '_' + colaborador.cod_proj +
+                        '_' + colaborador.nom_proj.replaceAll(' ', '==');
+                    });
+
+                    let_botao_informa_titular = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal escolheColabModal" name="'+let_name_btn+'">Selecionar</button>';
+                }
                 let let_dado_despesa = [
                     '<i class="fa-solid fa-circle-exclamation" style="color: #f46424;"></i>',
                     despesa.competencia.split('-')[1]+'/'+despesa.competencia.split('-')[0],
@@ -67,7 +84,7 @@ $(document).on('click','.btn-realiza-importacao' , function(){
                     ('000000'+despesa.cpf_titular.split('.')[0]).slice(-11),
                     despesa.desc_despesa.replaceAll("_", " "),
                     despesa.valor,
-                    '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa.cod_despesa+'_1">Buscar</button>',
+                    let_botao_informa_titular,
                     '',
                     '',
                     '',
@@ -179,10 +196,11 @@ $(document).on('click','.buscaColabModal, .editaColabModal' , function(){
     $("#filialTitularSenior").val("");
     $("#projetoTitularSenior").val("");
     $("#btnSalvaColabSenior").val($(this).attr('name'));
+    botao_salvar_titular = $(this).attr('name');
 
     $("#modalBuscaColabSenior").show();
 
-});
+}); //Para quando nenhum titular foi encontrado
 
 $(document).on('click','.consultaMatriculaColab' , function(){
     let let_matricula_colab = $("#textFieldMatricColab").val();
@@ -215,7 +233,7 @@ $(document).on('click','.consultaMatriculaColab' , function(){
                 $("#filialTitularSenior").val(dados.nom_filial_colab);
                 $("#projetoTitularSenior").val(dados.nom_projeto_colab);
 
-                let novo_nome_btn = $("#btnSalvaColabSenior").val() + '_' + dados.cod_filial_colab + '_' + dados.cod_projeto_colab;
+                let novo_nome_btn = botao_salvar_titular + '_' + dados.cod_filial_colab + '_' + dados.cod_projeto_colab;
                 $("#btnSalvaColabSenior").val(novo_nome_btn);
             }
         });
@@ -231,6 +249,113 @@ $(document).on('click','.btnSalvaColabSenior' , function(){
     let let_desc_filial = $("#filialTitularSenior").val();
     let let_cod_projeto = arr_split[3];
     let let_desc_projeto = $("#projetoTitularSenior").val();
+    $.ajax({
+        type: 'POST',
+        url: '/gente_gestao_rateio_unimed_app/preenche_colab',
+        data: {
+            'matricula'   :   let_matricula_colab,
+            'nome_titular'   :   let_nome_titular,
+            'cod_filial'   :   let_cod_filial,
+            'desc_filial'   :   let_desc_filial,
+            'cod_projeto'   :   let_cod_projeto,
+            'desc_projeto'   :   let_desc_projeto,
+            'cod_despesa'   :   let_cod_despesa,
+        },
+        success: function (dados) {
+            $('#modalBuscaColabSenior').hide();
+            html_nome_titular = let_nome_titular;
+            $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(10).html(html_nome_titular);
+            html_filial = let_desc_filial;
+            $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(11).html(html_filial);
+            html_projeto = let_desc_projeto;
+            $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(12).html(html_projeto);
+            html_editar = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal editaColabModal" name="'+let_cod_despesa+'">Editar</button>'
+            $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(13).html(html_editar);
+            html_matricula = let_matricula_colab;
+            $('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(9).html(html_matricula);
+
+            if (arr_split[1] == '1') {
+                try {
+                    tabelaRateioUnimed.row($('button[name^="'+let_cod_despesa+'"]').parent().parent()).remove().draw();
+                    tabelaConsultaDespesas.clear().draw();
+                } catch { };
+            }
+            if (arr_split[1] == '2') {
+                try {
+                    console.log($('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(11).html());
+                    console.log($('#input_filial option:selected').text());
+                    if ($('button[name^="'+let_cod_despesa+'"]').parent().parent().find('td').eq(11).html() != $('#input_filial option:selected').text()) {
+                        tabelaConsultaDespesas.row($('button[name^="'+let_cod_despesa+'"]').parent().parent()).remove().draw();
+                    }
+                } catch { };
+            }
+        }
+    });
+});
+
+$(document).on('click','.escolheColabModal' , function(){
+
+    $("#selectTitular").val("");
+    $('#selectTitular option').remove();
+    array_colaboradores = $(this).attr('name').split('-_-');
+    let codigo_despesa = array_colaboradores[0]
+    $('#btnSelecionaTitular').val(codigo_despesa);
+    botao_salvar_titular = array_colaboradores[0];
+    for (let i=1;i<array_colaboradores.length;i++) {
+        let temp_array = array_colaboradores[i].split('_')
+        let matricula_colab = temp_array[0];
+        let nome_colab = temp_array[1];
+        let situacao_colab = temp_array[2];
+        let cpf_colab = temp_array[3];
+        let cod_fil_colab = temp_array[4];
+        let nom_fil_colab = temp_array[5];
+        let cod_proj_colab = temp_array[6];
+        let nom_proj_colab = temp_array[7];
+
+        if (situacao_colab == 7 || situacao_colab == '7') {
+            situacao_colab = ' (Inativo/Demitido)';
+        }
+        else {
+            situacao_colab = ' (Ativo)';
+        }
+
+        $("#selectTitular").append('<option value="'+codigo_despesa+'_'+matricula_colab+'_'+
+        nome_colab.replaceAll(' ', '==') +'_'+cod_fil_colab+'_'+nom_fil_colab.replaceAll(' ', '==')+'_'+cod_proj_colab+
+        '_'+nom_proj_colab.replaceAll(' ', '==')+'">'+nome_colab.replaceAll('==', ' ')+situacao_colab+'</option>');
+    }
+
+    $('#selectTitular').selectpicker('refresh');
+
+    $("#modalSelecionaTitular").show();
+
+}); //Para quando mais de um titular foi encontrado
+
+$(document).on('change','#selectTitular',function(){
+
+    let arr_split_titular_selecionado = $(this).val().split('_')
+    cod_despesa = arr_split_titular_selecionado[0]
+    matricula_colab = arr_split_titular_selecionado[2]
+    nome_colab = arr_split_titular_selecionado[3]
+    cod_fil_colab = arr_split_titular_selecionado[4]
+    nom_fil_colab = arr_split_titular_selecionado[5]
+    cod_proj_colab = arr_split_titular_selecionado[6]
+    nom_proj_colab = arr_split_titular_selecionado[7]
+
+    let_name_btn = botao_salvar_titular + '_' + matricula_colab + '_' + nome_colab + '_' +
+    cod_fil_colab + '_' + nom_fil_colab + '_' + cod_proj_colab + '_' + nom_proj_colab;
+
+    $("#btnSelecionaTitular").val(let_name_btn);
+});
+
+$(document).on('click','.btnSelecionaTitular' , function(){
+    let arr_split = $("#btnSelecionaTitular").val().split('_');
+    let let_cod_despesa = arr_split[0];
+    let let_matricula_colab = arr_split[2];
+    let let_nome_titular = arr_split[3].replaceAll('==', ' ');
+    let let_cod_filial = arr_split[4];
+    let let_desc_filial = arr_split[5].replaceAll('==', ' ');
+    let let_cod_projeto = arr_split[6];
+    let let_desc_projeto = arr_split[7].replaceAll('==', ' ');
     $.ajax({
         type: 'POST',
         url: '/gente_gestao_rateio_unimed_app/preenche_colab',
@@ -301,7 +426,22 @@ $(document).on('click','.btn-input-busca-despesas' , function(){
                     let let_html_editar = '';
 
                     if (despesa['Matricula_Titular'] == '') {
-                        let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'_2">Buscar</button>';
+                        if (despesa['Colaboradores_Encontrados_Dependente'] != null) {
+                            let_name_btn = despesa["Cod_Despesa"]+'_2';
+                            let parse_colaboradores = JSON.parse(despesa['Colaboradores_Encontrados_Dependente']);
+                            parse_colaboradores.forEach((colaborador) => {
+                                //let_name_btn = let_name_btn + '-_-' + colaborador.matricula_colab + '_' + colaborador.nome_colab.replaceAll(' ', '-') + '_' + colaborador.situacao;
+                                let_name_btn = let_name_btn + '-_-' + colaborador.matricula_colab + '_' +
+                                colaborador.nome_colab.replaceAll(' ', '==') + '_' + colaborador.situacao + '_' + colaborador.cpf + '_' +
+                                colaborador.cod_fil + '_' + colaborador.nom_fil.replaceAll(' ', '==') + '_' + colaborador.cod_proj +
+                                '_' + colaborador.nom_proj.replaceAll(' ', '==');
+                            });
+
+                            let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal escolheColabModal" name="'+let_name_btn+'">Selecionar</button>';
+                        }
+                        else {
+                            let_html_matricula = '<button type="button" class="btn btn-primary btn-rounded botaoPrincipal buscaColabModal" name="'+despesa['Cod_Despesa']+'_2">Buscar</button>';
+                        }
                     }
                     else {
                         let_html_matricula = despesa['Matricula_Titular'];
@@ -788,6 +928,10 @@ $(document).on('shown.bs.tab','.tab-nav' , function(e) {
 
 $(document).on('click','.fechaModalBuscaColabSenior' , function(){
     $('#modalBuscaColabSenior').hide();
+});
+
+$(document).on('click','.fechaModalSelecionaTitular' , function(){
+    $('#modalSelecionaTitular').hide();
 });
 
 $(document).on('click','.fechaModalCadastraExcecao' , function(){

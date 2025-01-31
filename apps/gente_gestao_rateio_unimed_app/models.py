@@ -65,6 +65,8 @@ class Despesa_Unimed(models.Model):
     cod_arq_despesa = models.ForeignKey(Arquivo_Despesas, models.DO_NOTHING, db_column='cod_arq_despesa', blank=False,
                                     null=False)
     percentual_empresa = models.CharField(max_length=20, blank=True, null=True)
+    #Para preenchimento quando mais de um colaborador for encontrado para o dependente
+    colaboradores_encontrados_dependente = models.CharField(max_length=1000, blank=True, null=True)
 
     class Meta:
         managed = True
