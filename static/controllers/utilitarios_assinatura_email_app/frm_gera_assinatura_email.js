@@ -214,7 +214,7 @@ $(document).on('click', '#dv_foto_colab', function(){
 
 });
 */
-
+/*
 const div = document.getElementById('dv_foto_colab');
 const img = document.getElementById('img_foto_colab')
 const fileInput = document.getElementById('file-input');
@@ -266,7 +266,7 @@ const fileInput = document.getElementById('file-input');
       }
     });
 
-
+*/
 
 document.getElementById("btn_copiar_assinatura").addEventListener("click", function () {
             const div = document.getElementById("dv_assinatura");

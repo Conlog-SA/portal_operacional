@@ -72,7 +72,7 @@ class Uteis():
 
             val_pagar_terc = (decimal.Decimal(val_pagar_terc) + decimal.Decimal(val_total_acres_mapa)) - \
                              decimal.Decimal(val_total_desc_mapa)
-            git checko
+
             val_pagar_conlog = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - val_pagar_terc
 
             calc_dif_frete_val_calc = decimal.Decimal(str(reg_ter.valorfrete_2art_terc_financ).replace(',','.')) - \
@@ -206,7 +206,7 @@ class Uteis():
 
                         val_tt_calc = decimal.Decimal(val_tt_calc) + decimal.Decimal(val_calc_mapa)
                         val_tt_pagar_benef = decimal.Decimal(val_tt_pagar_benef) + decimal.Decimal(val_pagar_terc)
-                        val_conlog_mapa = round(float(reg.valorfrete_2art_terc_financ) - float(val_pagar_terc),2)
+                        val_conlog_mapa = round(float(str(reg.valorfrete_2art_terc_financ).replace(',', '.')) - float(val_pagar_terc),2)
                     cod_mapas_selecionados_do_beneficiario.append(str(reg.cod_reg_2art_terc_financ)+'_'+
                                                                   str(val_calc_mapa)+'_'+str(round(val_pagar_terc,2))+
                                                                   '_'+str(round(val_conlog_mapa,2)))

@@ -10,7 +10,7 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-arrow-up-right-dots fa-2xl"style="color: #f46424;"></i>
+            <i class="fa-solid fa-arrow-up-right-dots"style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Dash evolução de preços</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -30,8 +30,8 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100">
                     <label for="cb_empresas_dash_evolucao_precos">
                         Empresa
                     </label>
@@ -39,46 +39,111 @@
                         name="cb_empresas_dash_evolucao_precos"
                         data-live-search="true"
                         title="Selecione a empresa">
-                        <option value="12">Concórdia Logística S.A.</option>
-                        <option value="17">Deep</option>
+                        <option value="12"
+                                {% if cod_empresa == 12 %}
+                                    selected="selected"
+                                {% endif %}>
+                            Concórdia Logística S.A.
+                        </option>
+                        <option value="17"
+                                {% if cod_empresa == 17 %}
+                                    selected="selected"
+                                {% endif %}>
+                            Deep</option>
                     </select>
 
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
                     <label for="cb_filial_dash_evolucao_precos">
                         Unidade
+                        <button type='button' id="btn_marcar_unidade_dash_evolucao_precos"
+                                name="btn_marcar_unidade_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_unidade_dash_evolucao_precos"
+                                name="btn_desmarcar_unidade_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
                     </label>
                     <select class="selectpicker form-control" id="cb_filial_dash_evolucao_precos"
                         name="cb_filial_dash_evolucao_precos" multiple data-selected-text-format="count > 1"
                         data-live-search="true"
                         title="Selecione a filial">
                         {% for f in lista_filiais %}
-                            <option value="{{ f.HANDLE }}">{{ f.NOME }}</option>
+                            <option value="{{ f.HANDLE }}" selected="selected">{{ f.NOME }}</option>
                         {% endfor %}
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                    <label for="txt_data_ini_dash_evolucao_precos">
-                        Data Inícial
+                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                    <label for="cb_atendente_dash_evolucao_precos">
+                        Atendente
+                        <button type='button' id="btn_marcar_atendente_dash_evolucao_precos"
+                                name="btn_marcar_atendente_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_atendente_dash_evolucao_precos"
+                                name="btn_desmarcar_atendente_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
                     </label>
-                    <input type="date" class="form-control" id="txt_data_ini_dash_evolucao_precos"
-                           value="{{ data_ini }}">
+                    <select class="selectpicker form-control" id="cb_atendente_dash_evolucao_precos"
+                        name="cb_atendente_dash_evolucao_precos"
+                        data-live-search="true" multiple data-selected-text-format="count > 1"
+                        title="Selecione a filial">
+                        {% for a in lista_atendentes %}
+                            <option value="{{ a.handle_usu }}" selected="selected">{{ a.nome_usu }}</option>
+                        {% endfor %}
+                    </select>
 
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                    <label for="txt_data_fim_dash_evolucao_precos">
-                        Data Final
-                        <input type="date" class="form-control" id="txt_data_fim_dash_evolucao_precos"
-                               value="{{ data_fim }}">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                     <label for="cb_familia_dash_evolucao_precos">
+                        Famílias
+                        <button type='button' id="btn_marcar_familia_dash_evolucao_precos"
+                                name="btn_marcar_familia_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Selecionar todos os projetos"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square-check" style="color: #f46424;"></i>
+                        </button>
+                        <button type='button' id="btn_desmarcar_familia_dash_evolucao_precos"
+                                name="btn_desmarcar_familia_dash_evolucao_precos"
+                                class="btn btn-rounded btn-space"
+                                title="Limpar seleção"
+                                style="width: 50px;">
+                            <i class="fa-regular fa-square" style="color: #f46424;"></i>
+                        </button>
                     </label>
+
+                    <select class="selectpicker form-control" id="cb_familia_dash_evolucao_precos"
+                        name="cb_familia_dash_evolucao_precos"
+                        data-live-search="true" multiple data-selected-text-format="count > 1">
+                        {% for familia in lista_familias %}
+                            <option value="{{ familia.handle }}" selected="selected">{{ familia.nome }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
+
+
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-center alin-items-start w-100">
                      <div class="loader" id="loader_dash_evolucao_preco">
                         <div class="loader-inner">
                             <div class="loader-block"></div>
@@ -93,15 +158,25 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
-                    &nbsp;
+                <div class="d-flex flex-column justify-content-center align-items-start w-100" style="padding-left: 0.25rem;">
+                    <label for="txt_data_ini_dash_evolucao_precos">
+                        Data Inícial
+                    </label>
+                    <input type="date" class="form-control" id="txt_data_ini_dash_evolucao_precos"
+                           value="{{ data_ini }}">
                 </div>
 
-                <div class="d-flex flex-column w-100"
-                     style="padding-left: 0.25rem;padding-right: 0.25rem;padding-top: 1.6rem;">
-                    &nbsp;
+                <div class="d-flex flex-column justify-content-center align-items-start w-100" style="padding-left: 0.25rem;">
+                    <label for="txt_data_fim_dash_evolucao_precos">
+                        Data Final
+                        </label>
+                        <input type="date" class="form-control" id="txt_data_fim_dash_evolucao_precos"
+                               value="{{ data_fim }}">
+
                 </div>
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem; padding-top: 1.6rem;">
+
+
+                <div class="d-flex flex-column justify-content-end align-items-end w-100">
                     <button type="button" name="btn_gera_dash_evolucao_precos"
                             id="btn_gera_dash_evolucao_precos"
                             class="btn btn-primary btn-rounded botaoPrincipal">
@@ -110,6 +185,8 @@
                     </button>
                 </div>
             </div>
+
+
 
         </form>
 

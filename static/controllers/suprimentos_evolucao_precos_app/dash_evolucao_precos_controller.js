@@ -72,8 +72,10 @@ $(document).on('click', 'button', function(){
     if( nomeDoButton == 'btn_gera_dash_evolucao_precos' ) {
         let let_loader_dash_evolucao_preco = document.getElementById("loader_dash_evolucao_preco");
         var var_handle_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
+        let let_lista_handle_atendentes = $("#cb_atendente_dash_evolucao_precos").val().toString();
         var var_data_ini = $("#txt_data_ini_dash_evolucao_precos").val();
         var var_data_fim = $("#txt_data_fim_dash_evolucao_precos").val();
+        var var_handle_familia = $("#cb_familia_dash_evolucao_precos").val().toString();
         if( var_handle_filial=='' || var_data_ini=='' || var_data_fim=='') {
             $.gritter.add({
                 title: 'Atenção!',
@@ -84,14 +86,17 @@ $(document).on('click', 'button', function(){
             });
         } else {
             $("#div_grafico_status_resumo").html("");
-            $("#div_grafico_status_familia").html("");
             $("#div_grafico_status_atendente").html("");
+            $("#div_grafico_status_familia").html("");
             $("#div_grafico_status_filial").html("");
+            $("#div_grafico_qtd_itens_filial").html("");
             let_loader_dash_evolucao_preco.style.display = "flex";
             $.ajax({
                 type: 'GET',
                 data: {
                     'handle_filial'     :   var_handle_filial,
+                    'lista_handle_atendentes' : let_lista_handle_atendentes,
+                    'handle_familia'    :   var_handle_familia,
                     'data_ini'          :   var_data_ini,
                     'data_fim'          :   var_data_fim
                 },
@@ -124,6 +129,76 @@ $(document).on('click', 'button', function(){
 
         }
 
+    } else if (nomeDoButton == 'btn_marcar_unidade_dash_evolucao_precos'){
+        $("#cb_filial_dash_evolucao_precos").selectpicker('selectAll');
+    }
+    else if (nomeDoButton == 'btn_desmarcar_unidade_dash_evolucao_precos'){
+        $("#cb_filial_dash_evolucao_precos").selectpicker('deselectAll');
+    } else if (nomeDoButton == 'btn_marcar_atendente_dash_evolucao_precos'){
+        $("#cb_atendente_dash_evolucao_precos").selectpicker('selectAll');
+    }
+    else if (nomeDoButton == 'btn_desmarcar_atendente_dash_evolucao_precos'){
+        $("#cb_atendente_dash_evolucao_precos").selectpicker('deselectAll');
+    } else if (nomeDoButton == 'btn_marcar_familia_dash_evolucao_precos'){
+        $("#cb_familia_dash_evolucao_precos").selectpicker('selectAll');
+    }
+    else if (nomeDoButton == 'btn_desmarcar_familia_dash_evolucao_precos'){
+        $("#cb_familia_dash_evolucao_precos").selectpicker('deselectAll');
     }
 
 });
+
+
+/*
+$(document).on('hide.bs.select', '#cb_familia_dash_evolucao_precos', function(){
+    let let_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
+
+    if (let_filial != null && let_filial != ''){
+        var var_cod_familia_selecionada = $(this).val().toString();
+        var var_handle_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
+        if (var_cod_familia_selecionada != '') {
+            $.ajax({
+                type: 'GET',
+                url:"/suprimentos_evolucao_precos_app/povoa_cd_itens_by_familia",
+                data: {
+                    'handle_familia': var_cod_familia_selecionada,
+                    'handle_filial': var_handle_filial
+                },
+                dataType: 'json',
+                success: function(data){
+                    $("#cb_item_dash_evolucao_precos option").remove();
+                    $("#cb_item_dash_evolucao_precos").append("<option value='0' selected='selected'> -- Todos os itens -- </option>");
+                    data.lista_itens.forEach(item => {
+                        $("#cb_item_dash_evolucao_precos").append("<option value='"+item.cod_ref+"'>"+item.nome+"("+item.cod_ref+")</option>");
+                    });
+                    $('#cb_item_dash_evolucao_precos').selectpicker('refresh');
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
+        }
+
+    } else {
+        $(this).val('0');
+        $(this).selectpicker('refresh');
+        $.gritter.add({
+            title: 'Atenção!',
+            text: 'Selecione a filial',
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+    }
+
+
+
+});
+
+*/

@@ -100,6 +100,7 @@ class Pagamento2ArtTerceirosFinanceiro(models.Model):
 
 
 
+
 class Registro2ArtTerceirosFinanceiro(models.Model):
     cod_reg_2art_terc_financ = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_2art_terc_financ = models.DateField(null=True)
@@ -192,6 +193,16 @@ class LancamentoPagamentoExtras(models.Model):
         db_table='ger_lancamentos_pagamento_extras'#op_plan_controle_lancamentos_pagamento_extras'
 
 
+class Estorno_Pagamentos_2Art_Terc(models.Model):
+    cod_estorno_pag_2art_terc = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    tipo_pagamento = models.CharField(max_length=1, null=False, blank=False, default='')#E: Extra, pagamento extra / M: pagamento mapas
+    cod_pagamento_referente = models.IntegerField(null=False, blank=False)
+    data_hora_estorno = models.DateTimeField()
+    justificativa = models.CharField(max_length=300, null=False, blank=False)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True, blank=True)
+    class Meta():
+        managed=True
+        db_table='op_plan_controle_pag_terc_estorno_pagamentos'
 
 class Tab_Cad_Placa_Terc_Financ():
     def __init__(self, id_cad_placa_terc, placa, perfil_veic, handle_placa, nome_beneficiario, doc_benef, tipo_pessoa_benef,
@@ -247,7 +258,7 @@ class LinhaExcelArquivoPagamentosExtra():
 class Tab_Pagamentos_Terceiros():
     def __init__(self, cod_pag, cod_benef, doc_benef, nome_beneficiario, data, mapa, placa,  val_frete, desc, acres,
                  val_pagar, complemento, tipo_ocorrencia, serial_pag_proj, obs_desc, obs_acresc, seq_item, status_pag,
-                 nome_usu_status, num_doc_pagamento):
+                 nome_usu_status, num_doc_pagamento, nome_usu_estorno, data_estorno, justificativa_estorno):
         self.cod_pag = cod_pag
         self.cod_benef = cod_benef
         self.doc_benef = doc_benef
@@ -268,6 +279,9 @@ class Tab_Pagamentos_Terceiros():
         self.status_pag = status_pag
         self.nome_usu_status=nome_usu_status
         self.num_doc_pagamento = num_doc_pagamento
+        self.nome_usu_estorno = nome_usu_estorno
+        self.data_estorno = data_estorno
+        self.justificativa_estorno = justificativa_estorno
 
 
 class Tab_Lancamentos_Pagamento_Terceiros():
