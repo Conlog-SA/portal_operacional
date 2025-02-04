@@ -726,6 +726,49 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == "btn_fecha_modal_detalhes_contas_composicao"){
         $("#modal_detalhes_contas_composicao").hide();
+
+        $("#tab_conciliacao_composicao_benner_aud").DataTable( {
+            "bJQueryUI": true,
+            "destroy": true,
+            "fixedHeader": true,
+            "scrollY": "570px", //770px
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            //"pageLength": 7,
+            "searching": true,
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copyHtml5'
+            ],
+            "columnDefs": [
+                {"className": "dt-left", "targets": [0, 2]}
+            ],
+            "oLanguage": {
+                "sProcessing":   "Processando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "Não foram encontrados resultados",
+                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                "sInfoFiltered": "",
+                "sInfoPostFix":  "",
+                "sSearch":       "Pesquisar:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Primeiro",
+                    "sPrevious": "Anterior",
+                    "sNext":     "Proximo",
+                    "sLast":     "Último"
+                },
+                "buttons":{
+                    "copyTitle": 'Dados Copiados',
+                    "copySuccess": {
+                        _: '%d linhas copiadas',
+                        1: '1 linha copiada'
+                    }
+                }
+            }
+        } );
     }
     else if(let_nome_btn == 'btn_anexa_doc_contrato') {
         let let_cod_conta = $(this).val();
@@ -4457,51 +4500,51 @@ function atualiza_dados_tab_conciliacao_composicao_benner_detalhado(dados){
                     } );
     } else {
         $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
-        "bJQueryUI": true,
-        "destroy": true,
-        "fixedHeader": true,
-        "scrollY": '570px', //770px "100vh"
-        "scrollX": true,
-        "scrollCollapse": true,
-        "paging": false,
-        "fixedColumns": {
-            "start": 5
-        },
-        //"pageLength": 7,
-        "searching": true,
-        "dom": 'Bfrtip',
-        "buttons": [
-            'copyHtml5'
-        ],
-        "columnDefs": [
-            {"className": "dt-left", "targets": [0, 4]}
-        ],
-        "data":dados,
-        "oLanguage": {
-            "sProcessing":   "Processando...",
-            "sLengthMenu":   "Mostrar _MENU_ registros",
-            "sZeroRecords":  "Não foram encontrados resultados",
-            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-            "sInfoFiltered": "",
-            "sInfoPostFix":  "",
-            "sSearch":       "Pesquisar:",
-            "sUrl":          "",
-            "oPaginate": {
-                "sFirst":    "Primeiro",
-                "sPrevious": "Anterior",
-                "sNext":     "Proximo",
-                "sLast":     "Último"
+            "bJQueryUI": true,
+            "destroy": true,
+            "fixedHeader": true,
+            "scrollY": '570px', //770px "100vh"
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            "fixedColumns": {
+                "start": 5
             },
-            "buttons":{
-                "copyTitle": 'Dados Copiados',
-                "copySuccess": {
-                    _: '%d linhas copiadas',
-                    1: '1 linha copiada'
+            //"pageLength": 7,
+            "searching": true,
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copyHtml5'
+            ],
+            "columnDefs": [
+                {"className": "dt-left", "targets": [0, 4]}
+            ],
+            "data":dados,
+            "oLanguage": {
+                "sProcessing":   "Processando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "Não foram encontrados resultados",
+                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                "sInfoFiltered": "",
+                "sInfoPostFix":  "",
+                "sSearch":       "Pesquisar:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Primeiro",
+                    "sPrevious": "Anterior",
+                    "sNext":     "Proximo",
+                    "sLast":     "Último"
+                },
+                "buttons":{
+                    "copyTitle": 'Dados Copiados',
+                    "copySuccess": {
+                        _: '%d linhas copiadas',
+                        1: '1 linha copiada'
+                    }
                 }
             }
-        }
-    } );
+        } );
     }
 
 }
