@@ -101,12 +101,23 @@ class Solicitacao_Acesso_View(View):
         nome_completo_usu = request.GET.get('nome_completo_usu')
         email_usu = request.GET.get('email_usu')
         lista_filiais = list(Filial.objects.filter(ativo=1).values('cod_filial', 'desc_filial', 'cod_empresa__desc_empresa'))
+
+        str_bg = 'background.jpg'
+        cor_emp_hex = '#f46424 !important;'
+        cod_empresa = 12
+        if 'deep' in email_usu:
+            str_bg = 'background-deep_menu.png'
+            cor_emp_hex = '#3b8eed !important;'
+            cod_empresa = 17
         dados = {
             'cod_status_login': 0,
             'login_usu': login_usu,
             'nome_completo_usu': nome_completo_usu,
             'email_usu': email_usu,
-            'lista_filiais': lista_filiais
+            'lista_filiais': lista_filiais,
+            'str_bg': str_bg,
+            'cor_emp_hex': cor_emp_hex,
+            'cod_empresa_selecionada': cod_empresa
         }
         return render(request, 'home_app/form_solicita_acesso.html', dados)
 

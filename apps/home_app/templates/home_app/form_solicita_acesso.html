@@ -19,13 +19,21 @@
   <main class="w-75 h-75 text-white justify-content-center align-items-center d-flex homeApp_loginContainer">
 
       <div class="homeApp__sobre">
-        <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+        {% if cod_empresa_selecionada == 12 %}
+          <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+        {% endif %}
+        {% if cod_empresa_selecionada == 17 %}
+          <img class="mt-2 homeApp_temValor" src="{% static 'img/logo-deep.png'%}" alt="Logo Deep"
+                   width="261,80px;" height="110px;"/>
+        {% endif %}
+
       </div>
       <div class="homeApp__linhaVertical" id="div_form_index"></div>
       <form action="{% url 'solicita_acesso' %}"
           method="POST"
           class="d-flex justify-content-center align-items-center flex-column homeApp__loginForm">
         {% csrf_token %}
+        <input type="hidden" id="hd_cod_empresa" name="hd_cod_empresa" value="{{cod_empresa_selecionada}}"/>
         <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
           <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
 
