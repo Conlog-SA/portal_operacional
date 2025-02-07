@@ -203,7 +203,6 @@ class Comp_Itens_Evolucao_Precos_View(View):
         lista_itens = []
         for item in lista_itens_from_benner:
             reg = {
-                'handle': item.handle,
                 'nome': item.nome,
                 'cod_ref': item.cod_ref
             }

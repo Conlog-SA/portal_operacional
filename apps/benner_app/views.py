@@ -793,7 +793,7 @@ class ConexaoBancoBenner():
         if str(handle_familia) != '0':
             param_familia = ' AND prod_itens_compra.familia in (' + str(handle_familia) + ') '
 
-        if str(cod_ref_item) != '0' and num_requisicao == '0':
+        if cod_ref_item != '' and cod_ref_item != '0' and num_requisicao == '0':
             param_item = " AND prod_itens_compra.codigoreferencia = '" + str(cod_ref_item) + "' "
         elif str(num_requisicao) != '0':
             lista_handle_str = self.retorna_lista_handle_itens_requisicao_str(lista_handle_filial, num_requisicao)
@@ -945,7 +945,6 @@ class ConexaoBancoBenner():
             ORDER	BY 1, 19 ASC;
         '''
         )
-
         df_evolucao_preco = pd.read_sql(sql_evolucao_ultimas_compras, self.__conn)
 
         for index, row in df_evolucao_preco.iterrows():
@@ -1108,7 +1107,6 @@ class ConexaoBancoBenner():
         sql_pd_produtos = (
             f'''
             SELECT	distinct
-                    prod.HANDLE				as	handle,
                     prod.NOME 				as	nome,
                     prod.CODIGOREFERENCIA	as	codigoreferencia
               FROM	PD_ALMOXARIFADOPRODUTOS al_prod (NOLOCK)
@@ -1127,10 +1125,11 @@ class ConexaoBancoBenner():
              order	by 2
             '''
         )
+        print(sql_pd_produtos)
         cursor.execute(sql_pd_produtos)
         produtos_cursor = cursor.fetchall()
         for row in produtos_cursor:
-            prod = Produto(row.handle, row.nome, row.codigoreferencia)
+            prod = Produto(row.nome, row.codigoreferencia)
             lista_itens.append(prod)
         cursor.close()
         self.__conn.close()
@@ -1144,7 +1143,7 @@ class ConexaoBancoBenner():
                   FROM	CP_REQUISICOES R (NOLOCK)
                   LEFT	JOIN CP_REQUISICOESPAI RP (NOLOCK) 
                     ON	(RP.HANDLE = R.REQUISICAOPAI)
-                 WHERE	RP.FILIAL = {handle_filial}
+                 WHERE	RP.FILIAL in ({handle_filial})
                    AND	RP.NUMERO = {numero_req}
                 '''
         )
