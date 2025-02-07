@@ -70,21 +70,34 @@ $(document).on('click', 'button', function(){
     var valButton = $(this).attr('value');
 
     if( nomeDoButton == 'btn_gera_dash_evolucao_precos' ) {
-        let let_loader_dash_evolucao_preco = document.getElementById("loader_dash_evolucao_preco");
-        var var_handle_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
-        let let_lista_handle_atendentes = $("#cb_atendente_dash_evolucao_precos").val().toString();
-        var var_data_ini = $("#txt_data_ini_dash_evolucao_precos").val();
-        var var_data_fim = $("#txt_data_fim_dash_evolucao_precos").val();
-        var var_handle_familia = $("#cb_familia_dash_evolucao_precos").val().toString();
-        if( var_handle_filial=='' || var_data_ini=='' || var_data_fim=='') {
-            $.gritter.add({
-                title: 'Atenção!',
-                text: "Informe os dados obrigatórios(*)",
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
-            });
-        } else {
+        let let_tem_elemento_vazio = 'N';
+        let let_componentes = document.querySelectorAll('.campo_dash');
+        let_componentes.forEach(comp => {
+            if(comp.name != null) {
+                if(comp.value == '' || comp.value == null) {
+                    let_tem_elemento_vazio = 'S';
+                    let let_div = document.querySelector('.div_' + comp.name);
+
+                    let_div.style.border = "2px solid red";
+                    let_div.style.borderRadius = ".5rem";
+                    let_div.style.padding = ".25rem";
+                    setTimeout(function() {
+                        let_div.style.border = "0px";
+                        let_div.style.borderRadius = "0rem";
+                        let_div.style.padding = "0rem";
+                        let_div.style.paddingLeft = ".25rem";
+                    }, 3000);
+                }
+            }
+        });
+        if(let_tem_elemento_vazio == 'N') {
+            let let_loader_dash_evolucao_preco = document.getElementById("loader_dash_evolucao_preco");
+            var var_handle_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
+            let let_lista_handle_atendentes = $("#cb_atendente_dash_evolucao_precos").val().toString();
+            var var_data_ini = $("#txt_data_ini_dash_evolucao_precos").val();
+            var var_data_fim = $("#txt_data_fim_dash_evolucao_precos").val();
+            var var_handle_familia = $("#cb_familia_dash_evolucao_precos").val().toString();
+
             $("#div_grafico_status_resumo").html("");
             $("#div_grafico_status_atendente").html("");
             $("#div_grafico_status_familia").html("");
@@ -127,7 +140,19 @@ $(document).on('click', 'button', function(){
                 }
             });
 
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: "Informe os filtros indicados corretamente!",
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
         }
+
+
+
+
 
     } else if (nomeDoButton == 'btn_marcar_unidade_dash_evolucao_precos'){
         $("#cb_filial_dash_evolucao_precos").selectpicker('selectAll');

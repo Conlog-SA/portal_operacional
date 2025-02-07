@@ -54,7 +54,7 @@
 
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_cb_filial_dash_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="cb_filial_dash_evolucao_precos">
                         Unidade
                         <button type='button' id="btn_marcar_unidade_dash_evolucao_precos"
@@ -72,7 +72,7 @@
                             <i class="fa-regular fa-square" style="color: #f46424;"></i>
                         </button>
                     </label>
-                    <select class="selectpicker form-control" id="cb_filial_dash_evolucao_precos"
+                    <select class="selectpicker form-control campo_dash" id="cb_filial_dash_evolucao_precos"
                         name="cb_filial_dash_evolucao_precos" multiple data-selected-text-format="count > 1"
                         data-live-search="true"
                         title="Selecione a filial">
@@ -82,7 +82,7 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_cb_atendente_dash_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="cb_atendente_dash_evolucao_precos">
                         Atendente
                         <button type='button' id="btn_marcar_atendente_dash_evolucao_precos"
@@ -100,7 +100,7 @@
                             <i class="fa-regular fa-square" style="color: #f46424;"></i>
                         </button>
                     </label>
-                    <select class="selectpicker form-control" id="cb_atendente_dash_evolucao_precos"
+                    <select class="selectpicker form-control campo_dash" id="cb_atendente_dash_evolucao_precos"
                         name="cb_atendente_dash_evolucao_precos"
                         data-live-search="true" multiple data-selected-text-format="count > 1"
                         title="Selecione a filial">
@@ -111,7 +111,7 @@
 
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_cb_familia_dash_evolucao_precos" style="padding-left: 0.25rem;">
                      <label for="cb_familia_dash_evolucao_precos">
                         Famílias
                         <button type='button' id="btn_marcar_familia_dash_evolucao_precos"
@@ -130,7 +130,7 @@
                         </button>
                     </label>
 
-                    <select class="selectpicker form-control" id="cb_familia_dash_evolucao_precos"
+                    <select class="selectpicker form-control campo_dash" id="cb_familia_dash_evolucao_precos"
                         name="cb_familia_dash_evolucao_precos"
                         data-live-search="true" multiple data-selected-text-format="count > 1">
                         {% for familia in lista_familias %}
@@ -158,19 +158,19 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column justify-content-center align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-center align-items-start w-100 div_txt_data_ini_dash_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="txt_data_ini_dash_evolucao_precos">
                         Data Inícial
                     </label>
-                    <input type="date" class="form-control" id="txt_data_ini_dash_evolucao_precos"
+                    <input type="date" class="form-control campo_dash" id="txt_data_ini_dash_evolucao_precos" name="txt_data_ini_dash_evolucao_precos"
                            value="{{ data_ini }}">
                 </div>
 
-                <div class="d-flex flex-column justify-content-center align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-center align-items-start w-100 div_txt_data_fim_dash_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="txt_data_fim_dash_evolucao_precos">
                         Data Final
                         </label>
-                        <input type="date" class="form-control" id="txt_data_fim_dash_evolucao_precos"
+                        <input type="date" class="form-control campo_dash" id="txt_data_fim_dash_evolucao_precos" name="txt_data_fim_dash_evolucao_precos"
                                value="{{ data_fim }}">
 
                 </div>

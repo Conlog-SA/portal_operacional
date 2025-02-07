@@ -49,7 +49,7 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_cb_filial_gera_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="cb_filial_gera_evolucao_precos">
                         Unidade
                         <button type='button' id="btn_marcar_unidade_gera_evolucao_precos"
@@ -67,7 +67,7 @@
                             <i class="fa-regular fa-square" style="color: #f46424;"></i>
                         </button>
                     </label>
-                    <select class="selectpicker form-control" id="cb_filial_gera_evolucao_precos"
+                    <select class="selectpicker form-control campo_pesq_ev" id="cb_filial_gera_evolucao_precos"
                         name="cb_filial_gera_evolucao_precos"
                         data-live-search="true" multiple data-selected-text-format="count > 1"
                         title="Selecione a unidade">
@@ -78,7 +78,7 @@
 
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_cb_atendente_gera_evolucao_precos" style="padding-left: 0.25rem;">
                     <label for="cb_atendente_gera_evolucao_precos">
                         Atendente
                         <button type='button' id="btn_marcar_atendente_gera_evolucao_precos"
@@ -96,7 +96,7 @@
                             <i class="fa-regular fa-square" style="color: #f46424;"></i>
                         </button>
                     </label>
-                    <select class="selectpicker form-control" id="cb_atendente_gera_evolucao_precos"
+                    <select class="selectpicker form-control campo_pesq_ev" id="cb_atendente_gera_evolucao_precos"
                         name="cb_atendente_gera_evolucao_precos"
                         data-live-search="true" multiple data-selected-text-format="count > 1"
                         title="Selecione os atendentes">
@@ -107,17 +107,17 @@
 
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_txt_data_ini_evolucao_precos" style="padding-left: 0.25rem;">
                     <label>Data Inícial</label>
-                    <input type="date" class="form-control" id="txt_data_ini_evolucao_precos"
-                           value="{{ data_ini }}">
+                    <input type="date" class="form-control campo_pesq_ev" id="txt_data_ini_evolucao_precos"
+                           name='txt_data_ini_evolucao_precos' value="{{ data_ini }}">
 
                 </div>
 
-                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100 div_txt_data_fim_evolucao_precos" style="padding-left: 0.25rem;">
                     <label>Data Final</label>
-                    <input type="date" class="form-control" id="txt_data_fim_evolucao_precos"
-                           value="{{ data_fim }}">
+                    <input type="date" class="form-control campo_pesq_ev" id="txt_data_fim_evolucao_precos"
+                           name='txt_data_fim_evolucao_precos' value="{{ data_fim }}">
 
                 </div>
             </div>
@@ -137,7 +137,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column w-100 align-items-start" style="padding-right: 0.25rem;">
+                <div class="d-flex flex-column w-100 align-items-start div_cb_familia_gera_evolucao_precos" style="padding-right: 0.25rem;">
                     <label for="cb_familia_gera_evolucao_precos">
                         Famílias
                         <button type='button' id="btn_marcar_familia_gera_evolucao_precos"
@@ -156,7 +156,7 @@
                         </button>
                     </label>
 
-                    <select class="selectpicker form-control" id="cb_familia_gera_evolucao_precos"
+                    <select class="selectpicker form-control campo_pesq_ev" id="cb_familia_gera_evolucao_precos"
                         name="cb_familia_gera_evolucao_precos"
                         data-live-search="true" multiple data-selected-text-format="count > 1" title="Selecione as famílias">
                         {% for familia in lista_familias %}
@@ -165,7 +165,14 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-100 align-items-start" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                <div class="d-flex flex-column w-100 align-items-start justify-content-end" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    <label for="cb_item_gera_evolucao_precos">
+                        Código referência Item
+                        </label>
+                    <input id="cb_item_gera_evolucao_precos" name="cb_item_gera_evolucao_precos"
+                           class="form-control" title="Informe o codigo de referência do item"/>
+
+                    <!--
                     <label for="cb_item_gera_evolucao_precos">
                         Itens
                         <button type='button' id="btn_marcar_item_gera_evolucao_precos"
@@ -187,10 +194,10 @@
                         name="cb_item_gera_evolucao_precos"
                         data-live-search="true"
                         title="Selecione o projeto"
-                    <!-- multiple data-selected-text-format="count > 1"> -->
+                       multiple data-selected-text-format="count > 1">
                         <option value="0" selected="selected"> -- Todos os itens -- </option>
-
                     </select>
+                     -->
                 </div>
 
                 <div class="d-flex flex-column w-100"

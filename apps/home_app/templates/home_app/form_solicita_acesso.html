@@ -33,7 +33,6 @@
           method="POST"
           class="d-flex justify-content-center align-items-center flex-column homeApp__loginForm">
         {% csrf_token %}
-        <input type="hidden" id="hd_cod_empresa" name="hd_cod_empresa" value="{{cod_empresa_selecionada}}"/>
         <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
           <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
 
