@@ -17,7 +17,7 @@ load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSAO_PORTAL = '1.1'
+VERSAO_PORTAL = '1.3'
 VERSAO_SAFETY = '1.7'
 
 # Quick-start development settings - unsuitable for production
@@ -104,6 +104,7 @@ INSTALLED_APPS = [
     'apps.contabil_indicadores_financeiros_app',
     'apps.gente_gestao_entrevista_desligamento_app',
     'apps.gente_gestao_comun_encarreiramentos_app',
+    'apps.utilitarios_assinatura_email_app',
 ]
 
 MIDDLEWARE = [

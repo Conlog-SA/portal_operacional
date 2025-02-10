@@ -949,7 +949,7 @@ class Check_Aplicado_Editar(View):
             plano_acao.plano_acao = ''
 
         check_html_recebido = f'''
-        <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex" style="flex-direction:column;">
+        <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex" style="flex-direction:column;position:inherit;overflow-y:inherit;padding-left:0px;">
             <div class="form-group form_div_check w-100" >
                 <div class="col-md-12 w-100 h-100">
                     <form id="form_preenche_check" name="form_preenche_check">

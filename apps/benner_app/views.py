@@ -784,21 +784,30 @@ class ConexaoBancoBenner():
         self.__conn.close()
         return lista_familias
 
-    def retorna_df_ultimas_compras(self, handle_filial, data_ini, data_fim, handle_familia, cod_ref_item,
+    def retorna_df_ultimas_compras(self, lista_handle_filial, data_ini, data_fim, handle_familia, cod_ref_item,
                                        num_requisicao):
         # param_familia = ' AND	prod_itens_compra.familia not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92) '
         param_familia = ''
         param_item = ''
+        param_filial = ''
         if str(handle_familia) != '0':
             param_familia = ' AND prod_itens_compra.familia in (' + str(handle_familia) + ') '
 
-        if str(cod_ref_item) != '0' and num_requisicao == '0':
+        if cod_ref_item != '' and cod_ref_item != '0' and num_requisicao == '0':
             param_item = " AND prod_itens_compra.codigoreferencia = '" + str(cod_ref_item) + "' "
         elif str(num_requisicao) != '0':
-            lista_handle_str = self.retorna_lista_handle_itens_requisicao_str(handle_filial, num_requisicao)
+            lista_handle_str = self.retorna_lista_handle_itens_requisicao_str(lista_handle_filial, num_requisicao)
 
             param_item = ' AND prod_itens_compra.handle in (' + \
-                         str(lista_handle_str).replace('[', '').replace(']','') + ') '
+                         str(lista_handle_str).replace('[', '').replace(']', '') + ') '
+
+        if lista_handle_filial != '0':
+            param_filial = f'AND    compra.filial in ({lista_handle_filial})'
+
+
+
+
+
 
         '''Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), 
         Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344),
@@ -909,8 +918,8 @@ class ConexaoBancoBenner():
              AND	compra.usuarioincluiu in ({handle_atendentes})
              AND	prod_itens_compra.tipo = 1
              AND	compra.status = 4 /* status 4 : compra encerrada */
-             AND    compra.filial in ({handle_filial})
-             AND    prod_itens_compra.familia NOT IN (42)
+             {param_filial}             
+             /* AND    prod_itens_compra.familia NOT IN (42) */
              AND    (familia_prod_itens_compra.nome not like '%SERVIÇO%' AND familia_prod_itens_compra.nome not like '%SERVICO%')
              /* AND	prod_itens_compra.codigoreferencia = '22183' */
              {param_familia}	
@@ -1098,7 +1107,6 @@ class ConexaoBancoBenner():
         sql_pd_produtos = (
             f'''
             SELECT	distinct
-                    prod.HANDLE				as	handle,
                     prod.NOME 				as	nome,
                     prod.CODIGOREFERENCIA	as	codigoreferencia
               FROM	PD_ALMOXARIFADOPRODUTOS al_prod (NOLOCK)
@@ -1117,10 +1125,11 @@ class ConexaoBancoBenner():
              order	by 2
             '''
         )
+        print(sql_pd_produtos)
         cursor.execute(sql_pd_produtos)
         produtos_cursor = cursor.fetchall()
         for row in produtos_cursor:
-            prod = Produto(row.handle, row.nome, row.codigoreferencia)
+            prod = Produto(row.nome, row.codigoreferencia)
             lista_itens.append(prod)
         cursor.close()
         self.__conn.close()
@@ -1134,7 +1143,7 @@ class ConexaoBancoBenner():
                   FROM	CP_REQUISICOES R (NOLOCK)
                   LEFT	JOIN CP_REQUISICOESPAI RP (NOLOCK) 
                     ON	(RP.HANDLE = R.REQUISICAOPAI)
-                 WHERE	RP.FILIAL = {handle_filial}
+                 WHERE	RP.FILIAL in ({handle_filial})
                    AND	RP.NUMERO = {numero_req}
                 '''
         )

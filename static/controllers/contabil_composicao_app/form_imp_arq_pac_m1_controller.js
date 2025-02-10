@@ -51,7 +51,7 @@ $(document).on('click','button', function(){
         } else {
             let let_cod_pacote_conta = $("#cb_pacotes_imp_doc_pac_contas_m1").val();
             var formData = new FormData();
-            formData.append("file", $('input[type=file]')[0].files[0]);
+            formData.append("file", $('#file_arquivo_pac_m1')[0].files[0]);
             formData.append("cod_pacote_conta", let_cod_pacote_conta);
             formData.append("competencia", $("#dt_comp_imp_arq_contas_m1").val());
             let loader_frm_imp_arq_m1 = document.getElementById("loader_frm_imp_arq_pac_m1");
@@ -1536,16 +1536,20 @@ function atualiza_tab_imp_docs_pac_mod_1() {
                 let let_resumo_docs = ``;
                 dados.resumo_docs.forEach( resumo => {
                     let_resumo_docs = `
-                        <label for="txt_val_rel">R$ Rel.</label>
-                        <input class="form-control" id="txt_val_rel" style="text-align: right;" value="${resumo.tt_val_rel}" readonly/>
+                        <div class="d-flex flex-column align-items-start">
+                            <label for="txt_val_rel">R$ Rel.</label>
+                            <input class="form-control" id="txt_val_rel" style="text-align: right;" value="${resumo.tt_val_rel}" readonly/>
+                        </div>
 
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label for="txt_val_balancete">R$ Balancete</label>
-                        <input class="form-control" id="txt_val_balancete" style="text-align: right;" value="${resumo.val_balancete}" readonly/>
+                        <div class="d-flex flex-column align-items-start" style="margin-left: 0.25rem;">
+                            <label for="txt_val_balancete">R$ Balancete</label>
+                            <input class="form-control" id="txt_val_balancete" style="text-align: right;" value="${resumo.val_balancete}" readonly/>
+                        </div>
 
-                        &nbsp;&nbsp;&nbsp;&nbsp;
-                        <label for="txt_val_dif">R$ Dif.</label>
-                        <input class="form-control" id="txt_val_dif" style="text-align: right;" value="${resumo.val_dif_comp_bal}" readonly/>
+                        <div class="d-flex flex-column align-items-start" style="margin-left: 0.25rem;">
+                            <label for="txt_val_dif">R$ Dif.</label>
+                            <input class="form-control" id="txt_val_dif" style="text-align: right;" value="${resumo.val_dif_comp_bal}" readonly/>
+                        </div>
 
 
                     `;

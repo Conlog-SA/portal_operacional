@@ -42,6 +42,10 @@ tr.details td.details-control {
     color: #FFFFFF;
 }
 
+.details-column-produto {
+    width: 180px;
+}
+
 #div_cb_item_gera_evol_preco .picker .pc-select .pc-trigger, #div_cb_itens_aud_evolucao_precos .picker .pc-select .pc-trigger{
     width: 750px;
     height: 30px;

@@ -9,6 +9,7 @@ from django.http import JsonResponse, FileResponse, HttpResponse
 from django.shortcuts import render
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Q
 
 from pyhtml2pdf import converter
 
@@ -65,10 +66,12 @@ class Check_Aplicado_View(View):
             #validacao_gso_existentes
             validacao_checks_existentes = Gabarito_GSO.objects.all().values('cod_check_aplicado')
 
-        lista_checks_aplicados = lista_checks_aplicados.filter(cod_check_aplicado__in=validacao_checks_existentes)
+        respostas_botao = Item_Check_Aplicados.objects.all()
+        respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()
+        lista_checks_aplicados_preenchidos = lista_checks_aplicados.filter(Q(cod_check_aplicado__in=validacao_checks_existentes) & (Q(cod_check_aplicado__in=respostas_botao.values('cod_check_aplicado')) | Q(cod_check_aplicado__in=respostas_texto.values('cod_check_aplicado'))))
 
         lista_checks_aplicados_dict = []
-        for check in lista_checks_aplicados:
+        for check in lista_checks_aplicados_preenchidos:
             respostas_button = Item_Check_Aplicados.objects.filter(cod_check_aplicado=check)
             respostas_button_list = list(respostas_button)
             respostas_ok = []

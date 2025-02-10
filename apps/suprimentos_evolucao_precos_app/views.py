@@ -22,9 +22,17 @@ class Form_Gera_Evolucao_Precos_View(View):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
-        lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
+        lista_filiais = (ConexaoBancoBenner()
+                         .retornaTabFiliaisBennerByEmpresa(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
+
+        lista_atendentes = (Usuario.objects
+                            .filter(status_usu='A',
+                                    cod_filial__cod_empresa = obj_usuario_logado.cod_filial.cod_empresa,
+                                    sala='SPR'))
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
+            .retorna_familias(" WHERE handle not in (5,10,12,14,18,20,21,22,26,23,25,28,29,32,34,35,36,37,39,40,41,42,"
+                              "43,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,"
+                              "66,67,69,70,71,72,74,75,78,81,86,92,99,102)"
                               " AND nome not like '%SERVIÇO%' AND nome not like '%SERVICO%'")
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
@@ -32,7 +40,9 @@ class Form_Gera_Evolucao_Precos_View(View):
             'data_ini': data_ini,
             'data_fim': data_fim,
             'lista_familias': lista_familias,
+            'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
             'lista_filiais': lista_filiais,
+            'lista_atendentes': lista_atendentes,
             'desc_menu_principal': 'Evolução de preços',
             'id_menu_pai': 45,
             'obj_usuario_logado': obj_usuario_logado
@@ -193,7 +203,6 @@ class Comp_Itens_Evolucao_Precos_View(View):
         lista_itens = []
         for item in lista_itens_from_benner:
             reg = {
-                'handle': item.handle,
                 'nome': item.nome,
                 'cod_ref': item.cod_ref
             }
@@ -214,14 +223,23 @@ class Dash_Evolucao_Precos_View(View):
         data_ini = datetime.strftime(date.today() - timedelta(90), '%Y-%m-%d')
         data_fim = datetime.strftime(date.today(), '%Y-%m-%d')
 
-        lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(12)
+        lista_atendentes = (Usuario.objects
+                            .filter(status_usu='A',
+                                    cod_filial__cod_empresa=obj_usuario_logado.cod_filial.cod_empresa,
+                                    sala='SPR'))
+
+        lista_filiais = ConexaoBancoBenner().retornaTabFiliaisBennerByEmpresa(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa)
         lista_familias = ConexaoBancoBenner()\
-            .retorna_familias(" WHERE handle not in (12,18,23,25,28,29,34,35,36,37,39,42,53,66,71,75,92)"
+            .retorna_familias(" WHERE handle not in (5,10,12,14,18,20,21,22,26,23,25,28,29,32,34,35,36,37,39,40,41,42,"
+                              "43,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,"
+                              "66,67,69,70,71,72,74,75,78,81,86,92,99,102)"
                               " AND nome not like '%SERVIÇO%' AND nome not like '%SERVICO%'")
         context = {
             #'plot1': self.grafico_pizza_plotly(),
+            'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
             'lista_familias': lista_familias,
             'lista_filiais': lista_filiais,
+            'lista_atendentes': lista_atendentes,
             'desc_menu_principal': 'Dashboard Evolução de preços',
             'data_ini': data_ini,
             'data_fim': data_fim,
@@ -348,91 +366,54 @@ class Gera_Dash_Evolucao_Precos_View(View):
 
 
     def get(self, request):
-        handle_filial_form = request.GET['handle_filial']
+        lista_handle_filial_form = request.GET['handle_filial']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
-        lista_df_evolucao_preco_filial = []
+        lista_handle_familia_form = request.GET['handle_familia']
+        lista_handle_atendentes_frm = request.GET['lista_handle_atendentes']
         #df_evolucao_preco = None
-        for handle_fil in handle_filial_form.split(','):
-            def_evolucao_preco_fil = ConexaoBancoBenner() \
-                .retorna_df_ultimas_compras(handle_fil, data_ini_form, data_fim_form, '0', '0',
-                                            '0')
-            lista_df_evolucao_preco_filial.append(def_evolucao_preco_fil)
 
-        df_evolucao_preco = pd.concat(lista_df_evolucao_preco_filial)
+        lista_evolucao_precos_tab = (Gera_Evolucao_Precos_View()
+                                     .gera_tabela_analitica_evolucao(lista_handle_atendentes_frm,
+                                                                     lista_handle_filial_form, data_ini_form,
+                                                                     data_fim_form, lista_handle_familia_form,
+                                                                     '0', '0'))
 
-        df_evolucao_preco = df_evolucao_preco. \
-            sort_values(['handle_filial_compra', 'cod_ref_prod', 'handle_variacao', 'seq_item'], ascending=False)
+
+
+        df_evolucao_preco = pd.DataFrame(lista_evolucao_precos_tab)
+
+        df_evolucao_preco = (df_evolucao_preco[['handle_filial_compra', 'nome_filial', 'cod_ref_item', 'desc_item',
+                                               'desc_familia', 'analise','handle_atendente_ult_compra',
+                                               'atendente_ult_compra' ]]
+                             .sort_values(['nome_filial', 'atendente_ult_compra', 'desc_familia', 'analise'],
+                                          ascending=False)
+                             .reset_index())
         # display(df_evolucao_preco)
         #df_evolucao_preco.to_excel('df_evolucao_preco_dash.xlsx')
 
-        # Dataframe últimas três compras
-        df_ultimas_tres_compras = df_evolucao_preco[df_evolucao_preco['seq_item'] < 4]
-        df_ultimas_tres_compras.loc[df_ultimas_tres_compras['seq_item'] == 3, 'val_disp_atual_menos_anterior'] = 0
-        '''df_ultimas_tres_compras['status_compra'] = 'Avaliar'
-        df_ultimas_tres_compras.loc[(df_ultimas_tres_compras['seq_item'] == 1) &
-                                    (df_ultimas_tres_compras['handle_item_compra_anterior'] == 0), 'status_compra'] = 'Sem Ocorrência'''
-        #df_ultimas_tres_compras.to_excel('df_ultimas_tres_compras.xlsx')
-
-        df_status_compra = df_evolucao_preco[df_evolucao_preco['seq_item'] == 1]\
-            .drop(['nome_filial_compra', 'handle_produto', 'nome_produto', 'desc_variacao' , 'handle_familia',
-                              'desc_familia' , 'val_unit', 'handle_variacao', 'handle_compra', 'numero_compra',
-                              'data_compra', 'handle_usuario_incluiu_compra', 'nome_usuario_incluiu_compra',
-                              'seq_item', 'handle_fornecedor_comra', 'nome_fornecedor_compra', 'doc_fornecedor_compra',
-                              'val_disp_atual_menos_anterior', 'qtd_item', 'val_tt_item', 'nome_un_medida',
-                              'val_disp_total'], axis=1)
-        df_status_compra['status_compra'] = 'Avaliar'
-        df_status_compra.loc[df_status_compra['handle_compra_anterior'] == 0, 'status_compra'] = 'Sem Ocorrência'
-
-        #df_status_compra.to_excel('df_status_compra.xlsx')
-
-        # Dataframe itens
-        df_itens_aux = df_ultimas_tres_compras \
-            .drop(['handle_produto', 'val_unit', 'handle_variacao', 'handle_compra',
-                   'numero_compra', 'data_compra', 'seq_item'], axis=1) \
-            .groupby(['handle_filial_compra', 'nome_filial_compra', 'cod_ref_prod', 'nome_produto', 'handle_familia',
-                      'desc_familia', 'nome_un_medida'])[['val_disp_atual_menos_anterior']].sum().reset_index()
-        #df_itens_aux.to_excel('df_itens_aux.xlsx')
-
-        df_itens = \
-            pd.merge(df_itens_aux, df_status_compra,
-                     how='left',
-                     on=['handle_filial_compra', 'cod_ref_prod']).reset_index()
-        #df_itens.to_excel('df_itens.xlsx')
-
-        df_itens.loc[df_itens['status_compra'] == 'Avaliar', 'status_compra'] = df_itens['val_disp_atual_menos_anterior'] \
-            .apply(lambda x: 'Compra Maior' if x > 0 else ('Compra Menor' if x < 0 else 'Compra OK'))
-        #df_itens.to_excel('df_itens.xlsx')
-        #print(df_itens)
-
-        df_ultimo_comprador = df_ultimas_tres_compras[['handle_filial_compra','cod_ref_prod',
-                                                       'handle_usuario_incluiu_compra', 'nome_usuario_incluiu_compra']]\
-            .loc[df_ultimas_tres_compras['seq_item'] == 1].reset_index()
-        #df_ultimo_comprador.to_excel('df_ultimo_comprador.xlsx')
 
 
-
-        df_resumo_status_compra = df_itens.drop(['cod_ref_prod','nome_produto','nome_un_medida'], axis=1)\
-            .groupby(['handle_filial_compra', 'nome_filial_compra',
-                                                    'handle_familia', 'desc_familia',
-                                                    'status_compra']).count() \
-            .rename(columns={'val_disp_atual_menos_anterior': 'qtd_compras'}).reset_index()
+        df_resumo_status_compra = (
+            df_evolucao_preco
+            .drop(['handle_filial_compra', 'desc_item', 'handle_atendente_ult_compra'], axis=1)
+            .groupby(['nome_filial', 'atendente_ult_compra', 'desc_familia','analise']).count()
+            .rename(columns={'cod_ref_item': 'qtd_compras'}).reset_index())
         #df_resumo_status_compra.to_excel('df_resumo_status_compra.xlsx')
-        #df_status_cont = df_resumo_status_compra.groupby(['status_compra'])[['status_compra']].count()
 
 
-        df_group_status_compra = df_resumo_status_compra.groupby(['status_compra'])[['qtd_compras']].sum().reset_index()
-        df_group_status_compra['ordem_grafico'] = df_group_status_compra['status_compra']\
+        df_group_status_compra = df_resumo_status_compra.groupby('analise')[['qtd_compras']].sum().reset_index()
+        df_group_status_compra['ordem_grafico'] = df_group_status_compra['analise']\
             .apply(lambda x: 0 if x == 'Sem Ocorrência' else ( 1 if x == 'Compra Maior' else ( 2 if x == 'Compra OK' else 3)))
         df_group_status_compra.sort_values(['ordem_grafico'], ascending=False)
 
 
         #Dados por familia
         df_compras_maior_familia = df_resumo_status_compra\
-            .loc[(df_resumo_status_compra['status_compra'] == 'Compra Maior')|
-                 (df_resumo_status_compra['status_compra'] == 'Compra Menor')|
-                 (df_resumo_status_compra['status_compra'] == 'Compra OK')]\
-            .groupby(['desc_familia','status_compra'])[['qtd_compras']].sum().reset_index()
+            .loc[(df_resumo_status_compra['analise'] == 'Compra Maior')|
+                 (df_resumo_status_compra['analise'] == 'Compra Menor')|
+                 (df_resumo_status_compra['analise'] == 'Compra OK')]\
+            .groupby(['desc_familia','analise'])[['qtd_compras']].sum().reset_index()
         lista_ocorrencia_familia = df_compras_maior_familia['desc_familia'].unique().tolist()
         lista_familia = []
         lista_compra_maior = []
@@ -441,7 +422,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
         for familia in lista_ocorrencia_familia:
             lista_familia.append(familia)
             df_qtd_compra_maior = df_compras_maior_familia\
-                .loc[(df_compras_maior_familia['status_compra'] == 'Compra Maior')&
+                .loc[(df_compras_maior_familia['analise'] == 'Compra Maior')&
                      (df_compras_maior_familia['desc_familia'] == familia)]
             if df_qtd_compra_maior.empty:
                 lista_compra_maior.append(0)
@@ -449,7 +430,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
                 lista_compra_maior.append(df_qtd_compra_maior['qtd_compras'].values[0])
 
             df_qtd_compra_menor = df_compras_maior_familia \
-                .loc[(df_compras_maior_familia['status_compra'] == 'Compra Menor') &
+                .loc[(df_compras_maior_familia['analise'] == 'Compra Menor') &
                      (df_compras_maior_familia['desc_familia'] == familia)]
             if df_qtd_compra_menor.empty:
                 lista_compra_menor.append(0)
@@ -457,7 +438,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
                 lista_compra_menor.append(df_qtd_compra_menor['qtd_compras'].values[0])
 
             df_qtd_compra_ok = df_compras_maior_familia \
-                .loc[(df_compras_maior_familia['status_compra'] == 'Compra OK') &
+                .loc[(df_compras_maior_familia['analise'] == 'Compra OK') &
                      (df_compras_maior_familia['desc_familia'] == familia)]
             if df_qtd_compra_ok.empty:
                 lista_compra_ok.append(0)
@@ -465,16 +446,12 @@ class Gera_Dash_Evolucao_Precos_View(View):
                 lista_compra_ok.append(df_qtd_compra_ok['qtd_compras'].values[0])
 
         #Grafico agrupa ultimo atendente
-        df_ultimo_atendente = \
-            pd.merge(df_itens, df_ultimo_comprador,
-                     how='left',
-                     on=['handle_filial_compra', 'cod_ref_prod']).reset_index()
-        df_resumo_atendente = df_ultimo_atendente.drop(['index','handle_familia','cod_ref_prod','nome_produto',
-                                                        'desc_familia','nome_un_medida','handle_filial_compra',
-                                                        'nome_filial_compra','handle_usuario_incluiu_compra',
-                                                        ], axis=1)\
-            .groupby(['nome_usuario_incluiu_compra', 'status_compra']).count() \
-            .rename(columns={'val_disp_atual_menos_anterior': 'qtd_compras'}).reset_index()
+        df_resumo_atendente = (
+            df_resumo_status_compra
+            .drop(['nome_filial', 'desc_familia'], axis=1)
+            .rename(columns={'atendente_ult_compra': 'nome_usuario_incluiu_compra'})
+            .groupby(['nome_usuario_incluiu_compra', 'analise'])[['qtd_compras']].sum()
+            .reset_index())
         df_resumo_atendente.to_excel('df_resumo_atendente.xlsx')
         lista_ocorrencia_atendente = df_resumo_atendente['nome_usuario_incluiu_compra'].unique().tolist()
         lista_atendente = []
@@ -484,7 +461,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
         for atendente in lista_ocorrencia_atendente:
             lista_atendente.append(atendente.split(' ')[0])
             df_qtd_compra_maior = df_resumo_atendente \
-                .loc[(df_resumo_atendente['status_compra'] == 'Compra Maior') &
+                .loc[(df_resumo_atendente['analise'] == 'Compra Maior') &
                      (df_resumo_atendente['nome_usuario_incluiu_compra'] == atendente)]
             if df_qtd_compra_maior.empty:
                 lista_atendente_compra_maior.append(0)
@@ -492,7 +469,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
                 lista_atendente_compra_maior.append(df_qtd_compra_maior['qtd_compras'].values[0])
 
             df_qtd_compra_menor = df_resumo_atendente \
-                .loc[(df_resumo_atendente['status_compra'] == 'Compra Menor') &
+                .loc[(df_resumo_atendente['analise'] == 'Compra Menor') &
                      (df_resumo_atendente['nome_usuario_incluiu_compra'] == atendente)]
             if df_qtd_compra_menor.empty:
                 lista_atendente_compra_menor.append(0)
@@ -500,7 +477,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
                 lista_atendente_compra_menor.append(df_qtd_compra_menor['qtd_compras'].values[0])
 
             df_qtd_compra_ok = df_resumo_atendente \
-                .loc[(df_resumo_atendente['status_compra'] == 'Compra OK') &
+                .loc[(df_resumo_atendente['analise'] == 'Compra OK') &
                      (df_resumo_atendente['nome_usuario_incluiu_compra'] == atendente)]
             if df_qtd_compra_ok.empty:
                 lista_atendente_compra_ok.append(0)
@@ -509,14 +486,9 @@ class Gera_Dash_Evolucao_Precos_View(View):
 
 
         #Dados por filial
-        '''df_compras_filial = df_resumo_status_compra \
-            .loc[(df_resumo_status_compra['status_compra'] == 'Compra Maior') |
-                 (df_resumo_status_compra['status_compra'] == 'Compra Menor') |
-                 (df_resumo_status_compra['status_compra'] == 'Compra OK')]\
-            .groupby(['nome_filial_compra', 'status_compra'])[['qtd_compras']].sum().reset_index()'''
         df_compras_filial = df_resumo_status_compra \
-            .groupby(['nome_filial_compra', 'status_compra'])[['qtd_compras']].sum().reset_index()
-        lista_ocorrencia_filial = df_compras_filial['nome_filial_compra'].unique().tolist()
+            .groupby(['nome_filial', 'analise'])[['qtd_compras']].sum().reset_index()
+        lista_ocorrencia_filial = df_compras_filial['nome_filial'].unique().tolist()
         lista_filial = []
         lista_compra_maior_filial = []
         lista_compra_menor_filial = []
@@ -524,24 +496,24 @@ class Gera_Dash_Evolucao_Precos_View(View):
         for filial in lista_ocorrencia_filial:
             lista_filial.append(filial)
             df_qtd_compra_maior = df_compras_filial\
-                .loc[(df_compras_filial['status_compra'] == 'Compra Maior') &
-                     (df_compras_filial['nome_filial_compra'] == filial)]
+                .loc[(df_compras_filial['analise'] == 'Compra Maior') &
+                     (df_compras_filial['nome_filial'] == filial)]
             if df_qtd_compra_maior.empty:
                 lista_compra_maior_filial.append(0)
             else:
                 lista_compra_maior_filial.append(df_qtd_compra_maior['qtd_compras'].values[0])
 
             df_qtd_compra_menor = df_compras_filial \
-                .loc[(df_compras_filial['status_compra'] == 'Compra Menor') &
-                     (df_compras_filial['nome_filial_compra'] == filial)]
+                .loc[(df_compras_filial['analise'] == 'Compra Menor') &
+                     (df_compras_filial['nome_filial'] == filial)]
             if df_qtd_compra_menor.empty:
                 lista_compra_menor_filial.append(0)
             else:
                 lista_compra_menor_filial.append(df_qtd_compra_menor['qtd_compras'].values[0])
 
             df_qtd_compra_ok = df_compras_filial \
-                .loc[(df_compras_filial['status_compra'] == 'Compra OK') &
-                     (df_compras_filial['nome_filial_compra'] == filial)]
+                .loc[(df_compras_filial['analise'] == 'Compra OK') &
+                     (df_compras_filial['nome_filial'] == filial)]
             if df_qtd_compra_ok.empty:
                 lista_compra_ok_filial.append(0)
             else:
@@ -549,7 +521,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
 
         '''Qtd Itens Avalidos por Filial'''
         df_qtd_itens_avaliados_filial = df_resumo_status_compra \
-            .groupby(['nome_filial_compra'])[['qtd_compras']].sum().reset_index()\
+            .groupby(['nome_filial'])[['qtd_compras']].sum().reset_index()\
             .sort_values(['qtd_compras'], ascending=False)
 
         #df_qtd_itens_avaliados_filial.to_excel('df_qtd_itens_avaliados_filial.xlsx')
@@ -559,7 +531,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
 
         data = dict()
         data = {
-            'grafico_pizza_resumo_status': self.grafico_pizza_plotly(df_group_status_compra['status_compra'].tolist(),
+            'grafico_pizza_resumo_status': self.grafico_pizza_plotly(df_group_status_compra['analise'].tolist(),
                                                df_group_status_compra['qtd_compras'].tolist(), "Gráfico de % por análise de compra"),
             'grafico_barra_agrupado': self.grafico_barras_agrupado(lista_familia, lista_compra_maior, lista_compra_menor, lista_compra_ok,
                                                                    "Gráfico de qtd. por análise de compra por familia", 1350, 550),
@@ -571,7 +543,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
             'grafico_barra_agrupado_filial': self.grafico_barras_agrupado(lista_filial, lista_compra_maior_filial,
                                                                    lista_compra_menor_filial, lista_compra_ok_filial,
                                                                    "Gráfico de qtd. por análise de compra por filial", 1350, 550),
-            'grafico_barra_agrupado_itens_filial': self.grafico_barras(df_qtd_itens_avaliados_filial['nome_filial_compra'].tolist(),
+            'grafico_barra_agrupado_itens_filial': self.grafico_barras(df_qtd_itens_avaliados_filial['nome_filial'].tolist(),
                                                                           df_qtd_itens_avaliados_filial['qtd_compras'].tolist(),
                                                                           "Gráfico de qtd. itens avaliados por filial",
                                                                           1350, 550),
@@ -582,22 +554,39 @@ class Gera_Dash_Evolucao_Precos_View(View):
 class Gera_Evolucao_Precos_View(View):
 
     def get(self, request):
-        handle_filial_form = request.GET['handle_filial']
+        lista_handle_filial_form = request.GET['handle_filial']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
-        handle_familia_form = request.GET['handle_familia']
+        lista_handle_atendentes_frm = request.GET['lista_handle_atendentes']
+        lista_handle_familia_form = request.GET['handle_familia']
         cod_ref_item_form = request.GET['cod_ref_item']
         numero_requisicao_form = request.GET['numero_requisicao']
+        #locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
+        lista_evolucao_precos_tab = self.gera_tabela_analitica_evolucao(lista_handle_atendentes_frm,
+                                                                        lista_handle_filial_form, data_ini_form,
+                                                                        data_fim_form, lista_handle_familia_form,
+                                                                        cod_ref_item_form, numero_requisicao_form)
+
+
+        data = dict()
+        data = {
+            'lista_evolucao_precos_tab': lista_evolucao_precos_tab
+        }
+        return JsonResponse(data, safe=False)
+
+
+    def gera_tabela_analitica_evolucao(self, lista_handle_atendentes, lista_handle_filiais, data_ini, data_fim,
+                                       lista_handle_familia, cod_ref_item, numero_requisicao):
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
-
         lista_evolucao_precos_tab = []
-        df_evolucao_preco = ConexaoBancoBenner()\
-            .retorna_df_ultimas_compras(handle_filial_form, data_ini_form, data_fim_form,
-                                        handle_familia_form, cod_ref_item_form,numero_requisicao_form)
+        df_evolucao_preco = ConexaoBancoBenner() \
+            .retorna_df_ultimas_compras(lista_handle_filiais, data_ini, data_fim,
+                                        lista_handle_familia, cod_ref_item, numero_requisicao)
 
-        df_evolucao_preco = df_evolucao_preco\
+        df_evolucao_preco = df_evolucao_preco \
             .sort_values(['handle_filial_compra', 'cod_ref_prod', 'handle_variacao', 'seq_item'], ascending=False)
-        #df_evolucao_preco.to_excel('df_evolucao_preco_rel.xlsx')
+        # df_evolucao_preco.to_excel('df_evolucao_preco_rel.xlsx')
 
 
         '''Totaliza evolução dos itens'''
@@ -609,46 +598,43 @@ class Gera_Evolucao_Precos_View(View):
         '''Set index'''
         df_tt_evolucao_produtos = df_tt_evolucao_produtos.set_index(['handle_filial_compra', 'cod_ref_prod'])
 
-
         '''Agrupa e calcula o valor da evolução dos itens'''
-        df_tt_evolucao_produtos_base_sum = df_tt_evolucao_produtos\
+        df_tt_evolucao_produtos_base_sum = df_tt_evolucao_produtos \
             .groupby(['handle_filial_compra', 'nome_filial_compra', 'cod_ref_prod', 'nome_produto',
-                      'handle_familia', 'desc_familia', 'nome_un_medida'])\
-            [['val_disp_atual_menos_anterior','qtd_item','val_tt_item','val_disp_total','val_unit']].sum().reset_index()
-        #df_tt_evolucao_produtos_base_sum.to_excel('df_tt_evolucao_produtos_base_sum.xlsx')
+                      'handle_familia', 'desc_familia', 'nome_un_medida']) \
+            [['val_disp_atual_menos_anterior', 'qtd_item', 'val_tt_item', 'val_disp_total', 'val_unit']].sum().reset_index()
+        # df_tt_evolucao_produtos_base_sum.to_excel('df_tt_evolucao_produtos_base_sum.xlsx')
 
 
         df_tt_evolucao_produtos_base_count = df_tt_evolucao_produtos \
             .groupby(['handle_filial_compra', 'nome_filial_compra', 'cod_ref_prod'])[['handle_compra']].count().reset_index()
 
-
-
-
         df_tt_evolucao_produtos_base = pd.merge(
             df_tt_evolucao_produtos_base_sum, df_tt_evolucao_produtos_base_count,
             how='left',
             on=['handle_filial_compra', 'cod_ref_prod']).reset_index()
-        #df_tt_evolucao_produtos_base.to_excel('df_tt_evolucao_produtos_base.xlsx')
+        # df_tt_evolucao_produtos_base.to_excel('df_tt_evolucao_produtos_base.xlsx')
 
 
         ''' Filtra ultima compra '''
         df_ultimas_compras = df_evolucao_preco[df_evolucao_preco['seq_item'] == 1] \
             .set_index(['handle_filial_compra', 'cod_ref_prod']) \
             .rename(columns={'numero_compra': 'num_ult', 'data_compra': 'data_ult', 'val_unit': 'val_ult',
+                             'handle_usuario_incluiu_compra': 'handle_usu_ult',
                              'nome_usuario_incluiu_compra': 'nome_usu_ult',
                              'nome_fornecedor_compra': 'nome_fornec_ult',
                              'val_disp_atual_menos_anterior': 'val_disp_ult'})
         df_ultimas_compras['status_compra'] = 'Avaliar'
         df_ultimas_compras.loc[df_ultimas_compras[
-                                 'handle_compra_anterior'] == 0, 'status_compra'] = 'Sem Ocorrência'
+                                   'handle_compra_anterior'] == 0, 'status_compra'] = 'Sem Ocorrência'
 
         ''' Exclui as colunas concatenadas'''
         df_ultimas_compras = df_ultimas_compras \
             .drop(['handle_variacao', 'handle_produto', 'nome_produto', 'handle_familia',
-                   'handle_fornecedor_comra', 'seq_item','handle_usuario_incluiu_compra', 'doc_fornecedor_compra',
-                   'handle_compra','qtd_item','val_tt_item','val_disp_total','handle_compra_anterior', 'desc_variacao',
+                   'handle_fornecedor_comra', 'seq_item', 'doc_fornecedor_compra',
+                   'handle_compra', 'qtd_item', 'val_tt_item', 'val_disp_total', 'handle_compra_anterior', 'desc_variacao',
                    'desc_familia'], axis=1)
-        #df_ultimas_compras.to_excel('df_ultimas_compras.xlsx')
+        # df_ultimas_compras.to_excel('df_ultimas_compras.xlsx')
 
 
         df_base_evolucao_ultimas_compra = pd.merge(
@@ -667,9 +653,9 @@ class Gera_Evolucao_Precos_View(View):
         df_penultimas_compras = df_penultimas_compras \
             .drop(['handle_variacao', 'handle_produto', 'nome_produto', 'desc_variacao', 'handle_familia',
                    'desc_familia', 'handle_fornecedor_comra', 'seq_item',
-                   'handle_usuario_incluiu_compra', 'doc_fornecedor_compra', 'handle_compra','qtd_item',
-                   'val_tt_item','nome_un_medida','val_disp_total', 'nome_filial_compra','handle_compra_anterior'], axis=1)
-        #df_penultimas_compras.to_excel('df_penultimas_compras.xlsx')
+                   'handle_usuario_incluiu_compra', 'doc_fornecedor_compra', 'handle_compra', 'qtd_item',
+                   'val_tt_item', 'nome_un_medida', 'val_disp_total', 'nome_filial_compra', 'handle_compra_anterior'], axis=1)
+        # df_penultimas_compras.to_excel('df_penultimas_compras.xlsx')
 
 
         df_base_evolucao_ultimas_penultima_compra = pd.merge(
@@ -689,48 +675,38 @@ class Gera_Evolucao_Precos_View(View):
         df_antepenultimas_compras = df_antepenultimas_compras \
             .drop(['handle_variacao', 'handle_produto', 'nome_produto', 'desc_variacao', 'handle_familia',
                    'desc_familia', 'handle_fornecedor_comra', 'seq_item',
-                   'handle_usuario_incluiu_compra', 'doc_fornecedor_compra', 'handle_compra','qtd_item',
-                   'val_tt_item','nome_un_medida','val_disp_total','nome_filial_compra','handle_compra_anterior'], axis=1)
-        #df_antepenultimas_compras.to_excel('df_antepenultimas_compras.xlsx')
+                   'handle_usuario_incluiu_compra', 'doc_fornecedor_compra', 'handle_compra', 'qtd_item',
+                   'val_tt_item', 'nome_un_medida', 'val_disp_total', 'nome_filial_compra', 'handle_compra_anterior'], axis=1)
+        # df_antepenultimas_compras.to_excel('df_antepenultimas_compras.xlsx')
 
 
         df_base_evolucao_ultimas_penultima_antepenultima_compra = \
             pd.merge(df_base_evolucao_ultimas_penultima_compra, df_antepenultimas_compras,
                      how='left',
                      on=['handle_filial_compra', 'cod_ref_prod']).reset_index()
-        df_base_evolucao_ultimas_penultima_antepenultima_compra.fillna(value=0,inplace=True)
-        #df_base_evolucao_ultimas_penultima_antepenultima_compra.to_excel('df_base_evolucao_ultimas_penultima_antepenultima_compra.xlsx')
+        df_base_evolucao_ultimas_penultima_antepenultima_compra.fillna(value=0, inplace=True)
+        df_base_evolucao_ultimas_penultima_antepenultima_compra.to_excel(
+            'df_base_evolucao_ultimas_penultima_antepenultima_compra.xlsx')
+        if lista_handle_atendentes != '0':
+            lista_handle_usu_int = []
+            for handle in lista_handle_atendentes.split(','):
+                lista_handle_usu_int.append(int(handle))
+
+            df_base_evolucao_ultimas_penultima_antepenultima_compra = df_base_evolucao_ultimas_penultima_antepenultima_compra[
+                df_base_evolucao_ultimas_penultima_antepenultima_compra['handle_usu_ult'].isin(lista_handle_usu_int)
+            ]
+        # df_base_evolucao_ultimas_penultima_antepenultima_compra.to_excel('df_base_evolucao_ultimas_penultima_antepenultima_compra.xlsx')
 
         for index, row in df_base_evolucao_ultimas_penultima_antepenultima_compra.iterrows():
             perc_dispersao = 0
-            dif_val_compra = df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_disp_ult'] +\
+            dif_val_compra = df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_disp_ult'] + \
                              df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_disp_pen'] + \
                              df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_disp_ant']
-            '''if df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ant'] > 0:
-                dif_val_compra = \
-                    (df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen']  -
-                     df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ant']) + \
-                    (df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ult']  -
-                     df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen'] )
-            elif df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen']  > 0:
-                dif_val_compra = \
-                    (df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ult']  -
-                     df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen'] )'''
 
             perc_dispersao = dif_val_compra / \
                              df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ult']
 
             analise_reg = ''
-
-            ''' if perc_dispersao > 0:
-                analise_reg = 'Compra Maior'
-            elif perc_dispersao < 0:
-                analise_reg = 'Compra Menor'
-            elif df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ant']  == 0 and \
-                    df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen']  == 0:
-                analise_reg = 'Sem ocorrência'
-            else:
-                analise_reg = 'Compra OK'''
 
             if df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'status_compra'] == 'Avaliar':
                 if dif_val_compra > 0:
@@ -742,8 +718,6 @@ class Gera_Evolucao_Precos_View(View):
             else:
                 analise_reg = 'Sem Ocorrência'
 
-
-
             info_ult_compra = ''
             val_ult_compra = ''
             info_pen_compra = ''
@@ -752,47 +726,47 @@ class Gera_Evolucao_Precos_View(View):
             val_ant_compra = ''
             if df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ant'] > 0:
                 info_ant_compra = \
-                    '<b>Nº.:</b> ' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_ant'])\
-                    .replace('.0','')+\
+                    '<b>Nº.:</b> ' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_ant']) \
+                        .replace('.0', '') + \
                     ' <br/><b>Data:</b> ' + \
                     datetime.strftime(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                  .loc[index, 'data_ant'], '%d-%m-%Y')
+                                      .loc[index, 'data_ant'], '%d-%m-%Y')
                 val_ant_compra = locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                 .loc[index, 'val_ant'],grouping=True,symbol=False)
+                                                 .loc[index, 'val_ant'], grouping=True, symbol=False)
 
             if df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen'] > 0:
                 info_pen_compra = \
-                    '<b>Nº.: </b>' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_pen'])\
-                        .replace('.0','') +\
+                    '<b>Nº.: </b>' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_pen']) \
+                        .replace('.0', '') + \
                     '<br/> <b>Data:</b> ' + datetime.strftime(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                         .loc[index, 'data_pen'], '%d-%m-%Y')
-                val_pen_compra = locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                 .loc[index, 'val_pen'],grouping=True,symbol=False)
+                                                              .loc[index, 'data_pen'], '%d-%m-%Y')
+
+                val_pen_compra = locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_pen'], grouping=True, symbol=False)
 
             if df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_ult'] > 0:
                 info_ult_compra = \
-                    '<b>Nº.:</b> ' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_ult'])\
-                    .replace('.0','')+\
+                    '<b>Nº.:</b> ' + str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'num_ult']) \
+                        .replace('.0', '') + \
                     ' <br/><b>Data:</b> ' + datetime.strftime(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                  .loc[index, 'data_ult'], '%d-%m-%Y')
+                                                              .loc[index, 'data_ult'], '%d-%m-%Y')
                 val_ult_compra = locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                 .loc[index, 'val_ult'],grouping=True,symbol=False)
+                                                 .loc[index, 'val_ult'], grouping=True, symbol=False)
 
-
-            val_disp_total_calc_sugestao_compra = df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_disp_atual_menos_anterior']
+            val_disp_total_calc_sugestao_compra = df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[
+                index, 'val_disp_atual_menos_anterior']
             if val_disp_total_calc_sugestao_compra > 0:
                 val_disp_total_calc_sugestao_compra = val_disp_total_calc_sugestao_compra * (-1)
-            val_pretencao_prox_compra =\
+            val_pretencao_prox_compra = \
                 (df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'val_unit'] + \
-                val_disp_total_calc_sugestao_compra) / \
+                 val_disp_total_calc_sugestao_compra) / \
                 df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'handle_compra']
-
 
             row = {
                 'nome_filial': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_filial_compra']),
                 'cod_ref_item': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'cod_ref_prod']),
                 'desc_item': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_produto'],
-                'desc_variacao': '',#str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'desc_variacao']),
+                'desc_variacao': '',
+                # str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'desc_variacao']),
                 'desc_familia': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'desc_familia'],
                 'val_antepenultima': val_ant_compra,
                 'dados_antepenultima_compra': info_ant_compra,
@@ -803,38 +777,30 @@ class Gera_Evolucao_Precos_View(View):
                 'dispersao': locale.currency(perc_dispersao * 100, grouping=True, symbol=None),
                 'analise': analise_reg,
                 'vaLdispersao': locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                .loc[index, 'val_ult'] * perc_dispersao,grouping=True,symbol=False),
+                                                .loc[index, 'val_ult'] * perc_dispersao, grouping=True, symbol=False),
                 'un_medida': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_un_medida_x'],
-                'qtd_total_item_periodo':locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                         .loc[index, 'qtd_item'],grouping=True,symbol=False),
-                'val_total_item_periodo':locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                         .loc[index, 'val_tt_item'],grouping=True,symbol=False),
+                'qtd_total_item_periodo': locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
+                                                          .loc[index, 'qtd_item'], grouping=True, symbol=False),
+                'val_total_item_periodo': locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
+                                                          .loc[index, 'val_tt_item'], grouping=True, symbol=False),
                 'val_dispersao_unit_periodo': locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
                                                               .loc[index, 'val_disp_atual_menos_anterior']
-                                                              ,grouping=True,symbol=False),
-                'total_dispersao_periodo':locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
-                                                          .loc[index, 'val_disp_total'],grouping=True,symbol=False),
-                #'handle_filial_form': handle_filial_form,
-                'handle_filial_compra': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'handle_filial_compra']),
-                'data_ini_form': data_ini_form,
-                'data_fim_form': data_fim_form,
+                                                              , grouping=True, symbol=False),
+                'total_dispersao_periodo': locale.currency(df_base_evolucao_ultimas_penultima_antepenultima_compra
+                                                           .loc[index, 'val_disp_total'], grouping=True, symbol=False),
+                # 'handle_filial_form': handle_filial_form,
+                'handle_filial_compra': str(
+                    df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'handle_filial_compra']),
+                'data_ini_form': data_ini,
+                'data_fim_form': data_fim,
                 'val_pretencao_prox_compra': locale.currency(val_pretencao_prox_compra, grouping=True, symbol=False),
+                'handle_atendente_ult_compra': int(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[
+                    index, 'handle_usu_ult']),
                 'atendente_ult_compra': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_usu_ult']
 
             }
             lista_evolucao_precos_tab.append(row)
 
-            df_evolucao_precos_gerado = pd.DataFrame(lista_evolucao_precos_tab)
-            # Agrupa por status de compra
-            df_evolucao_precos_gerado_status = df_evolucao_precos_gerado \
-                .groupby(['analise'])[['cod_ref_item']].count()
-            #print(df_evolucao_precos_gerado_status)
-
-
-        data = dict()
-        data = {
-            'lista_evolucao_precos_tab': lista_evolucao_precos_tab
-        }
-        return JsonResponse(data, safe=False)
+        return lista_evolucao_precos_tab
 
 

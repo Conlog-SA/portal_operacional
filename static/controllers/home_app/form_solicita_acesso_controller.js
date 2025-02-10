@@ -31,6 +31,14 @@ $.ajaxSetup({
 
 $(document).ready(function(){
     $('#cb_filiais_sol').selectpicker();
+    /* let let_cod_empresa = $("#hd_cod_empresa_solicitacao").val().toString();
+
+    if( let_cod_empresa == '12'){
+        $('body').css('background-image', "url('../../static/img/background.jpg')");
+    } else {
+        $('body').css('background-image', "url('../../static/img/background-deep.jpg')");
+    }
+    */
 });
 
 

@@ -62,6 +62,7 @@ urlpatterns = [
     path('contabil_indicadores_financeiros_app/', include('apps.contabil_indicadores_financeiros_app.urls')),
     path('gente_gestao_entrevista_desligamento_app/', include('apps.gente_gestao_entrevista_desligamento_app.urls')),
     path('gente_gestao_comun_encarreiramentos_app/', include('apps.gente_gestao_comun_encarreiramentos_app.urls')),
+    path('utilitarios_assinatura_email_app/', include('apps.utilitarios_assinatura_email_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

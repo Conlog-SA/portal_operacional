@@ -80,11 +80,14 @@ $(document).on('click','button', function(){
                         var varButtonGerarPDF = '';
                         var varButtonGerarPDFDescAcres = '';
                         if (pag.status_pag == 'E') {
-                            varStatusPagamento = '(ESTORNADO POR : '+pag.nome_usu_status+')';
+                            varStatusPagamento = '(ESTORNADO POR: '+pag.nome_usu_estorno+', em '+pag.data_estorno+'. Motivo: '+pag.justificativa_estorno+')';
                         } else {
                             if ( dados.tipo_corporativo_usuario == 'S') {
                                 varButtonEstornoPagamento =
-                                `<button type="button" name="btnDesfazPagamentoMapasBeneficiario"
+                                `
+                                <input type="hidden" id="hd_tipo_pagamento_${pag.cod_pag}" name="hd_tipo_pagamento"
+                                value="M"/>
+                                <button type="button" name="btnDesfazPagamentoMapasBeneficiario"
                                     id="btnDesfazPagamentoMapasBeneficiario${pag.cod_pag}"
                                     class="btn btn-primary btn-rounded botaoPrincipal"
                                     value="${pag.cod_pag}">
@@ -116,7 +119,7 @@ $(document).on('click','button', function(){
                                                             style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top: 5px;padding-right: 5px;padding-bottom: 5px;padding-left: 5px;">
                                                     <div class="d-flex justify-content-between align-items-between w-100">
                                                         <span class="icon s7-angle-right"></span>
-                                                        <span style="color:#FF7575;font-size:14px">
+                                                        <span style="color:#FF7575;font-size:14px;font-weight: 500;">
                                                             <input type="hidden" name="hiddenNomeBeneficiarioRel" id="hiddenNomeBeneficiarioRel${pag.cod_pag}" value="${pag.doc_benef}_${pag.nome_beneficiario}">
                                                             <b>${pag.doc_benef} - ${pag.nome_beneficiario}</b>
                                                             <span style="background:#fa6163;color:#FFFFFF;">`+varStatusPagamento+`</span>
@@ -140,13 +143,13 @@ $(document).on('click','button', function(){
                                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;color:#ffffff;font-size:10px;background:#948c8c;padding-top: 5px;border-radius: 10px;">
                                                     &nbsp;Observação do Pagamento<br/>Data: ${pag.data}/ Ocorrência : ${pag.tipo_ocorrencia}/ ${pag.complemento}/ ${pag.obs_desc}<br/>${pag.obs_desc}&nbsp;
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonEstornoPagamento+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDF+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDFDescAcres+`
                                                 </div>
                                             </div>
@@ -171,11 +174,14 @@ $(document).on('click','button', function(){
                         var varButtonGerarPDF = '';
                         var varButtonGerarPDFDescAcres = '';
                         if (pag.status_pag == 'E') {
-                            varStatusPagamento = '(ESTORNADO POR : '+pag.nome_usu_status+')';
+                            varStatusPagamento = '(ESTORNADO POR: '+pag.nome_usu_estorno+', em '+pag.data_estorno+'. Motivo: '+pag.justificativa_estorno+')';
                         } else {
                             if ( dados.tipo_corporativo_usuario == 'S') {
                                 varButtonEstornoPagamento =
-                                `<button type="button" name="btnDesfazPagamentoMapasBeneficiario"
+                                `
+                                <input type="hidden" id="hd_tipo_pagamento_${pag.cod_pag}" name="hd_tipo_pagamento"
+                                value="E"/>
+                                <button type="button" name="btnDesfazPagamentoMapasBeneficiario"
                                     id="btnDesfazPagamentoMapasBeneficiario${pag.cod_pag}"
                                     class="btn btn-primary btn-rounded botaoPrincipal"
                                     value="${pag.cod_pag}">
@@ -208,7 +214,7 @@ $(document).on('click','button', function(){
                                                     style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;border-left-width:0px;padding-top: 5px;padding-right: 5px;padding-bottom: 5px;padding-left: 5px;">
                                                         <div class="d-flex justify-content-between align-items-between w-100">
                                                             <span class="icon s7-angle-right"></span>
-                                                            <span style="color:#FF7575;font-size:14px">
+                                                            <span style="color:#FF7575;font-size:14px;font-weight: 500;">
                                                                 <input type="hidden" name="hiddenNomeBeneficiarioRel" id="hiddenNomeBeneficiarioRel${pag.cod_pag}" value="${pag.doc_benef}_${pag.nome_beneficiario}">
                                                                 ${pag.doc_benef} - ${pag.nome_beneficiario}
                                                                 <span style="background:#fa6163;color:#FFFFFF">`+varStatusPagamento+`</span>
@@ -228,17 +234,17 @@ $(document).on('click','button', function(){
                                                         </div>
                                                 </button>
                                             </div>
-                                            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                                            <div class="d-flex justify-content-between align-items-between w-100">
                                                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;color:#ffffff;font-size:10px;background:#948c8c;padding-top: 5px;border-radius: 10px;">
                                                     &nbsp;Observação do Pagamento<br/>Data: ${pag.data}/ Ocorrência : ${pag.tipo_ocorrencia}/ ${pag.complemento}/ ${pag.obs_desc}<br/>${pag.obs_desc}&nbsp;
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonEstornoPagamento+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDF+`
                                                 </div>
-                                                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                                                <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
                                                     `+varButtonGerarPDFDescAcres+`
                                                 </div>
                                             </div>
@@ -488,41 +494,67 @@ $(document).on('click','button', function(){
         }
     } else if (nomeDoButton == "btnDesfazPagamentoMapasBeneficiario") {
         var varCodPagamento = valButton;
+        let let_tipo_pagamento = $("#hd_tipo_pagamento_" + varCodPagamento).val();
         $("#pMsgRefazerPagamentoMapaBenefTerc").html("Você tem certeza que deseja ESTORNAR o pagamento "+varCodPagamento+" gerado para o beneficiário ?");
         $("#hiddenCodPagamento2ArtTercFinanParaDesativar").val(varCodPagamento);
+        $("#hd_tipo_pagamento_confirma_estorno").val(let_tipo_pagamento);
 
         $("#modalRefazerPagamentoMapaBenefTerc").show();
     } else if ( nomeDoButton == 'btnFechaModalRefazerPagamentoMapaBenefTerc') {
+        $("#hiddenCodPagamento2ArtTercFinanParaDesativar").val('');
+        $("#hd_tipo_pagamento_confirma_estorno").val('');
+        $("#ta_justificativa_estorno_pagamento").val('');
         $("#modalRefazerPagamentoMapaBenefTerc").hide();
 
     } else if ( nomeDoButton == 'btnDesativaPagamento2ArtTercFinanc') {
         var varCodPagamento = $("#hiddenCodPagamento2ArtTercFinanParaDesativar").val();
-        $.ajax({
-            type: 'DELETE',
-            url: '/plan_controle_fat_2art_terc_app/desfaz_pagamento_mapas_beneficiario_terc/' + varCodPagamento,
-            dataType: 'json',
-            success: function (data) {
-                $("#modalRefazerPagamentoMapaBenefTerc").hide();
-                $("#divConteudoRelPagTerc").html("");
-                //povoa_tabMapasTerceitos2Art();
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: data.msg,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                 });
-            },
-            error: function (request, status, error) {
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                 });
-          }
+        let let_justificativa = $("#ta_justificativa_estorno_pagamento").val();
+        let let_tipo_pagamento = $("#hd_tipo_pagamento_confirma_estorno").val();
+        if( let_justificativa == null || let_justificativa == '') {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Campo justificativa obrigatório!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+             });
+        } else {
+            $.ajax({
+                type: 'DELETE',
+                url: '/plan_controle_fat_2art_terc_app/desfaz_pagamento_mapas_beneficiario_terc/' + varCodPagamento ,
+                dataType: 'json',
+                data: JSON.stringify({
+                    'justificativa' : let_justificativa,
+                    'tipo_pagamento': let_tipo_pagamento
+                }),
+                success: function (data) {
+                    $("#modalRefazerPagamentoMapaBenefTerc").hide();
+                    $("#divConteudoRelPagTerc").html("");
+                    $("#hiddenCodPagamento2ArtTercFinanParaDesativar").val('');
+                    $("#hd_tipo_pagamento_confirma_estorno").val('');
+                    $("#ta_justificativa_estorno_pagamento").val('');
+                    //povoa_tabMapasTerceitos2Art();
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: data.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                     });
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                     });
+                }
           });
+
+        }
+
 
     } else if ( nomeDoButton == 'btnGeraPDFDescAcres') {
       var varCodPagamento = valButton;

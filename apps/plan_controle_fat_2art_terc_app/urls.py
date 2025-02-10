@@ -82,7 +82,7 @@ urlpatterns = [
          name='retorna_pagamentos_terceiro'),
     path('retorna_mapas_pagamento_selecionado', views.Tab_Relatorio_Mapas_Pagamentos_Terc_View.as_view(),
          name='retorna_mapas_pagamento_selecionado'),
-    path('desfaz_pagamento_mapas_beneficiario_terc/<int:pk>/', views.Tab_Relatorio_Mapas_Pagamentos_Terc_View.as_view(),
+    path('desfaz_pagamento_mapas_beneficiario_terc/<str:pk>/', views.Tab_Relatorio_Mapas_Pagamentos_Terc_View.as_view(),
          name='desfaz_pagamento_mapas_beneficiario_terc'),
     path('gera_rel_pdf_mapas_pagos_terc_por_beneficiario', views.Pdf_Rel_Pagamento_Terc.as_view(),
          name='gera_rel_pdf_mapas_pagos_terc_por_beneficiario'),

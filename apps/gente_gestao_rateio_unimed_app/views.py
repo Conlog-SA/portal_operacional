@@ -1,3 +1,4 @@
+import json
 import locale
 import os
 from datetime import datetime
@@ -175,23 +176,121 @@ class Form_Importa_Plan_Despesas_View(View):
                     cpf_titular_encontrado = 'N/A'
                     titular_senior = conexao_senior.pesquisar_dados_dependente_por_cpf_emp(cpf_beneficiario)
 
-                if 'erro' not in titular_senior:
-                    excecoes = Colaborador_Excecao.objects.all()
-                    cod_projeto = titular_senior['cod_projeto_colab']
-                    desc_projeto = titular_senior['nom_projeto_colab']
-                    cod_filial = titular_senior['cod_filial_colab']
-                    desc_filial = titular_senior['nom_filial_colab']
+                if isinstance(titular_senior, dict):
+                    if 'erro' not in titular_senior:
+                        excecoes = Colaborador_Excecao.objects.all()
+                        cod_projeto = titular_senior['cod_projeto_colab']
+                        desc_projeto = titular_senior['nom_projeto_colab']
+                        cod_filial = titular_senior['cod_filial_colab']
+                        desc_filial = titular_senior['nom_filial_colab']
 
-                    if 'CPF_TITULAR' not in colunas_list:
-                        cpf_titular_encontrado = str(titular_senior['cpf_colab']).zfill(11)
-                    for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
-                                                    'desc_proj_colab_excecao', 'cod_filial_colab_excecao',
-                                                    'desc_filial_colab_excecao').distinct():
-                        if str(exc[0]).zfill(11) == str(cpf_titular_encontrado):
-                            cod_projeto = exc[1]
-                            desc_projeto = exc[2]
-                            cod_filial = exc[3]
-                            desc_filial = exc[4]
+                        if 'CPF_TITULAR' not in colunas_list:
+                            cpf_titular_encontrado = str(titular_senior['cpf_colab']).zfill(11)
+                        for exc in excecoes.values_list('cpf_colab_excecao', 'cod_proj_colab_excecao',
+                                                        'desc_proj_colab_excecao', 'cod_filial_colab_excecao',
+                                                        'desc_filial_colab_excecao').distinct():
+                            if str(exc[0]).zfill(11) == str(cpf_titular_encontrado):
+                                cod_projeto = exc[1]
+                                desc_projeto = exc[2]
+                                cod_filial = exc[3]
+                                desc_filial = exc[4]
+
+                        #REGRA DIFERENCIADA PLANO START - CUIABÁ
+                        if cod_plano == '31':
+                            if 'titular' not in tipo_depencencia.lower():
+                                lista_despesas_dependentes_titular = Despesa_Unimed.objects.filter(
+                                    Q(cod_arq_despesa__status_arquivo=1) &
+                                    Q(matricula_titular=titular_senior['matricula_colab']) &
+                                    Q(competencia=competencia) &
+                                    ~Q(tipo_depencencia__icontains='titular'))
+
+                                if lista_despesas_dependentes_titular.first() is not None:
+                                    if lista_despesas_dependentes_titular.count() == 1:
+                                        percentual_empresa = 90
+                                    if lista_despesas_dependentes_titular.count() > 1:
+                                        percentual_empresa = 0
+
+                        # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
+                        if cod_plano == '33':
+                            if 'titular' not in tipo_depencencia.lower():
+                                lista_despesas_dependentes_titular = Despesa_Unimed.objects.filter(
+                                    Q(cod_arq_despesa__status_arquivo=1) &
+                                    Q(matricula_titular=titular_senior['matricula_colab']) &
+                                    Q(competencia=competencia) &
+                                    ~Q(tipo_depencencia__icontains='titular'))
+
+                                if lista_despesas_dependentes_titular.first() is not None:
+                                    percentual_empresa = 0
+
+                        obj_registro_despesa_new = Despesa_Unimed(
+                            competencia=competencia,
+                            cpf_beneficiario=cpf_beneficiario,
+                            nome_beneficiario=nome_beneficiario,
+                            tipo_depencencia=tipo_depencencia,
+                            nome_titular=nome_titular,
+                            cpf_titular=cpf_titular_encontrado,
+                            desc_despesa=desc_despesa,
+                            valor=valor,
+                            cod_arq_despesa=arquivo_despesa,
+                            nome_titular_senior=titular_senior['nome_colab'],
+                            matricula_titular=titular_senior['matricula_colab'],
+                            cod_filial_senior=cod_filial,
+                            desc_filial_senior=desc_filial,
+                            cod_projeto_senior=cod_projeto,
+                            desc_projeto_senior=desc_projeto,
+                            cod_empresa_senior=cod_empresa_senior,
+                            percentual_empresa=percentual_empresa
+                        )
+
+                        obj_registro_despesa_new.save()
+                        '''  tab_rateio_despesas_importadas.append(
+                            'Competencia: ' + str(row['COMPETENCIA']).strip() + ' Beneficiário: ' + str(row['NOME']).strip().replace(' ', '_') +
+                            ' Cpf: ' + str(row['CPF']).strip() + ' Dependencia: ' + str(row['DEPENDENCIA']).strip() +
+                            ' Titular: ' + str(row['NOME_TITULAR']).strip().replace(' ', '_') + ' Cpf_Titular: ' + str(row['CPF_TITULAR']).strip() +
+                            ' Desc_Despesa: ' + str(row['DESC_DESPESA']).strip().replace(' ', '_') +
+                            ' Valor: ' + str(row['VL_FATURADO']) + ' Nome Titular Senior: ' + titular_senior['nome_colab'] +
+                            ' Matrícula Titular: ' + titular_senior['matricula_colab'] +
+                            ' Cód. Filial Titular Senior: ' + titular_senior['cod_filial_colab'] +
+                            ' Desc. Filial Titular Senior: ' + titular_senior['nom_filial_colab'] +
+                            ' Cód. Projeto Titular Senior: ' + titular_senior['cod_projeto_colab'] +
+                            ' Desc. Projeto Titular Senior: ' + titular_senior['nom_projeto_colab']
+                        )'''
+                    else:
+                        obj_registro_despesa_new = Despesa_Unimed(
+                            competencia=competencia,
+                            cpf_beneficiario=cpf_beneficiario,
+                            nome_beneficiario=nome_beneficiario,
+                            tipo_depencencia=tipo_depencencia,
+                            nome_titular=nome_titular,
+                            cpf_titular=cpf_titular_encontrado,
+                            desc_despesa=desc_despesa,
+                            valor=valor,
+                            cod_arq_despesa=arquivo_despesa,
+                            percentual_empresa=percentual_empresa
+                        )
+                        obj_registro_despesa_new.save()
+
+                        '''tab_rateio_despesas_nao_importadas.append(
+                            'Competencia: ' + competencia + ' Beneficiário: ' + nome_beneficiario.strip().replace(' ', '_') +
+                            ' Cpf: ' + cpf_beneficiario.strip() + ' Dependencia: ' + tipo_depencencia.strip() +
+                            ' Titular: ' + nome_titular.strip().replace(' ', '_') + ' Cpf_Titular: ' + cpf_titular.strip() +
+                            ' Desc_Despesa: ' + desc_despesa.strip().replace(' ', '_') +
+                            ' Valor: ' + str(valor) + ' Cod_Despesa: ' + str(obj_registro_despesa_new.cod_despesa_unimed)
+                        )'''
+                        tab_rateio_despesas_nao_importadas.append({
+                            'competencia': competencia,
+                            'beneficiario': nome_beneficiario.strip().replace(' ', '_'),
+                            'cpf': cpf_beneficiario.strip(),
+                            'dependencia': tipo_depencencia.strip(),
+                            'titular': nome_titular.strip().replace(' ', '_'),
+                            'cpf_titular': cpf_titular_encontrado.strip(),
+                            'desc_despesa': desc_despesa.strip().replace(' ', '_'),
+                            'valor': str(valor),
+                            'cod_despesa': str(obj_registro_despesa_new.cod_despesa_unimed)
+                        })
+
+                if isinstance(titular_senior, list):
+                    colaboradores_encontrados_dependente = json.dumps(titular_senior)
 
                     obj_registro_despesa_new = Despesa_Unimed(
                         competencia=competencia,
@@ -203,51 +302,11 @@ class Form_Importa_Plan_Despesas_View(View):
                         desc_despesa=desc_despesa,
                         valor=valor,
                         cod_arq_despesa=arquivo_despesa,
-                        nome_titular_senior=titular_senior['nome_colab'],
-                        matricula_titular=titular_senior['matricula_colab'],
-                        cod_filial_senior=cod_filial,
-                        desc_filial_senior=desc_filial,
-                        cod_projeto_senior=cod_projeto,
-                        desc_projeto_senior=desc_projeto,
-                        cod_empresa_senior=cod_empresa_senior,
-                        percentual_empresa=percentual_empresa
-                    )
-
-                    obj_registro_despesa_new.save()
-                    '''  tab_rateio_despesas_importadas.append(
-                        'Competencia: ' + str(row['COMPETENCIA']).strip() + ' Beneficiário: ' + str(row['NOME']).strip().replace(' ', '_') +
-                        ' Cpf: ' + str(row['CPF']).strip() + ' Dependencia: ' + str(row['DEPENDENCIA']).strip() +
-                        ' Titular: ' + str(row['NOME_TITULAR']).strip().replace(' ', '_') + ' Cpf_Titular: ' + str(row['CPF_TITULAR']).strip() +
-                        ' Desc_Despesa: ' + str(row['DESC_DESPESA']).strip().replace(' ', '_') +
-                        ' Valor: ' + str(row['VL_FATURADO']) + ' Nome Titular Senior: ' + titular_senior['nome_colab'] +
-                        ' Matrícula Titular: ' + titular_senior['matricula_colab'] +
-                        ' Cód. Filial Titular Senior: ' + titular_senior['cod_filial_colab'] +
-                        ' Desc. Filial Titular Senior: ' + titular_senior['nom_filial_colab'] +
-                        ' Cód. Projeto Titular Senior: ' + titular_senior['cod_projeto_colab'] +
-                        ' Desc. Projeto Titular Senior: ' + titular_senior['nom_projeto_colab']
-                    )'''
-                else:
-                    obj_registro_despesa_new = Despesa_Unimed(
-                        competencia=competencia,
-                        cpf_beneficiario=cpf_beneficiario,
-                        nome_beneficiario=nome_beneficiario,
-                        tipo_depencencia=tipo_depencencia,
-                        nome_titular=nome_titular,
-                        cpf_titular=cpf_titular_encontrado,
-                        desc_despesa=desc_despesa,
-                        valor=valor,
-                        cod_arq_despesa=arquivo_despesa,
-                        percentual_empresa=percentual_empresa
+                        percentual_empresa=percentual_empresa,
+                        colaboradores_encontrados_dependente=colaboradores_encontrados_dependente
                     )
                     obj_registro_despesa_new.save()
 
-                    '''tab_rateio_despesas_nao_importadas.append(
-                        'Competencia: ' + competencia + ' Beneficiário: ' + nome_beneficiario.strip().replace(' ', '_') +
-                        ' Cpf: ' + cpf_beneficiario.strip() + ' Dependencia: ' + tipo_depencencia.strip() +
-                        ' Titular: ' + nome_titular.strip().replace(' ', '_') + ' Cpf_Titular: ' + cpf_titular.strip() +
-                        ' Desc_Despesa: ' + desc_despesa.strip().replace(' ', '_') +
-                        ' Valor: ' + str(valor) + ' Cod_Despesa: ' + str(obj_registro_despesa_new.cod_despesa_unimed)
-                    )'''
                     tab_rateio_despesas_nao_importadas.append({
                         'competencia': competencia,
                         'beneficiario': nome_beneficiario.strip().replace(' ', '_'),
@@ -257,8 +316,10 @@ class Form_Importa_Plan_Despesas_View(View):
                         'cpf_titular': cpf_titular_encontrado.strip(),
                         'desc_despesa': desc_despesa.strip().replace(' ', '_'),
                         'valor': str(valor),
-                        'cod_despesa': str(obj_registro_despesa_new.cod_despesa_unimed)
+                        'cod_despesa': str(obj_registro_despesa_new.cod_despesa_unimed),
+                        'colaboradores_encontrados_dependente': colaboradores_encontrados_dependente
                     })
+
         except Exception as e:
             lista_despesas = Despesa_Unimed.objects.filter(cod_arq_despesa=arquivo_despesa)
             for despesa in lista_despesas:
@@ -369,6 +430,40 @@ class Preenche_Colaborador(View):
         elif obj_usu.cod_filial.cod_empresa.cod_empresa == 17:
             despesa_selecionada.cod_empresa_senior = 2
 
+        cod_plano = despesa_selecionada.cod_arq_despesa.cod_plano_saude.cod_plano_saude
+
+        if despesa_selecionada.percentual_empresa is None:
+            novo_percentual_empresa = False
+            # REGRA DIFERENCIADA PLANO START - CUIABÁ
+            if cod_plano == 31:
+                if 'titular' not in despesa_selecionada.tipo_depencencia.lower():
+                    lista_despesas_dependentes_titular = Despesa_Unimed.objects.filter(
+                        Q(cod_arq_despesa__status_arquivo=1) &
+                        Q(matricula_titular=matricula) &
+                        Q(competencia=despesa_selecionada.competencia) &
+                        ~Q(tipo_depencencia__icontains='titular'))
+
+                    if lista_despesas_dependentes_titular.first() is not None:
+                        if lista_despesas_dependentes_titular.count() == 1:
+                            novo_percentual_empresa = 90
+                        if lista_despesas_dependentes_titular.count() > 1:
+                            novo_percentual_empresa = 0
+
+            # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
+            elif cod_plano == 33:
+                if 'titular' not in despesa_selecionada.tipo_depencencia.lower():
+                    lista_despesas_dependentes_titular = Despesa_Unimed.objects.filter(
+                        Q(cod_arq_despesa__status_arquivo=1) &
+                        Q(matricula_titular=matricula) &
+                        Q(competencia=despesa_selecionada.competencia) &
+                        ~Q(tipo_depencencia__icontains='titular'))
+
+                    if lista_despesas_dependentes_titular.first() is not None:
+                        novo_percentual_empresa = 0
+
+            if novo_percentual_empresa != False:
+                despesa_selecionada.percentual_empresa = novo_percentual_empresa
+
         despesa_selecionada.save()
 
         return HttpResponse('Sucesso!')
@@ -412,6 +507,7 @@ class Busca_Despesas(View):
                            'Valor': str(despesa.valor).strip(),
                            'Cod_Despesa': str(despesa.cod_despesa_unimed).strip()
                            }
+
             if despesa.matricula_titular is None:
                 despesa_dict.update({'Matricula_Titular': '',
                                     'Nome_Titular_Senior': '',
@@ -419,7 +515,8 @@ class Busca_Despesas(View):
                                     'Desc_Projeto_Senior': '',
                                     'Cod_Filial_Senior': '',
                                     'Desc_Filial_Senior': '',
-                                    'Cod_Empresa_Senior': ''
+                                    'Cod_Empresa_Senior': '',
+                                    'Colaboradores_Encontrados_Dependente': despesa.colaboradores_encontrados_dependente
                                     })
             else:
                 despesa_dict.update({'Matricula_Titular': str(despesa.matricula_titular),

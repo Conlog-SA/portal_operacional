@@ -67,7 +67,7 @@ $(document).on('click', 'button', function(){
 	if (nomeDoButton == "btnImportaArquivoAcresDescFatTerc") {
 	    let let_loader_arq_fat = document.getElementById("loader_arq_fat");
 		var formData = new FormData();
-        formData.append("file", $('input[type=file]')[0].files[0]);
+        formData.append("file", $('#campoArquivoImpArqFatTerc')[0].files[0]);
         formData.append("tipo_arq", "arq_acresc_desc");
 		let_loader_arq_fat.style.display = "flex";
 		$.ajax({
@@ -207,7 +207,7 @@ $(document).on('click', 'button', function(){
 	} else if (nomeDoButton == "btnImportaArquivoPagamentosExtraFatTerc") {
 	    let let_loader_arq_fat = document.getElementById("loader_arq_fat");
         var formData = new FormData();
-        formData.append("file", $('input[type=file]')[0].files[0]);
+        formData.append("file", $('#campoArquivoImpArqFatTerc')[0].files[0]);
         formData.append("tipo_arq", "arq_pag_extras");
 		let_loader_arq_fat.style.display = "flex";
 		$.ajax({

@@ -1,4 +1,5 @@
-
+let let_lista_dados = [];
+let let_lista_dados_filtered = [];
 
 // using jQuery
 function getCookie(name) {
@@ -622,6 +623,19 @@ $(document).on('click','button', function(){
     }
     else if(let_nome_btn == "btn_gera_conciliacao_comp_benner_detalhado") {
         gera_conciliacao_comp_benner_detalhado();
+
+        $("#cb_pesq_status_comp_conciliacao_detalhada").val(0);
+        $("#cb_pesq_status_comp_conciliacao_detalhada").selectpicker('refresh');
+
+        $("#cb_pesq_status_ana_conciliacao_detalhada").val(0);
+        $("#cb_pesq_status_ana_conciliacao_detalhada").selectpicker('refresh');
+
+        $("#cb_pesq_status_reg_conciliacao_detalhada").val(0);
+        $("#cb_pesq_status_reg_conciliacao_detalhada").selectpicker('refresh');
+
+        $("#cb_pesq_demais_filtros_conciliacao_detalhada").val('T');
+        $("#cb_pesq_demais_filtros_conciliacao_detalhada").selectpicker('refresh');
+
     }
     else if(let_nome_btn == "btn_detalhes_conta") {
         $.ajax({
@@ -712,6 +726,49 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == "btn_fecha_modal_detalhes_contas_composicao"){
         $("#modal_detalhes_contas_composicao").hide();
+
+        $("#tab_conciliacao_composicao_benner_aud").DataTable( {
+            "bJQueryUI": true,
+            "destroy": true,
+            "fixedHeader": true,
+            "scrollY": "570px", //770px
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            //"pageLength": 7,
+            "searching": true,
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copyHtml5'
+            ],
+            "columnDefs": [
+                {"className": "dt-left", "targets": [0, 2]}
+            ],
+            "oLanguage": {
+                "sProcessing":   "Processando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "Não foram encontrados resultados",
+                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                "sInfoFiltered": "",
+                "sInfoPostFix":  "",
+                "sSearch":       "Pesquisar:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Primeiro",
+                    "sPrevious": "Anterior",
+                    "sNext":     "Proximo",
+                    "sLast":     "Último"
+                },
+                "buttons":{
+                    "copyTitle": 'Dados Copiados',
+                    "copySuccess": {
+                        _: '%d linhas copiadas',
+                        1: '1 linha copiada'
+                    }
+                }
+            }
+        } );
     }
     else if(let_nome_btn == 'btn_anexa_doc_contrato') {
         let let_cod_conta = $(this).val();
@@ -721,7 +778,7 @@ $(document).on('click','button', function(){
         }
         if(let_cod_conta != "0"){
             var formDataImg = new FormData();
-            formDataImg.append("file", $('input[type=file]')[0].files[0]);
+            formDataImg.append("file", $('#file_anexo_contrato')[0].files[0]);
             formDataImg.append("cod_conta", let_cod_conta);
             formDataImg.append("desc_arq_anexo", $("#txt_desc_anexo_contrato").val());
             formDataImg.append("eh_anexo_principal", let_eh_anexo_principal);
@@ -908,7 +965,6 @@ $(document).on('click','button', function(){
             }),
             dataType: 'json',
             success: function (dados) {
-                //gera_conciliacao_comp_benner_detalhado();
                 $.gritter.add({
                     title: 'Atenção!',
                     text: dados.msg,
@@ -1316,53 +1372,194 @@ $(document).on('click','button', function(){
         $("#cb_responsaveis_contas").selectpicker('selectAll');
     }
     else if (let_nome_btn == 'btn_confirma_status_lote_contas'){
+        let let_cod_status_comp = $("#sl_status_conciliacao_lote_contas").val();
         let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
-        let let_lista_contas = [];
-        let_cheks_selecionados.forEach(function(checkbox) {
+        if(let_cod_status_comp != '0' || let_cheks_selecionados.length != 0) {
+            let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+            let let_lista_contas = [];
+            let_cheks_selecionados.forEach(function(checkbox) {
 
-            let let_conta = {
-                'cod_contrato'      :   checkbox.value.split('_')[1],
-                'tipo_prazo'        :   checkbox.value.split('_')[0],
-                'cod_status'        :   $("#sl_status_conciliacao_lote_contas").val(),
-                'obs_status'        :   $("#ta_obs_status_conciliacao_lote_contas").val(),
-                'competencia'       :   $("#dt_conciliacao_comp_benner").val(),
-                'val_composicao'    :   $("#txt_val_composicao_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
-                'val_balancete'     :   $("#txt_val_balancete_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
-                'val_diferenca'     :   $("#txt_val_diferenca_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.')
-            };
-            let_lista_contas.push(let_conta);
-        });
-        let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
-        let_loader_gera_comp_det.style.display = "flex";
-        $.ajax({
-            type: 'POST',
-            url: '/contabil_composicao_app/registra_status_composicao_conta',
-            data: JSON.stringify({
-                let_lista_registros_json : let_lista_contas,
-            }),
-            dataType: 'json',
-            success: function (dados) {
-                //gera_conciliacao_comp_benner_detalhado();
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: dados.msg,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-                let_loader_gera_comp_det.style.display = "none";
-            },
-            error: function (request, status, error) {
-                let_loader_gera_comp_det.style.display = "none";
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-          }
-        });
+                let let_conta = {
+                    'cod_contrato'      :   checkbox.value.split('_')[1],
+                    'tipo_prazo'        :   checkbox.value.split('_')[0],
+                    'cod_status'        :   let_cod_status_comp,
+                    'tipo_status'       :   'C',
+                    'obs_status'        :   $("#ta_obs_status_conciliacao_lote_contas").val(),
+                    'competencia'       :   $("#dt_conciliacao_comp_benner").val(),
+                    'val_composicao'    :   $("#txt_val_composicao_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_balancete'     :   $("#txt_val_balancete_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_diferenca'     :   $("#txt_val_diferenca_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.')
+                };
+                let_lista_contas.push(let_conta);
+            });
+            let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+            let_loader_gera_comp_det.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/registra_status_composicao_conta',
+                data: JSON.stringify({
+                    let_lista_registros_json : let_lista_contas,
+                }),
+                dataType: 'json',
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let_loader_gera_comp_det.style.display = "none";
+                },
+                error: function (request, status, error) {
+                    let_loader_gera_comp_det.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Status ou contas não selecionados. Verfique!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
+    }
+    else if (let_nome_btn == 'btn_confirma_status_analise_lote_contas'){
+        let let_cod_status_comp = $("#sl_status_analise_lote_contas").val();
+        let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+        if(let_cod_status_comp != '0' || let_cheks_selecionados.length != 0) {
+            let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+            let let_lista_contas = [];
+            let_cheks_selecionados.forEach(function(checkbox) {
+
+                let let_conta = {
+                    'cod_contrato'      :   checkbox.value.split('_')[1],
+                    'tipo_prazo'        :   checkbox.value.split('_')[0],
+                    'cod_status'        :   let_cod_status_comp,
+                    'tipo_status'       :   'A',
+                    'obs_status'        :   $("#ta_obs_status_analise_lote_contas").val(),
+                    'competencia'       :   $("#dt_conciliacao_comp_benner").val(),
+                    'val_composicao'    :   $("#txt_val_composicao_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_balancete'     :   $("#txt_val_balancete_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_diferenca'     :   $("#txt_val_diferenca_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.')
+                };
+                let_lista_contas.push(let_conta);
+            });
+            let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+            let_loader_gera_comp_det.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/registra_status_composicao_conta',
+                data: JSON.stringify({
+                    let_lista_registros_json : let_lista_contas,
+                }),
+                dataType: 'json',
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let_loader_gera_comp_det.style.display = "none";
+                },
+                error: function (request, status, error) {
+                    let_loader_gera_comp_det.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Status ou contas não selecionados. Verfique!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
+    }
+
+    else if (let_nome_btn == 'btn_confirma_status_regularizacao_lote_contas'){
+        let let_cod_status_comp = $("#sl_status_regularizacao_lote_contas").val();
+        let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+        if(let_cod_status_comp != '0' || let_cheks_selecionados.length != 0) {
+            let let_cheks_selecionados = document.querySelectorAll('input[name="ck_conta_comp_det"]:checked');
+            let let_lista_contas = [];
+            let_cheks_selecionados.forEach(function(checkbox) {
+
+                let let_conta = {
+                    'cod_contrato'      :   checkbox.value.split('_')[1],
+                    'tipo_prazo'        :   checkbox.value.split('_')[0],
+                    'cod_status'        :   let_cod_status_comp,
+                    'tipo_status'       :   'R',
+                    'obs_status'        :   $("#ta_obs_status_regularizacao_lote_contas").val(),
+                    'competencia'       :   $("#dt_conciliacao_comp_benner").val(),
+                    'val_composicao'    :   $("#txt_val_composicao_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_balancete'     :   $("#txt_val_balancete_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.'),
+                    'val_diferenca'     :   $("#txt_val_diferenca_" + checkbox.value).val().replaceAll('.','').replaceAll(',','.')
+                };
+                let_lista_contas.push(let_conta);
+            });
+            let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+            let_loader_gera_comp_det.style.display = "flex";
+            $.ajax({
+                type: 'POST',
+                url: '/contabil_composicao_app/registra_status_composicao_conta',
+                data: JSON.stringify({
+                    let_lista_registros_json : let_lista_contas,
+                }),
+                dataType: 'json',
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let_loader_gera_comp_det.style.display = "none";
+                },
+                error: function (request, status, error) {
+                    let_loader_gera_comp_det.style.display = "none";
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Status ou contas não selecionados. Verfique!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
     }
 
     else if (let_nome_btn == 'btn_marcar_resp_contas_comp_detalhado'){
@@ -1370,7 +1567,8 @@ $(document).on('click','button', function(){
 
         fn_limpar_comp_contas_comp_detalhado();
 
-    } else if (let_nome_btn == 'btn_desmarcar_resp_contas_comp_detalhado'){
+    }
+    else if (let_nome_btn == 'btn_desmarcar_resp_contas_comp_detalhado'){
         $("#cb_resp_contas_comp_detalhado").selectpicker('deselectAll');
         fn_limpar_comp_contas_comp_detalhado();
 
@@ -1383,17 +1581,21 @@ $(document).on('click','button', function(){
         $("#cb_pac_contas_comp_detalhado").selectpicker('selectAll');
         fn_limpar_comp_contas_comp_detalhado();
 
-    } else if (let_nome_btn == 'btn_desmarcar_pac_contas_comp_detalhado'){
+    }
+    else if (let_nome_btn == 'btn_desmarcar_pac_contas_comp_detalhado'){
         $("#cb_pac_contas_comp_detalhado").selectpicker('deselectAll');
         fn_limpar_comp_contas_comp_detalhado();
-    } else if (let_nome_btn == 'btn_abre_modal_renegociacao_contrato') {
+    }
+    else if (let_nome_btn == 'btn_abre_modal_renegociacao_contrato') {
          $("#btn_confirma_renegociacao_contrato").val(let_val_btn);
          $("#modal_renegociacao_contrato").show();
 
-    } else if (let_nome_btn == 'btn_fecha_modal_renegociacao_contrato') {
+    }
+    else if (let_nome_btn == 'btn_fecha_modal_renegociacao_contrato') {
         $("#modal_renegociacao_contrato").hide();
 
-    } else if (let_nome_btn == 'btn_confirma_renegociacao_contrato') {
+    }
+    else if (let_nome_btn == 'btn_confirma_renegociacao_contrato') {
         let let_cod_contrato = let_val_btn;
         let let_justificativa_renegociacao = $("#ta_justificativa_renegociacao_contrato").val();
         let let_data_renegociacao = $("#dt_renegociacao_contrato").val();
@@ -1432,6 +1634,100 @@ $(document).on('click','button', function(){
         });
 
     }
+    else if (let_nome_btn == "btn_cad_item_status_comp"){
+
+        fn_povoa_tabela_status_proc_contabil('C');
+        $("#h_titulo_modal_cad_status").html("Status COMPOSIÇÃO");
+        $("#hd_tipo_status_proc_contabil").val('C');
+
+        $("#sl_cod_status_auditoria option").remove();
+        $("#sl_cod_status_auditoria").append(`
+            <option value="1" selected>OK</option>
+        `);
+        $("#sl_cod_status_auditoria").append(`
+            <option value="0" >NOK</option>
+        `);
+        $("#sl_cod_status_auditoria").selectpicker('refresh');
+
+        $("#modal_cad_status_auditoria").show();
+    }
+    else if (let_nome_btn == "btn_cad_item_status_ana"){
+        fn_povoa_tabela_status_proc_contabil('A');
+        $("#h_titulo_modal_cad_status").html("Status ANÁLISE");
+        $("#hd_tipo_status_proc_contabil").val('A');
+
+        $("#sl_cod_status_auditoria option").remove();
+        $("#sl_cod_status_auditoria").append(`
+            <option value="0" selected>Não aplica</option>
+        `);
+        $("#sl_cod_status_auditoria").selectpicker('refresh');
+
+        $("#modal_cad_status_auditoria").show();
+
+    }
+    else if (let_nome_btn == "btn_cad_item_status_reg"){
+        fn_povoa_tabela_status_proc_contabil('R');
+        $("#h_titulo_modal_cad_status").html("Status REGULARIZAÇÃO");
+        $("#hd_tipo_status_proc_contabil").val('R');
+
+        $("#sl_cod_status_auditoria option").remove();
+        $("#sl_cod_status_auditoria").append(`
+            <option value="0" selected>Não aplica</option>
+        `);
+        $("#sl_cod_status_auditoria").selectpicker('refresh');
+
+        $("#modal_cad_status_auditoria").show();
+
+    }
+    else if (let_nome_btn == "btn_fecha_modal_cad_status_auditoria"){
+        $("#modal_cad_status_auditoria").hide();
+    }
+    else if (let_nome_btn == "btn_cad_status_proc_contabil"){
+        let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+        let let_desc = $("#txt_desc_status_proc_contabil").val();
+        let let_vig_ini = $("#dt_vig_ini_status_proc_contabil").val();
+        let let_vig_fim = $("#dt_vig_fim_status_proc_contabil").val();
+        let let_peso = $("#nm_peso_status_proc_contabil").val();
+        let let_cod_status_aud = $("#sl_cod_status_auditoria").val();
+        let let_tipo_status = $("#hd_tipo_status_proc_contabil").val();
+        $.ajax({
+            type: 'POST',
+            url: '/contabil_composicao_app/adiciona_novo_status_processo_contabil',
+            data: {
+                'transacao': 'novo',
+                'desc'   :   let_desc,
+                'tipo_status': let_tipo_status,
+                'vig_ini': let_vig_ini,
+                'vig_fim': let_vig_fim,
+                'peso': let_peso,
+                'cod_status_aud': let_cod_status_aud
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $(".comp_frm_cad_status").val('');
+                fn_povoa_tabela_status_proc_contabil(let_tipo_status);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let_loader_gera_comp_det.style.display = "none";
+            },
+            error: function (request, status, error) {
+                let_loader_gera_comp_det.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+    }
 
 });
 
@@ -1452,46 +1748,46 @@ $(document).on('change','input', function(){
 
         }
         $.ajax({
-        type: 'POST',
-        url: '/contabil_composicao_app/atualiza_status_contrato_sincroniza_benner',
-        data: {
-            'transacao'                             :   'status_sincronia_benner',
-            'handle_contrato'                       :   let_handle_contrato,
-            'status_sincronia_contrato_benner'      :   let_status_sincroniza_benner
-        },
-        dataType: 'json',
-        success: function (dados) {
-            $("#div_status_atualiza_benner").empty();
+            type: 'POST',
+            url: '/contabil_composicao_app/atualiza_status_contrato_sincroniza_benner',
+            data: {
+                'transacao'                             :   'status_sincronia_benner',
+                'handle_contrato'                       :   let_handle_contrato,
+                'status_sincronia_contrato_benner'      :   let_status_sincroniza_benner
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $("#div_status_atualiza_benner").empty();
 
-            $("#sl_contas_atualiza_contratos_benner option").remove();
-            dados.lista_contas_para_atualizar_benner.forEach( conta => {
-                $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
-                conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
-                " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
-                " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
-            });
-            $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
+                $("#sl_contas_atualiza_contratos_benner option").remove();
+                dados.lista_contas_para_atualizar_benner.forEach( conta => {
+                    $("#sl_contas_atualiza_contratos_benner").append("<option value='"+
+                    conta.cod_conta__cod_conta+"'>"+conta.cod_conta__cod_conta+" - "+conta.cod_conta__desc_conta+
+                    " - Cód. red. CP - "+conta.cod_conta__cod_red_conta_contabil_cp+
+                    " Cód. red. LP - "+conta.cod_conta__cod_red_conta_contabil_lp+"</option>");
+                });
+                $("#sl_contas_atualiza_contratos_benner").selectpicker('refresh');
 
-            $.gritter.add({
-                title: 'Atenção!',
-                text: dados.msg,
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
-            });
-            $("#div_status_atualiza_benner").html(let_div_status_atualiza_benner);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $("#div_status_atualiza_benner").html(let_div_status_atualiza_benner);
 
-        },
-        error: function (request, status, error) {
-            $.gritter.add({
-                title: 'Atenção!',
-                text: error,
-                image: '/static/icons/triangle-exclamation-solid.svg',
-                sticky: false,
-                time: '',
-            });
-      }
-    });
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
     }
     else if ( let_nome_inp == "rd_modelo_conta_conc_comp_benner" ) {
         let let_cod_modelo_conta = 0;
@@ -1648,7 +1944,11 @@ $(document).on('change','input', function(){
                     'Diferenca',
                     /*'Status',*/
                     'Detalhes',
-                    'Documento'
+                    'Documento',
+                    'Composição',
+                    'Análise',
+                    'Regularização',
+                    '%'
                 ];
 
             }
@@ -1663,7 +1963,11 @@ $(document).on('change','input', function(){
                     'Balancete',
                     'Diferenca',
                     'Status',
-                    'Detalhes'
+                    'Detalhes',
+                    'Composição',
+                    'Análise',
+                    'Regularização',
+                    '%'
                 ];
 
             }
@@ -1684,7 +1988,11 @@ $(document).on('change','input', function(){
                     'Diferenca',
                     /*'Status',*/
                     'Detalhes',
-                    'Documento'
+                    'Documento',
+                    'Composição',
+                    'Análise',
+                    'Regularização',
+                    '%'
                 ];
 
             }
@@ -1707,45 +2015,9 @@ $(document).on('change','input', function(){
             let_tab_concilicacao_comp_benner_detalhado.append(let_body_detalhado)
 
             $("#div_tab_conciliacao_composicao_benner_detalhado").html(let_tab_concilicacao_comp_benner_detalhado);
-            $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "50vh", //770px
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
-                    "searching": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
-                            }
-                        }
-                    }
-                    } );
+
+            atualiza_dados_tab_conciliacao_composicao_benner_detalhado(null);
+
 
         }
         else if(let_tipo_rel == 'A'){
@@ -2027,6 +2299,7 @@ $(document).on('change','input', function(){
         $("#cb_contas_conciliacao_comp_benner").selectpicker('refresh');
         $("#div_tab_conciliacao_composicao_benner_aud").empty();
 
+
     }
     else if ( let_nome_inp == "ck_eh_anexo_principal_tab") {
         let let_status_anexo = 'N';
@@ -2081,7 +2354,93 @@ $(document).on('change','input', function(){
         }
 
     }
+    else if ( let_nome_inp == "dt_final_status_proc_contabil"){
+        let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        let_loader_frm_cad_contas.style.display = "flex";
 
+        let let_cod_status = let_id_inp.split('_')[5];
+        let let_data_fim = $(this).val();
+
+        $.ajax({
+        type: 'POST',
+        url: '/contabil_composicao_app/atualiza_data_fim_status_proc_contabil',
+        data: {
+            'transacao'   :     'update_dt_fim',
+            'cod_status' :    let_cod_status,
+            'dt_fim'   :    let_data_fim
+        },
+        //dataType: 'json',
+        success: function (dados) {
+
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            let_loader_frm_cad_contas.style.display = "none";
+        },
+        error: function (request, status, error) {
+            let_loader_frm_cad_contas.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+      }
+    });
+
+    }
+    /*else if ( let_nome_inp == "dt_conciliacao_comp_benner_detalhes" ){
+        let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
+        let_loader_frm_cad_contas.style.display = "flex";
+
+        let let_data_comp = $(this).val();
+        $.ajax({
+        type: 'GET',
+        url: '/contabil_composicao_app/povo_status_pesq_comp_detalhado',
+        data: {
+            'data_comp'   :    let_data_comp
+        },
+        dataType: 'json',
+        success: function (dados) {
+            $("#cb_status_analise_conciliacao_detalhada option").remove();
+            $("#cb_status_analise_conciliacao_detalhada").append(`
+                <option value="0" selected>Todos os status</option>
+            `);
+            dados.lista_status.forEach(st => {
+                $("#cb_status_analise_conciliacao_detalhada").append(`
+                    <option value="${st.cod_status_comp__cod_status_processos_contabil}">
+                    ${st.cod_status_comp__desc_status}</option>
+                `);
+
+            });
+            $("#cb_status_analise_conciliacao_detalhada").append(`
+                <option value="S">Não sinalizado</option>
+            `);
+            $("#cb_status_analise_conciliacao_detalhada").selectpicker('refresh');
+
+
+            let_loader_frm_cad_contas.style.display = "none";
+        },
+        error: function (request, status, error) {
+            let_loader_frm_cad_contas.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+      }
+    });
+
+    }*/
 
 });
 
@@ -2512,8 +2871,6 @@ function atualiza_tab_anexos_conta(cod_conta){
 }
 
 
-
-
 function atualiza_tab_status_contrato_composicao(cod_conta){
     let let_loader_frm_cad_contas = document.getElementById("loader_frm_cad_contas");
     let_loader_frm_cad_contas.style.display = "flex";
@@ -2529,6 +2886,7 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                 dados.lista_status_contratos_comp.forEach( status => {
                 let let_periodo_comp = status.data_competencia.split('-')[1] + '/' +
                      status.data_competencia.split('-')[0];
+                /*
                 let desc_status = ''
                 if(status.status == '1'){
                     desc_status = 'OK';
@@ -2539,6 +2897,17 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                 } else if(status.status == '4'){
                     desc_status = 'Falta compor';
                 }
+                */
+                let let_desc_comp = `
+                    ${status.cod_status_comp__desc_status}: ${status.obs_status_comp}
+                `;
+                let let_desc_ana = `
+                    ${status.cod_status_ana__desc_status}: ${status.obs_status_ana}
+                `;
+                let let_desc_reg = `
+                    ${status.cod_status_reg__desc_status}: ${status.obs_status_reg}
+                `;
+
                 let let_reg = [
                     `<i class="fa-solid fa-caret-right icon-color-e"></i>`,
                     status.cod_contrato__num_contrato,
@@ -2548,8 +2917,9 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     status.val_balancete,
                     status.val_diferenca,
                     status.cod_usu__nome_usu,
-                    desc_status,
-                    status.obs_status
+                    let_desc_comp,
+                    let_desc_ana,
+                    let_desc_reg
                 ];
                 let_lista_status.push(let_reg);
             });
@@ -2569,8 +2939,9 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     { title: "Balancete" },
                     { title: "Diferença" },
                     { title: "Usuário" },
-                    { title: "Status" },
-                    { title: "Observação" }
+                    { title: "Composição" },
+                    { title: "Análise" },
+                    { title: "Regularização" }
                 ],
                 "columnDefs": [
                     {"className": "dt-center", "targets": [2, ]},
@@ -3029,7 +3400,11 @@ function limpa_campos_form_cad_contas(){
 function gera_conciliacao_comp_benner_detalhado(){
     let let_cod_conta = $("#cb_contas_conciliacao_comp_benner").val().toString();
     let let_competencia = $("#dt_conciliacao_comp_benner").val();
-    let let_status_analise = $("#cb_status_analise_conciliacao_detalhada").val();
+    let let_chk_contas_zeradas = 'N';
+    let let_perfil_usu = $("#hd_perfil_usu").val();
+    if ( $("#rd_pesq_contas_zeradas_comp_detalhada").is(':checked') == true ) {
+        let_chk_contas_zeradas = 'S';
+    }
 
     let cod_modelo_selecionado = 0;
     if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
@@ -3049,17 +3424,53 @@ function gera_conciliacao_comp_benner_detalhado(){
                 'cod_modelo_selecionado' : cod_modelo_selecionado,
                 'cod_conta'     :   let_cod_conta,
                 'competencia'   :   let_competencia,
-                'cod_status_analise':   let_status_analise,
                 'tipo_visualizacao' :   'D'
             },
             dataType: 'json',
             success: function (data) {
-               // $("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnClearTable();
-                //$("#tab_conciliacao_composicao_benner_detalhado").dataTable().fnDestroy();
-                const tabela = new DataTable("#tab_conciliacao_composicao_benner_detalhado");
+                $("#cb_pesq_status_comp_conciliacao_detalhada option").remove();
+                $("#cb_pesq_status_comp_conciliacao_detalhada").append("<option value='999' selected='selected'>Todos</option>");
+                $("#cb_pesq_status_comp_conciliacao_detalhada").append("<option value='0' >Sem status</option>");
+                data.lista_status_composicao.forEach(comp => {
+                    $("#cb_pesq_status_comp_conciliacao_detalhada").append("<option value='"+
+                    comp.cod_status_processos_contabil+"'>"+
+                    comp.desc_status+"</option>");
+
+                });
+                $("#cb_pesq_status_comp_conciliacao_detalhada").selectpicker('refresh');
+
+                if(let_perfil_usu == 'L' || let_perfil_usu =='H') {
+                    $("#cb_pesq_status_ana_conciliacao_detalhada option").remove();
+                    $("#cb_pesq_status_ana_conciliacao_detalhada").append("<option value='999' selected='selected'>Todos</option>");
+                    $("#cb_pesq_status_ana_conciliacao_detalhada").append("<option value='0' >Sem status</option>");
+                    data.lista_status_analise.forEach(comp => {
+                        $("#cb_pesq_status_ana_conciliacao_detalhada").append("<option value='"+
+                        comp.cod_status_processos_contabil+"'>"+
+                        comp.desc_status+"</option>");
+
+                    });
+                    $("#cb_pesq_status_ana_conciliacao_detalhada").selectpicker('refresh');
+                }
+
+
+                if(let_perfil_usu =='H') {
+                    $("#cb_pesq_status_reg_conciliacao_detalhada option").remove();
+                    $("#cb_pesq_status_reg_conciliacao_detalhada").append("<option value='999' selected='selected'>Todos</option>");
+                    $("#cb_pesq_status_reg_conciliacao_detalhada").append("<option value='0' >Sem status</option>");
+                    data.lista_status_reg.forEach(comp => {
+                        $("#cb_pesq_status_reg_conciliacao_detalhada").append("<option value='"+
+                        comp.cod_status_processos_contabil+"'>"+
+                        comp.desc_status+"</option>");
+
+                    });
+                    $("#cb_pesq_status_reg_conciliacao_detalhada").selectpicker('refresh');
+
+                }
+
+
 
                 let let_lista_dados_conciliacao = [];
-                let let_lista_dados = [];
+                let_lista_dados = [];
                 for (var i = 0; i < data.lista_contas_conciliacao.length; i++) {
                     let let_img = `
                         <i class="fa-solid fa-caret-right icon-color-e"></i>
@@ -3080,23 +3491,11 @@ function gera_conciliacao_comp_benner_detalhado(){
                         if(data.lista_contas_conciliacao[i][7] == 0) { //cod_status_auditoria_comp
                             option_0 = `selected="selected"`;
                             let_desc_status_comp = `title='Sem status informado'`
-                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='Sem status informado'></i>`
+                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='${data.lista_contas_conciliacao[i][8]}'></i>`
                         } else if(data.lista_contas_conciliacao[i][7] == 1) {
-                            let_desc_status_comp = `title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
+                            let_desc_status_comp = `title='${data.lista_contas_conciliacao[i][8]}'`;
                             option_1 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][7] == 2) {
-                            let_desc_status_comp = `title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
-                            option_2 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-not-equal fa-xl" style="color:#FF0000;" title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][7] == 3) {
-                            let_desc_status_comp = `title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
-                            option_3 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-arrows-rotate fa-xl" title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][7] == 4) {
-                            let_desc_status_comp = `title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][8]}'`;
-                            option_4 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][8]}'></i>`;
+                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='${data.lista_contas_conciliacao[i][8]}'></i>`;
                         }
 
                         let let_input_check = `
@@ -3114,6 +3513,7 @@ function gera_conciliacao_comp_benner_detalhado(){
 
                         `;
                         let let_btn_visualiza_doc = ``;
+                        let let_tem_anexo = 'N';
                         if(data.lista_contas_conciliacao[i][9].length > 0){
                               for (var j = 0; j < data.lista_contas_conciliacao[i][9].length; j++) {
                                 let_btn_visualiza_doc += `
@@ -3125,22 +3525,51 @@ function gera_conciliacao_comp_benner_detalhado(){
                                     </button>
                                 `;
                               }
+                              let_tem_anexo = 'S';
                         } else {
                             let_btn_visualiza_doc = `<i class="fa-regular fa-file icon-color-e"
                                 title='Não há Documento Anexado'></i>`;
                         }
+
+                        let let_img_just_comp = `
+                            ${data.lista_contas_conciliacao[i][10]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][8]}"></i>
+                        `;
+
+                        let let_img_just_ana = `
+                            ${data.lista_contas_conciliacao[i][11]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][12]}"></i>
+                        `;
+
+                        let let_img_just_reg = `
+                            ${data.lista_contas_conciliacao[i][13]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][14]}"></i>
+                        `;
+
+
+
                         let_reg = [
                             /* 0 */ let_input_check,
                             /* 1 */ let_img_btn_status,
                             /* 2 - cod_estrutura */ data.lista_contas_conciliacao[i][2],
                             /* 3 - cod_red */ data.lista_contas_conciliacao[i][1],
                             /* 4 - desc_conta */ data.lista_contas_conciliacao[i][3],
-                            /* 5 - val_comp */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
-                            /* 6 - val_balancete */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
-                            /* 7 -val_dif_comp_balanc */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
-                            /* 8 let_btn_status, */
-                            /* 9 */let_btn_detalhes_conta,
-                            /* 10 */let_btn_visualiza_doc
+                            /* 5 - val_comp str */ data.lista_contas_conciliacao[i][4] + `<input type="hidden" id="txt_val_composicao_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][4]}" style="text-align: right;"/>`,
+                            /* 6 - val_balancete str */ data.lista_contas_conciliacao[i][5] + `<input type="hidden" id="txt_val_balancete_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][5]}" style="text-align: right;"/>`,
+                            /* 7 -val_dif_comp_balanc str */ data.lista_contas_conciliacao[i][6] +`<input type="hidden" id="txt_val_diferenca_m1_${data.lista_contas_conciliacao[i][0]}" readonly value="${data.lista_contas_conciliacao[i][6]}" style="text-align: right;"/>`,
+                            /* 8 */let_btn_detalhes_conta,
+                            /* 9 */let_btn_visualiza_doc,
+                            /* 10 */let_img_just_comp,
+                            /* 11 */let_img_just_ana,
+                            /* 12 */let_img_just_reg,
+                            /* 13 */data.lista_contas_conciliacao[i][15],
+                            /* 14 */data.lista_contas_conciliacao[i][16],
+                            /* 15 */data.lista_contas_conciliacao[i][17],
+                            /* 16 */data.lista_contas_conciliacao[i][18],
+                            /* 17 val_comp */data.lista_contas_conciliacao[i][19],
+                            /* 18 val_bal */data.lista_contas_conciliacao[i][20],
+                            /* 19 val_dif */data.lista_contas_conciliacao[i][21],
+                            /* 20 tem_anexo */ let_tem_anexo
                         ];
                         let_lista_dados.push(let_reg);
                     }
@@ -3155,23 +3584,11 @@ function gera_conciliacao_comp_benner_detalhado(){
                         if(data.lista_contas_conciliacao[i][11] == 0) { //cod_status_auditoria_comp
                             option_0 = `selected="selected"`;
                             let_desc_status_comp = `title='Sem status informado'`
-                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='Sem status informado'></i>`
+                            let_img_btn_status = `<i class="fa-solid fa-triangle-exclamation fa-xl" style="color:#FFFF00;" title='${data.lista_contas_conciliacao[i][12]}'></i>`
                         } else if(data.lista_contas_conciliacao[i][11] == 1) {
-                            let_desc_status_comp = `title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
+                            let_desc_status_comp = `title='${data.lista_contas_conciliacao[i][12]}'`;
                             option_1 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='Status: OK / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][11] == 2) {
-                            let_desc_status_comp = `title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
-                            option_2 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-not-equal fa-xl" style="color:#FF0000;" title='Status: Com diferença / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][11] == 3) {
-                            let_desc_status_comp = `title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
-                            option_3 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-arrows-rotate fa-xl" title='Status: Falta analisar / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
-                        } else if(data.lista_contas_conciliacao[i][11] == 4) {
-                            let_desc_status_comp = `title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][12]}'`;
-                            option_4 = 'selected="selected"';
-                            let_img_btn_status = `<i class="fa-solid fa-bolt fa-xl" style="color:#808080;" title='Status: Falta compor / Obs.: ${data.lista_contas_conciliacao[i][12]}'></i>`;
+                            let_img_btn_status = `<i class="fa-solid fa-check fa-xl" style="color:#2E8B57;" title='${data.lista_contas_conciliacao[i][12]}'></i>`;
                         }
                         let let_btn_detalhes_conta = `
                             <button type='button' id="btn_detalhes_conta_${data.lista_contas_conciliacao[i][0]} "
@@ -3184,6 +3601,7 @@ function gera_conciliacao_comp_benner_detalhado(){
 
                         `;
                         let let_btn_visualiza_doc = ``;
+                        let let_tem_anexo = 'N';
                         if(data.lista_contas_conciliacao[i][13].length > 0){
                             for (var j = 0; j < data.lista_contas_conciliacao[i][13].length; j++) {
                                 let_btn_visualiza_doc += `
@@ -3194,12 +3612,27 @@ function gera_conciliacao_comp_benner_detalhado(){
                                         <i class="fa-solid fa-file icon-color-e"></i>
                                     </button>
                                 `;
-
                             }
+                            let_tem_anexo = 'S';
                         } else {
                             let_btn_visualiza_doc = `<i class="fa-regular fa-file" style="color: #f46424;"
                                 title='Não há Documento Anexado'></i>`;
                         }
+
+                        let let_img_just_comp = `
+                            ${data.lista_contas_conciliacao[i][19]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][12]}"></i>
+                        `;
+
+                        let let_img_just_ana = `
+                            ${data.lista_contas_conciliacao[i][14]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][15]}"></i>
+                        `;
+
+                        let let_img_just_reg = `
+                            ${data.lista_contas_conciliacao[i][16]}
+                            <i class="fa-solid fa-comment-dots" title="${data.lista_contas_conciliacao[i][17]}"></i>
+                        `;
 
                         let_reg = [
                             /* 0 */ let_input_check,
@@ -3219,9 +3652,20 @@ function gera_conciliacao_comp_benner_detalhado(){
                             /* 10 - val_dif_comp_balanc */ data.lista_contas_conciliacao[i][9]+`<input type="hidden"
                                 id="txt_val_diferenca_${data.lista_contas_conciliacao[i][10]}_${data.lista_contas_conciliacao[i][4]}"
                                 readonly value="${data.lista_contas_conciliacao[i][9]}" style="text-align: right;"/>`,
-                            /* 11 let_btn_status, */
-                            /* 12 */let_btn_detalhes_conta,
-                            /* 13 */let_btn_visualiza_doc
+
+                            /* 11 */let_btn_detalhes_conta,
+                            /* 12 */let_btn_visualiza_doc,
+                            /* 13 */let_img_just_comp,
+                            /* 14 */let_img_just_ana,
+                            /* 15 */let_img_just_reg,
+                            /* 16 */data.lista_contas_conciliacao[i][18],
+                            /* 17 val_com */data.lista_contas_conciliacao[i][20],
+                            /* 18 val_bal */data.lista_contas_conciliacao[i][21],
+                            /* 19 val_dif */data.lista_contas_conciliacao[i][22],
+                            /* 20 cod_status_comp */data.lista_contas_conciliacao[i][23],
+                            /* 21 cod_status_ana */data.lista_contas_conciliacao[i][24],
+                            /* 22 cod_status_reg */data.lista_contas_conciliacao[i][25],
+                            /* 23 tem_anexo */ let_tem_anexo
                         ];
                         let_lista_dados.push(let_reg);
                     }
@@ -3231,49 +3675,9 @@ function gera_conciliacao_comp_benner_detalhado(){
                         .draw(false);
                         */
                 }
-                $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": false, //770px "100vh"
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
-                    "searching": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-left", "targets": [0, 4]}
-                    ],
-                    "data":let_lista_dados,
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
-                            }
-                        }
-                    }
-                } );
+
+                atualiza_dados_tab_conciliacao_composicao_benner_detalhado(let_lista_dados);
+
                 let_loader_gera_comp_det.style.display = "none";
             },
             error: function (request, status, error) {
@@ -3753,7 +4157,7 @@ function gera_conciliacao_comp_benner_auditoria(){
                                             id='btn_visualiza_doc_contrato_${data.lista_contas_conciliacao[i][11][j].cod_anexo_contrato}'
                                             class='btn btn-rounded btn-space'
                                             value='${data.lista_contas_conciliacao[i][11][j].cod_anexo_contrato}' title='Clique para ver o anexo: ${data.lista_contas_conciliacao[i][11][j].desc_anexo}'>
-                                            <i class="fa-solid fa-file icon-color-e"></i>
+                                            <i class="fa-solid fa-file"></i>
                                         </button>
                                     `;
                                 }
@@ -3787,7 +4191,7 @@ function gera_conciliacao_comp_benner_auditoria(){
                         "bJQueryUI": true,
                         "destroy": true,
                         "fixedHeader": true,
-                        "scrollY": false, //770px
+                        "scrollY": "570px", //770px
                         "scrollX": true,
                         "scrollCollapse": true,
                         "paging": false,
@@ -3847,7 +4251,301 @@ function gera_conciliacao_comp_benner_auditoria(){
 }
 
 
+function fn_povoa_tabela_status_proc_contabil(tipo_status){
+     $.ajax({
+            type: 'GET',
+            url: '/contabil_composicao_app/povoa_tabela_status_proc_contabil',
+            data: {
+                'transacao'     :   'todos',
+                'tipo_status'   :   tipo_status
+            },
+            dataType: 'json',
+            success: function (dados) {
+                let let_lista_status = [];
+                dados.lista_status.forEach( status => {
+                    let let_input_dt_final = `
+                        <input type="date" id="dt_final_status_proc_contabil_${status.cod_status_processos_contabil}"
+                        name="dt_final_status_proc_contabil" value="${status.vigencia_fim}"/>
+                    `;
+
+                    let let_reg = [
+                        status.desc_status,
+                        status.vigencia_ini,
+                        let_input_dt_final,
+                        status.peso
+                    ];
+                    let_lista_status.push(let_reg);
+                });
+                $('#tab_status_proc_contabil').DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": true, //"50vh" 770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 5,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "table-layout":'fixed',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_status,
+                    "columns": [
+                        { title: "Status" },
+                        { title: "Vig. Inícial" },
+                        { title: "Vig. Final" },
+                        { title: "Peso" }
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        }
+                    }
+                });
+
+                if(tipo_status == 'C'){
+                    $("#sl_status_conciliacao_lote_contas option").remove();
+                    dados.lista_status.forEach(status => {
+                        $("#sl_status_conciliacao_lote_contas").append(`
+                            <option value="${status.cod_status_aud}">${status.desc_status}</option>
+                        `);
+                    });
+                    $("#sl_status_conciliacao_lote_contas").selectpicker("");
+                    $("#sl_status_conciliacao_lote_contas").selectpicker('refresh');
+                }
+                else if(tipo_status == 'A'){
+                    $("#sl_status_analise_lote_contas option").remove();
+                    dados.lista_status.forEach(status => {
+                        $("#sl_status_analise_lote_contas").append(`
+                            <option value="${status.cod_status_aud}">${status.desc_status}</option>
+                        `);
+                    });
+                    $("#sl_status_analise_lote_contas").selectpicker("");
+                    $("#sl_status_analise_lote_contas").selectpicker('refresh');
+                }
+                else if(tipo_status == 'R'){
+                    $("#sl_status_regularizacao_lote_contas option").remove();
+                    dados.lista_status.forEach(status => {
+                        $("#sl_status_regularizacao_lote_contas").append(`
+                            <option value="${status.cod_status_aud}">${status.desc_status}</option>
+                        `);
+                    });
+                    $("#sl_status_regularizacao_lote_contas").selectpicker("");
+                    $("#sl_status_regularizacao_lote_contas").selectpicker('refresh');
+                }
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+}
 
 
 
+
+$(document).on('change', '[name=comp_pesq_status_conciliacao_detalhada]', function(){
+    let let_perfil_usu = $("#hd_perfil_usu").val();
+    let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+    let_loader_gera_comp_det.style.display = "flex";
+
+    let cod_modelo_selecionado = 0;
+    if ( $("#rd_modelo_conta_conc_comp_benner_1").is(':checked') == true){
+        cod_modelo_selecionado = 1;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_2").is(':checked') == true){
+        cod_modelo_selecionado = 2;
+    } else if ( $("#rd_modelo_conta_conc_comp_benner_3").is(':checked') == true){
+        cod_modelo_selecionado = 3;
+    }
+
+    let_lista_dados_filtered = [];
+    let let_result = let_lista_dados;
+
+
+    let let_status_comp_pesq = $("#cb_pesq_status_comp_conciliacao_detalhada").val();
+    if (let_status_comp_pesq != '999') {
+        let_result = let_result.filter(linha => {
+            if(cod_modelo_selecionado==1){
+                return linha[14] == let_status_comp_pesq;
+            } else if(cod_modelo_selecionado==3){
+                return linha[20] == let_status_comp_pesq;
+            }
+
+        });
+    }
+    if(let_perfil_usu == 'L' || let_perfil_usu == 'H') {
+        let let_status_ana_pesq = $("#cb_pesq_status_ana_conciliacao_detalhada").val();
+        if (let_status_ana_pesq != '999'){
+            let_result = let_result.filter(linha => {
+                if(cod_modelo_selecionado==1){
+                    return linha[15] == let_status_ana_pesq;
+                } else if(cod_modelo_selecionado==3){
+                    return linha[21] == let_status_ana_pesq;
+                }
+
+            });
+        }
+    }
+
+
+    let let_status_reg_pesq = $("#cb_pesq_status_reg_conciliacao_detalhada").val();
+    if(let_perfil_usu == 'H') {
+        if (let_status_reg_pesq != '999'){
+            let_result = let_result.filter(linha => {
+                if(cod_modelo_selecionado==1){
+                    return linha[16] == let_status_reg_pesq;
+                } else if(cod_modelo_selecionado==3){
+                    return linha[22] == let_status_reg_pesq;
+                }
+
+            });
+        }
+    }
+
+
+    let let_demais_filtros = $("#cb_pesq_demais_filtros_conciliacao_detalhada").val();
+    if (let_demais_filtros == 'Z') {
+        let_result = let_result.filter(linha => {
+            return linha[17] == 0 && linha[18] == 0 && linha[19] == 0;
+        });
+    }
+    if (let_demais_filtros == 'CA') {
+        let_result = let_result.filter(linha => {
+            if(cod_modelo_selecionado==1){
+                return linha[17] != 0 && linha[18] != 0 && linha[19] > -2  && linha[19] < 2 && linha[20] == 'S';
+            } else if(cod_modelo_selecionado==3){
+                return linha[17] != 0 && linha[18] != 0 && linha[19] > -2  && linha[19] < 2 && linha[23] == 'S';
+            }
+
+        });
+    }
+    if (let_demais_filtros == 'SA') {
+        let_result = let_result.filter(linha => {
+            if(cod_modelo_selecionado==1){
+                return linha[17] != 0 && linha[18] != 0 && linha[19] > -2  && linha[19] < 2 && linha[20] == 'N';
+            } else if(cod_modelo_selecionado==3){
+                return linha[17] != 0 && linha[18] != 0 && linha[19] > -2  && linha[19] < 2 && linha[23] == 'N';
+            }
+
+        });
+    }
+
+    let_lista_dados_filtered = let_result;
+    atualiza_dados_tab_conciliacao_composicao_benner_detalhado(let_lista_dados_filtered);
+    let_loader_gera_comp_det.style.display = "none";
+
+});
+
+
+function atualiza_dados_tab_conciliacao_composicao_benner_detalhado(dados){
+
+    if(dados == null) {
+        $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                    } );
+    } else {
+        $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
+            "bJQueryUI": true,
+            "destroy": true,
+            "fixedHeader": true,
+            "scrollY": '570px', //770px "100vh"
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            "fixedColumns": {
+                "start": 5
+            },
+            //"pageLength": 7,
+            "searching": true,
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copyHtml5'
+            ],
+            "columnDefs": [
+                {"className": "dt-left", "targets": [0, 4]}
+            ],
+            "data":dados,
+            "oLanguage": {
+                "sProcessing":   "Processando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "Não foram encontrados resultados",
+                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                "sInfoFiltered": "",
+                "sInfoPostFix":  "",
+                "sSearch":       "Pesquisar:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Primeiro",
+                    "sPrevious": "Anterior",
+                    "sNext":     "Proximo",
+                    "sLast":     "Último"
+                },
+                "buttons":{
+                    "copyTitle": 'Dados Copiados',
+                    "copySuccess": {
+                        _: '%d linhas copiadas',
+                        1: '1 linha copiada'
+                    }
+                }
+            }
+        } );
+    }
+
+}
 

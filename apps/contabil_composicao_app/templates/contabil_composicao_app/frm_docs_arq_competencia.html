@@ -39,6 +39,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -46,16 +47,17 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.nome_fornecedor }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.num_ap }}</td>
-                        <td>{{ doc.data_venc }}</td>
-                        <td>{{ doc.num_parc }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome da Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Nome do Fornecedor">{{ doc.nome_fornecedor }}</td>
+                        <td title="Coluna Número do Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Número AP">{{ doc.num_ap }}</td>
+                        <td title="Coluna Data Vencimento">{{ doc.data_venc }}</td>
+                        <td title="Coluna Número Parcela">{{ doc.num_parc }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -106,6 +108,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -113,14 +116,15 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.nome_almoxarifado }}</td>
-                        <td>{{ doc.desc_produto }}</td>
-                        <td>{{ doc.qtd_prod }}</td>
-                        <td>{{ doc.custo_medio }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome da Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Nome Almoxarifado">{{ doc.nome_almoxarifado }}</td>
+                        <td title="Coluna Descrição do Produto">{{ doc.desc_produto }}</td>
+                        <td title="Coluna Qtd. do Produto">{{ doc.qtd_prod }}</td>
+                        <td title="Coluna Custo Médio">{{ doc.custo_medio }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -171,6 +175,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -178,15 +183,16 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.matricula }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.num_doc_contabil }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome da Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Matrícula">{{ doc.matricula }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Número Documento Contábil">{{ doc.num_doc_contabil }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -238,6 +244,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -245,16 +252,17 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.nome_fornecedor }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.num_doc_contabil }}</td>
-                        <td>{{ doc.data_emissao }}</td>
-                        <td>{{ doc.data_entrada }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Nome do Fornecedor">{{ doc.nome_fornecedor }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número do Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Número Documento Contábil">{{ doc.num_doc_contabil }}</td>
+                        <td title="Coluna Data Emissão">{{ doc.data_emissao }}</td>
+                        <td title="Coluna Data Entrada">{{ doc.data_entrada }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -306,6 +314,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -313,16 +322,17 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.nome_fornecedor }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.num_doc_contabil }}</td>
-                        <td>{{ doc.data_emissao }}</td>
-                        <td>{{ doc.data_entrada }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Nome do Fornecedor">{{ doc.nome_fornecedor }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número do Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Número Documento Contábil">{{ doc.num_doc_contabil }}</td>
+                        <td title="Coluna Data Emissão">{{ doc.data_emissao }}</td>
+                        <td title="Coluna Data Entrada">{{ doc.data_entrada }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -371,6 +381,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -378,13 +389,14 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -433,6 +445,7 @@
                     <th scope="col">R$ Rel.</th>
                     <th scope="col">R$ Razão</th>
                     <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -440,13 +453,14 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -489,16 +503,17 @@
             <thead>
                 <tr>
                     <th scope="col">Filial</th>
-                    <th scope="col" title="Data entrada">Entrada</th>
-                    <th scope="col" title="Descrição imobilizado">Imobilizado</th>
-                    <th scope="col" title="Número documento">Doc.</th>
+                    <th scope="col">Entrada</th>
+                    <th scope="col">Imobilizado</th>
+                    <th scope="col">Doc.</th>
                     <th scope="col">Fornecedor</th>
-                    <th scope="col" title="Depreciação acumulada">Dep. Acum.</th>
-                    <th scope="col" title="Taxa depreciação">% Deprec.</th>
-                    <th scope="col" title="Valor líquido R$">R$ Líq.</th>
-                    <th scope="col" title="Valor relatório R$">R$ Rel.</th>
-                    <th scope="col" title="Valor razão R$">R$ Razão</th>
-                    <th scope="col" title="Valor diferença R$">R$ Dif.</th>
+                    <th scope="col">Dep. Acum.</th>
+                    <th scope="col">% Deprec.</th>
+                    <th scope="col">R$ Líq.</th>
+                    <th scope="col">R$ Rel.</th>
+                    <th scope="col">R$ Razão</th>
+                    <th scope="col">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -506,17 +521,18 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td title="Data entrada">{{ doc.data_entrada }}</td>
-                        <td title="Descrição imobilizado">{{ doc.desc_imobilizado }}</td>
-                        <td title="Número documento">{{ doc.num_doc }}</td>
-                        <td>{{ doc.nome_fornecedor }}</td>
-                        <td title="Depreciação acumulada">{{ doc.depreciacao_acum }}</td>
-                        <td title="Taxa depreciação">{{ doc.taxa_depreciacao }}</td>
-                        <td title="Valor líquido R$">{{ doc.val_liq }}</td>
-                        <td title="Valor relatório R$">{{ doc.val_rel }}</td>
-                        <td title="Valor razão R$">{{ doc.val_razao }}</td>
-                        <td title="Valor diferença R$">{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Data Entrada">{{ doc.data_entrada }}</td>
+                        <td title="Coluna Descrição Imobilizado">{{ doc.desc_imobilizado }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Nome Fornecedor">{{ doc.nome_fornecedor }}</td>
+                        <td title="Coluna Depreciação Acumulada">{{ doc.depreciacao_acum }}</td>
+                        <td title="Coluna Taxa Depreciação">{{ doc.taxa_depreciacao }}</td>
+                        <td title="Coluna Valor Líquido">{{ doc.val_liq }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -565,6 +581,7 @@
                     <th scope="col" title="Valor relatório R$">R$ Rel.</th>
                     <th scope="col" title="Valor razão R$">R$ Razão</th>
                     <th scope="col" title="Valor diferença R$">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -572,13 +589,14 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}
@@ -628,6 +646,7 @@
                     <th scope="col" title="Valor relatório R$">R$ Rel.</th>
                     <th scope="col" title="Valor razão R$">R$ Razão</th>
                     <th scope="col" title="Valor diferença R$">R$ Dif.</th>
+                    <th scope="col">OBS</th>
                     <th scope="col">Editar</th>
                     <th scope="col">Excluir</th>
                   </tr>
@@ -635,14 +654,15 @@
             <tbody>
                 {% for doc in lista_docs %}
                     <tr>
-                        <td>{{ doc.cod_filial__desc_filial }}</td>
-                        <td>{{ doc.historico }}</td>
-                        <td>{{ doc.num_doc }}</td>
-                        <td>{{ doc.num_doc_contabil }}</td>
-                        <td>{{ doc.data_lancto }}</td>
-                        <td>{{ doc.val_rel }}</td>
-                        <td>{{ doc.val_razao }}</td>
-                        <td>{{ doc.val_dif }}</td>
+                        <td title="Coluna Nome Filial">{{ doc.cod_filial__desc_filial }}</td>
+                        <td title="Coluna Histórico">{{ doc.historico }}</td>
+                        <td title="Coluna Número Documento">{{ doc.num_doc }}</td>
+                        <td title="Coluna Número Documento Contábil">{{ doc.num_doc_contabil }}</td>
+                        <td title="Coluna Data Lançamento">{{ doc.data_lancto }}</td>
+                        <td title="Coluna Valor Relatório">{{ doc.val_rel }}</td>
+                        <td title="Coluna Valor Razão">{{ doc.val_razao }}</td>
+                        <td title="Coluna Valor Diferença">{{ doc.val_dif }}</td>
+                        <td title="Coluna Observação">{{ doc.obs }}</td>
                         {% if doc.ativo == 'S' %}
                             <td>
                                 {% if obj_usuario_sessao.corporativo == 'S' %}

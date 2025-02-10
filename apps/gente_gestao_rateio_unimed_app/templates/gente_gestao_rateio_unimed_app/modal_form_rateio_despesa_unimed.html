@@ -81,6 +81,65 @@
     </div>
 </div>
 
+<div id="modalSelecionaTitular" role="dialog" class="modal">
+    <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
+        <div class="modal-content">
+            <div class="modal-header"
+                 style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-magnifying-glass fa-2xl" style="color: #FFFFFF;"></i>
+                            <span style="color:#ffffff; font-size:15px">Selecione o Titular</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fechaModalSelecionaTitular"
+                                id="fechaModalSelecionaTitular"
+                                class="btn btn-sm btn-rounded fechaModalSelecionaTitular">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="formSelecionaTitular" name="formSelecionaTitular"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST">
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="selectTitular" class="label_comp_forms">Titular</label>
+                            <div style="display:flex">
+                                <select class="selectpicker form-control select-titular" id="selectTitular" placeholder="Selecione o titular..." style="width:fit-content;padding:10px">
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <button type="button" name="btnSelecionaTitular"
+                                    id="btnSelecionaTitular"
+                                    class="btn btn-primary btn-rounded botaoPrincipal btnSelecionaTitular">
+                            <i class="fa-solid fa-check"></i>
+                            Salvar
+                        </button>
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="modalAdicionaExcecao" role="dialog" class="modal">
     <div class="modal-dialog" style="border-radius: 10px;max-width:800px;width:800px;">
         <div class="modal-content">

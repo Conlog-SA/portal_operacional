@@ -19,7 +19,7 @@ from apps.plan_controle_fat_2art_terc_app.models import BeneficiarioTerceiro, Re
     HistAcaoMapas2ArtTerceiros, CadastroPlacaTerceiro, CadFreteSpot, TipoOcorrenciasFinanceiroTerceiros, \
     Pagamento2ArtTerceirosFinanceiro, LancamentosRegistro2ArtTerceirosFinanceiro, Tab_Cad_Placa_Terc_Financ, \
     LinhaExcelArquivoLanAcresDesc, LinhaExcelArquivoPagamentosExtra, LancamentoPagamentoExtras, \
-    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros
+    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros, Estorno_Pagamentos_2Art_Terc
 from apps.plan_controle_fat_2art_terc_app.uteis import Uteis
 from apps.usuario_app.models import Usuario, Proj_Usu
 from proj_portal_operacional.settings import BASE_DIR
@@ -641,7 +641,7 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
             cod_projeto=projeto).extra(
             where=[
                 " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
-                " AND (MONTH(data_fim_vigencia) = " + mes_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
+                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
         tab_form_cad_placa_terc = []
         for reg in registros_cad_placa_terc:
             reg_tab_cad_placa = Tab_Cad_Placa_Terc_Financ(
@@ -1487,6 +1487,19 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
                                                                          ).order_by('num_doc_pagamento')
             if tipo_ocorr == 'E':
                 for pagamento in pagamentos:
+
+                    nome_usu_estorno = ''
+                    data_estorno = ''
+                    justificativa_estorno = ''
+                    obj_estorno = (Estorno_Pagamentos_2Art_Terc.objects
+                                   .filter(tipo_pagamento='E', cod_pagamento_referente=pagamento.cod_pag_2art_terc_financ)
+                                   .first())
+                    if obj_estorno != None:
+                        nome_usu_estorno = obj_estorno.cod_usu.login_usu
+                        data_estorno = datetime.strftime(obj_estorno.data_hora_estorno, '%d-%m-%Y %H:%M')
+                        justificativa_estorno = obj_estorno.justificativa
+
+
                     linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
                         cod_pag=pagamento.cod_pag_2art_terc_financ,
                         cod_benef=pagamento.cod_benef_terc.cod_benef_terc,
@@ -1509,11 +1522,26 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
                         seq_item=0,
                         status_pag=pagamento.status_pagamento,
                         nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento
+                        num_doc_pagamento=pagamento.num_doc_pagamento,
+                        nome_usu_estorno=nome_usu_estorno,
+                        data_estorno = data_estorno,
+                        justificativa_estorno = justificativa_estorno
                     )
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
             elif tipo_ocorr == 'M':
                 for pagamento in pagamentos:
+
+                    nome_usu_estorno = ''
+                    data_estorno = ''
+                    justificativa_estorno = ''
+                    obj_estorno = (Estorno_Pagamentos_2Art_Terc.objects
+                                   .filter(tipo_pagamento='M', cod_pagamento_referente=pagamento.cod_pag_2art_terc_financ)
+                                   .first())
+                    if obj_estorno != None:
+                        nome_usu_estorno = obj_estorno.cod_usu.login_usu
+                        data_estorno = datetime.strftime(obj_estorno.data_hora_estorno, '%d-%m-%Y %H:%M')
+                        justificativa_estorno = obj_estorno.justificativa
+
                     linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
                         cod_pag=pagamento.cod_pag_2art_terc_financ,
                         cod_benef=pagamento.cod_benef_terc.cod_benef_terc,
@@ -1536,7 +1564,10 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
                         seq_item=0,
                         status_pag=pagamento.status_pagamento,
                         nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento
+                        num_doc_pagamento=pagamento.num_doc_pagamento,
+                        nome_usu_estorno=nome_usu_estorno,
+                        data_estorno=data_estorno,
+                        justificativa_estorno=justificativa_estorno
                     )
                     # print('Cód. pag '+str(pagamento.cod_pag_2art_terc_financ)+' status: '+str(pagamento.status_pagamento))
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
@@ -1657,6 +1688,7 @@ class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario = Usuario.objects.filter(cod_usu=id_usu_session).first()
 
+
         data_hora_atual = datetime.now()
         data_atual_yyyy_mm_aa = data_hora_atual.strftime('%Y-%m-%d')
         obs_pagamento = ''
@@ -1682,6 +1714,19 @@ class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
         pagamento.cod_usu = obj_usuario
         pagamento.obs_pag += obs_pagamento
         pagamento.save()
+
+        '''Registra o registro do estorno'''
+        data = json.loads(request.body)
+        justificativa_frm = data.get("justificativa")
+        tipo_pagamento_frm = data.get("tipo_pagamento")
+        obj_estorno = Estorno_Pagamentos_2Art_Terc(
+            tipo_pagamento=tipo_pagamento_frm,
+            cod_pagamento_referente=pk,
+            data_hora_estorno=data_hora_atual,
+            justificativa=justificativa_frm,
+            cod_usu=obj_usuario
+        ).save()
+
 
         data = dict()
         data = {
@@ -1797,7 +1842,10 @@ class Pdf_Rel_Pagamento_Terc(View):
                         seq_item=pagina_atual,
                         status_pag=pagamento.status_pagamento,
                         nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento
+                        num_doc_pagamento=pagamento.num_doc_pagamento,
+                        nome_usu_estorno='',
+                        data_estorno='',
+                        justificativa_estorno=''
                     )
                     cont_item += 1
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)

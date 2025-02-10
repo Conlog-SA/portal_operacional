@@ -36,7 +36,7 @@ $(document).on('change','input', function(){
 
     if ( let_nome_input == 'fl_campo_arquivo_2art') {
         let let_frm_data = new FormData();
-		let_frm_data.append("file", $('input[type=file]')[0].files[0]);
+		let_frm_data.append("file", $('#fl_campo_arquivo_2art')[0].files[0]);
 		let loader_imp_2art = document.getElementById("loader_imp_2art");
 		loader_imp_2art.style.display = "flex";
 		$.ajax({

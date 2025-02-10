@@ -16,6 +16,9 @@ class Usuario(models.Model):
     sala = models.CharField(max_length=3,null=True)
     tipo_colab = models.CharField(max_length=1, null=True, blank=True)
     corporativo = models.TextField(max_length=1,default='N')
+    tel = models.TextField(max_length=25, default='00 9 0000 0000', null=True, blank=True)
+    caminho_foto = models.TextField(max_length=200, blank=True, null=True)
+    handle_usu = models.IntegerField(null=True, blank=True, default=0)
     class Meta:
         managed = True
         db_table = 'ger_usuarios'

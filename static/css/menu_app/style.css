@@ -61,7 +61,6 @@ main {
     flex-direction: column;
     margin-top: 0;
     margin-bottom: 0px !important;
-    padding: 1rem;
     color: #FFF;
 }
 
@@ -184,6 +183,8 @@ main {
 
 
 .item-description {
+    display: flex;
+    justify-content: end; 
     width: 0px;
     overflow: hidden;
     white-space: nowrap;
@@ -209,9 +210,10 @@ main {
 }
 
 #sidebar.open-sidebar .item-description  {
-    min-width: 250px;
+    min-width: 280px;
     height: auto;
     color: #363636;
+
 }
 
 #sidebar.open-sidebar .side-item a  {
@@ -219,6 +221,30 @@ main {
     gap: 14px;
 }
 
-.dados-usu i{
-    margin-left: 1.5rem !important;
+
+
+.dados-usu {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+}
+
+
+.nome-usu {
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    flex-direction: column;
+    font-size: 10px;
+}
+
+.foto-colab {
+    width: 70px;
+    height: 70px;
+    background-size: cover; background-position: center; background-repeat: no-repeat;
+                            border-radius: 50%;border: 0px solid #000; cursor: pointer;
+
+
 }
