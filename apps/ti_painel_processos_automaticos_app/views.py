@@ -53,7 +53,9 @@ class Frm_Painel_Processos_Automaticos_View(View):
 
                 '''Define cor da próxima execução'''
                 # data_prox_exec_compare = datetime.strptime(data_prox_exe_completa, '%d-%m-%Y %H:%M')
-                data_prox_exec_compare = data_prox_exe_completa.astimezone(timezone.utc)
+                if data_prox_exe_completa != None:
+                    data_prox_exec_compare = data_prox_exe_completa.astimezone(timezone.utc)
+                    data_proxima_exe = datetime.strftime(data_prox_exe_completa, '%d-%m %H:%M')
                 if proc.cod_processo == 7:
                     print(proc.desc_processo, ' - ', data_atual, ' / ', data_prox_exec_compare)
                 if data_prox_exec_compare > data_atual:
@@ -61,7 +63,7 @@ class Frm_Painel_Processos_Automaticos_View(View):
                 else:
                     cor_status_prox_exec = '#FF0000'
 
-                data_proxima_exe = datetime.strftime(data_prox_exe_completa, '%d-%m %H:%M')
+
 
                 dic_proc_info = {
                     'nome_proc': proc.desc_processo,
