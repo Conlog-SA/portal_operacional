@@ -16,6 +16,9 @@
 
 .logo_cabecalho{
     width: 2.3rem;
+    position: absolute;
+    left: 608px;
+    top: 1px;
 }
 
 .div_Titulo{
@@ -71,10 +74,6 @@
 
 .cl_frm_topo_paginas{
     /* height: 45px !important; */
-    background-color:var(--cor_bg_cinza_escuro_cabecalho) !important;
-    padding-left:0.5rem;
-    padding-right:0.5rem;
-    padding-top: 0.5rem;
     padding-bottom: 0.5rem;
     position:relative;
     z-index:1000;
