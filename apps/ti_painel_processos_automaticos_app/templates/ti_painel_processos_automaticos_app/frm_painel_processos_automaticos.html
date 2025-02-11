@@ -73,12 +73,12 @@
                         <tbody>
                             {% for proc_0 in lista_dic_proc_pri_0 %}
                                 <tr>
-                                    <td class="col-processo">{{ proc_0.nome_proc }}</td>
+                                    <td class="col-processo" style="font-weight: 500;">{{ proc_0.nome_proc }}</td>
                                     <td class="col-ult"
                                     style="box-shadow: 0 0 0.5rem 0.02px rgb(0 0 0 / 64%);
-                                    color: {{ proc_0.cor_status_ult_exec }}">{{ proc_0.data_ult_exec }}</td>
+                                    color: {{ proc_0.cor_status_ult_exec }};font-weight: 500;">{{ proc_0.data_ult_exec }}</td>
                                     <td class="col-prox" style="
-                                    color: {{ proc_0.cor_status_prox_exec }} !important;">{{ proc_0.data_prox_exec }}</td>
+                                    color: {{ proc_0.cor_status_prox_exec }} !important;font-weight: 500;">{{ proc_0.data_prox_exec }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>

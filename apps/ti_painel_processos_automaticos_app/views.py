@@ -3,6 +3,7 @@ from django.views import View
 from apps.usuario_app.models import Usuario
 from apps.ti_painel_processos_automaticos_app.models import Processo, Execucao_Processo
 from datetime import datetime, timedelta, timezone
+from dateutil.relativedelta import relativedelta
 
 
 class Frm_Painel_Processos_Automaticos_View(View):
@@ -24,7 +25,10 @@ class Frm_Painel_Processos_Automaticos_View(View):
             if contador % 3 == 0:
                 col += 1
                 lista_col.append(col)
-            ultima_exec = Execucao_Processo.objects.filter(cod_processo=proc).order_by('cod_exec_processo').last()
+            ultima_exec = (Execucao_Processo
+                           .objects
+                           .filter(cod_processo=proc)
+                           .order_by('cod_exec_processo').last())
 
             data_ultima_exe = ''
             data_proxima_exe = ''
@@ -42,6 +46,8 @@ class Frm_Painel_Processos_Automaticos_View(View):
                     data_prox_exe_completa = ultima_exec.data_status_exec + timedelta(hours=24)
                 elif proc.periodicidade == 'H':
                     data_prox_exe_completa = ultima_exec.data_status_exec + timedelta(minutes=int(proc.frequencia))
+                elif proc.periodicidade == 'M':
+                    data_prox_exe_completa = ultima_exec.data_status_exec + relativedelta(months=1)
 
                 '''Define cor da última execucao'''
                 if ultima_exec.cod_status_exec_processo.cod_status_exec_processo == 4:
@@ -56,11 +62,10 @@ class Frm_Painel_Processos_Automaticos_View(View):
                 if data_prox_exe_completa != None:
                     data_prox_exec_compare = data_prox_exe_completa.astimezone(timezone.utc)
                     data_proxima_exe = datetime.strftime(data_prox_exe_completa, '%d-%m %H:%M')
-                if proc.cod_processo == 7:
-                    print(proc.desc_processo, ' - ', data_atual, ' / ', data_prox_exec_compare)
                 if data_prox_exec_compare > data_atual:
                     cor_status_prox_exec = '#00FA9A'
                 else:
+                    cod_status = 5
                     cor_status_prox_exec = '#FF0000'
 
 
@@ -105,6 +110,8 @@ class Frm_Painel_Processos_Automaticos_View(View):
                     data_prox_exe_completa = ultima_exec.data_status_exec + timedelta(hours=24)
                 elif proc.periodicidade == 'H':
                     data_prox_exe_completa = ultima_exec.data_status_exec + timedelta(minutes=int(proc.frequencia))
+                elif proc.periodicidade == 'M':
+                    data_prox_exe_completa = ultima_exec.data_status_exec + relativedelta(months=1)
 
                 '''Define cor da última execucao'''
                 if ultima_exec.cod_status_exec_processo.cod_status_exec_processo == 4:
@@ -117,11 +124,10 @@ class Frm_Painel_Processos_Automaticos_View(View):
                 '''Define cor da próxima execução'''
                 #data_prox_exec_compare = datetime.strptime(data_prox_exe_completa, '%d-%m-%Y %H:%M')
                 data_prox_exec_compare = data_prox_exe_completa.astimezone(timezone.utc)
-                if proc.cod_processo == 7:
-                    print(proc.desc_processo, ' - ', data_atual, ' / ', data_prox_exec_compare)
                 if data_prox_exec_compare > data_atual:
                     cor_status_prox_exec = '#00FA9A'
                 else:
+                    cod_status = 5
                     cor_status_prox_exec = '#FF0000'
 
                 data_proxima_exe = datetime.strftime(data_prox_exe_completa, '%d-%m')
@@ -142,13 +148,13 @@ class Frm_Painel_Processos_Automaticos_View(View):
 
 
 
-
+        ordem_status = [5, 4, 2, 3]
         context = {
             'desc_menu': 'Painel de Controle dos Processos - TI',
             'obj_usuario_logado': obj_usuario_logado,
             'lista_col': lista_col,
-            'lista_dic_proc_pri_0': lista_dic_proc_pri_0,
-            'lista_dic_proc_pri_1': lista_dic_proc_pri_1
+            'lista_dic_proc_pri_0': sorted(lista_dic_proc_pri_0, key=lambda x: ordem_status.index(x['cod_status'])),
+            'lista_dic_proc_pri_1': sorted(lista_dic_proc_pri_1, key=lambda x: ordem_status.index(x['cod_status']))
         }
 
         return render(request, 'ti_painel_processos_automaticos_app/frm_painel_processos_automaticos.html', context)
