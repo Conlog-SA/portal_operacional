@@ -11,10 +11,8 @@ class Frm_Painel_Processos_Automaticos_View(View):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
-        #data_atual = datetime.strptime(datetime.now(), '%d-%m-%Y %H:%M')
+
         data_atual = datetime.now(timezone.utc) - timedelta(hours=3)
-
-
 
         lista_dic_proc_pri_0 = []
         lista_obj_proc_pri_0 = Processo.objects.filter(eh_ativo=1, cod_prioridade=0)
@@ -148,13 +146,14 @@ class Frm_Painel_Processos_Automaticos_View(View):
 
 
 
-        ordem_status = [5, 4, 2, 3]
+        ordem_status = [5, 4, 2, 3, 1, 0]
         context = {
             'desc_menu': 'Painel de Controle dos Processos - TI',
             'obj_usuario_logado': obj_usuario_logado,
             'lista_col': lista_col,
             'lista_dic_proc_pri_0': sorted(lista_dic_proc_pri_0, key=lambda x: ordem_status.index(x['cod_status'])),
-            'lista_dic_proc_pri_1': sorted(lista_dic_proc_pri_1, key=lambda x: ordem_status.index(x['cod_status']))
+            'lista_dic_proc_pri_1': sorted(lista_dic_proc_pri_1, key=lambda x: ordem_status.index(x['cod_status'])),
+            'dt_ultima_atualizacao': datetime.strftime(data_atual, '%d-%m-%Y %H:%M')
         }
 
         return render(request, 'ti_painel_processos_automaticos_app/frm_painel_processos_automaticos.html', context)
