@@ -3897,7 +3897,7 @@ class Form_Vincula_Resp_Contas_View(View):
         lista_pacotes = Pacote_Conta.objects.all()
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu = 'A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         contexto = {
