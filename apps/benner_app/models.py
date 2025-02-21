@@ -254,7 +254,6 @@ class Familia():
         self.nome = nome
 
 class Produto():
-    def __init__(self, handle, nome, cod_ref):
-        self.handle = handle
+    def __init__(self, nome, cod_ref):
         self.nome = nome
         self.cod_ref = cod_ref

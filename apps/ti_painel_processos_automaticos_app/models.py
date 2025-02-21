@@ -39,11 +39,11 @@ class Processo(models.Model):
 class Execucao_Processo(models.Model):
     cod_exec_processo = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     obs_exec_processo = models.CharField(max_length=300, blank=False, null=False)
-    data = models.DateField(null=True, blank=True)
-    hora_inicio_exec = models.DateTimeField(null=True, blank=True)
-    hora_fim_exec = models.DateTimeField(null=True, blank=True)
     cod_status_exec_processo = models.ForeignKey(Status_Exec_Processo, models.DO_NOTHING,
                                                  db_column='cod_status_exec_processo', null=True, blank=True)
+    data_status_exec = models.DateTimeField(null=True, blank=True)
+    cod_processo = models.ForeignKey(Processo, models.DO_NOTHING, db_column='cod_processo', null=False, blank=False)
+
     class Meta:
         managed=True
         db_table='op_ti_painel_exec_processos'

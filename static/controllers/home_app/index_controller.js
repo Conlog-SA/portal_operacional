@@ -31,7 +31,9 @@ $.ajaxSetup({
 $(document).ready(function(){
     let let_status_login = $("#hd_indica_status_login").val();
     let let_msg_return = $("#hd_msg_return").val();
-    let let_cod_empresa = $("#hd_cod_empresa").val();
+    let let_cod_empresa = $("#hd_cod_empresa").val().toString();
+
+
 
     if( let_cod_empresa == '12'){
         $('body').css('background-image', "url('../../static/img/background.jpg')");

@@ -1842,7 +1842,10 @@ class Pdf_Rel_Pagamento_Terc(View):
                         seq_item=pagina_atual,
                         status_pag=pagamento.status_pagamento,
                         nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento
+                        num_doc_pagamento=pagamento.num_doc_pagamento,
+                        nome_usu_estorno='',
+                        data_estorno='',
+                        justificativa_estorno=''
                     )
                     cont_item += 1
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
@@ -1899,7 +1902,10 @@ class Pdf_Rel_Pagamento_Terc(View):
                         seq_item=pagina_atual,
                         status_pag=pagamento.status_pagamento,
                         nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento
+                        num_doc_pagamento=pagamento.num_doc_pagamento,
+                        nome_usu_estorno= '',
+                        data_estorno='',
+                        justificativa_estorno=''
                     )
                     cont_item += 1
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
