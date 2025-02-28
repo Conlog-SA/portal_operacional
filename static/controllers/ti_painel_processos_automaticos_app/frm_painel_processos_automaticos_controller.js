@@ -6,7 +6,9 @@ function atualizarPagina() {
         type: 'GET',
         url: '/ti_painel_processos_automaticos_app/',
         success: function(data) {
-            $("#main_menu").html(data);
+            setTimeout(() => {
+                $("#main_menu").html(data);
+            }, 1000);
         },
         error: function(request, status, error){
             $.gritter.add({
