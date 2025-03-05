@@ -25,16 +25,16 @@ $(document).on('click', '.envio-nps', function(){
     let easy_contact_justif = "";
     easy_contact_justif = $('#easy_contact_justification').val();
 
-    let politeness_checked = 0;
-	$(".politeness").each(function(i) {
+    let rapidness_checked = 0;
+	$(".rapidness").each(function(i) {
         console.log(this.checked);
         if (this.checked == true) {
-          politeness_checked = this.value;
+          rapidness_checked = this.value;
         }
     });
 
-    let politeness_justif = "";
-    politeness_justif = $('#politeness_justification').val();
+    let rapidness_justif = "";
+    rapidness_justif = $('#rapidness_justification').val();
 
     let resources_checked = 0;
 	$(".resources").each(function(i) {
@@ -90,8 +90,8 @@ $(document).on('click', '.envio-nps', function(){
                                                      satisfaction_just: satisfaction_justif,
                                                      easy_contact_ch: easy_contact_checked,
                                                      easy_contact_just: easy_contact_justif,
-                                                     politeness_ch: politeness_checked,
-                                                     politeness_just: politeness_justif,
+                                                     rapidness_ch: rapidness_checked,
+                                                     rapidness_just: rapidness_justif,
                                                      resources_ch: resources_checked,
                                                      resources_just: resources_justif,
                                                      solutions_ch: solutions_checked,

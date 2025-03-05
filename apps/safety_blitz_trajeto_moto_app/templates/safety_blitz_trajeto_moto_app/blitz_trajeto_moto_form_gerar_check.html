@@ -14,11 +14,6 @@
             <i class="fa-solid fa-motorcycle" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
            <h1 class="titlePadraoMenu" style="margin-left:0px;">Blitz de Trajeto</h1>
        </div>
-        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
-            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
-        {% else %}
-            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
-        {% endif %}
    </div>
     <div id="div_corpo_relato_blitz_trajeto" class="containerApp w-95 h-100" style="border-radius:0rem 0rem 0.5rem 0.5rem;margin-bottom:1rem">
         <div class="form-group form_div_check w-100 h-100" >
