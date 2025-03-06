@@ -73,7 +73,7 @@ class Form_Imp_Cad_Conta_View(View):
         #    qtd_arquivos_postados = len(lista_arquivos)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu = 'A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
 
@@ -1163,7 +1163,7 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu='A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
@@ -1191,7 +1191,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu='A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
