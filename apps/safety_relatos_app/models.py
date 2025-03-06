@@ -2,7 +2,6 @@ from django.db import models
 
 from apps.safety_checks_aplicados_app.models import Check_Aplicado
 
-git add 
 class Relato(models.Model):
     cod_relato_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     cod_tipo_relato = models.IntegerField(blank=False, null=False)
