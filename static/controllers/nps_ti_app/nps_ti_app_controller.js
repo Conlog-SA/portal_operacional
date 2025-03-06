@@ -75,7 +75,7 @@ $(document).on('click', '.envio-nps', function(){
     if (easy_contact_checked == '') {
         msg_erro += 'Responda a avaliação do critério 2!<br>';
     }
-    if (politeness_checked == '') {
+    if (rapidness_checked == '') {
         msg_erro += 'Responda a avaliação do critério 3!<br>';
     }
     if (resources_checked == '') {
