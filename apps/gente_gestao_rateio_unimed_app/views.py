@@ -205,10 +205,14 @@ class Form_Importa_Plan_Despesas_View(View):
                                     ~Q(tipo_depencencia__icontains='titular'))
 
                                 if lista_despesas_dependentes_titular.first() is not None:
-                                    if lista_despesas_dependentes_titular.count() == 1:
-                                        percentual_empresa = 90
-                                    if lista_despesas_dependentes_titular.count() > 1:
-                                        percentual_empresa = 0
+                                    dependente_foi_percorrido = lista_despesas_dependentes_titular.filter(nome_beneficiario=nome_beneficiario).first()
+                                    if dependente_foi_percorrido is not None:
+                                        percentual_empresa = dependente_foi_percorrido.percentual_empresa
+                                    else:
+                                        if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() == 1:
+                                            percentual_empresa = 90
+                                        if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() > 1:
+                                            percentual_empresa = 0
 
                         # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
                         if cod_plano == '33':
@@ -217,7 +221,8 @@ class Form_Importa_Plan_Despesas_View(View):
                                     Q(cod_arq_despesa__status_arquivo=1) &
                                     Q(matricula_titular=titular_senior['matricula_colab']) &
                                     Q(competencia=competencia) &
-                                    ~Q(tipo_depencencia__icontains='titular'))
+                                    ~Q(tipo_depencencia__icontains='titular') &
+                                    ~Q(nome_beneficiario=nome_beneficiario))
 
                                 if lista_despesas_dependentes_titular.first() is not None:
                                     percentual_empresa = 0
@@ -433,7 +438,7 @@ class Preenche_Colaborador(View):
         cod_plano = despesa_selecionada.cod_arq_despesa.cod_plano_saude.cod_plano_saude
 
         if despesa_selecionada.percentual_empresa is None:
-            novo_percentual_empresa = False
+            novo_percentual_empresa = True
             # REGRA DIFERENCIADA PLANO START - CUIABÁ
             if cod_plano == 31:
                 if 'titular' not in despesa_selecionada.tipo_depencencia.lower():
@@ -444,10 +449,15 @@ class Preenche_Colaborador(View):
                         ~Q(tipo_depencencia__icontains='titular'))
 
                     if lista_despesas_dependentes_titular.first() is not None:
-                        if lista_despesas_dependentes_titular.count() == 1:
-                            novo_percentual_empresa = 90
-                        if lista_despesas_dependentes_titular.count() > 1:
-                            novo_percentual_empresa = 0
+                        dependente_foi_percorrido = lista_despesas_dependentes_titular.filter(
+                            nome_beneficiario=despesa_selecionada.nome_beneficiario).first()
+                        if dependente_foi_percorrido is not None:
+                            novo_percentual_empresa = dependente_foi_percorrido.percentual_empresa
+                        else:
+                            if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() == 1:
+                                novo_percentual_empresa = 90
+                            if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() > 1:
+                                novo_percentual_empresa = 0
 
             # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
             elif cod_plano == 33:
@@ -456,12 +466,13 @@ class Preenche_Colaborador(View):
                         Q(cod_arq_despesa__status_arquivo=1) &
                         Q(matricula_titular=matricula) &
                         Q(competencia=despesa_selecionada.competencia) &
-                        ~Q(tipo_depencencia__icontains='titular'))
+                        ~Q(tipo_depencencia__icontains='titular') &
+                        ~Q(nome_beneficiario=despesa_selecionada.nome_beneficiario))
 
                     if lista_despesas_dependentes_titular.first() is not None:
                         novo_percentual_empresa = 0
 
-            if novo_percentual_empresa != False:
+            if novo_percentual_empresa != True:
                 despesa_selecionada.percentual_empresa = novo_percentual_empresa
 
         despesa_selecionada.save()
