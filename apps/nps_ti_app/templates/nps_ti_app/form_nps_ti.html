@@ -181,7 +181,7 @@
                     <span class="required">*</span>
                 </label>
                 <select required style="width: 200px; margin-top: 10px; padding: 5px;" id="filial_nps">
-                    <option value="">Choose</option>
+                    <option value="">Selecione a filial</option>
                     {% for filial in filiais_nps %}
                         <option value="{{filial.cod_filial_nps}}">{{filial.desc_filial_nps}}</option>
                     {% endfor %}
@@ -236,7 +236,7 @@
                     </div>
                 </div>
                 <label>
-                    Justifique a resposta em caso de nota abaixo de 7:
+                    Justifique a resposta em caso de nota abaixo de 7 (mínimo 15 caracteres):
                 </label>
                 <textarea id="justification" name="justification"></textarea>
             </div>
@@ -291,7 +291,7 @@
                     </div>
                 </div>
                 <label>
-                    Justifique a resposta em caso de nota abaixo de 7:
+                    Justifique a resposta em caso de nota abaixo de 7 (mínimo 15 caracteres):
                 </label>
                 <textarea name="easy_contact_justification" id="easy_contact_justification"></textarea>
             </div>
@@ -346,7 +346,7 @@
                     </div>
                 </div>
                 <label>
-                    Justifique a resposta em caso de nota abaixo de 7:
+                    Justifique a resposta em caso de nota abaixo de 7 (mínimo 15 caracteres):
                 </label>
                 <textarea name="rapidness_justification" id="rapidness_justification"></textarea>
             </div>
@@ -400,7 +400,7 @@
                     </div>
                 </div>
                 <label>
-                    Justifique a resposta em caso de nota abaixo de 7:
+                    Justifique a resposta em caso de nota abaixo de 7 (mínimo 15 caracteres):
                 </label>
                 <textarea name="resources_justification" id="resources_justification"></textarea>
             </div>
@@ -454,7 +454,7 @@
                     </div>
                 </div>
                 <label>
-                    Justifique a resposta em caso de raramente ou nunca:
+                    Justifique a resposta em caso de raramente ou nunca (mínimo 15 caracteres):
                 </label>
                 <textarea name="solutions_justification" id="solutions_justification"></textarea>
             </div>

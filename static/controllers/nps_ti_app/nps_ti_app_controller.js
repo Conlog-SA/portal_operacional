@@ -69,35 +69,60 @@ $(document).on('click', '.envio-nps', function(){
         msg_erro += 'Dê uma nota ao critério 1!<br>';
     }
     else if (Number(satisfaction_checked) < 7 && satisfaction_justif.length < 15) {
-        msg_erro += 'Justifique a sua nota para o critério 1! (mínimo de 15 caracteres)<br>';
+        if (satisfaction_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 1! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-satisfaction_justif.length).toString() + ' caracteres na justificativa do critério 1!<br>'
+        }
     }
 
     if (easy_contact_checked == '') {
         msg_erro += 'Dê uma nota ao critério 2!<br>';
     }
     else if (Number(easy_contact_checked) < 7 && easy_contact_justif.length < 15) {
-        msg_erro += 'Justifique a sua nota para o critério 2! (mínimo de 15 caracteres)<br>';
+        if (easy_contact_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 2! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-easy_contact_justif.length).toString() + ' caracteres na justificativa do critério 2!<br>'
+        }
     }
 
     if (rapidness_checked == '') {
         msg_erro += 'Dê uma nota ao critério 3!<br>';
     }
     else if (Number(rapidness_checked) < 7 && rapidness_justif.length < 15) {
-        msg_erro += 'Justifique a sua nota para o critério 3! (mínimo de 15 caracteres)<br>';
+        if (rapidness_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 3! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-rapidness_justif.length).toString() + ' caracteres na justificativa do critério 3!<br>'
+        }
     }
 
     if (resources_checked == '') {
         msg_erro += 'Dê uma nota ao critério 4!<br>';
     }
     else if (Number(resources_checked) < 7 && resources_justif.length < 15) {
-        msg_erro += 'Justifique a sua nota para o critério 4! (mínimo de 15 caracteres)<br>';
+        if (resources_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 4! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-resources_justif.length).toString() + ' caracteres na justificativa do critério 4!<br>'
+        }
     }
 
     if (solutions_checked == '') {
         msg_erro += 'Dê uma nota ao critério 5!<br>';
     }
     else if (Number(solutions_checked) < 7 && solutions_justif.length < 15) {
-        msg_erro += 'Justifique a sua nota para o critério 5! (mínimo de 15 caracteres)<br>';
+        if (solutions_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 5! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-solutions_justif.length).toString() + ' caracteres na justificativa do critério 5!<br>'
+        }
     }
 
     if (msg_erro == '') {
