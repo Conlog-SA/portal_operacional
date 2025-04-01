@@ -133,7 +133,6 @@ class Conexao_Senior_BD():
                            LEFT JOIN R018CCU D (NOLOCK) ON (D.NUMEMP = A.NUMEMP AND D.CODCCU = A.CODCCU)
                            WHERE A.NUMCPF = ?
                            AND  C.NUMEMP = ?
-                           AND A.SITAFA != 7
                            AND  (
                                 SELECT TOP 1 hist_pos.postra
                                 FROM R038HPO hist_pos
