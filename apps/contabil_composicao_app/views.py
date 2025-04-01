@@ -2613,6 +2613,7 @@ class Form_Status_Contrato_Composicao_View(View):
             reg['val_composicao'] = locale.currency(round(float(reg['val_composicao']), 2), grouping=True, symbol=None)
             reg['val_balancete'] = locale.currency(round(float(reg['val_balancete']), 2), grouping=True, symbol=None)
             reg['val_diferenca'] = locale.currency(round(float(reg['val_diferenca']), 2), grouping=True, symbol=None)
+            reg['data_lan_auditoria'] = datetime.strftime(reg['data_lan_auditoria'], '%d-%m-%Y')
 
             if reg['cod_status_comp__desc_status'] == None:
                 reg['cod_status_comp__desc_status'] = ''

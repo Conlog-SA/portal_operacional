@@ -23,7 +23,7 @@
               enctype="multipart/form-data">
             {% csrf_token %}
 
-
+            {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 17 %}
             <div id="dv_assinatura" class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding-top: 5rem;padding-bottom: 3rem;padding-left: 10rem;padding-right: 10rem;">
                <table style="width: 90%;background-color: #fff;">
                    <tr>
@@ -94,7 +94,107 @@
                </table>
             </div>
 
-			<div class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding: 1rem;">
+
+            {% else %}
+
+            <div id="dv_assinatura" class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding-top: 5rem;padding-bottom: 3rem;padding-left: 10rem;padding-right: 10rem;">
+               <table style="width: 90%;background-color: #fff;">
+                   <tr>
+                       <td style="text-align: left;padding-left: 2rem;padding-top: 3rem;padding-bottom: 3rem;width: 30%;">
+                           <span id="sp_nome_colab" style="font-size: 30px;color: #f46424;font-weight: 800;
+                           cursor: pointer;">{{ obj_usuario_logado.nome_usu }}</span><br/>
+                           <img src="https://operacional.conlogsa.com.br/static/img/email_conlog.png" width="25px">
+                           <span id="sp_email_colab" style="cursor: pointer;font-size: 18px;color: #000000;font-weight: 600;">{{ obj_usuario_logado.email_usu }}</span><br/>
+                       </td>
+                       <td>
+                           &nbsp;
+                       </td>
+                       <td style="padding: 50px;" align="right">
+                           <span id="sp_cargo_colab"  style="font-size: 30px;color: #000000;font-weight: 700; cursor: pointer;">{{ dados_colab.desc_cargo_colab }}</span>
+                       </td>
+                   </tr>
+                   <tr>
+                       <td>
+                           &nbsp;
+                       </td>
+                       <td>
+                           &nbsp;
+                       </td>
+                       <td>
+                           &nbsp;
+                       </td>
+                   </tr>
+                   <tr>
+                       <td style="text-align: left;padding-left: 2rem;">
+                           <img src="https://operacional.conlogsa.com.br/static/img/localization_conlog.png" width="25px">
+                           <span id="sp_local_colab" style="cursor: pointer;font-size: 23px;color: #000000;font-weight: 400;">{{ dados_colab.nome_local }}</span><br/>
+                       </td>
+                       <td style="text-align: center;">
+                           <img src="https://operacional.conlogsa.com.br/static/img/flag_conlog.png" width="25px">
+                           <span id="sp_filial_colab" style="cursor: pointer;font-size: 23px;color: #000000;font-weight: 400;">{{ dados_colab.nome_filial }}</span><br/>
+                       </td>
+                       <td style="text-align: right;padding-right: 2rem;">
+                            <img src="https://operacional.conlogsa.com.br/static/img/telephone_conlog.png" width="25px">
+                            <span id="sp_tel_colab" style="cursor: pointer;font-size: 23px;color: #000000;font-weight: 400;">{{ tel_colab }}</span>
+                       </td>
+                   </tr>
+
+                   <tr>
+                       <td>
+                           &nbsp;
+                       </td>
+                       <td>
+                           &nbsp;
+                       </td>
+                       <td>
+                           &nbsp;
+                       </td>
+                   </tr>
+
+                   <tr>
+                       <td colspan="3">
+                           <table style="width: 100%; background: #f46424; border-top-left-radius: 25px;border-top-right-radius: 25px; color: #f46424;">
+                               <tr>
+                                   <td>&nbsp;&nbsp;</td>
+                                   <td>&nbsp;&nbsp;</td>
+                                   <td>&nbsp;&nbsp;</td>
+                               </tr>
+                               <tr>
+                                   <td style="padding: 20px;" align="left">
+                                       <a id="a_linkdin" href="https://br.linkedin.com/company/deeplogistica" target="blank"
+                                          style="cursor: pointer; padding: .3rem; color: #f46424;">
+                                           <img src="https://operacional.conlogsa.com.br/static/img/linkedin_conlog.png"style="width: 44px;"/>
+                                       </a>
+                                       <a id="a_facebook" href="https://www.facebook.com/deeplogistica" target="blank"
+                                          style="cursor: pointer; padding: 00.3rem; color: #f46424;">
+                                           <img src="https://operacional.conlogsa.com.br/static/img/facebook_conlog.png" style="width: 44px;"/>
+                                       </a>
+                                       <a id="a_instagram" href="https://www.instagram.com/deeplogistica" target="blank"
+                                          style="cursor: pointer; padding: 0.3rem; color: #f46424;">
+                                           <img src="https://operacional.conlogsa.com.br/static/img/instagram_conlog.png" style="width: 44px;"/>
+                                       </a>
+                                   </td>
+                                   <td>&nbsp;&nbsp;</td>
+                                   <td style="padding: 20px;" align="right">
+                                       <img src="https://operacional.conlogsa.com.br/static/img/Logo_Branca.png" width="250px">
+                                   </td>
+                               </tr>
+                               <tr>
+                                   <td>&nbsp;&nbsp;</td>
+                                   <td>&nbsp;&nbsp;</td>
+                                   <td>&nbsp;&nbsp;</td>
+                               </tr>
+                           </table>
+                       </td>
+                   </tr>
+
+
+
+               </table>
+            </div>
+            {% endif %}
+
+            <div class="d-flex w-100 flex-column justify-content-between align-items-center" style="padding: 1rem;">
                 <div class="d-flex flex-column align-items-end w-100">
                     <button type='button' id="btn_copiar_assinatura"
                             name="btn_copiar_assinatura"
@@ -104,6 +204,8 @@
                     </button>
                 </div>
             </div>
+
+
 
 
         </form>

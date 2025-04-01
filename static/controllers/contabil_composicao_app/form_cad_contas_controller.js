@@ -2917,6 +2917,7 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     status.val_balancete,
                     status.val_diferenca,
                     status.cod_usu__nome_usu,
+                    status.data_lan_auditoria,
                     let_desc_comp,
                     let_desc_ana,
                     let_desc_reg
@@ -2939,6 +2940,7 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     { title: "Balancete" },
                     { title: "Diferença" },
                     { title: "Usuário" },
+                    { title: "Composta em:" },
                     { title: "Composição" },
                     { title: "Análise" },
                     { title: "Regularização" }
