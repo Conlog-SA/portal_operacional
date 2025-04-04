@@ -12,7 +12,6 @@ from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usu_Menu
 from proj_portal_operacional.settings import VERSAO_SAFETY
 
-
 class Login_Colaborador(View):
     @csrf_exempt
     def get(self, request):
@@ -22,8 +21,25 @@ class Login_Colaborador(View):
             if "Visitante" in colaborador.nome_colaborador:
                 request.session['cod_colaborador'] = id_visitante
                 return redirect('relatos_check')
+        flag_voltar = request.GET.get('flag_voltar')
+        if flag_voltar == "1":
+            return render(request, 'safety_login_colaboradores_app/seleciona_empresa_fragment.html')
+        empresa = request.GET.get('empresa')
+        if empresa == 'conlog':
+            cod_empresa = '12'
+            cor_empresa = '#f46424'
+            request.session['cod_empresa_selecionada'] = '12'
+        elif empresa == 'deep':
+            cod_empresa = '17'
+            cor_empresa = '#3b8eed'
+            request.session['cod_empresa_selecionada'] = '17'
+        else:
+            #return redirect('/safety_login_colaboradores_app/')
+            return render(request, 'safety_login_colaboradores_app/frm_seleciona_empresa.html')
         context = {
             'VERSAO_SAFETY': VERSAO_SAFETY,
+            'cor_empresa': cor_empresa,
+            'cod_empresa': cod_empresa
         }
         return render(request, 'safety_login_colaboradores_app/safe_base_container.html', context)
 
@@ -39,10 +55,15 @@ class Login_Colaborador(View):
 
         colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab)
         if colaboradores.first() != None and colaboradores.count() == 1:
-            request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
-            return redirect('safe_main_menu')
+            cod_empresa_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial).cod_empresa.cod_empresa
+            if request.session['cod_empresa_selecionada'] == str(cod_empresa_colaborador):
+                request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
+                return redirect('safe_main_menu')
+            else:
+                msg_erro = 'Empresa incorreta, clique em voltar e escolha a empresa correta.'
         else:
             msg_erro = 'Colaborador não existente/cadastrado.'
+
         return HttpResponse(msg_erro, status=401)
 
 class Login_Colaborador_Deep(View):
@@ -138,7 +159,7 @@ class Menu_Safe(View):
                                             </div>
                                         '''
         elif colaborador.perfil_usu == 'G':
-            str_menu_colaborador += ''' <div style="height:70%;overflow:scroll">
+            str_menu_colaborador += ''' <div style="height:70%;overflow-y:scroll">
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
                                                 <b style="color:white;">Empilhadeiras</b>
@@ -187,7 +208,14 @@ class Menu_Safe(View):
 
         url = ''
         if tipo_check == '999':
-            return render(request, 'safety_login_colaboradores_app/form_safe_login.html')
+            cod_colaborador = request.session['cod_colaborador']
+            colaborador = Colaborador.objects.get(pk=cod_colaborador)
+            empresa_colaborador = Filial.objects.get(pk=colaborador.cod_filial).cod_empresa.cod_empresa
+            context = {
+                "cod_empresa": empresa_colaborador
+            }
+
+            return render(request, 'safety_login_colaboradores_app/form_safe_login.html', context)
         elif tipo_check == '0':
             url = 'empilhadeira_check'
         elif tipo_check == '1':

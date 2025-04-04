@@ -27,7 +27,7 @@ $(document).on('click','.btn-login-safety' , function(){
         let let_data_nasc_date = let_data_nasc_split[2] + '-' + let_data_nasc_split[1] + '-' + let_data_nasc_split[0];
         $.ajax({
             type: 'POST',
-            url: '/safety_login_colaboradores_app/safe_login_colab',
+            url: '/safety_login_colaboradores_app/',
             data: {
                 'cpf_colaborador'   :   let_cpf_colaborador,
                 'data_nasc_colaborador'   :   let_data_nasc_date,
@@ -246,6 +246,21 @@ $(document).on('click','.btn-sair-safety' , function(){
             $('#main_container_safety').css("margin-left","0px");
 
             $('.selectpicker').selectpicker();
+        }
+    });
+});
+
+$(document).on('click','.btn-voltar-empresa-safety' , function(){
+
+    $.ajax({
+        type: 'GET',
+        url: '/safety_login_colaboradores_app/',
+        data: {
+            'flag_voltar'   :   1,
+        },
+        success: function (dados) {
+            //$('body').html(dados);
+            $("#main_container_safety").html(dados);
         }
     });
 });
