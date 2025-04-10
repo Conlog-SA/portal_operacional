@@ -116,9 +116,10 @@ class Conexao_Senior_BD():
                                 
                                 (SELECT COUNT(NUMCPF) 
                                 FROM r034fun (NOLOCK) 
+                                WHERE sitafa != 7
                                 GROUP BY NUMCPF 
                                 HAVING NUMCPF = ?
-                                ) AS QTD_REGISTROS_COL,
+                                ) AS QTD_REGISTROS_ATIVOS,
                                 
                                 (SELECT TOP 1 hist_pos.postra
                                 FROM R038HPO hist_pos
@@ -168,23 +169,48 @@ class Conexao_Senior_BD():
                     'matricula_colab': colaborador.ID,
                     'situacao_colab': colaborador.SITUACAO_COLAB,
             }
-            cursor.close()
-            self.__conn.close()
-            return data
 
-        else:
-            if len(cursor.fetchall()) == 0 or cursor is None:
-                print('nao achou')
-                data = {
-                    'erro': 'Colaborador não encontrado'
-                }
-                return data
-            if len(cursor.fetchall()) > 1:
-                print('achou mais de 1')
+        elif len(result) == 0 or cursor is None:
+            #Não encontrou nenhum cadastro ativo
+            data = {
+                'erro': 'Colaborador não encontrado'
+            }
+
+        elif len(result) > 1:
+            colaborador = result[0]
+            print(colaborador)
+            print(colaborador[8])
+            if colaborador[8] is not None:
+                if colaborador[8] > 1:
+                    #Encontrou mais de um cadastro ativo.
+                    data = {
+                        'erro': 'Colaborador duplicado'
+                    }
+                elif colaborador[8] == 1:
+                    data = {
+                        'nome_colab': colaborador.NOME_FUNC,
+                        'cod_filial_colab': colaborador.COD_FIL,
+                        'nom_filial_colab': colaborador.NOM_FIL,
+                        'cod_projeto_colab': colaborador.COD_PROJ,
+                        'nom_projeto_colab': colaborador.NOM_PROJ,
+                        'cpf_colab': colaborador.CPF,
+                        'matricula_colab': colaborador.ID,
+                        'situacao_colab': colaborador.SITUACAO_COLAB,
+                    }
+                elif colaborador[8] == 0:
+                    #Encontrou mais de um cadastro inativo, enquanto não existem cadastros ativos.
+                    print('achou mais de 1')
+                    data = {
+                        'erro': 'Colaborador duplicado'
+                    }
+            else:
                 data = {
                     'erro': 'Colaborador duplicado'
                 }
-                return data
+
+        cursor.close()
+        self.__conn.close()
+        return data
 
     def pesquisar_dados_dependente_por_cpf_emp(self, cpf):
         cursor = self.__conn.cursor()
