@@ -29,10 +29,12 @@ class Login_Colaborador(View):
             cod_empresa = '12'
             cor_empresa = '#f46424'
             request.session['cod_empresa_selecionada'] = '12'
+            request.session['cod_empresa'] = cod_empresa
         elif empresa == 'deep':
             cod_empresa = '17'
             cor_empresa = '#3b8eed'
             request.session['cod_empresa_selecionada'] = '17'
+            request.session['cod_empresa'] = cod_empresa
         else:
             #return redirect('/safety_login_colaboradores_app/')
             return render(request, 'safety_login_colaboradores_app/frm_seleciona_empresa.html')
@@ -55,8 +57,12 @@ class Login_Colaborador(View):
 
         colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab)
         if colaboradores.first() != None and colaboradores.count() == 1:
-            cod_empresa_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial).cod_empresa.cod_empresa
-            if request.session['cod_empresa_selecionada'] == str(cod_empresa_colaborador):
+            filial_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial)
+            cod_empresa_colaborador = filial_colaborador.cod_empresa.cod_empresa
+            if str(request.session['cod_empresa_selecionada']) == str(cod_empresa_colaborador) and filial_colaborador.cod_filial not in [34, 57, 89]:
+                request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
+                return redirect('safe_main_menu')
+            elif str(request.session['cod_empresa_selecionada']) != str(cod_empresa_colaborador) and filial_colaborador.cod_filial in [34, 57, 89]:
                 request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
                 return redirect('safe_main_menu')
             else:
@@ -106,7 +112,14 @@ class Menu_Safe(View):
                 str_menu_colaborador += '''
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Empilhadeiras</b>
+                                                <b style="color:white;">GSO - Empilhadeiras</b>
+                                            </div>
+                                        '''
+            if check_ativo.filter(cod_check__tipo_check=8).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">GSO - Ônibus</b>
                                             </div>
                                         '''
             if check_ativo.filter(cod_check__tipo_check=2).first() is not None:
@@ -151,18 +164,16 @@ class Menu_Safe(View):
                                                 <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
                                             </div>
                                         '''
-            if check_ativo.filter(cod_check__tipo_check=8).first() is not None:
-                str_menu_colaborador += '''
-                                            <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">GSO</b>
-                                            </div>
-                                        '''
+
         elif colaborador.perfil_usu == 'G':
             str_menu_colaborador += ''' <div style="height:70%;overflow-y:scroll">
                                             <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem">
                                                 <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">Empilhadeiras</b>
+                                                <b style="color:white;">GSO - Empilhadeiras</b>
+                                            </div>
+                                            <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">GSO - Ônibus</b>
                                             </div>
                                             <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem">
                                                     <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
@@ -183,10 +194,6 @@ class Menu_Safe(View):
                                             <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem">
                                                     <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
                                                     <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
-                                            </div>
-                                            <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem">
-                                                <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
-                                                <b style="color:white;">GSO</b>
                                             </div>
                                         </div>
                                     '''
@@ -211,8 +218,11 @@ class Menu_Safe(View):
             cod_colaborador = request.session['cod_colaborador']
             colaborador = Colaborador.objects.get(pk=cod_colaborador)
             empresa_colaborador = Filial.objects.get(pk=colaborador.cod_filial).cod_empresa.cod_empresa
+            #if empresa_colaborador in [34, 57, 89]:
+            #    cod_empresa = 17
+
             context = {
-                "cod_empresa": empresa_colaborador
+                "cod_empresa": request.session['cod_empresa']
             }
 
             return render(request, 'safety_login_colaboradores_app/form_safe_login.html', context)
