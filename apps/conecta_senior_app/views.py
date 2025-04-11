@@ -154,6 +154,8 @@ class Conexao_Senior_BD():
                                    A.SITAFA,
                                    A.CODCCU,
                                    D.NOMCCU
+                           ORDER BY
+                           			A.SITAFA
                                    ''', [int(cpf.split('.')[0]), int(cpf.split('.')[0]), int(cod_empresa)])
         result = list(cursor.fetchall())
         #result = [reg for reg in result if reg.QTD_REGISTROS_COL == 1 or reg.QTD_REGISTROS_COL > 1 and reg.SITUACAO_COLAB == 1]
@@ -187,6 +189,7 @@ class Conexao_Senior_BD():
                         'erro': 'Colaborador duplicado'
                     }
                 elif colaborador[8] == 1:
+
                     data = {
                         'nome_colab': colaborador.NOME_FUNC,
                         'cod_filial_colab': colaborador.COD_FIL,
