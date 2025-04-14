@@ -684,25 +684,42 @@ class Calcula_Rateio(View):
                 custo_titulares_empresa_por_projeto_teste = [reg for reg in despesas_titulares_test_obj if reg.desc_projeto_senior == projeto['desc_projeto_senior']]
                 custo_titulares_empresa_por_projeto_teste_excecao = [reg for reg in despesas_titulares_test_obj if
                                                              reg.desc_projeto_senior == projeto['desc_projeto_senior']]
+                print(despesa_titulares_empresa_do_projeto)
 
-                lista_custo_titulares_porcentagem_informado_do_projeto = [d for d in
-                                                                        lista_dict_titulares_percentual_informado if
-                                                                        d['desc_projeto'] ==
-                                                                        despesa_titulares_empresa_do_projeto[0][
-                                                                            'desc_projeto_senior']]
-
-                if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
-                    custo_total_titulares_do_projeto_porcentagem_informada = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa']) + float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa'])
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
-                else:
-                    custo_total_titulares_do_projeto_porcentagem_informada = 0
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                 if despesa_titulares_empresa_do_projeto != []:
                     custo_total_titulares_do_projeto_porcentagem_plano = float(despesa_titulares_empresa_do_projeto[0]['valor_total'])
                     custo_titulares_do_projeto_porcentagem_plano_parcela_empresa = float((custo_total_titulares_do_projeto_porcentagem_plano)*(plano_saude.percentual_empresa_titular/100))
                     custo_titulares_do_projeto_porcentagem_plano_parcela_colaborador = float((custo_total_titulares_do_projeto_porcentagem_plano)*(100-plano_saude.percentual_empresa_titular)/100)
+
+                    lista_custo_titulares_porcentagem_informado_do_projeto = [d for d in
+                                                                              lista_dict_titulares_percentual_informado
+                                                                              if
+                                                                              d['desc_projeto'] ==
+                                                                              despesa_titulares_empresa_do_projeto[0][
+                                                                                  'desc_projeto_senior']]
+
+                    #if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
+                    #    custo_total_titulares_do_projeto_porcentagem_informada = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa']) + float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
+                    #    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa'])
+                    #    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
+
+                    if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = sum(
+                            float(d['valor_empresa']) for d in lista_custo_titulares_porcentagem_informado_do_projeto)
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = sum(
+                            float(d['valor_colaborador']) for d in
+                            lista_custo_titulares_porcentagem_informado_do_projeto)
+                        custo_total_titulares_do_projeto_porcentagem_informada = (
+                                custo_titulares_do_projeto_porcentagem_informada_parcela_empresa +
+                                custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador)
+                    else:
+                        custo_total_titulares_do_projeto_porcentagem_informada = 0
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                 else:
                     custo_total_titulares_do_projeto_porcentagem_plano = 0
                     custo_titulares_do_projeto_porcentagem_plano_parcela_empresa = 0
