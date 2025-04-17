@@ -6,6 +6,13 @@
 {% endblock %}
 
 {% block link_static_css %}
+  {% if cod_empresa == '12' %}
+    <link rel="stylesheet" href="{% static 'css/cores_conlog.css' %}" />
+
+  {% else %}
+    <link rel="stylesheet" href="{% static 'css/cores_deep.css' %}" />
+  {% endif %}
+
   <link rel="stylesheet" href="{% static 'css/safe_login_colaboradores/safety_login_colaboradores.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/menu_app/menu_app.css' %}"/>
   <link rel="stylesheet" href="{% static 'css/perfil-dropdown.css' %}" />
@@ -21,7 +28,7 @@
 
 {% block conteudo %}
   <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex homeApp_loginContainer safety-container-screen">
-    <form class="d-flex justify-content-center align-items-center flex-column">
+    <form class="d-flex justify-content-center align-items-center flex-column" style="width:100%">
         {% csrf_token %}
           <input type="hidden" id="hd_indica_status_login" value="{{ cod_status_login }}">
           <input type="hidden" id="hd_msg_return" value="{{ msg_erro }}">
@@ -49,11 +56,36 @@
         <div class="form__group field">
             <h6>{{ msg }}</h6>
         </div>
-          <div class="homeApp__sobre">
-                <img class="conlog-logo" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
-                <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
-          </div>
+        {% if cod_empresa == '12' %}
+            <div class="homeApp__sobre">
+              <img class="conlog-logo" src="{% static 'img/logo-conlog.png'%}" alt="Logo Conlog"/>
+              <img class="mt-2 homeApp_temValor" src="{% static 'img/tem-valor.png'%}" alt="Logo Conlog"/>
+            </div>
+        {% else %}
+            <div class="homeApp__sobre" style="width:30%">
+              <img class="logo-deep" src="{% static 'img/logo-deep-small.png'%}" alt="Logo Deep" style="max-width:100%;"/>
+            </div>
+        {% endif %}
       </form>
+      {% if cod_empresa == '12' %}
+        <div style="display:flex;justify-content:flex-end;height:10%;width:100%;padding: 0px 16px 90px 0px;position:absolute;bottom:0px;">
+            <button class="btn btn-space btn-voltar-empresa-safety">
+                <div style="display:flex;flex-direction:column">
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="color:#f46424;font-size:32px"></i>
+                    <b style="color:white;font-size:17px">Voltar</b>
+                </div>
+            </button>
+        </div>
+        {% else %}
+        <div style="display:flex;justify-content:flex-end;height:10%;width:100%;padding: 0px 16px 90px 0px;position:absolute;bottom:0px;">
+            <button class="btn btn-space btn-voltar-empresa-safety">
+                <div style="display:flex;flex-direction:column">
+                    <i class="fa-solid fa-arrow-right-from-bracket" style="color:#3b8eed;font-size:32px"></i>
+                    <b style="color:white;font-size:17px">Voltar</b>
+                </div>
+            </button>
+        </div>
+        {% endif %}
   </main>
 {% endblock %}
 
