@@ -1378,7 +1378,6 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                 'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab
             }
 
-
         return JsonResponse(data, safe=False)
 
 
