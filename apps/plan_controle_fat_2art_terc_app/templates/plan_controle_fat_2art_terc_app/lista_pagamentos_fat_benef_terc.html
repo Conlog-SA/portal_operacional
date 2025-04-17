@@ -1,0 +1,329 @@
+{% load static %}
+
+{% if tipo_ocorr == 'M' %}
+    <div class="d-flex justify-content-between align-items-between w-100">
+        <div id="acc_pagamentos" class="accordion"
+             style="width: 100%;border: 0px solid #dcdcdc;margin-left: 5px; margin-right: 0px;">
+            {% for pag in registros_tab_pagamentos_terc %}
+            <div class="accordion-item">
+                <h2 id="heading${pag.cod_pag}" class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{pag.cod_pag}}"
+                            name="btnMapasPagosBeneficiario"
+                            id="btnMapasPagosBeneficiario{{pag.cod_pag}}" value="{{pag.cod_pag}}"
+                            aria-expanded="false" aria-controls="collapse{{pag.cod_pag}}"
+                            style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;
+                        border-left-width:0px;padding-top: 5px;padding-right: 5px;padding-bottom: 5px;
+                        padding-left: 5px;">
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex align-items-start w-100"
+                                 style="color:#f46424 !important;font-size:12px;font-weight: 500;">
+
+                                <input type="hidden" name="hiddenNomeBeneficiarioRel"
+                                       id="hiddenNomeBeneficiarioRel{{pag.cod_pag}}"
+                                       value="{{pag.doc_benef}}_{{pag.nome_beneficiario}}">
+                                <i class="fa-solid fa-caret-right" style="color:#f46424 !important;"></i>
+                                &nbsp;&nbsp;
+                                <b>{{pag.doc_benef}} - {{pag.nome_beneficiario}}</b>
+
+                                {% if pag.status_pag == 'E' %}
+                                    &nbsp;&nbsp;
+                                    <span style="background:#DC143C;color:#FFFFFF;padding: .25rem; border-radius: .25rem;font-weight: 400;font-size:10px;">
+                                    (ESTORNADO POR: {{pag.nome_usu_estorno}}, em {{pag.data_estorno}}.
+                                        Motivo: {{pag.justificativa_estorno}})
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Data</b>{{pag.data}}
+                            </div>
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Serial </b> {{pag.num_doc_pagamento}}-{{pag.serial_pag_proj}}
+                            </div>
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Val.(R$) </b>{{pag.val_frete}}
+                            </div>
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Desc.(R$) </b> {{pag.desc}}
+                            </div>
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Acrés.(R$)</b>{{pag.acres}}
+                            </div>
+                            <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                <b style="font-size: 11px;">Val. TT.(R$)</b> {{pag.val_pagar}}
+
+                                <input type="hidden" name="hiddenDataGeracaoPagamento"
+                                       id="hiddenDataGeracaoPagamento{{pag.cod_pag}}" value="{{pag.data}}">
+                                <input type="hidden" name="hiddenSerialPagamento"
+                                       id="hiddenSerialPagamento{{pag.cod_pag}}"
+                                       value="{{pag.num_doc_pagamento}}_{{pag.serial_pag_proj}}">
+                            </div>
+                        </div>
+                    </button>
+                </h2>
+                <div id="collapse{{pag.cod_pag}}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{pag.cod_pag}}"
+                     data-parent="#acc_pagamentos" >
+                    <div class="accordion-body" id="divMapasPagoBeneficiarioSelecionado{{pag.cod_pag}}"
+                         style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
+
+                        <div class="mt-2 d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' and tipo_corporativo_usuario == 'S' %}
+                                    <input type="hidden" id="hd_tipo_pagamento_{{pag.cod_pag}}" name="hd_tipo_pagamento"
+                                    value="M"/>
+                                    <button type="button" name="btnDesfazPagamentoMapasBeneficiario"
+                                        id="btnDesfazPagamentoMapasBeneficiario{{pag.cod_pag}}"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        value="{{pag.cod_pag}}">
+                                            <i class="fa-solid fa-clock-rotate-left"></i>Estornar Pagamento
+                                    </button>
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' %}
+                                    <button type="button" name="btnGeraPDFPagMapas" id="btnGeraPDFPagMapas{{pag.cod_pag}`}"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        value="{{pag.cod_pag}}">
+                                            <i class="fa-regular fa-file-pdf"></i>PDF Pagamento
+                                     </button>
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' %}
+                                    {% if pag.desc != '0,00' or pag.acres != '0,00' %}
+                                        <button type="button" name="btnGeraPDFDescAcres" id="btnGeraPDFDescAcres{{pag.cod_pag}}"
+                                            class="btn btn-primary btn-rounded botaoPrincipal"
+                                            value="{{pag.cod_pag}}">
+                                                <i class="fa-regular fa-file-pdf"></i>PDF Desc./Acrés.
+                                         </button>
+                                    {% endif %}
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                        </div>
+
+                        <div class="form-group cl_div_tabela_principal_pagina w-100" style="margin-top: 0.5rem;">
+                            <table id="tabPagMapasTerc{{pag.cod_pag}}"  class="display wrap w-100 cl_tab_principal_pagina" >
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Data</th>
+                                        <th scope="col">Mapa</th>
+                                        <th scope="col">Placa</th>
+                                        <th scope="col">Valor(R$)</th>
+                                        <th scope="col">Desc.(R$)</th>
+                                        <th scope="col">Acrésc.(R$)</th>
+                                        <th scope="col">Val. Total</th>
+                                        <th scope="col">Obs. Desc.</th>
+                                        <th scope="col">Obs. Acrésc.</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in pag.lista_itens_mapas_pagamento %}
+                                        <tr>
+                                            <td>
+                                                <i class="fa-solid fa-circle-right" style="color:#f46424 !important;"></i>
+                                                {{item.data}}
+                                            </td>
+                                            <td>{{item.mapa}}</td>
+                                            <td>{{item.placa}}</td>
+                                            <td>{{item.val_frete}}</td>
+                                            <td>{{item.desc}}</td>
+                                            <td>{{item.acres}}</td>
+                                            <td>{{item.val_pagar}}</td>
+                                            <td>{{item.obs_desc}}</td>
+                                            <td>{{item.obs_acresc}}</td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+                            <div class="d-flex align-items-start w-100"
+                                 style="padding-right: 0.25rem;color:#ffffff;font-size:10px;background:#948c8c;
+                                 padding-top: 5px;border-radius: 10px;">
+                                &nbsp;Observação do Pagamento<br/>
+                                Data: {{pag.data}}/ Ocorrência : {{pag.tipo_ocorrencia}}/ {{pag.complemento}}/ {{pag.obs_desc}}
+                                <br/>{{pag.obs_desc}}&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endif %}
+
+{% if tipo_ocorr == 'E' %}
+    <div class="d-flex justify-content-between align-items-between w-100">
+        <div id="acc_pagamentos" class="accordion" style="width: 100%;border: 0px solid #dcdcdc;
+        margin-left: 5px; margin-right: 0px;">
+            {% for pag in registros_tab_pagamentos_terc %}
+            <div class="accordion-item">
+                <h2 id="heading{{pag.cod_pag}}" class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse{{pag.cod_pag}}"
+                            name="btnMapasPagosBeneficiario"
+                            id="btnMapasPagosBeneficiario{{pag.cod_pag}}" value="{{pag.cod_pag}}"
+                            aria-expanded="false" aria-controls="collapse{{pag.cod_pag}}"
+                        style="border-top-width:0px;border-right-width:0px;border-bottom-width:0px;
+                        border-left-width:0px;padding-top: 5px;padding-right: 5px;padding-bottom: 5px;
+                        padding-left: 5px;">
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex align-items-start w-100"
+                                    style="color:#f46424 !important;font-size:12px;font-weight: 500;">
+
+                                    <input type="hidden" name="hiddenNomeBeneficiarioRel"
+                                           id="hiddenNomeBeneficiarioRel{{pag.cod_pag}}"
+                                           value="{{pag.doc_benef}}_{{pag.nome_beneficiario}}">
+                                    <i class="fa-solid fa-caret-right" style="color:#f46424 !important;"></i>
+                                    &nbsp;&nbsp;
+                                    {{pag.doc_benef}} - {{pag.nome_beneficiario}}
+
+                                    {% if pag.status_pag == 'E'%}
+                                        &nbsp;&nbsp;
+                                        <span style="background:#DC143C;color:#FFFFFF;padding: .25rem; border-radius: .25rem;font-weight: 400;font-size:10px;">
+                                            &nbsp;&nbsp;ESTORNADO POR: {{pag.nome_usu_estorno}}, em {{pag.data_estorno}}.
+                                                Motivo: {{pag.justificativa_estorno}})&nbsp;&nbsp;
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                    <b style="font-size: 11px;">Data</b>{{pag.data}}
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                    <b style="font-size: 11px;">Serial </b> {{pag.num_doc_pagamento}}-{{pag.serial_pag_proj}}
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-center w-100" style="color:#000000; font-size: 14px;">
+                                    <b style="font-size: 11px;">Val. TT.(R$): </b> {{pag.val_pagar}}
+                                </div>
+                                    <input type="hidden" name="hiddenDataGeracaoPagamento"
+                                       id="hiddenDataGeracaoPagamento{{pag.cod_pag}}" value="{{pag.data}}">
+                                    <input type="hidden" name="hiddenSerialPagamento"
+                                       id="hiddenSerialPagamento{{pag.cod_pag}}"
+                                       value="{{pag.num_doc_pagamento}}_{{pag.serial_pag_proj}}">
+
+                            </div>
+                    </button>
+                </h2>
+
+                <div id="collapse{{pag.cod_pag}}" class="accordion-collapse collapse"
+                     aria-labelledby="heading{{pag.cod_pag}}"
+                     data-parent="#acc_pagamentos" >
+
+                    <div class="accordion-body" id="divMapasPagoBeneficiarioSelecionado{{pag.cod_pag}}"
+                         style="width: 100%;height:100%;padding-top: 5px;background-color: #363636;">
+
+                        <div class="mt-2 d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' and tipo_corporativo_usuario == 'S' %}
+                                    <input type="hidden" id="hd_tipo_pagamento_{{pag.cod_pag}}" name="hd_tipo_pagamento"
+                                    value="E"/>
+                                    <button type="button" name="btnDesfazPagamentoMapasBeneficiario"
+                                        id="btnDesfazPagamentoMapasBeneficiario{{pag.cod_pag}}"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        value="{{pag.cod_pag}}">
+                                            <i class="fa-solid fa-clock-rotate-left"></i>Estornar Pagamento
+                                     </button>
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' %}
+                                    <button type="button" name="btnGeraPDFPagMapas" id="btnGeraPDFPagMapas{{pag.cod_pag}}"
+                                        class="btn btn-primary btn-rounded botaoPrincipal"
+                                        value="{{pag.cod_pag}}">
+                                            <i class="fa-regular fa-file-pdf"></i>Relatório PDF
+                                    </button>
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                {% if pag.status_pag != 'E' %}
+                                    {% if pag.desc != '0,00' or pag.acres != '0,00' %}
+                                        <button type="button" name="btnGeraPDFDescAcres" id="btnGeraPDFDescAcres{{pag.cod_pag}}"
+                                            class="btn btn-primary btn-rounded botaoPrincipal"
+                                            value="{{pag.cod_pag}}">
+                                                <i class="fa-regular fa-file-pdf"></i>PDF Desc./Acrés.
+                                         </button>
+                                    {% endif %}
+                                {% else %}
+                                    &nbsp;&nbsp;
+                                {% endif %}
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                            <div class="d-flex flex-column justify-content-center w-100" style="margin-left: 0.25rem;">
+                                &nbsp;&nbsp;
+                            </div>
+                        </div>
+
+                        <div class="form-group cl_div_tabela_principal_pagina w-100" style="margin-top: 0.5rem;">
+                            <table id="tabPagMapasTerc{{pag.cod_pag}}"  class="display wrap w-100 cl_tab_principal_pagina" >
+                            <thead>
+                                <tr>
+                                    <th scope="col">Data</th>
+                                    <th scope="col">Placa</th>
+                                    <th scope="col">Valor(R$) </th>
+                                    <th scope="col">Observação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in pag.lista_itens_mapas_pagamento %}
+                                    <tr>
+                                        <td>
+                                            <i class="fa-solid fa-circle-right" style="color:#f46424 !important;"></i>
+                                            {{item.data}}
+                                        </td>
+                                        <td>
+                                            {{item.placa}}
+                                        </td>
+                                        <td>{{item.val_pagar}}</td>
+                                        <td>{{item.obs_acresc}}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex align-items-start w-100" style="padding-right: 0.25rem;color:#ffffff;
+                            font-size:10px;background:#948c8c;padding-top: 5px;border-radius: 5px;">
+                                &nbsp;Observação do Pagamento<br/>
+                                {{pag.complemento}}&nbsp;
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

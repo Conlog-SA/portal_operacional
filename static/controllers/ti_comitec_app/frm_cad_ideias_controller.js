@@ -342,7 +342,7 @@ $(document).on('click','button', function(){
 
                 let let_img_btn_atualizar_ideia = `
                     <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                    Atualizar dados da minha idéia
+                    Atualizar idéia
                 `;
                 $("#btn_add_nova_ideia_comitec").val(dados.cod_ideia);
                 $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -502,7 +502,7 @@ $(document).on('click','button', function(){
 
                      let let_img_btn_atualizar_ideia = `
                         <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                        Atualizar dados da minha idéia
+                        Atualizar idéia
                     `;
                     $("#btn_add_nova_ideia_comitec").val(dados.ideia_dic.cod_ideia);
                     $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -549,7 +549,7 @@ $(document).on('click','button', function(){
 
                 let let_img_btn_atualizar_ideia = `
                     <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                    Atualizar dados da minha idéia
+                    Atualizar idéia
                 `;
                 $("#btn_add_nova_ideia_comitec").val(dados.ideia_dic.cod_ideia);
                 $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -694,7 +694,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
-                let_loader_frm_parecer_master_ideias_comitec.style.display = "flex";
+                let_loader_frm_parecer_master_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -704,6 +704,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                let_loader_frm_parecer_master_ideias_comitec.style.display = "none";
           }
         });
     }
