@@ -1192,41 +1192,53 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
         hota_atual = data_hora_atual.strftime('%H:%M')
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
 
         data = dict()
         if tipo_arq_form == 'arq_acresc_desc':
-
-            fs = FileSystemStorage()
-            caminho_arq_importado_server = 'docs/fat_terceiros_lan_desc_acres/Lan_Desc_Acres_' + str(
-                obj_usu_logado.login_usu) + '_' + \
-                                           str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' + str(hota_atual).replace(
-                ':', '_') + '_' + myfile.name
-            filename = fs.save(caminho_arq_importado_server, myfile)
-            # uploaded_file_url = fs.url(filename)
-            uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado_server)
-
-            obj_imp_arquivo_lanc_ter = ImportaArquivosFatTer()
-            tab_lancamentos_fat_terc = obj_imp_arquivo_lanc_ter.le_arquivo_acres_desc(uploaded_file_url)
             lista_form_lanc_tab = []
-            for reg in tab_lancamentos_fat_terc:
-                tipo_lan_def = 'I'
-                if reg.desc_tipo_lanc == 'Descontos':
-                    tipo_lan_def = 'D'
-                elif reg.desc_tipo_lanc == 'Acrescimos':
-                    tipo_lan_def = 'A'
-                obj_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.filter(tipo_lancamento=tipo_lan_def,
-                                                                                   desc_ocorrencia=reg.desc_ocorrencia_lan).first()
-                obj_projeto = Projeto.objects.filter(cod_serial_pag_terc=str(int(reg.serial_proj))).first()
-                id_obj_2art = str(reg.mapa) + str(obj_projeto.cod_filial.cod_promax)
-                obj_2art_terc_financ = Registro2ArtTerceirosFinanceiro.objects.filter(
-                    cod_reg_2art__cod_reg_2art=id_obj_2art).first()
-                msg = ''
+            msg = ''
+            try:
+                fs = FileSystemStorage()
+                caminho_arq_importado_server = 'docs/fat_terceiros_lan_desc_acres/Lan_Desc_Acres_' + str(
+                    obj_usu_logado.login_usu) + '_' + \
+                                               str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' + str(hota_atual).replace(
+                    ':', '_') + '_' + myfile.name
+                filename = fs.save(caminho_arq_importado_server, myfile)
+                # uploaded_file_url = fs.url(filename)
+                uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado_server)
 
-                if obj_2art_terc_financ is not None and obj_2art_terc_financ.status_financeiro_2art_terc_financ == 'A':
+                obj_imp_arquivo_lanc_ter = ImportaArquivosFatTer()
+                tab_lancamentos_fat_terc = obj_imp_arquivo_lanc_ter.le_arquivo_acres_desc_v1(uploaded_file_url)
+                indica_erro = 'N'
+                lista_obj_lanc = []
+                for reg in tab_lancamentos_fat_terc:
+                    tipo_lan_def = 'I'
+                    if reg.desc_tipo_lanc == 'Descontos':
+                        tipo_lan_def = 'D'
+                    elif reg.desc_tipo_lanc == 'Acrescimos':
+                        tipo_lan_def = 'A'
+                    else:
+                        tipo_lan_def = None
+                        indica_erro = 'S'
+                        msg = 'Tipo de lançamento não informado. Verifique!'
+                    '''obj_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.filter(tipo_lancamento=tipo_lan_def,
+                                                                                       desc_ocorrencia=reg.desc_ocorrencia_lan).first()'''
+                    obj_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.filter(tipo_lancamento=tipo_lan_def).first()
+                    obj_projeto = Projeto.objects.filter(cod_serial_pag_terc=str(int(reg.serial_proj))).first()
+                    id_obj_2art = str(reg.mapa) + str(obj_projeto.cod_filial.cod_promax)
+                    obj_2art_terc_financ = Registro2ArtTerceirosFinanceiro.objects.filter(
+                        cod_reg_2art__cod_reg_2art=id_obj_2art, status_financeiro_2art_terc_financ='A').first()
+
+                    id_obj_2art_ocorrencia = str(reg.mapa_ocorrencia) + str(obj_projeto.cod_filial.cod_promax)
+                    obj_2art_terc_ocorrencia_financ = Registro2ArtTerceirosFinanceiro.objects.filter(
+                        cod_reg_2art__cod_reg_2art=id_obj_2art_ocorrencia, status_financeiro_2art_terc_financ='P').first()
+
+
                     lanc = LancamentosRegistro2ArtTerceirosFinanceiro(
-                        mapa_ocorrencia=reg.mapa_ocorrencia,
-                        placa_lanc=reg.placa,
-                        data_ocorrencia=datetime.strptime(reg.data_ocorrencia, '%d/%m/%Y'),
+                        mapa_ocorrencia=obj_2art_terc_ocorrencia_financ.mapa_2art_terc_financ,
+                        placa_lanc=obj_2art_terc_financ.placa_2art_terc_financ,
+                        data_ocorrencia=obj_2art_terc_ocorrencia_financ.data_2art_terc_financ,
                         valor_lanc=reg.valor,
                         tipo_lancamento=tipo_lan_def,
                         data_lanc=data_atual_dd_mm_yyyy,
@@ -1236,59 +1248,75 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                         cod_usu=obj_usu_logado,
                         status_exclusao='N'
                     )
-                    lanc.save()
+                    lista_obj_lanc.append(lanc)
                     reg.id_lanc_banco = lanc.cod_lanc_2art_terc_financ
-                    reg.status_importacao = 'I'
-                elif obj_2art_terc_financ is not None and obj_2art_terc_financ.status_financeiro_2art_terc_financ == 'P':
-                    reg.status_importacao = 'P'
-                else:
-                    reg.status_importacao = 'N'
+                    reg.placa = lanc.placa_lanc
+                    reg.data_ocorrencia = datetime.strftime(lanc.data_ocorrencia, '%d-%m-%Y')
+                    reg.valor = locale.currency(reg.valor, grouping=True, symbol=None)
+                    lista_form_lanc_tab.append(reg.__dict__)
 
-                lista_form_lanc_tab.append(reg.__dict__)
+            except Exception as e:
+                indica_erro = 'S'
+                if 'NoneType' in str(e):
+                    msg = 'Verifique se o mapa de ocorrência e/ou o mapa de origem existem!'
+                else:
+                    msg = str(e)
+
+            if indica_erro == 'N':
+                for obj_lanc in lista_obj_lanc:
+                    obj_lanc.save()
+                msg = 'Arquivo importado com sucesso!'
+            else:
+                lista_form_lanc_tab = []
+
+
+
 
 
             data = {
+                'msg': msg,
                 'lista_form_lanc_tab': lista_form_lanc_tab
             }
 
         elif tipo_arq_form == 'arq_pag_extras':
-
-            fs = FileSystemStorage()
-            caminho_arq_importado_server = 'docs/fat_terceiros_pag_extra/Pag_Extra_' + str(
-                obj_usu_logado.login_usu) + '_' + \
-                                           str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' + str(hota_atual).replace(
-                ':', '_') + '_' + myfile.name
-            filename = fs.save(caminho_arq_importado_server, myfile)
-            # uploaded_file_url = fs.url(filename)
-            uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado_server)
-
-            obj_imp_arquivo_pag_extra_ter = ImportaArquivosFatTer()
-            tab_pagamentos_extra_fat_terc = obj_imp_arquivo_pag_extra_ter.le_arquivo_pagamentos_extra(uploaded_file_url)
             lista_form_pagamentos_extra_tab = []
-            lista_obj_pag_extra = []
-            desc_tt = 0.00
-            acres_tt = 0.00
-            val_tt = 0.00
-            for reg in tab_pagamentos_extra_fat_terc:
-                # obj_beneficiario = BeneficiarioTerceiro.objects.filter(doc_benef_terc=reg.doc_benef).first()
-                data_str = reg.data[6:10] + '-' + reg.data[3:5] + "-" + reg.data[0:2]
+            try:
+                fs = FileSystemStorage()
+                caminho_arq_importado_server = 'docs/fat_terceiros_pag_extra/Pag_Extra_' + str(
+                    obj_usu_logado.login_usu) + '_' + \
+                                               str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' + str(hota_atual).replace(
+                    ':', '_') + '_' + myfile.name
+                filename = fs.save(caminho_arq_importado_server, myfile)
+                # uploaded_file_url = fs.url(filename)
+                uploaded_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado_server)
 
-                obj_placa = CadastroPlacaTerceiro.objects.filter(placa_cad_placa_terc=reg.placa) \
-                    .extra(where=["' " + data_str + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                obj_imp_arquivo_pag_extra_ter = ImportaArquivosFatTer()
+                tab_pagamentos_extra_fat_terc = obj_imp_arquivo_pag_extra_ter.le_arquivo_pagamentos_extra_v1(uploaded_file_url)
 
-                obj_tipo_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.filter(
-                    desc_ocorrencia=reg.tipo_ocorrencia, tipo_lancamento='E').first()
+                lista_obj_pag_extra = []
+                desc_tt = 0.00
+                acres_tt = 0.00
+                val_tt = 0.00
+                for reg in tab_pagamentos_extra_fat_terc:
+                    # obj_beneficiario = BeneficiarioTerceiro.objects.filter(doc_benef_terc=reg.doc_benef).first()
+                    #data_str = reg.data[6:10] + '-' + reg.data[3:5] + "-" + reg.data[0:2]
+                    data_str = reg.data
 
-                if obj_placa is not None and obj_tipo_ocorrencia is not None:
+                    obj_placa = CadastroPlacaTerceiro.objects.filter(placa_cad_placa_terc=reg.placa) \
+                        .extra(where=["' " + data_str + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+
+                    obj_tipo_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.filter(
+                        desc_ocorrencia=reg.tipo_ocorrencia, tipo_lancamento='E').first()
+
                     reg.nome_benef = obj_placa.cod_benef_terc.nome_benef_terc
                     obj_pag_extra = LancamentoPagamentoExtras(
-                        data_pag_extra=datetime.strptime(reg.data, '%d/%m/%Y'),
+                        data_pag_extra=datetime.strptime(reg.data, '%Y-%m-%d'),
                         mapa_pag_extra=reg.mapa,
                         placa_pag_extra=reg.placa,
                         desc_pag_extra=reg.desc,
                         acresc_pag_extra=reg.acres,
                         val_pag_extra=reg.valor,
-                        periodo_ref_pag_extra=datetime.strptime(reg.periodo_ref, '%m/%Y'),
+                        periodo_ref_pag_extra=datetime.strptime(reg.periodo_ref, '%Y-%m-%d'),
                         obs_pag_extra=reg.observacao,
                         cod_usu=obj_usu_logado,
                         cod_tipo_ocor_financ_terc=obj_tipo_ocorrencia,
@@ -1302,50 +1330,53 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                     # reg.id_lanc_banco = pag.cod_pag_2art_terc_financ
                     reg.doc_benef = obj_placa.cod_benef_terc.doc_benef_terc + '-' + obj_placa.cod_benef_terc.nome_benef_terc
                     reg.status_importacao = 'I'
-                    msg = 'Arquivo importado com sucesso!'
+
+
+                    lista_form_pagamentos_extra_tab.append(reg.__dict__)
+
+                if len(lista_obj_pag_extra) > 0:
+                    obj_placa = CadastroPlacaTerceiro.objects.filter(
+                        placa_cad_placa_terc=lista_obj_pag_extra[0].placa_pag_extra).extra(
+                        where=["' " + datetime.strftime(lista_obj_pag_extra[0].data_pag_extra,
+                                                        '%Y-%m-%d') + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                    obj_projeto = obj_placa.cod_benef_terc.cod_projeto
+                    cod_ultimo_pagamento = obj_projeto.ultimo_num_pagamento
+                    pag = Pagamento2ArtTerceirosFinanceiro(
+                        valor_frete_calc_pag=0.00,
+                        desc_pag=desc_tt,
+                        acresc_pag=acres_tt,
+                        val_pago=val_tt,
+                        val_conlog=0.00,
+                        periodo_ref_pag=lista_obj_pag_extra[0].periodo_ref_pag_extra,
+                        data_geracao_pag=datetime.strptime(data_atual_dd_mm_yyyy, '%Y-%m-%d'),
+                        obs_pag='',
+                        complemento_pag='',
+                        cod_tipo_ocor_financ_terc=lista_obj_pag_extra[0].cod_tipo_ocor_financ_terc,
+                        cod_benef_terc=obj_placa.cod_benef_terc,
+                        cod_usu=obj_usu_logado,
+                        num_doc_pagamento=cod_ultimo_pagamento + 1
+                    )
+                    pag.save()
+                    obj_projeto.ultimo_num_pagamento = cod_ultimo_pagamento + 1
+                    obj_projeto.save()
+
+                    for p in lista_obj_pag_extra:
+                        p.cod_pag_2art_terc_financ = pag
+                        p.save()
+
+                msg = 'Arquivo importado com sucesso!'
+            except Exception as e:
+                lista_form_pagamentos_extra_tab = []
+                if 'cod_benef_terc' in str(e):
+                    msg = 'Nenhum beneficiário vinculado na vigência. Verifique !'
                 else:
-                    reg.nome_benef = 'Cadastro não encontrado'
-                    reg.status_importacao = 'P'
-                    msg = 'Arquivo não importado. Verifique!'
-                lista_form_pagamentos_extra_tab.append(reg.__dict__)
+                    msg = str(e)
 
-            if len(lista_obj_pag_extra) > 0:
-                # data_str = lista_obj_pag_extra[0].data_pag_extra[6:10] + '-' + lista_obj_pag_extra[0].data_pag_extra[3:5] + "-" + lista_obj_pag_extra[0].data_pag_extra[0:2]
-
-                obj_placa = CadastroPlacaTerceiro.objects.filter(
-                    placa_cad_placa_terc=lista_obj_pag_extra[0].placa_pag_extra).extra(
-                    where=["' " + datetime.strftime(lista_obj_pag_extra[0].data_pag_extra,
-                                                    '%Y-%m-%d') + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
-                obj_projeto = obj_placa.cod_benef_terc.cod_projeto
-                cod_ultimo_pagamento = obj_projeto.ultimo_num_pagamento
-                pag = Pagamento2ArtTerceirosFinanceiro(
-                    valor_frete_calc_pag=0.00,
-                    desc_pag=desc_tt,
-                    acresc_pag=acres_tt,
-                    val_pago=val_tt,
-                    val_conlog=0.00,
-                    periodo_ref_pag=lista_obj_pag_extra[0].periodo_ref_pag_extra,
-                    data_geracao_pag=datetime.strptime(data_atual_dd_mm_yyyy, '%Y-%m-%d'),
-                    obs_pag='',
-                    complemento_pag='',
-                    cod_tipo_ocor_financ_terc=lista_obj_pag_extra[0].cod_tipo_ocor_financ_terc,
-                    cod_benef_terc=obj_placa.cod_benef_terc,
-                    cod_usu=obj_usu_logado,
-                    num_doc_pagamento=cod_ultimo_pagamento + 1
-                )
-                pag.save()
-                obj_projeto.ultimo_num_pagamento = cod_ultimo_pagamento + 1
-                obj_projeto.save()
-
-                for p in lista_obj_pag_extra:
-                    p.cod_pag_2art_terc_financ = pag
-                    p.save()
 
             data = {
                 'msg': msg,
                 'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab
             }
-
 
         return JsonResponse(data, safe=False)
 
@@ -1355,6 +1386,8 @@ class ImportaArquivosFatTer():
     def le_arquivo_acres_desc(self, arq_xlsx):
         xls = xlrd.open_workbook(str(arq_xlsx))
         plan = xls.sheet_by_index(0)
+
+
 
         lancamentos = []
         for i in range(plan.nrows):
@@ -1378,9 +1411,38 @@ class ImportaArquivosFatTer():
                     lancamentos.append(row_lanc)
         return lancamentos
 
+    def le_arquivo_acres_desc_v1(self, arq_xlsx):
+        xls = xlrd.open_workbook(str(arq_xlsx))
+        plan = xls.sheet_by_index(0)
+
+        data_atual = datetime.now()
+
+        lancamentos = []
+        for i in range(plan.nrows):
+            if i > 0:
+                if i == plan.nrows:
+                    break
+                else:
+                    row_lanc = LinhaExcelArquivoLanAcresDesc(
+                        cod_lanc_banco=None,
+                        serial_proj=plan.row_values(i)[0],
+                        desc_tipo_lanc=plan.row_values(i)[1],
+                        desc_ocorrencia_lan='',
+                        mapa_ocorrencia=int(plan.row_values(i)[2]),
+                        data_ocorrencia=None,
+                        mapa=int(plan.row_values(i)[3]),
+                        placa='',
+                        valor=plan.row_values(i)[4],
+                        observacao=plan.row_values(i)[5],
+                        status_importacao=None
+                    )
+                    lancamentos.append(row_lanc)
+        return lancamentos
+
     def le_arquivo_pagamentos_extra(self, arq_xlsx):
         xls = xlrd.open_workbook(str(arq_xlsx))
         plan = xls.sheet_by_index(0)
+
 
         lancamentos = []
         for i in range(plan.nrows):
@@ -1400,6 +1462,36 @@ class ImportaArquivosFatTer():
                         valor=plan.row_values(i)[6],
                         periodo_ref=plan.row_values(i)[7],
                         observacao=plan.row_values(i)[8],
+                        status_importacao=None
+                    )
+                    lancamentos.append(row_lanc)
+        return lancamentos
+
+    def le_arquivo_pagamentos_extra_v1(self, arq_xlsx):
+        xls = xlrd.open_workbook(str(arq_xlsx))
+        plan = xls.sheet_by_index(0)
+
+        data_atual = datetime.now()
+        competencia = datetime.strftime(data_atual, '%Y-%m') + '-01'
+
+        lancamentos = []
+        for i in range(plan.nrows):
+            if i > 0:
+                if i == plan.nrows:
+                    break
+                else:
+                    row_lanc = LinhaExcelArquivoPagamentosExtra(
+                        cod_lanc_banco=None,
+                        doc_benef='',
+                        data=datetime.strftime(data_atual, '%Y-%m-%d'),
+                        mapa=0,
+                        tipo_ocorrencia='Apoio',
+                        placa=plan.row_values(i)[0],
+                        desc=0,
+                        acres=0,
+                        valor=plan.row_values(i)[1],
+                        periodo_ref=competencia,
+                        observacao=plan.row_values(i)[2],
                         status_importacao=None
                     )
                     lancamentos.append(row_lanc)
@@ -1439,29 +1531,26 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
         usuario_portal = Usuario.objects.filter(cod_usu=id_usu_session).first()
 
         tipo_tabela = ''
-        registros_tab_pagamentos_terc = []
-        registros_tab_pagamentos_terc_gerados = self.gera_dados_pagamento_terceiro(cod_projeto, cod_benef, periodo_ref,
+        registros_tab_pagamentos_terc = self.gera_dados_pagamento_terceiro(cod_projeto, cod_benef, periodo_ref,
                                                                               cod_pag, tipo_ocorr, tipo_relatorio,
                                                                               quinzena)
-        for reg in registros_tab_pagamentos_terc_gerados:
-            registros_tab_pagamentos_terc.append(reg.__dict__)
+        '''for reg in registros_tab_pagamentos_terc_gerados:
+            registros_tab_pagamentos_terc.append(reg.__dict__)'''
 
         if tipo_relatorio == 'rel_proj_periodo_tipo':
             tipo_tabela = tipo_ocorr
 
-        '''if cod_pag == '0':
-            tipo_tabela = tipo_ocorr
-        else:
-            obj_pagamento = Pagamento2ArtTerceirosFinanceiro.objects.filter(cod_pag_2art_terc_financ=cod_pag).first()
-            tipo_tabela = obj_pagamento.cod_tipo_ocor_financ_terc.tipo_lancamento'''
+        #lista_itens_mapas_pagos_pagamento = self.retorna_itens_mapa_pagamento(cod_pag)
 
-        data = dict()
-        data = {
+        context = {
+            'tipo_ocorr': tipo_ocorr,
             'tipo_tabela': tipo_tabela,
             'registros_tab_pagamentos_terc': registros_tab_pagamentos_terc,
             'tipo_corporativo_usuario': usuario_portal.corporativo,
+            #'lista_itens_mapas_pagos_pagamento': lista_itens_mapas_pagos_pagamento
         }
-        return JsonResponse(data, safe=False)
+        #return JsonResponse(data, safe=False)
+        return render(request, 'plan_controle_fat_2art_terc_app/lista_pagamentos_fat_benef_terc.html', context)
 
     def gera_dados_pagamento_terceiro(self, cod_projeto, cod_benef, periodo_ref, cod_pag, tipo_ocorr, tipo_relatorio,quinzena):
         obj_beneficiario = BeneficiarioTerceiro.objects.filter(cod_benef_terc=cod_benef).first()
@@ -1499,34 +1588,37 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
                         data_estorno = datetime.strftime(obj_estorno.data_hora_estorno, '%d-%m-%Y %H:%M')
                         justificativa_estorno = obj_estorno.justificativa
 
+                    lista_itens_mapas_pagamento = []
+                    lista_obj_pag_extra = LancamentoPagamentoExtras.objects.filter(cod_pag_2art_terc_financ=pagamento)
+                    for pag_extra in lista_obj_pag_extra:
+                        registro = {
+                            'data': datetime.strftime(pag_extra.data_pag_extra, '%d-%m-%y'),
+                            'placa': pag_extra.placa_pag_extra,
+                            'val_pagar': locale.currency(round(pag_extra.val_pag_extra, 2), grouping=True, symbol=None),
+                            'obs':  pag_extra.obs_pag_extra,
+                        }
+                        lista_itens_mapas_pagamento.append(registro)
 
-                    linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
-                        cod_pag=pagamento.cod_pag_2art_terc_financ,
-                        cod_benef=pagamento.cod_benef_terc.cod_benef_terc,
-                        doc_benef=pagamento.cod_benef_terc.doc_benef_terc,
-                        nome_beneficiario=pagamento.cod_benef_terc.nome_benef_terc,
-                        data=datetime.strftime(pagamento.data_geracao_pag, '%d-%m-%y'),
-                        mapa='',
-                        placa='',
-                        val_frete=locale.currency(round((decimal.Decimal(pagamento.val_pago) + decimal.Decimal(
-                            pagamento.desc_pag)) - decimal.Decimal(pagamento.acresc_pag), 2), grouping=True,
-                                                  symbol=None),
-                        desc=locale.currency(round(pagamento.desc_pag, 2), grouping=True, symbol=None),
-                        acres=locale.currency(round(pagamento.acresc_pag, 2), grouping=True, symbol=None),
-                        val_pagar=locale.currency(round(pagamento.val_pago, 2), grouping=True, symbol=None),
-                        complemento=pagamento.complemento_pag,
-                        tipo_ocorrencia=pagamento.cod_tipo_ocor_financ_terc.desc_ocorrencia,
-                        serial_pag_proj=pagamento.cod_benef_terc.cod_projeto.cod_serial_pag_terc,
-                        obs_desc=pagamento.obs_pag,
-                        obs_acresc='',
-                        seq_item=0,
-                        status_pag=pagamento.status_pagamento,
-                        nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento,
-                        nome_usu_estorno=nome_usu_estorno,
-                        data_estorno = data_estorno,
-                        justificativa_estorno = justificativa_estorno
-                    )
+
+                    linha_tab_pagamentos_terc = {
+                        'cod_pag': pagamento.cod_pag_2art_terc_financ,
+                        'cod_benef': pagamento.cod_benef_terc.cod_benef_terc,
+                        'doc_benef': pagamento.cod_benef_terc.doc_benef_terc,
+                        'nome_beneficiario': pagamento.cod_benef_terc.nome_benef_terc,
+                        'data': datetime.strftime(pagamento.data_geracao_pag, '%d-%m-%y'),
+                        'desc': locale.currency(round(pagamento.desc_pag, 2), grouping=True, symbol=None),
+                        'acres':locale.currency(round(pagamento.acresc_pag, 2), grouping=True, symbol=None),
+                        'val_pagar': locale.currency(round(pagamento.val_pago, 2), grouping=True, symbol=None),
+                        'complemento': pagamento.complemento_pag,
+                        'serial_pag_proj': pagamento.cod_benef_terc.cod_projeto.cod_serial_pag_terc,
+                        'status_pag': pagamento.status_pagamento,
+                        'nome_usu_status': pagamento.cod_usu.nome_usu,
+                        'num_doc_pagamento': pagamento.num_doc_pagamento,
+                        'nome_usu_estorno': nome_usu_estorno,
+                        'data_estorno': data_estorno,
+                        'justificativa_estorno': justificativa_estorno,
+                        'lista_itens_mapas_pagamento': lista_itens_mapas_pagamento
+                    }
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
             elif tipo_ocorr == 'M':
                 for pagamento in pagamentos:
@@ -1542,48 +1634,100 @@ class Tab_Relatorio_Pagamentos_Terc_View(View):
                         data_estorno = datetime.strftime(obj_estorno.data_hora_estorno, '%d-%m-%Y %H:%M')
                         justificativa_estorno = obj_estorno.justificativa
 
-                    linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
-                        cod_pag=pagamento.cod_pag_2art_terc_financ,
-                        cod_benef=pagamento.cod_benef_terc.cod_benef_terc,
-                        doc_benef=pagamento.cod_benef_terc.doc_benef_terc,
-                        nome_beneficiario=pagamento.cod_benef_terc.nome_benef_terc,
-                        data=datetime.strftime(pagamento.data_geracao_pag, '%d-%m-%y'),
-                        mapa='',
-                        placa='',
-                        val_frete=locale.currency(round((decimal.Decimal(pagamento.val_pago) + decimal.Decimal(
+                    lista_itens_mapas_pagamento = []
+                    mapas = Registro2ArtTerceirosFinanceiro.objects.filter(cod_pag_2art_terc_financ=pagamento)
+                    locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+                    for mapa in mapas:
+                        cont_item = 1
+                        val_total_desc_mapa = 0.00
+                        lanc_desc_mapa = LancamentosRegistro2ArtTerceirosFinanceiro.objects.filter(
+                            cod_reg_2art_terc_financ=mapa.cod_reg_2art_terc_financ,
+                            tipo_lancamento='D',
+                            status_exclusao='N').aggregate(total_valor_lanc=Sum('valor_lanc'))
+                        if lanc_desc_mapa['total_valor_lanc'] is not None:
+                            val_total_desc_mapa = lanc_desc_mapa['total_valor_lanc']
+
+                        val_total_acresc_mapa = 0.00
+                        lanc_acres_mapa = LancamentosRegistro2ArtTerceirosFinanceiro.objects.filter(
+                            cod_reg_2art_terc_financ=mapa.cod_reg_2art_terc_financ,
+                            tipo_lancamento='A', status_exclusao='N').aggregate(
+                            total_valor_lanc=Sum('valor_lanc'))
+                        if lanc_acres_mapa['total_valor_lanc'] is not None:
+                            val_total_acresc_mapa = lanc_acres_mapa['total_valor_lanc']
+
+                        concatena_obs_lanc_desc = ''
+                        obj_lanc_obs_desc = LancamentosRegistro2ArtTerceirosFinanceiro.objects.filter(
+                            cod_reg_2art_terc_financ=mapa.cod_reg_2art_terc_financ,
+                            tipo_lancamento='D', status_exclusao='N').values('obs_lanc')
+                        for text in obj_lanc_obs_desc:
+                            concatena_obs_lanc_desc += text['obs_lanc']
+
+                        concatena_obs_lanc_acres = ''
+                        obj_lanc_obs_acresc = LancamentosRegistro2ArtTerceirosFinanceiro.objects.filter(
+                            cod_reg_2art_terc_financ=mapa.cod_reg_2art_terc_financ,
+                            tipo_lancamento='A', status_exclusao='N').values('obs_lanc')
+                        for text in obj_lanc_obs_acresc:
+                            concatena_obs_lanc_acres += text['obs_lanc']
+
+                        linha_tab_pagamentos_terc = {
+                            'cod_pag': mapa.cod_pag_2art_terc_financ.cod_pag_2art_terc_financ,
+                            'cod_benef': mapa.cod_pag_2art_terc_financ.cod_benef_terc.cod_benef_terc,
+                            'doc_benef': mapa.cod_pag_2art_terc_financ.cod_benef_terc.doc_benef_terc,
+                            'nome_beneficiario': mapa.cod_pag_2art_terc_financ.cod_benef_terc.nome_benef_terc,
+                            'data': datetime.strftime(mapa.data_2art_terc_financ, '%d-%m-%y'),
+                            'mapa': mapa.mapa_2art_terc_financ,
+                            'placa': mapa.placa_2art_terc_financ,
+                            'val_frete': locale.currency(round(mapa.val_a_pagar_pago, 2), grouping=True, symbol=None),
+                            'desc': locale.currency(round(val_total_desc_mapa, 2), grouping=True, symbol=None),
+                            'acres': locale.currency(round(val_total_acresc_mapa, 2), grouping=True, symbol=None),
+                            'val_pagar': locale.currency(round((decimal.Decimal(mapa.val_a_pagar_pago) - decimal.Decimal(
+                                val_total_desc_mapa)) + decimal.Decimal(val_total_acresc_mapa), 2), grouping=True,
+                                                      symbol=None),
+                            'complemento': '',
+                            'tipo_ocorrencia': '',
+                            'serial_pag_proj': mapa.cod_projeto.cod_serial_pag_terc,
+                            'obs_desc': concatena_obs_lanc_desc,
+                            'obs_acresc': concatena_obs_lanc_acres,
+                            'seq_item': cont_item,
+                            'status_pag': mapa.cod_pag_2art_terc_financ.status_pagamento,
+                            'nome_usu_status': mapa.cod_pag_2art_terc_financ.cod_usu.nome_usu,
+                            'num_doc_pagamento': mapa.cod_pag_2art_terc_financ.num_doc_pagamento
+                        }
+                        cont_item += 1
+                        lista_itens_mapas_pagamento.append(linha_tab_pagamentos_terc)
+
+
+                    linha_tab_pagamentos_terc = {
+                        'cod_pag': pagamento.cod_pag_2art_terc_financ,
+                        'cod_benef': pagamento.cod_benef_terc.cod_benef_terc,
+                        'doc_benef': pagamento.cod_benef_terc.doc_benef_terc,
+                        'nome_beneficiario': pagamento.cod_benef_terc.nome_benef_terc,
+                        'data': datetime.strftime(pagamento.data_geracao_pag, '%d-%m-%y'),
+                        'val_frete': locale.currency(round((decimal.Decimal(pagamento.val_pago) + decimal.Decimal(
                             pagamento.desc_pag)) - decimal.Decimal(pagamento.acresc_pag), 2), grouping=True,
                                                   symbol=None),
-                        desc=locale.currency(round(pagamento.desc_pag, 2), grouping=True, symbol=None),
-                        acres=locale.currency(round(pagamento.acresc_pag, 2), grouping=True, symbol=None),
-                        val_pagar=locale.currency(round(pagamento.val_pago, 2), grouping=True, symbol=None),
-                        complemento='',
-                        tipo_ocorrencia=pagamento.cod_tipo_ocor_financ_terc.desc_ocorrencia,
-                        serial_pag_proj=pagamento.cod_benef_terc.cod_projeto.cod_serial_pag_terc,
-                        obs_desc=pagamento.obs_pag,
-                        obs_acresc='',
-                        seq_item=0,
-                        status_pag=pagamento.status_pagamento,
-                        nome_usu_status=pagamento.cod_usu.nome_usu,
-                        num_doc_pagamento=pagamento.num_doc_pagamento,
-                        nome_usu_estorno=nome_usu_estorno,
-                        data_estorno=data_estorno,
-                        justificativa_estorno=justificativa_estorno
-                    )
+                        'desc': locale.currency(round(pagamento.desc_pag, 2), grouping=True, symbol=None),
+                        'acres': locale.currency(round(pagamento.acresc_pag, 2), grouping=True, symbol=None),
+                        'val_pagar': locale.currency(round(pagamento.val_pago, 2), grouping=True, symbol=None),
+                        'complemento': '',
+                        'tipo_ocorrencia': pagamento.cod_tipo_ocor_financ_terc.desc_ocorrencia,
+                        'serial_pag_proj': pagamento.cod_benef_terc.cod_projeto.cod_serial_pag_terc,
+                        'obs_desc': pagamento.obs_pag,
+                        'obs_acresc': '',
+                        'status_pag': pagamento.status_pagamento,
+                        'nome_usu_status': pagamento.cod_usu.nome_usu,
+                        'num_doc_pagamento': pagamento.num_doc_pagamento,
+                        'nome_usu_estorno': nome_usu_estorno,
+                        'data_estorno': data_estorno,
+                        'justificativa_estorno': justificativa_estorno,
+                        'lista_itens_mapas_pagamento': lista_itens_mapas_pagamento
+                    }
                     # print('Cód. pag '+str(pagamento.cod_pag_2art_terc_financ)+' status: '+str(pagamento.status_pagamento))
                     registros_tab_pagamentos_terc.append(linha_tab_pagamentos_terc)
 
         return registros_tab_pagamentos_terc
 
-
-class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
-    def get_object(self, pk):
-        try:
-            return Pagamento2ArtTerceirosFinanceiro.objects.get(pk=pk)
-        except Pagamento2ArtTerceirosFinanceiro.DoesNotExist:
-            raise Http404
-
-    def get(self, request):
-        cod_2art_terc_financ = request.GET['cod_pagamento']
+    def retorna_itens_mapa_pagamento(self, cod_2art_terc_financ):
         lista_mapas_pagos_pagamento = []
         obj_pag_terc = Pagamento2ArtTerceirosFinanceiro.objects.filter(
             cod_pag_2art_terc_financ=cod_2art_terc_financ).first()
@@ -1652,6 +1796,18 @@ class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
             cont_item = 1
             lista_obj_pag_extra = LancamentoPagamentoExtras.objects.filter(cod_pag_2art_terc_financ=obj_pag_terc)
             for pag_extra in lista_obj_pag_extra:
+                nome_usu_estorno = ''
+                data_estorno = ''
+                justificativa_estorno = ''
+                obj_estorno = (Estorno_Pagamentos_2Art_Terc.objects
+                               .filter(tipo_pagamento='E',
+                                       cod_pagamento_referente=pag_extra.cod_pag_2art_terc_financ.cod_pag_2art_terc_financ)
+                               .first())
+                if obj_estorno != None:
+                    nome_usu_estorno = obj_estorno.cod_usu.login_usu
+                    data_estorno = datetime.strftime(obj_estorno.data_hora_estorno, '%d-%m-%Y %H:%M')
+                    justificativa_estorno = obj_estorno.justificativa
+
                 linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
                     cod_pag=pag_extra.cod_pag_2art_terc_financ.cod_pag_2art_terc_financ,
                     cod_benef=obj_pag_terc.cod_benef_terc.cod_benef_terc,
@@ -1672,16 +1828,26 @@ class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
                     seq_item=cont_item,
                     status_pag=obj_pag_terc.status_pagamento,
                     nome_usu_status=pag_extra.cod_pag_2art_terc_financ.cod_usu.nome_usu,
-                    num_doc_pagamento=obj_pag_terc.num_doc_pagamento
+                    num_doc_pagamento=obj_pag_terc.num_doc_pagamento,
+                    nome_usu_estorno=nome_usu_estorno,
+                    data_estorno=data_estorno,
+                    justificativa_estorno=justificativa_estorno
                 )
                 cont_item += 1
                 lista_mapas_pagos_pagamento.append(linha_tab_pagamentos_terc.__dict__)
 
-        data = dict()
-        data = {
-            'registros_tab_pagamentos_terc': lista_mapas_pagos_pagamento
-        }
-        return JsonResponse(data, safe=False)
+
+        return lista_mapas_pagos_pagamento
+
+
+class Tab_Relatorio_Mapas_Pagamentos_Terc_View(View):
+    def get_object(self, pk):
+        try:
+            return Pagamento2ArtTerceirosFinanceiro.objects.get(pk=pk)
+        except Pagamento2ArtTerceirosFinanceiro.DoesNotExist:
+            raise Http404
+
+
 
 
     def delete(self, request, pk):
@@ -1882,6 +2048,8 @@ class Pdf_Rel_Pagamento_Terc(View):
                         pagina_atual = pagina_nova
                         qtd_pagina.append(pagina_atual)
 
+
+
                     linha_tab_pagamentos_terc = Tab_Pagamentos_Terceiros(
                         cod_pag=cod_pagamento,
                         cod_benef=pagamento.cod_benef_terc.cod_benef_terc,
@@ -1925,6 +2093,7 @@ class Pdf_Rel_Pagamento_Terc(View):
                 'total_a_pagar' : locale.currency(total_a_pagar, grouping=True, symbol=None),
                 'qtd_pagina' : qtd_pagina,
                 'ultima_pagina':str(len(qtd_pagina)),
+                'tipo_pag' : 'M'
             }
             return Render.render('plan_controle_fat_2art_terc_app/rel_pdf_pagamentos_2art_terc.html', params, 'myfile')
         elif tipo_tabela == 'E':
@@ -1942,6 +2111,7 @@ class Pdf_Rel_Pagamento_Terc(View):
                 'total_acrescimos': locale.currency(0.00, grouping=True, symbol=None),
                 'qtd_pagina': qtd_pagina,
                 'ultima_pagina': str(len(qtd_pagina)),
+                'tipo_pag': 'E'
             }
             #return Render.render('rel_pdf_pagamentos_extras_terc.html', params, 'myfile')
             return Render.render('plan_controle_fat_2art_terc_app/rel_pdf_pagamentos_2art_terc.html', params, 'myfile')

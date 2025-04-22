@@ -1727,6 +1727,42 @@ $(document).on('click','button', function(){
           }
         });
 
+    } else if (let_nome_btn == "btn_fecha_modal_excluir_comp_aud"){
+        $("#modal_excluir_comp_aud").hide();
+    } else if (let_nome_btn == "btn_abre_modal_excluir_comp_aud"){
+        $("#btn_confirma_exclusao_comp_aud").val($(this).val());
+        $("#modal_excluir_comp_aud").show();
+    } else if(let_nome_btn == 'btn_confirma_exclusao_comp_aud') {
+        let let_cod_aud_comp = let_val_btn;
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/excluir_aud_comp/'+let_cod_aud_comp,
+            dataType: 'json',
+            data: {
+                'cod_aud_comp'     :   let_cod_aud_comp
+            },
+            success: function(data){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tab_status_contrato_composicao(data.cod_conta);
+                $("#modal_excluir_comp_aud").hide();
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
     }
 
 });
@@ -2908,6 +2944,20 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     ${status.cod_status_reg__desc_status}: ${status.obs_status_reg}
                 `;
 
+                let let_btn_abre_modal_excluir_comp_aud = `
+                    <i class="fa-solid fa-ban icon-color-e" title="Usuário não tem permissão para exclusão do registro"></i>
+                `;
+                if ( dados.perfil_usu != 'C') {
+                    let_btn_abre_modal_excluir_comp_aud = `
+                        <button type="button" name="btn_abre_modal_excluir_comp_aud"
+                            id="btn_abre_modal_excluir_comp_aud_${status.cod_auditoria_composicao}"
+                            class="btn btn-rounded btn-space"
+                            value="${status.cod_auditoria_composicao}">
+                            <i class="fa-solid fa-trash-can icon-color-e"></i>
+                        </button>
+                    `;
+                }
+
                 let let_reg = [
                     `<i class="fa-solid fa-caret-right icon-color-e"></i>`,
                     status.cod_contrato__num_contrato,
@@ -2920,63 +2970,72 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     status.data_lan_auditoria,
                     let_desc_comp,
                     let_desc_ana,
-                    let_desc_reg
+                    let_desc_reg,
+                    let_btn_abre_modal_excluir_comp_aud
                 ];
                 let_lista_status.push(let_reg);
             });
                 $("#tab_status_contrato_comp").DataTable( {
-                "bJQueryUI": true,
-                "pageLength": 5,
-                "destroy": true,
-                "searching": false,
-                "paging": false,
-                "data":let_lista_status,
-                "columns": [
-                    { title: "" },
-                    { title: "Contrato" },
-                    { title: "Tipo Prazo" },
-                    { title: "Competência" },
-                    { title: "Composição" },
-                    { title: "Balancete" },
-                    { title: "Diferença" },
-                    { title: "Usuário" },
-                    { title: "Composta em:" },
-                    { title: "Composição" },
-                    { title: "Análise" },
-                    { title: "Regularização" }
-                ],
-                "columnDefs": [
-                    {"className": "dt-center", "targets": [2, ]},
-                    {"className": "dt-left", "targets": [0, 1, ]},
-                    {"className": "dt-right", "targets": [ 3, 4, 5, 6,7,8, 9]}
-                ],
-                "language": {
-                    "decimal": ",",
-                    "thousands": ".",
-                    "sProcessing":   "Processando...",
-                    "sLengthMenu":   "",
-                    "sZeroRecords":  "Não foram encontrados resultados",
-                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                    "sInfoFiltered": "",
-                    "sInfoPostFix":  "",
-                    "sSearch":       "Pesquisar:",
-                    "sUrl":          "",
-                    "oPaginate": {
-                        "sFirst":    "Primeiro",
-                        "sPrevious": "Anterior",
-                        "sNext":     "Proximo",
-                        "sLast":     "Último"
-                    },
-                    "buttons":{
-                        "copyTitle": 'Dados Copiados',
-                        "copySuccess": {
-                            _: '%d linhas copiadas',
-                            1: '1 linha copiada'
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": true,
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": true,
+                    "pageLength": 10,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_status,
+                    "columns": [
+                        { title: "" },
+                        { title: "Contrato" },
+                        { title: "Tipo Prazo" },
+                        { title: "Competência" },
+                        { title: "Composição" },
+                        { title: "Balancete" },
+                        { title: "Diferença" },
+                        { title: "Usuário" },
+                        { title: "Composta em:" },
+                        { title: "Composição" },
+                        { title: "Análise" },
+                        { title: "Regularização" },
+                        { title: "Excluir" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [2, ]},
+                        {"className": "dt-left", "targets": [0, 1, ]},
+                        {"className": "dt-right", "targets": [ 3, 4, 5, 6,7,8, 9, 10]}
+                    ],
+                    "language": {
+                        "decimal": ",",
+                        "thousands": ".",
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
                         }
                     }
-                }
-            });
+                });
             }
 
             let_loader_frm_cad_contas.style.display = "none";

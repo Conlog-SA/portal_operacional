@@ -136,14 +136,26 @@
         <table id="tabPagMapasTerc" border="0px" >
             <thead>
                 <tr>
-                    <th align="left" >DATA</th>
-                    <th align="right" >MAPA</th>
-                    <th align="right" >PLACA</th>
-                    <th align="right" >VAL.(R$) </th>
-                    <th align="right" >DESC(R$)</th>
-                    <th align="right" >ACRESC(R$)</th>
-                    <th align="right" >VAL. TT.(R$)</th>
-                    <th align="center" >OBS</th>
+                    {% if tipo_pag == 'M' %}
+                        <th align="left" >DATA</th>
+                        <th align="right" >MAPA</th>
+                        <th align="right" >PLACA</th>
+                        <th align="right" >VAL.(R$) </th>
+                        <th align="right" >DESC(R$)</th>
+                        <th align="right" >ACRESC(R$)</th>
+                        <th align="right" >VAL. TT.(R$)</th>
+                        <th align="center" >OBS</th>
+                    {% endif %}
+                    {% if tipo_pag == 'E' %}
+                        <th align="left" >DATA</th>
+                        <th align="right" >&nbsp;</th>
+                        <th align="right" >PLACA</th>
+                        <th align="right" >&nbsp;</th>
+                        <th align="right" >&nbsp;</th>
+                        <th align="right" >&nbsp;</th>
+                        <th align="right" >VAL. TT.(R$)</th>
+                        <th align="center" >OBS</th>
+                    {% endif %}
                 </tr>
                 </thead>
                 <tbody>
@@ -151,14 +163,26 @@
                     {% for reg in registros_tab_pagamentos_terc %}
                         {%  if pag == reg.seq_item %}
                             <tr>
-                                <td align="left" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.data }}</td>
-                                <td align="right" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.mapa }}</td>
-                                <td align="right" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.placa }}</td>
-                                <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.val_frete }}</td>
-                                <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.desc }}</td>
-                                <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.acres }}</td>
-                                <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.val_pagar }}</td>
-                                <td align="center" width="45%" style="border-bottom: 1px solid #000000;">{{ reg.obs_desc }}</td>
+                                {% if tipo_pag == 'M' %}
+                                    <td align="left" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.data }}</td>
+                                    <td align="right" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.mapa }}</td>
+                                    <td align="right" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.placa }}</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.val_frete }}</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.desc }}</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.acres }}</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.val_pagar }}</td>
+                                    <td align="center" width="45%" style="border-bottom: 1px solid #000000;">{{ reg.obs_desc }}</td>
+                                {% endif %}
+                                {% if tipo_pag == 'E' %}
+                                    <td align="left" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.data }}</td>
+                                    <td align="right" width="5%" style="border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td align="right" width="5%" style="border-bottom: 1px solid #000000;">{{ reg.placa }}</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td align="right" width="10%" style="border-bottom: 1px solid #000000;">{{ reg.val_pagar }}</td>
+                                    <td align="center" width="45%" style="border-bottom: 1px solid #000000;">{{ reg.obs_desc }}</td>
+                                {% endif %}
                             </tr>
                         {% endif %}
                     {% endfor %}
@@ -178,38 +202,73 @@
         <div class="col-md-6">
             <table>
                 <tr>
-                    <td style="color:#000000;font-size:10px" align="justify" width="50%">
-                        Obs: Os Descontos/Acréscimos nem sempre se referem a uma ocorrência relacionada ao mapa que foi
-                        utilizado para desconto. Em caso de Pessoa Física o valor destacado não corresponderá ao valor creditado
-                        em conta devido as retenções de Impostos necessárias. Para maiores esclarecimentos, por gentileza
-                        consultar o administrativo da Filial.
-                    </td>
+                    {% if tipo_pag == 'M' %}
+                        <td style="color:#000000;font-size:10px" align="justify" width="50%">
+                            Obs: Os Descontos/Acréscimos nem sempre se referem a uma ocorrência relacionada ao mapa que foi
+                            utilizado para desconto. Em caso de Pessoa Física o valor destacado não corresponderá ao valor creditado
+                            em conta devido as retenções de Impostos necessárias. Para maiores esclarecimentos, por gentileza
+                            consultar o administrativo da Filial.
+                        </td>
+                    {% endif %}
+                    {% if tipo_pag == 'E' %}
+                        <td style="color:#000000;font-size:10px" align="justify" width="50%">
+                            &nbsp;
+                        </td>
+                    {% endif %}
                     <td width="50%">
                         <table>
-                            <tr>
-                                <td style="font-size:10px"></td>
-                                <td style="font-size:10px">Total Frete</td>
-                                <td style="font-size:10px">&nbsp;</td>
-                                <td style="font-size:10px" align="right">{{ total_val_frete  }}</td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px"></td>
-                                <td style="font-size:10px">Total Descontos</td>
-                                <td style="font-size:10px">&nbsp;</td>
-                                <td style="font-size:10px;" align="right">{{ total_descontos  }}</td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px;"></td>
-                                <td style="font-size:10px;border-bottom: 1px solid #000000;">Total Acréscimos</td>
-                                <td style="font-size:10px;border-bottom: 1px solid #000000;">&nbsp;</td>
-                                <td style="font-size:10px;border-bottom: 1px solid #000000;" align="right">{{ total_acrescimos  }}</td>
-                            </tr>
-                            <tr>
-                                <td style="font-size:10px"></td>
-                                <td><b style="font-size:12px">Valor à Pagar</b></td>
-                                <td style="font-size:10px">&nbsp;</td>
-                                <td align="right"><b style="font-size:12px;">{{ total_a_pagar }}</b></td>
-                            </tr>
+                            {% if tipo_pag == 'M' %}
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td style="font-size:10px">Total Frete</td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px" align="right">{{ total_val_frete  }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td style="font-size:10px">Total Descontos</td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px;" align="right">{{ total_descontos  }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px;"></td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;">Total Acréscimos</td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;" align="right">{{ total_acrescimos  }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td><b style="font-size:12px">Valor à Pagar</b></td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td align="right"><b style="font-size:12px;">{{ total_a_pagar }}</b></td>
+                                </tr>
+                            {% endif %}
+                            {% if tipo_pag == 'E' %}
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px" align="right">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td style="font-size:10px;" align="right">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px;"></td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;">&nbsp;</td>
+                                    <td style="font-size:10px;border-bottom: 1px solid #000000;" align="right">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td style="font-size:10px"></td>
+                                    <td><b style="font-size:12px">Valor à Pagar</b></td>
+                                    <td style="font-size:10px">&nbsp;</td>
+                                    <td align="right"><b style="font-size:12px;">{{ total_a_pagar }}</b></td>
+                                </tr>
+                            {% endif %}
                         </table>
                     </td>
                 </tr>

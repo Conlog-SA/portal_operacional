@@ -2121,7 +2121,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    '''print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')'''
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas
@@ -2592,6 +2592,11 @@ class Form_Visualiza_Doc_Contrato_View(View):
 
 
 class Form_Status_Contrato_Composicao_View(View):
+    def get_object(self, pk):
+        try:
+            return Auditoria_Status_Composicao_Competencia.objects.get(pk=pk)
+        except Auditoria_Status_Composicao_Competencia.DoesNotExists:
+            return Http404
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
 
@@ -2631,9 +2636,22 @@ class Form_Status_Contrato_Composicao_View(View):
 
         data = dict()
         data = {
-            'lista_status_contratos_comp': lista_status_contratos_comp
+            'lista_status_contratos_comp': lista_status_contratos_comp,
+            'perfil_usu': obj_usuario_sessao.tipo_colab
         }
         return JsonResponse(data, safe=False)
+
+    def delete(self, request, pk):
+        obj_aud_comp = self.get_object(pk)
+        cod_conta = obj_aud_comp.cod_conta.cod_conta
+        obj_aud_comp.delete()
+        data = dict()
+        data = {
+            'msg': 'Registro excluído com sucesso',
+            'cod_conta': cod_conta
+        }
+        return JsonResponse(data, safe=False)
+
 
 class Tabela_Pac_Contas_Modelo_1_View(View):
     def get(self, request):
