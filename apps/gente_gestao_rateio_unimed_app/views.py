@@ -722,6 +722,9 @@ class Calcula_Rateio(View):
                         custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                 else:
                     custo_total_titulares_do_projeto_porcentagem_plano = 0
+                    custo_total_titulares_do_projeto_porcentagem_informada = 0
+                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
+                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                     custo_titulares_do_projeto_porcentagem_plano_parcela_empresa = 0
                     custo_titulares_do_projeto_porcentagem_plano_parcela_colaborador = 0
 
