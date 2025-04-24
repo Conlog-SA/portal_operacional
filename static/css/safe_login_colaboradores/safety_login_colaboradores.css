@@ -65,10 +65,9 @@ label{
 
 .homeApp_loginContainer{
     background-color: var(--cor_bg_login);
-    border-radius: 0.5rem;
     position: relative;
-    width:85% !important;
-    height:90% !important;
+    width:100% !important;
+    height:100% !important;
 }
 
 .homeApp_menuContainer{
@@ -225,8 +224,8 @@ html, body {
 }
 
 .safety-container-screen {
-    width:85%;
-    height:90%;
+    width:100%;
+    height:100%;
 }
 
 .select.selectpicker {
@@ -246,3 +245,30 @@ html, body {
     height: 0px !important;
     display:none;
 }
+
+.btn-empresa-conlog {
+    border-style:dotted;
+    border-color:#f46424;
+    border-width:3px;
+    border-radius:5px;
+    max-height:30vw;
+    display:flex;
+    flex-direction:column;
+    background-color:rgba(244,100,36,0.1);
+}
+
+.btn-empresa-deep {
+    width:100%;
+    border-style:dotted;
+    border-color:#3b8eed;
+    border-radius:5px;
+    height:11vh;
+    max-height:30vw;
+    min-height:100px;
+    background-color:rgba(56,142,237,0.1);
+}
+
+.pag-lista-empresa-size {
+    max-width:476px;
+}
+

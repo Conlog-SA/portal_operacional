@@ -137,7 +137,7 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
     if ($('.background-check-preenchido').length == 0) {
         $.ajax({
             type: 'POST',
-            url: '/safety_login_colaboradores_app/safe_login_colab',
+            url: '/safety_login_colaboradores_app/',
             data: {
                         'flag_voltar'      :   1,
                      },
@@ -167,7 +167,7 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
         if (flag_invalido == 0) {
             $.ajax({
                 type: 'POST',
-                url: '/safety_login_colaboradores_app/safe_login_colab',
+                url: '/safety_login_colaboradores_app/',
                 data: {
                             'flag_voltar'      :   1,
                          },

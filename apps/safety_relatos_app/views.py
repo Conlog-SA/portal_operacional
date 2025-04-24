@@ -65,7 +65,6 @@ class Form_Gerar_Relatos_Check(View):
 
         str_options_select_local = ''
         if filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_filial in [34, 57, 89]:
-            print('teste')
             flag_deep = True
             locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6)
             for local in locais:
