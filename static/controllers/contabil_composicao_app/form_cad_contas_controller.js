@@ -1763,6 +1763,42 @@ $(document).on('click','button', function(){
             }
         });
 
+    } else if ( let_nome_btn == "btn_abre_modal_excluir_reg_resp_conta"){
+        let let_cod_reg_resp_conta = let_val_btn;
+        $("#btn_confirma_exclusao_reg_resp_conta_frm_conta").val(let_cod_reg_resp_conta);
+        $("#modal_excluir_reg_resp_conta").show();
+    } else if ( let_nome_btn == "btn_fecha_modal_excluir_reg_resp_conta"){
+        $("#modal_excluir_reg_resp_conta").hide();
+    } else if ( let_nome_btn == "btn_confirma_exclusao_reg_resp_conta_frm_conta") {
+        let let_cod_reg_resp_conta = let_val_btn;
+        $.ajax({
+            type: 'DELETE',
+            url: '/contabil_composicao_app/exclui_reg_resp_conta/'+let_cod_reg_resp_conta,
+            dataType: 'json',
+            data: {
+                'cod_reg_resp_conta'     :   let_cod_reg_resp_conta
+            },
+            success: function(data){
+                $("#modal_excluir_reg_resp_conta").hide();
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: data.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                atualiza_tabela_resp_conta(data.cod_conta);
+            },
+            error: function(request, status, error){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
     }
 
 });
@@ -2685,7 +2721,13 @@ function atualiza_tabela_resp_conta(cod_conta){
                     let let_btn_edita_resp = `
                         <button type='button' id='btn_editar_resp_conta_${resp.cod_resp_conta}'
                         name='btn_editar_resp_conta' value='${resp.cod_resp_conta}' class='btn btn-rounded btn-space'>
-                            <i class="fa-solid fa-user-pen icon-color-e" ></i>
+                            <i class="fa-solid fa-user-pen" ></i>
+                        </button>
+                    `;
+                    let let_btn_abre_modal_excluir_reg_resp_conta = `
+                        <button type='button' id='btn_abre_modal_excluir_reg_resp_conta_${resp.cod_resp_conta}'
+                        name='btn_abre_modal_excluir_reg_resp_conta' value='${resp.cod_resp_conta}' class='btn btn-rounded btn-space'>
+                            <i class="fa-solid fa-trash-can" ></i>
                         </button>
                     `;
                     let data_ini_atv = resp.data_ini_atividade.split('-')[2] + '-' +
@@ -2703,7 +2745,8 @@ function atualiza_tabela_resp_conta(cod_conta){
                         resp.resp_validacao + `<input type="hidden" id="hd_resp_val_${resp.cod_resp_conta}" value="${resp.resp_validacao}">`,
                         resp.data_ini_atividade + `<input type="hidden" id="hd_data_ini_atv_${resp.cod_resp_conta}" value="` + data_ini_atv + `">`,
                         resp.data_fim_atividade + `<input type="hidden" id="hd_data_fim_atv_${resp.cod_resp_conta}" value="` + data_fim_atv + `">`,
-                        let_btn_edita_resp
+                        let_btn_edita_resp,
+                        let_btn_abre_modal_excluir_reg_resp_conta
                     ];
                     let_lista_rep_conta.push(let_reg);
                 });
@@ -2721,7 +2764,8 @@ function atualiza_tabela_resp_conta(cod_conta){
                         { title: "Resp. Validação" },
                         { title: "Inicio" },
                         { title: "Fim" },
-                        { title: "Alterar" }
+                        { title: "Alterar" },
+                        { title: "Excluir" }
                     ],
                     "columnDefs": [
                         {"className": "dt-center", "targets": [4, 5, 6]},

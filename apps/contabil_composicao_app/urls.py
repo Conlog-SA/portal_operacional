@@ -170,6 +170,8 @@ urlpatterns = [
          name='adiciona_novo_status_processo_contabil'),
     path('atualiza_data_fim_status_proc_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
          name='atualiza_data_fim_status_proc_contabil'),
+    path('exclui_reg_resp_conta/<int:pk>', views.Form_Vincula_Resp_Contas_View.as_view(),
+         name='exclui_reg_resp_conta'),
 
 ]
 

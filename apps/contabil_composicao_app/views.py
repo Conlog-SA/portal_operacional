@@ -3906,6 +3906,13 @@ class Form_Composicao_Auditoria_View(View):
                       contexto)
 
 class Form_Vincula_Resp_Contas_View(View):
+
+    def get_object(self, pk):
+        try:
+            return Responsaveis_Conta.objects.get(pk=pk)
+        except Responsaveis_Conta.DoesNotExists:
+            return Http404
+
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
@@ -3925,7 +3932,6 @@ class Form_Vincula_Resp_Contas_View(View):
             'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
-
 
     def post(self, request):
         lista_nome_responsavel_frm = request.POST['lista_nome_responsavel']
@@ -3948,6 +3954,19 @@ class Form_Vincula_Resp_Contas_View(View):
         data = dict()
         data = {
             'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+    def delete(self, request, pk):
+        obj_resp_conta = self.get_object(pk)
+        cod_conta = obj_resp_conta.cod_conta.cod_conta
+        obj_resp_conta.delete()
+
+        msg = 'Registro excluído com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg,
+            'cod_conta': cod_conta
         }
         return JsonResponse(data, safe=False)
 
