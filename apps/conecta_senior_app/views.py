@@ -121,6 +121,9 @@ class Conexao_Senior_BD():
                                 HAVING NUMCPF = ?
                                 ) AS QTD_REGISTROS_ATIVOS,
                                 
+                                CASE WHEN A.SITAFA = 7 THEN 1 ELSE 0 END,
+                                A.DATAFA AS DATA_AFASTAMENTO,
+                                
                                 (SELECT TOP 1 hist_pos.postra
                                 FROM R038HPO hist_pos
                                 WHERE hist_pos.numemp = A.numemp 
@@ -153,9 +156,12 @@ class Conexao_Senior_BD():
                                    C.NOMFIL,
                                    A.SITAFA,
                                    A.CODCCU,
-                                   D.NOMCCU
+                                   D.NOMCCU,
+                                   A.DATAFA
                            ORDER BY
-                           			A.SITAFA
+                           			CASE WHEN A.SITAFA = 7 THEN 1 ELSE 0 END,
+                           			A.SITAFA DESC,
+                           			A.DATAFA DESC
                                    ''', [int(cpf.split('.')[0]), int(cpf.split('.')[0]), int(cod_empresa)])
         result = list(cursor.fetchall())
         #result = [reg for reg in result if reg.QTD_REGISTROS_COL == 1 or reg.QTD_REGISTROS_COL > 1 and reg.SITUACAO_COLAB == 1]
@@ -258,10 +264,11 @@ class Conexao_Senior_BD():
                                             'situacao':colaborador.SITUACAO, 'cpf':colaborador.CPF,
                                             'cod_fil':colaborador.COD_FIL, 'nom_fil': colaborador.NOM_FIL,
                                             'cod_proj': colaborador.COD_PROJ, 'nom_proj': colaborador.NOM_PROJ})
-
+            self.__conn.close()
             return lista_colaboradores
 
         else:
+            self.__conn.close()
             return {'erro': 'Titular não encontrado'}
 
     def pesquisar_dados_por_matricula(self, matricula, cod_empresa):
