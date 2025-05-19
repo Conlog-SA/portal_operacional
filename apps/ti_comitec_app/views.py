@@ -777,7 +777,7 @@ class Frm_Tarefa_View(View):
             obj_tarefa.cod_projeto = obj_projeto
             obj_tarefa.desc_atividade = desc_tarefa_frm
             obj_tarefa.cod_usu = obj_usu_atribuido_para
-            obj_tarefa.save()
+            obj_tarefa.save
             msg = 'Tarefa editada com sucesso!'
 
         obj_projeto.data_atualizacao = data_atual
