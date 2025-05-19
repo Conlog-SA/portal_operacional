@@ -1,0 +1,242 @@
+{% load static %}
+
+<style>
+
+    #modal_projeto *{
+        color: black;
+        font-size: 12px;
+        margin: 0
+    }
+
+    .scroll {
+        max-height: 350px;
+        width: 630px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    .borda{
+        border: 1px solid #c6683dd6;
+        border-radius: 6px;
+
+    }
+    .borda-tam1{
+        width: 338px;
+        height: 49px;
+
+    }
+    .borda-tam2{
+        width: 225px;
+        height: 39px;
+    }
+    h1{
+        color: white !important;
+    }
+    h2{
+     color: #f46424!important;
+     font-weight: 600!important;
+    }
+    .barra-progresso{
+        border: 1px solid #c6683dd6;
+        background-color: #f46424;
+        width: 79px;
+        height: 33px;
+        margin: 7px;
+        border-radius: 5px;
+        position: relative;
+        bottom: 40px;
+    }
+
+
+    .def-tamanho-colunas{
+        width: 19%;
+        font-weight: 400;
+        padding: 0.1rem;
+    }
+
+    .add-linha{
+        background: #6c757d00;
+        border: none;
+        padding: 0.25rem;
+    }
+    .teste:hover{
+        border: 1px solid white;
+        border-radius: 7px;
+    }
+
+</style>
+
+<div role="dialog" class="modal" id="modal_projeto">
+    <div class="modal-dialog" style="border-radius: 10px; max-width: 1400px;height: 40px;left: 36px;">
+        <div class="modal-content">
+          <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 20px;
+               padding-top: 20px;font-size:10px; ">
+            <div class="row"style="margin-left: 0px;margin-right: 0px;margin-bottom: 0px;
+            width: 1500px; display:flex; align-items:end;" >
+
+              <div class="col-md-6 d-flex justify-content-between align-items-baseline" align="right">
+                  <h1 class="titlePadraoMenu"><i class="fa-solid fa-list-check"></i> Projeto</h1>
+                  <button type="button"
+                        data-dismiss="modal" aria-hidden="false" id="btn_fecha_modal_edt_proj"
+                        name="btn_fecha_modal_edt_proj" class="btn btn-sm btn-rounded" style="position: relative; left: 694px;">
+                    <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+          </div>
+          <div class="modal-body flex"  style="max-width: 1400px;height: 657px;margin-top: -13px;">
+              <div style="margin-bottom: -15px;">
+                <div class="d-flex flex-row w-100 justify-content-between align-items-between">
+                    <input type="hidden" id="hd_cod_projeto" name="hd_cod_projeto"/>
+                    <div id="div_nome_projeto_frm_edt_proj" class="p-2"
+                     style="background-color: #f46424;border-radius: 10px; width: 684px !important; height: 51px; font-size: 15px;
+                     color: white;font-weight: 300;"></div>
+                    <div class="flex-row" style="margin-left: -1px;">
+                        <h2>Evolução geral do projeto</h2>
+                        <div class="borda borda-tam1" class="d-flex align-items-center justify-content-center" style="padding: 18px;">
+                            <div class="borda d-flex justify-content-center align-items-center" style="width: 301px;height: 33px;margin: 7px;border-radius: 5px;margin-left: 3px;background-color: #e9e9e9c4;position: relative;top: -18px;" ></div>
+                            <div  id="div_evolucao_projeto" class="d-flex justify-content-center align-items-center barra-progresso"
+                                  style="margin-left: 3px;top: -58px; "><span id="porcenagem_barra" style="margin-right: 19px; font-weight: 400;"></span></div>
+                        </div>
+                    </div>
+                    <div class="flex-column">
+                        <h2>Cronograma</h2>
+                        <div class="borda borda-tam1 d-flex flex-column">
+                            <div style="position: relative; left: 40px;bottom: -17px;" id="div_status_cronograma_proj">
+
+                            </div>
+                           <div style="position: relative;top: -14px;left: 114px;">
+                               <p style="font-size: 10px;font-weight: 400;">
+                                   <i class="fa-solid fa-circle" style="color:#3CB371!important;"></i> Dentro do esperado</p>
+                               <p style="font-size: 10px;font-weight: 400;">
+                                   <i class="fa-solid fa-circle" style="color:#FFD700!important;"></i> Em risco</p>
+                               <p style="font-size: 10px;font-weight: 400;">
+                                   <i class="fa-solid fa-circle" style="color:#FF0000!important;"></i> Atrasado</p>
+                           </div>
+
+
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row w-100 justify-content-between align-items-between align-items-center">
+                    <div>
+                        <h2>Sponsor</h2>
+                        <div id="div_nome_sponsor_frm_edt_proj" class="borda borda-tam2 p-2"></div>
+                    </div>
+                    <div>
+                        <h2>Gerente do Projeto</h2>
+                        <div id="div_nome_gerente_frm_edt_proj" class="borda borda-tam2 p-2"></div>
+                    </div>
+                    <div>
+                        <h2>Fase</h2>
+                        <div class="borda borda-tam2 p-2" id="div_select">
+                            <select style="border:none;border-radius: 3px;background-color: #dcdcdc;color: #030201;font-weight: 500;"
+                                    name="sl_fase_proj_modal_edita_proj" id="sl_fase_proj_modal_edita_proj">
+                                <option value="0" selected="selected">Inicial&nbsp;</option>
+                                <option value="1">Teste&nbsp;</option>
+                                <option value="2">Implementação&nbsp;</option>
+                                <option value="3">Concluído&nbsp;</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>Início</h2>
+                        <div id="div_data_ini_proj_frm_edt_proj" class="borda borda-tam2 p-2"></div>
+                    </div>
+                    <div>
+                        <h2>Fim planejado</h2>
+                        <div id="div_data_fim_proj_frm_edt_proj" class="borda borda-tam2 p-2"></div>
+                    </div>
+
+                    <div class="d-flex flex-column">
+                        <h2>Atualização</h2>
+                        <div id="div_atualizacao_proj_frm_edt_proj" class="borda borda-tam2 p-2"></div>
+                    </div>
+                </div>
+                <div class="d-flex flex-row w-100 justify-content-between align-items-between pt-1 align-items-center">
+                    <div class="d-flex flex-column w-100 ">
+                        <h2>Objetivo</h2>
+                        <div id="div_objetivo_projeto_frm_edt_proj" class="borda p-2" style="width: 680px; height: 65px;"></div>
+                    </div>
+                    <div class="d-flex flex-column w-100 ">
+                        <h2>Riscos e pontos de atenção</h2>
+                        <div id="div_riscos_projeto_frm_edt_proj" class="borda p-2" style="width: 684px;height: 65px;"></div>
+                    </div>
+                </div><br/>
+              </div>
+
+              <div class="d-flex flex-row  w-100" >
+                  <div class="d-flex flex-column w-100">
+                      <div class="d-flex flex-row justify-content-between">
+                      <h2>Cronograma macro</h2></div>
+                      <div class="borda" style="height: 410px;">
+                          <div class="p-2">
+                              <div class="teste" style="display: inline; padding: 7px; margin-left: 627px; margin-top: 28px; top: -8px;
+                                     position: relative;">
+                                 <button  class="add-linha" name="btn_add_tr_tarefas" id="btn_add_tr_tarefas" class="btn btn-rounded btn-space"  style="padding-top: 12px;">
+                                     <i class="fa-solid fa-plus" style="color: #ff5900!important; font-size: 15px"></i>
+                                 </button>
+                               </div>
+                              <div class='scroll' style="width: 660px">
+                                 <table class="p-5" id="tb_tarefas" class='scroll'>
+                                      <thead style="position: sticky; top: 0; z-index: 7;">
+                                        <tr style="background: #d08b6cde;" id="btnAddLineTarefa" align="center">
+                                          <th style="width: 25%;;font-weight: 400;padding: 0.1">TAREFA</th>
+                                          <th style="width: 5%;font-weight: 400;padding: 0.1">ATRIBUIDO PARA</th>
+                                          <th style="width: 8%;font-weight: 400;padding: 0.1">INICIO</th>
+                                          <th style="width: 8%;font-weight: 400;padding: 0.1">PRAZO</th>
+                                          <th style="width: 8%;font-weight: 400;padding: 0.1">TERMINO</th>
+                                          <th style="width: 8%;font-weight: 400;padding: 0.1">SALVAR</th>
+                                          <th style="width: 8%;font-weight: 400;padding: 0.1">PROGRESSO</th>
+                                          <th style="width: 7%;font-weight: 400;padding: 0.1">AÇÕES</th>
+                                        </tr>
+                                      </thead>
+                                             <!-- Additional rows and cells -->
+                                  </table>
+                             </div>
+
+                          </div>
+                       </div>
+                   </div>
+                  <div class="d-flex flex-column w-100" style="margin-left: 4px;">
+                      <div class="d-flex flex-row justify-content-between">
+                      <h2>Próximas Ações Previstas</h2></div>
+                        <div class="borda ml-2 " style="height: 365px;">
+                            <div class="p-2">
+                               <div  name="div_desc_tarefa" id="div_desc_tarefa" style="position: absolute;"></div>
+                               <div class="teste" style="display: inline; padding: 7px; margin-left: 627px; margin-top: 28px; top: -8px;
+                                     position: relative;">
+                                 <button  class="add-linha" name="btn_add_tr_acao" id="btn_add_tr_acao" class="btn btn-rounded btn-space" style="padding-top: 12px;" disabled="disabled">
+                                     <i class="fa-solid fa-plus" style="color: #ff5900!important; font-size: 15px"></i>
+                                 </button>
+                               </div>
+                               <br/>
+                               <input type="hidden" id="hd_cod_tarefa_selecionada"
+                                       name="hd_cod_tarefa_selecionada">
+
+                                <input type="hidden" id="hd_cod_btn_selecionado"
+                                       name="hd_cod_btn_selecionado">
+
+                               <div class='scroll' style="width: 660px; height: 302px!important;">
+                                   <table id="tb_acoes_modal_edt_proj">
+                                       <thead style="position: sticky; top: 0; z-index: 7;">
+                                           <tr style="background: #d08b6cde;padding: 0.25rem!important;" class="linha" id="btnAddLineAcao" align="center">
+                                              <th style="width: 17%;font-weight: 400;padding: 0.1">AÇÕES</th>
+                                              <th style="width: 2%;font-weight: 400;padding: 0.1">INÍCIO</th>
+                                              <th style="width: 1%;font-weight: 400;padding: 0.1">PRAZO</th>
+                                              <th style="width: 8%;font-weight: 400;padding: 0.1">OBS</th>
+                                              <th style="width: 1%;font-weight: 400;padding: 0.1">SALVAR</th>
+                                              <th style="width: 2%;font-weight: 400;padding: 0.1">CONCLUIR</th>
+                                           </tr>
+                                       </thead>
+                                     <!-- Additional rows and cells -->
+                                   </table>
+                               </div>
+                        </div>
+                 </div>
+             </div>
+        </div>
+        <button name="btn_finaliza_projeto" id="btn_finaliza_projeto" style='position: absolute;left:986px;background-color:#ff6300;bottom:14px;color: white;'
+            class="btn btn-rounded btn-space"  disabled="disabled">FINALIZAR PROJETO</button>
+    </div>
+  </div>

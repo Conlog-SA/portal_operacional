@@ -2,13 +2,15 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.http import QueryDict
 
-from apps.estrut_org_app.models import Atividade
 from apps.help_desk_app.views import ConexaoHelpDesk
-from apps.ti_comitec_app.models import Item_Gut, Ideia
+from apps.ti_comitec_app.models import Item_Gut, Ideia, Projeto, Atividade
 from apps.usuario_app.models import Usuario
-from datetime import datetime
+from datetime import datetime, timedelta
 
+from django.utils import timezone
+data_atual = timezone.now()
 
 # Create your views here.
 class Frm_Cad_Ideias_View(View):
@@ -124,12 +126,82 @@ class Frm_Cad_Ideias_View(View):
         }
         return JsonResponse(data, safe=False)
 
+class Frm_Lista_Projetos_View(View):
+    def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_dic_proj = []
+        lista_obj_projetos = Projeto.objects.all()
+        for obj_proj in lista_obj_projetos:
+            perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
+            status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
+            obj_proj.status_cronograma_proj = status_cronograma_proj
+            obj_proj.save()
+            proj = {
+                'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
+                'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
+                'data_ini': obj_proj.data_ini,
+                'data_fim': obj_proj.data_fim,
+                'data_atualizacao': obj_proj.data_atualizacao,
+                'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
+                'status_cronograma_proj': obj_proj.status_cronograma_proj,
+                'perc_progresso_proj': perc_progresso_proj,
+                'cod_projeto': obj_proj.cod_projeto
+            }
+            lista_dic_proj.append(proj)
+        context = {
+            'lista_projetos': lista_dic_proj
+        }
+
+        return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
+
+
+    def calcula_progresso_projeto(self, obj_proj):
+        qtd_tt_acoes = (Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').count())
+
+        qtd_acoes_concluidas = (Atividade.objects
+                                .filter(cod_projeto=obj_proj, tipo_atividade='A',
+                                        data_conclusao__isnull=False).count())
+
+        perc_progresso_acoes = 0
+        try:
+            perc_progresso_acoes = int((qtd_acoes_concluidas / qtd_tt_acoes) * 100)
+        except:
+            perc_progresso_acoes = 0
+
+        return perc_progresso_acoes
+
+    def verifica_status_cronograma_proj(self, obj_proj):
+        status = 0
+        '''Verifica se o projeto está atrasado'''
+        obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').last()
+        if obj_ultima_acao:
+            if obj_ultima_acao.data_conclusao is None and obj_ultima_acao.data_fim < datetime.now().date():
+                status = 2
+            elif obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
+                status = 2
+        '''Verifica se o projeto está em risco'''
+        lista_obj_acoes =  Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A')
+        for obj_acao in lista_obj_acoes:
+            if obj_ultima_acao:
+                if obj_acao.data_conclusao is None and obj_acao.data_fim < datetime.now().date():
+                    status = 1
+                elif obj_acao.data_conclusao > obj_acao.data_fim:
+                    status = 1
+
+        return status
+
+
+
+
 class Frm_Cad_Item_Gut_View(View):
     def get(self, request):
         tipo_item_gut_frm = request.GET['tipo_item_gut']
         desc_head_modal_add_item_gut = ''
         icon_head_modal_add_item_gut = ''
-        lista_itens_gut = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
+        c = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
                                .values('cod_item_gut', 'desc', 'peso', 'ativo', 'flag', 'color_flag'))
         if tipo_item_gut_frm == 'G':
             desc_head_modal_add_item_gut = 'Gravidade - Matriz GUT'
@@ -477,3 +549,390 @@ class Tabela_Ideias():
             lista_ideias_frm.append(ideia)
 
         return lista_ideias_frm
+
+
+class Frm_Edita_Projetos_Ideia_View(View):
+    def get(self, request):
+        tipo_processo_frm = request.GET['tipo_processo']
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        data_hora_atual = datetime.now()
+        data_hora = data_hora_atual.strftime('%d-%m-%Y')
+
+        lista_usuarios = list(
+            Usuario.objects.filter(status_usu='A', tipo_colab__in=['L', 'M', 'H', 'G']).values('cod_usu', 'login_usu'))
+
+        data = dict()
+        dic_projeto = None
+        if tipo_processo_frm == 'novo':
+            cod_ideia_frm = request.GET['cod_ideia']
+            obj_ideia = Ideia.objects.get(pk=cod_ideia_frm)
+            obj_ideia.cod_status = 1
+            obj_ideia.save()
+
+            obj_novo_projeto = Projeto(
+                data_atualizacao = data_hora_atual,
+                cod_ideia = obj_ideia,
+                cod_usu=obj_usuario_sessao,
+                data_ini = data_hora
+            )
+            obj_novo_projeto.save()
+
+            dic_projeto = {
+                'nome_projeto': obj_ideia.resumo_ideia,
+                'nome_sponsor': obj_ideia.cod_usu_owner.login_usu,
+                'nome_gerente': obj_ideia.cod_usu_master.login_usu,
+                'objetivos_proj': obj_ideia.obs_usu_owner,
+                'riscos': obj_ideia.obs_usu_master,
+                'desc_fase': 'Inicial',
+                'ult_atualização': data_hora_atual,
+                'data_inicio': data_hora
+            }
+
+            lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
+
+            data = {
+                'dic_projeto': dic_projeto,
+                'lista_ideias_frm': lista_ideias_frm,
+                'lista_usuarios': lista_usuarios,
+                #'dic_atividade': dic_atividade
+            }
+        elif tipo_processo_frm == 'edicao':
+            cod_projeto_frm = request.GET['cod_projeto']
+            obj_proj = Projeto.objects.get(pk=cod_projeto_frm)
+
+            lista_obj_tarefas = (Atividade.objects
+                                 .filter(cod_projeto=obj_proj, tipo_atividade='T'))#.values('cod_atividade', 'desc_atividade', 'cod_usu__cod_usu', 'cod_usu__login_usu'))
+
+            ultima_tarefa = ' '
+            obj_ultima_tarefa = (
+                Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='T').order_by(
+                    'cod_atividade').last())
+
+            if obj_ultima_tarefa:
+                obj_ultima_acao = (
+                    Atividade.objects.filter(tipo_atividade='A', cod_projeto=obj_proj)
+                    .order_by('cod_atividade').last())
+
+                if obj_ultima_acao != None:
+                    if obj_ultima_acao.data_fim != None:
+                        ultima_tarefa = datetime.strftime(obj_ultima_acao.data_fim, '%d-%m-%Y')
+
+
+            '''Cálculo progresso das ações geral'''
+            perc_progresso_acoes = Frm_Lista_Projetos_View().calcula_progresso_projeto(obj_proj)
+
+            lista_dic_tarefas = []
+            for tarefa in lista_obj_tarefas:
+
+                data_ini_tarefa = '-'
+                obj_primeira_acao = (
+                    Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
+                    .order_by('cod_atividade').first())
+
+                if obj_primeira_acao != None:
+                    if obj_primeira_acao.data_ini != None:
+                        data_ini_tarefa = datetime.strftime(obj_primeira_acao.data_ini, '%d-%m-%Y')
+
+
+                data_prazo_tarefa = '-'
+                data_termino_tarefa = '-'
+                obj_ultima_acao = (
+                    Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
+                    .order_by('cod_atividade').last())
+                if obj_ultima_acao != None:
+                    if obj_ultima_acao.data_fim != None:
+                        data_prazo_tarefa = datetime.strftime(obj_ultima_acao.data_fim, '%d-%m-%Y')
+                    if obj_ultima_acao.data_conclusao != None:
+                        data_termino_tarefa = datetime.strftime(obj_ultima_acao.data_conclusao, '%d-%m-%Y')
+
+
+                '''Cálculo progresso tarefa'''
+                qtd_tt_acoes = Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade).count()
+                qtd_acoes_concluidas = (Atividade.objects
+                                        .filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade,
+                                                data_conclusao__isnull=False).count())
+                perc_progresso_tarefa = 0
+                try:
+                    perc_progresso_tarefa = int((qtd_acoes_concluidas / qtd_tt_acoes) * 100)
+                except:
+                    perc_progresso_tarefa = 0
+
+                reg = {
+                    'cod_atividade': tarefa.cod_atividade,
+                    'desc_atividade': tarefa.desc_atividade,
+                    'data_ini_tarefa': data_ini_tarefa,
+                    'data_prazo_tarefa': data_prazo_tarefa,
+                    'data_termino_tarefa': data_termino_tarefa,
+                    'cod_usu__cod_usu': tarefa.cod_usu.cod_usu,
+                    'cod_usu__login_usu': tarefa.cod_usu.login_usu,
+                    'perc_progresso_tarefa': str(perc_progresso_tarefa) + '%'
+                }
+                lista_dic_tarefas.append(reg)
+
+            dic_projeto = {
+                'nome_projeto': obj_proj.cod_ideia.resumo_ideia,
+                'nome_sponsor': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'nome_gerente': obj_proj.cod_ideia.cod_usu_master.login_usu,
+                'objetivos_proj': obj_proj.cod_ideia.obs_usu_owner,
+                'riscos': obj_proj.cod_ideia.obs_usu_master,
+                'desc_fase': obj_proj.fase_projeto,
+                'ult_atualização':  obj_proj.data_atualizacao.astimezone().strftime('%d-%m-%Y %H:%M') if obj_proj.data_atualizacao != None else '',
+                'data_inicio': datetime.strftime(obj_proj.data_ini, '%d-%m-%Y'),
+                'data_fim': ultima_tarefa,
+                'perc_progresso_acoes': str(perc_progresso_acoes) + '%',
+                'status_proj': obj_proj.status_proj,
+                'cronograma': obj_proj.status_cronograma_proj
+            }
+
+
+            data = {
+                'dic_projeto': dic_projeto,
+                'lista_dic_tarefas': lista_dic_tarefas,
+                'lista_usuarios': lista_usuarios,
+            }
+
+        return JsonResponse(data, safe=False)
+
+
+    def post(self, request):
+        cod_projeto_frm = request.POST['cod_projeto']
+        fase_projeto_frm = request.POST['fase_projeto']
+
+        data_atual = datetime.now()
+
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+
+        obj_projeto.fase_projeto = fase_projeto_frm
+        obj_projeto.data_atualizacao = data_atual
+        obj_projeto.save()
+        msg = 'Fase Editada!'
+
+        data = dict()
+        data = {
+            'cod_tarefa': obj_projeto.cod_projeto,
+            'desc_tarefa': obj_projeto.fase_projeto,
+            'msg': msg
+        }
+
+        return JsonResponse(data, safe=False)
+
+
+    def put(self, request):
+        put = QueryDict(request.body)
+        cod_projeto_frm = put.get('cod_projeto')
+        status_proj_frm = put.get('status_proj')
+
+        data_atual = datetime.now()
+
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+        obj_projeto.status_proj=1
+        obj_projeto.data_atualizacao = data_atual
+        obj_projeto.data_fim = data_atual
+        obj_projeto.save()
+        msg = 'Projeto Finalizado'
+
+        data = dict()
+        data = {
+            'cod_projeto': obj_projeto.cod_projeto,
+            'status_proj': obj_projeto.status_proj,
+            'msg': msg
+        }
+
+        return JsonResponse(data, safe=False)
+
+class Frm_Tarefa_View(View):
+    def post(self, request):
+        cod_projeto_frm = request.POST['cod_projeto']
+        cod_tarefa_frm = request.POST['cod_tarefa']
+        desc_tarefa_frm = request.POST['desc_tarefa']
+        atrib_para_frm = request.POST['atrib_para']
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        data_atual = datetime.now()
+
+        lista_dic_acoes = list(Atividade.objects.filter(
+            cod_atividade_pai=cod_tarefa_frm
+        ).values('cod_atividade', 'desc_atividade', 'data_ini', 'data_fim', 'observacao', 'data_conclusao'))
+
+
+        obj_usu_atribuido_para = Usuario.objects.get(pk=atrib_para_frm)
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+        obj_tarefa = None
+        msg = ''
+        if cod_tarefa_frm == '0':
+            obj_tarefa = Atividade(
+                tipo_atividade = 'T',
+                cod_atividade_pai = 0,
+                desc_atividade = desc_tarefa_frm,
+                cod_projeto = obj_projeto,
+                cod_usu = obj_usu_atribuido_para
+            )
+            obj_tarefa.save()
+            msg = 'Tarefa adicionada ao projeto com sucesso!'
+        else:
+            obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
+            obj_tarefa.cod_projeto = obj_projeto
+            obj_tarefa.desc_atividade = desc_tarefa_frm
+            obj_tarefa.cod_usu = obj_usu_atribuido_para
+            obj_tarefa.save()
+            msg = 'Tarefa editada com sucesso!'
+
+        obj_projeto.data_atualizacao = data_atual
+        obj_projeto.save()
+
+        data = dict()
+        data = {
+            'lista_dic_acoes': lista_dic_acoes,
+            'cod_tarefa': obj_tarefa.cod_atividade,
+            'desc_tarefa': obj_tarefa.desc_atividade,
+            'msg': msg
+        }
+
+        return JsonResponse(data, safe=False)
+
+class Frm_Acao_View(View):
+    def get(self,request):
+        cod_tarefa_frm = request.GET['cod_tarefa']
+
+
+        obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
+        desc_tarefa = obj_tarefa.desc_atividade
+        data_fim = obj_tarefa.data_fim
+        data_ini= obj_tarefa.data_ini
+        observacao = obj_tarefa.observacao
+        data_conclusao = obj_tarefa.data_conclusao
+        lista_dic_acoes = list(Atividade.objects.filter(
+            cod_atividade_pai = cod_tarefa_frm
+        ).values('cod_atividade', 'desc_atividade',  'data_ini', 'data_fim',  'observacao', 'data_conclusao'))
+
+
+        data = dict()
+        data = {
+            'lista_dic_acoes': lista_dic_acoes,
+            'desc_tarefa': desc_tarefa,
+            'data_fim': data_fim,
+            'data_ini': data_ini
+        }
+
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        cod_projeto_frm = request.POST['cod_projeto']
+        cod_acao_frm = request.POST['cod_acao']
+        cod_atividade_pai_frm = request.POST['cod_atividade_pai']
+        observacao_frm = request.POST['observacao']
+        desc_acao_frm = request.POST['desc_acao']
+        prazo_frm = request.POST['prazo']
+
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        data_atual = datetime.now()
+
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+        obj_atividade_pai = Atividade.objects.get(pk=cod_atividade_pai_frm)
+        obj_acao = None
+        msg = ''
+
+
+        if cod_acao_frm == '0':
+            obj_acao = Atividade(
+                cod_projeto=obj_projeto,
+                tipo_atividade='A',
+                cod_atividade_pai=cod_atividade_pai_frm,
+                desc_atividade=desc_acao_frm,
+                cod_usu=obj_usuario_sessao,
+                data_fim=prazo_frm,
+                observacao=observacao_frm,
+            )
+            obj_acao.save()
+            msg = 'Acao adicionada ao projeto com sucesso!'
+        else:
+            obj_acao = Atividade.objects.get(pk=cod_acao_frm)
+            obj_acao.cod_projeto = obj_projeto
+            obj_acao.cod_atividade_pai = cod_atividade_pai_frm
+            obj_acao.desc_atividade = desc_acao_frm
+            obj_acao.data_fim = prazo_frm
+            obj_acao.observacao = observacao_frm
+            obj_acao.save()
+            msg = 'Acao editada com sucesso!'
+
+        obj_projeto.data_atualizacao = data_atual
+        obj_projeto.save()
+
+        data = dict()
+        data = {
+            'cod_acao': obj_acao.cod_atividade,
+            'msg': msg,
+        }
+
+        return JsonResponse(data, safe=False)
+
+    def put(self, request):
+        put = QueryDict(request.body)
+        data_ini_frm = put.get('data_ini')
+        tipo_data_frm = put.get('tipo_data')
+        cod_projeto_frm = put.get('cod_projeto')
+        data_conclusao_frm = put.get('data_conclusao')
+        cod_acao_frm = put.get('cod_acao')
+        tipo_data_frm = put.get('tipo_data')
+        data_atual = datetime.now()
+        data_ini_frm = data_atual
+        data_ini_frm = data_ini_frm.strftime('%Y-%m-%d')
+
+        data_conclusao_frm = data_atual
+        data_conclusao_frm = data_conclusao_frm.strftime('%Y-%m-%d')
+
+        msg = ''
+
+        if tipo_data_frm == 'data_ini':
+            if cod_acao_frm != 0:
+                obj_acao = Atividade.objects.get(pk=cod_acao_frm)
+                obj_acao.data_ini = data_ini_frm
+                obj_acao.save()
+                msg = 'Acao iniciada com sucesso!'
+            else:
+                msg = 'Acao ainda não foi salvo!'
+
+            projeto = obj_acao.cod_projeto
+            projeto.data_atualizacao = data_atual
+            projeto.save()
+
+            data = dict()
+            data = {
+                'cod_acao': obj_acao.cod_atividade,
+                'data_ini': obj_acao.data_ini,
+                'msg': msg
+            }
+
+
+        elif tipo_data_frm == 'data_conclusao':
+            if cod_acao_frm != 0:
+                obj_acao = Atividade.objects.get(pk=cod_acao_frm)
+                obj_acao.data_conclusao = data_conclusao_frm
+                obj_acao.save()
+                msg = 'Ação concluída!'
+            else:
+                msg = 'Acao ainda não pode ser concluída!'
+
+            projeto = obj_acao.cod_projeto
+            projeto.data_atualizacao = data_atual
+            projeto.save()
+
+            data = dict()
+            data = {
+                'cod_acao': obj_acao.cod_atividade,
+                'data_conclusao': obj_acao.data_conclusao,
+                'msg': msg
+            }
+
+        return JsonResponse(data, safe=False)
+
+
+
+
+
+
+
