@@ -2,6 +2,7 @@ from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.views import View
 from datetime import datetime, timedelta
+from django.db.models import Q
 
 from django.views.decorators.csrf import csrf_exempt
 
@@ -30,10 +31,12 @@ class Form_Nps_Ti(View):
 
         if '@deeplogistica.com.br' in email:
             flag_empresa = 1
+            cod_empresa = 17
         else:
             flag_empresa = 0
+            cod_empresa = 12
 
-        filiais_nps = Filial_Nps.objects.all()
+        filiais_nps = Filial_Nps.objects.filter(Q(cod_empresa_nps=cod_empresa) | Q(cod_empresa_nps=18))
 
         context = {'email': email, 'flag_empresa': flag_empresa, 'filiais_nps': filiais_nps}
         return render(request, 'nps_ti_app/form_nps_ti.html', context)

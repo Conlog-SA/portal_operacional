@@ -81,115 +81,114 @@ $(document).on('click', 'button', function(){
 			cache: false,
 			success: function(dados){
 			    $("#divConteudoImportadoFatTerc").html("");
-			    var varTabelaDadosImpAcresDescTerc =
+			    if(dados.lista_form_lanc_tab.length > 0){
+			        var varTabelaDadosImpAcresDescTerc =
                     `<table id="tabImpLanc2ArtTerc"  class="display wrap w-100 cl_tab_principal_pagina"
                         style="width:100%">
-                    <thead>
-                      <tr>
-                        <th scope="col">Status Importação</th>
-                        <th scope="col">Tipo Lanc.</th>
-                        <th scope="col">Ocorrência</th>
-                        <th scope="col">Mapa Ocorrência</th>
-                        <th scope="col">Data Ocorrência</th>
-                        <th scope="col">Mapa</th>
-                        <th scope="col">Placa</th>
-                        <th scope="col">Valor(R$) </th>
-                        <th scope="col">Observação</th>
-                        </tr>
-                      </thead>
-                     <tbody>
+                        <thead>
+                          <tr>
+                            <th scope="col">Tipo Lanc.</th>
+                            <th scope="col">Mapa Ocorrência</th>
+                            <th scope="col">Data Ocorrência</th>
+                            <th scope="col">Mapa Destino</th>
+                            <th scope="col">Placa</th>
+                            <th scope="col">Valor(R$) </th>
+                            <th scope="col">Observação</th>
+                            </tr>
+                          </thead>
+                         <tbody>
 
-                      </tbody>
-                    </table>`;
-                var listaDadoLancMapa = [];
-                for (var i = 0; i < dados.lista_form_lanc_tab.length; i++) {
-                    var varImgStatusImpRegistro = '';
-                    if (dados.lista_form_lanc_tab[i].status_importacao == 'P'){
-                        varImgStatusImpRegistro =
-                            `<i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
-                            title="Mapa já faturado. Verifique !"></i>
+                          </tbody>
+                        </table>`;
+                    var listaDadoLancMapa = [];
+                    for (var i = 0; i < dados.lista_form_lanc_tab.length; i++) {
+                        var varImgStatusImpRegistro = `
+                                <i class="fa-solid fa-circle-check" style="color:#7FFFD4;"
+                                title="Registro importado com sucesso!"></i>
+
                             `;
 
-                    } else if (dados.lista_form_lanc_tab[i].status_importacao == 'I'){
-                        varImgStatusImpRegistro = `
-                            <i class="fa-solid fa-circle-check" style="color:#7FFFD4;"
-                            title="Registro importado com sucesso!"></i>
+                        var registro_lanc = [
+                            varImgStatusImpRegistro + ' ' + dados.lista_form_lanc_tab[i].desc_tipo_lanc,
+                            dados.lista_form_lanc_tab[i].mapa_ocorrencia,
+                            dados.lista_form_lanc_tab[i].data_ocorrencia,
+                            dados.lista_form_lanc_tab[i].mapa,
+                            dados.lista_form_lanc_tab[i].placa,
+                            dados.lista_form_lanc_tab[i].valor.toLocaleString('pt-BR'),
+                            dados.lista_form_lanc_tab[i].observacao,
+                            dados.lista_form_lanc_tab[i].id_lanc_banco
 
-                        `;
-                    } else if (dados.lista_form_lanc_tab[i].status_importacao == 'N'){
-                        varImgStatusImpRegistro =
-                            `<i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
-                            title="Mapa desconto não encontrado. Verifique !"></i>
-                            `;
-
+                        ];
+                        listaDadoLancMapa.push(registro_lanc);
                     }
-                    
-                    var registro_lanc = [
-                        varImgStatusImpRegistro,
-                        dados.lista_form_lanc_tab[i].desc_tipo_lanc,
-                        dados.lista_form_lanc_tab[i].desc_ocorrencia_lan,
-                        dados.lista_form_lanc_tab[i].mapa_ocorrencia,
-                        dados.lista_form_lanc_tab[i].data_ocorrencia,  
-                        dados.lista_form_lanc_tab[i].mapa,                       
-                        dados.lista_form_lanc_tab[i].placa,
-                        dados.lista_form_lanc_tab[i].valor.toLocaleString('pt-BR'),  
-                        dados.lista_form_lanc_tab[i].observacao,
-                        dados.lista_form_lanc_tab[i].id_lanc_banco
-
-                    ];
-                    listaDadoLancMapa.push(registro_lanc);                    
-                }
-                $("#divConteudoImportadoFatTerc").html(varTabelaDadosImpAcresDescTerc);
-                $('#tabImpLanc2ArtTerc').DataTable( {	
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "770px",
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 7,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "data":listaDadoLancMapa,
-                        "columns": [
-                                { title: "Status Importação" },                              
-                                { title: "Tipo Lanc." },
-                                { title: "Ocorrência" },
-                                { title: "Mapa Ocorrência" },
-                                { title: "Data ocorrência" },
-                                { title: "Mapa" },
-                                { title: "Placa" },
-                                { title: "Valor(R$)" },
-                                { title: "Observação" }
-                            ],
-                        "oLanguage": {
-                            "sProcessing":   "Processando...",
-                            "sLengthMenu":   "Mostrar _MENU_ registros",
-                            "sZeroRecords":  "Não foram encontrados resultados",
-                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                            "sInfoFiltered": "",
-                            "sInfoPostFix":  "",
-                            "sSearch":       "Pesquisar:",
-                            "sUrl":          "",
-                            "oPaginate": {
-                                "sFirst":    "Primeiro",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Proximo",
-                                "sLast":     "Último"
-                            },
-                            "buttons":{
-                                "copyTitle": 'Dados Copiados',
-                                "copySuccess": {
-                                    _: '%d linhas copiadas',
-                                    1: '1 linha copiada'
+                    $("#divConteudoImportadoFatTerc").html(varTabelaDadosImpAcresDescTerc);
+                    $('#tabImpLanc2ArtTerc').DataTable( {
+                        "bJQueryUI": true,
+                        "destroy": true,
+                        "fixedHeader": true,
+                        "scrollY": "770px",
+                        "scrollX": true,
+                        "scrollCollapse": true,
+                        "paging": true,
+                        "pageLength": 7,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "data":listaDadoLancMapa,
+                            "columns": [
+                                    { title: "Tipo Lanc." },
+                                    { title: "Mapa Ocorrência" },
+                                    { title: "Data ocorrência" },
+                                    { title: "Mapa Destino" },
+                                    { title: "Placa" },
+                                    { title: "Valor(R$)" },
+                                    { title: "Observação" }
+                                ],
+                            "oLanguage": {
+                                "sProcessing":   "Processando...",
+                                "sLengthMenu":   "Mostrar _MENU_ registros",
+                                "sZeroRecords":  "Não foram encontrados resultados",
+                                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                                "sInfoFiltered": "",
+                                "sInfoPostFix":  "",
+                                "sSearch":       "Pesquisar:",
+                                "sUrl":          "",
+                                "oPaginate": {
+                                    "sFirst":    "Primeiro",
+                                    "sPrevious": "Anterior",
+                                    "sNext":     "Proximo",
+                                    "sLast":     "Último"
+                                },
+                                "buttons":{
+                                    "copyTitle": 'Dados Copiados',
+                                    "copySuccess": {
+                                        _: '%d linhas copiadas',
+                                        1: '1 linha copiada'
+                                    }
                                 }
                             }
-                        }
-                });
+                    });
+
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+
+			    } else {
+			        $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+			    }
+
                 let_loader_arq_fat.style.display = "none";
 			},
 			error: function (request, status, error) {
@@ -221,116 +220,127 @@ $(document).on('click', 'button', function(){
 			cache: false,
 			success: function(dados){
 			    $("#divConteudoImportadoFatTerc").html("");
-			    var varTabelaDadosImpPagExtra =
-                    `<table id="tabImpPagExtraTerc"  class="display wrap w-100 cl_tab_principal_pagina"
-                        style="width:100%">
-                    <thead>
-                      <tr>
-                        <th scope="col">Status Importação</th>
-                        <th scope="col">Beneficiário</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Mapa</th>
-                        <th scope="col">Ocorrência</th>
-                        <th scope="col">Placa</th>
-                        <th scope="col">Desc(R$)</th>
-                        <th scope="col">Acrés.(R$)</th>
-                        <th scope="col">Valor(R$) </th>
-                        <th scope="col">Referência</th>
-                        <th scope="col">Observação</th>
-                        </tr>
-                      </thead>
-                     <tbody>
+			    if(dados.lista_form_pagamentos_extra_tab.length > 0){
+			        var varTabelaDadosImpPagExtra =
+                        `<table id="tabImpPagExtraTerc"  class="display wrap w-100 cl_tab_principal_pagina"
+                            style="width:100%">
+                        <thead>
+                          <tr>
+                            <th scope="col">Status Importação</th>
+                            <th scope="col">Beneficiário</th>
+                            <th scope="col">Data</th>
+                            <th scope="col">Placa</th>
+                            <th scope="col">Valor(R$) </th>
+                            <th scope="col">Referência</th>
+                            <th scope="col">Observação</th>
+                            </tr>
+                          </thead>
+                         <tbody>
 
-                      </tbody>
-                    </table>`;
-                var listaDadosPagamentosExtra = [];
-                for (var i = 0; i < dados.lista_form_pagamentos_extra_tab.length; i++) {
-                    
-                    var varImgStatusImpRegistro = '';
-                    if (dados.lista_form_pagamentos_extra_tab[i].status_importacao == 'P'){
-                        varImgStatusImpRegistro = `
-                            <i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
-                            title="Erro ao importar registro !"></i>
-                        `;
-                    } else if (dados.lista_form_pagamentos_extra_tab[i].status_importacao == 'I'){
-                        varImgStatusImpRegistro = `
-                            <i class="fa-solid fa-circle-check" style="color:#7FFFD4;"
-                            title="Registro importado com sucesso!"></i>
-                        `;
+                          </tbody>
+                        </table>`;
+                    var listaDadosPagamentosExtra = [];
+                    for (var i = 0; i < dados.lista_form_pagamentos_extra_tab.length; i++) {
+
+                        var varImgStatusImpRegistro = '';
+                        if (dados.lista_form_pagamentos_extra_tab[i].status_importacao == 'P'){
+                            varImgStatusImpRegistro = `
+                                <i class="fa-regular fa-triangle-exclamation" style="color:#FFFF00;"
+                                title="Erro ao importar registro !"></i>
+                            `;
+                        } else if (dados.lista_form_pagamentos_extra_tab[i].status_importacao == 'I'){
+                            varImgStatusImpRegistro = `
+                                <i class="fa-solid fa-circle-check" style="color:#7FFFD4;"
+                                title="Registro importado com sucesso!"></i>
+                            `;
+                        }
+
+                        var var_nome_beneficiario = dados.lista_form_pagamentos_extra_tab[i].nome_benef;
+                        if (var_nome_beneficiario == 'Cadastro não encontrado'){
+                            var_nome_beneficiario = "<span style='background:#fa6163;color:#ffffff;'>"+
+                                var_nome_beneficiario+"</span>";
+                        }
+
+                        var registro_pag = [
+                            varImgStatusImpRegistro,
+                            var_nome_beneficiario,
+                            dados.lista_form_pagamentos_extra_tab[i].data,
+                            dados.lista_form_pagamentos_extra_tab[i].placa,
+                            dados.lista_form_pagamentos_extra_tab[i].valor.toLocaleString('pt-BR'),
+                            dados.lista_form_pagamentos_extra_tab[i].periodo_ref,
+                            dados.lista_form_pagamentos_extra_tab[i].observacao,
+                            dados.lista_form_pagamentos_extra_tab[i].id_lanc_banco
+
+                        ];
+                        listaDadosPagamentosExtra.push(registro_pag);
                     }
-
-                    var var_nome_beneficiario = dados.lista_form_pagamentos_extra_tab[i].nome_benef;
-                    if (var_nome_beneficiario == 'Cadastro não encontrado'){
-                        var_nome_beneficiario = "<span style='background:#fa6163;color:#ffffff;'>"+
-                            var_nome_beneficiario+"</span>";
-                    }
-                    
-                    var registro_pag = [
-                        varImgStatusImpRegistro,
-                        var_nome_beneficiario,
-                        dados.lista_form_pagamentos_extra_tab[i].data,
-                        dados.lista_form_pagamentos_extra_tab[i].mapa,
-                        dados.lista_form_pagamentos_extra_tab[i].tipo_ocorrencia,  
-                        dados.lista_form_pagamentos_extra_tab[i].placa,                       
-                        dados.lista_form_pagamentos_extra_tab[i].desc,
-                        dados.lista_form_pagamentos_extra_tab[i].acres,
-                        dados.lista_form_pagamentos_extra_tab[i].valor.toLocaleString('pt-BR'),  
-                        dados.lista_form_pagamentos_extra_tab[i].periodo_ref,
-                        dados.lista_form_pagamentos_extra_tab[i].observacao,                        
-                        dados.lista_form_pagamentos_extra_tab[i].id_lanc_banco
-
-                    ];
-                    listaDadosPagamentosExtra.push(registro_pag);                    
-                }
-                $("#divConteudoImportadoFatTerc").html(varTabelaDadosImpPagExtra);
-                $('#tabImpPagExtraTerc').DataTable( {	
-                    "bJQueryUI": true,
-                    "pageLength": 7,
-                    "destroy": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "data":listaDadosPagamentosExtra,
-                        "columns": [
-                                { title: "Status Importação" },                              
-                                { title: "Beneficiário" },
-                                { title: "Data" },
-                                { title: "Mapa" },
-                                { title: "Ocorrência" },
-                                { title: "Placa" },
-                                { title: "Desc.(R$)" },
-                                { title: "Acrésc.(R$)" },
-                                { title: "Valor(R$)" },
-                                { title: "Referência" },
-                                { title: "Observação" }
-                            ],
-                        "oLanguage": {
-                            "sProcessing":   "Processando...",
-                            "sLengthMenu":   "Mostrar _MENU_ registros",
-                            "sZeroRecords":  "Não foram encontrados resultados",
-                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                            "sInfoFiltered": "",
-                            "sInfoPostFix":  "",
-                            "sSearch":       "Pesquisar:",
-                            "sUrl":          "",
-                            "oPaginate": {
-                                "sFirst":    "Primeiro",
-                                "sPrevious": "Anterior",
-                                "sNext":     "Proximo",
-                                "sLast":     "Último"
-                            },
-                            "buttons":{
-                                "copyTitle": 'Dados Copiados',
-                                "copySuccess": {
-                                    _: '%d linhas copiadas',
-                                    1: '1 linha copiada'
+                    $("#divConteudoImportadoFatTerc").html(varTabelaDadosImpPagExtra);
+                    $('#tabImpPagExtraTerc').DataTable( {
+                        "bJQueryUI": true,
+                        "pageLength": 7,
+                        "destroy": true,
+                        "dom": 'Bfrtip',
+                        "buttons": [
+                            'copyHtml5'
+                        ],
+                        "data":listaDadosPagamentosExtra,
+                            "columns": [
+                                    { title: "Status Importação" },
+                                    { title: "Beneficiário" },
+                                    { title: "Data" },
+                                    { title: "Placa" },
+                                    { title: "Valor(R$)" },
+                                    { title: "Referência" },
+                                    { title: "Observação" }
+                                ],
+                            "oLanguage": {
+                                "sProcessing":   "Processando...",
+                                "sLengthMenu":   "Mostrar _MENU_ registros",
+                                "sZeroRecords":  "Não foram encontrados resultados",
+                                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                                "sInfoFiltered": "",
+                                "sInfoPostFix":  "",
+                                "sSearch":       "Pesquisar:",
+                                "sUrl":          "",
+                                "oPaginate": {
+                                    "sFirst":    "Primeiro",
+                                    "sPrevious": "Anterior",
+                                    "sNext":     "Proximo",
+                                    "sLast":     "Último"
+                                },
+                                "buttons":{
+                                    "copyTitle": 'Dados Copiados',
+                                    "copySuccess": {
+                                        _: '%d linhas copiadas',
+                                        1: '1 linha copiada'
+                                    }
                                 }
                             }
-                        }
-                });
+                    });
+
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+
+
+			    } else {
+			        $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+
+			    }
+
                 let_loader_arq_fat.style.display = "none";
+
                   
 			},
 			error: function (request, status, error) {

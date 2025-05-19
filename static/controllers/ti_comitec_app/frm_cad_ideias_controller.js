@@ -343,7 +343,7 @@ $(document).on('click','button', function(){
 
                 let let_img_btn_atualizar_ideia = `
                     <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                    Atualizar dados da minha idéia
+                    Atualizar idéia
                 `;
                 $("#btn_add_nova_ideia_comitec").val(dados.cod_ideia);
                 $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -503,7 +503,7 @@ $(document).on('click','button', function(){
 
                      let let_img_btn_atualizar_ideia = `
                         <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                        Atualizar dados da minha idéia
+                        Atualizar idéia
                     `;
                     $("#btn_add_nova_ideia_comitec").val(dados.ideia_dic.cod_ideia);
                     $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -550,7 +550,7 @@ $(document).on('click','button', function(){
 
                 let let_img_btn_atualizar_ideia = `
                     <i class="fa-solid fa-rotate-right" style="color: #FFFFFF;"></i>
-                    Atualizar dados da minha idéia
+                    Atualizar idéia
                 `;
                 $("#btn_add_nova_ideia_comitec").val(dados.ideia_dic.cod_ideia);
                 $("#btn_add_nova_ideia_comitec").html(let_img_btn_atualizar_ideia);
@@ -695,7 +695,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
-                let_loader_frm_parecer_master_ideias_comitec.style.display = "flex";
+                let_loader_frm_parecer_master_ideias_comitec.style.display = "none";
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -705,6 +705,7 @@ $(document).on('click','button', function(){
                     sticky: false,
                     time: '',
                 });
+                let_loader_frm_parecer_master_ideias_comitec.style.display = "none";
           }
         });
     }
@@ -1279,13 +1280,13 @@ function carrega_tabela_ideias(lista_ideias_frm) {
         `;
 
         let let_flag_gut_g = `
-            <i class="${ideia.flag_gut_g}" style="color:${ideia.color_flag_gut_g}" title="${ideia.nota_gut_g}"></i>
+            <i class="${ideia.flag_gut_g}" style="color:${ideia.color_flag_gut_g}" title="${ideia.nota_gut_g}(${ideia.desc_gut_g})"></i>
         `;
         let let_flag_gut_u = `
-            <i class="${ideia.flag_gut_u}" style="color:${ideia.color_flag_gut_u}" title="${ideia.nota_gut_u}"></i>
+            <i class="${ideia.flag_gut_u}" style="color:${ideia.color_flag_gut_u}" title="${ideia.nota_gut_u}(${ideia.desc_gut_u})"></i>
         `;
         let let_flag_gut_t = `
-            <i class="${ideia.flag_gut_t}" style="color:${ideia.color_flag_gut_t}" title="${ideia.nota_gut_t}"></i>
+            <i class="${ideia.flag_gut_t}" style="color:${ideia.color_flag_gut_t}" title="${ideia.nota_gut_t}(${ideia.desc_gut_t})"></i>
         `;
 
         let reg = [

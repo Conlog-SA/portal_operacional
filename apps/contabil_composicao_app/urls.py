@@ -50,6 +50,8 @@ urlpatterns = [
          name='exclui_contrato'),
     path('retorna_lista_status_contrato_composicao', views.Form_Status_Contrato_Composicao_View.as_view(),
          name='retorna_lista_status_contrato_composicao'),
+    path('excluir_aud_comp/<int:pk>/', views.Form_Status_Contrato_Composicao_View.as_view(),
+         name='excluir_aud_comp'),
     path('visualiza_doc_contrato_competencia', views.Form_Visualiza_Doc_Contrato_View.as_view(),
          name='visualiza_doc_contrato_competencia'),
     path('acessa_form_doc_contas_modelo_1', views.Tabela_Pac_Contas_Modelo_1_View.as_view(),
@@ -168,6 +170,8 @@ urlpatterns = [
          name='adiciona_novo_status_processo_contabil'),
     path('atualiza_data_fim_status_proc_contabil', views.Form_Status_Proc_Contabil_View.as_view(),
          name='atualiza_data_fim_status_proc_contabil'),
+    path('exclui_reg_resp_conta/<int:pk>', views.Form_Vincula_Resp_Contas_View.as_view(),
+         name='exclui_reg_resp_conta'),
 
 ]
 

@@ -5,7 +5,6 @@ $(document).on('click', '.envio-nps', function(){
 
     let satisfaction_checked = 0;
 	$(".satisfaction").each(function(i) {
-        console.log(this.checked);
         if (this.checked == true) {
           satisfaction_checked = this.value;
         }
@@ -16,7 +15,6 @@ $(document).on('click', '.envio-nps', function(){
 
     let easy_contact_checked = 0;
 	$(".easy-contact").each(function(i) {
-        console.log(this.checked);
         if (this.checked == true) {
           easy_contact_checked = this.value;
         }
@@ -25,20 +23,19 @@ $(document).on('click', '.envio-nps', function(){
     let easy_contact_justif = "";
     easy_contact_justif = $('#easy_contact_justification').val();
 
-    let politeness_checked = 0;
-	$(".politeness").each(function(i) {
-        console.log(this.checked);
+    let rapidness_checked = 0;
+	$(".rapidness").each(function(i) {
         if (this.checked == true) {
-          politeness_checked = this.value;
+          rapidness_checked = this.value;
         }
     });
+    console.log(typeof rapidness_checked);
 
-    let politeness_justif = "";
-    politeness_justif = $('#politeness_justification').val();
+    let rapidness_justif = "";
+    rapidness_justif = $('#rapidness_justification').val();
 
     let resources_checked = 0;
 	$(".resources").each(function(i) {
-        console.log(this.checked);
         if (this.checked == true) {
           resources_checked = this.value;
         }
@@ -49,7 +46,6 @@ $(document).on('click', '.envio-nps', function(){
 
     let solutions_checked = 0;
 	$(".solutions").each(function(i) {
-        console.log(this.checked);
         if (this.checked == true) {
           solutions_checked = this.value;
         }
@@ -70,19 +66,63 @@ $(document).on('click', '.envio-nps', function(){
         msg_erro += 'Selecione uma filial!<br>';
     }
     if (satisfaction_checked == '') {
-        msg_erro += 'Responda a avaliação do critério 1!<br>';
+        msg_erro += 'Dê uma nota ao critério 1!<br>';
     }
+    else if (Number(satisfaction_checked) < 7 && satisfaction_justif.length < 15) {
+        if (satisfaction_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 1! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-satisfaction_justif.length).toString() + ' caracteres na justificativa do critério 1!<br>'
+        }
+    }
+
     if (easy_contact_checked == '') {
-        msg_erro += 'Responda a avaliação do critério 2!<br>';
+        msg_erro += 'Dê uma nota ao critério 2!<br>';
     }
-    if (politeness_checked == '') {
-        msg_erro += 'Responda a avaliação do critério 3!<br>';
+    else if (Number(easy_contact_checked) < 7 && easy_contact_justif.length < 15) {
+        if (easy_contact_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 2! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-easy_contact_justif.length).toString() + ' caracteres na justificativa do critério 2!<br>'
+        }
     }
+
+    if (rapidness_checked == '') {
+        msg_erro += 'Dê uma nota ao critério 3!<br>';
+    }
+    else if (Number(rapidness_checked) < 7 && rapidness_justif.length < 15) {
+        if (rapidness_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 3! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-rapidness_justif.length).toString() + ' caracteres na justificativa do critério 3!<br>'
+        }
+    }
+
     if (resources_checked == '') {
-        msg_erro += 'Responda a avaliação do critério 4!<br>';
+        msg_erro += 'Dê uma nota ao critério 4!<br>';
     }
+    else if (Number(resources_checked) < 7 && resources_justif.length < 15) {
+        if (resources_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 4! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-resources_justif.length).toString() + ' caracteres na justificativa do critério 4!<br>'
+        }
+    }
+
     if (solutions_checked == '') {
-        msg_erro += 'Responda a avaliação do critério 5!<br>';
+        msg_erro += 'Dê uma nota ao critério 5!<br>';
+    }
+    else if (Number(solutions_checked) < 7 && solutions_justif.length < 15) {
+        if (solutions_justif == '') {
+            msg_erro += 'Justifique a sua nota para o critério 5! (mínimo de 15 caracteres)<br>';
+        }
+        else {
+            msg_erro += 'Faltam ' + (15-solutions_justif.length).toString() + ' caracteres na justificativa do critério 5!<br>'
+        }
     }
 
     if (msg_erro == '') {
@@ -90,8 +130,8 @@ $(document).on('click', '.envio-nps', function(){
                                                      satisfaction_just: satisfaction_justif,
                                                      easy_contact_ch: easy_contact_checked,
                                                      easy_contact_just: easy_contact_justif,
-                                                     politeness_ch: politeness_checked,
-                                                     politeness_just: politeness_justif,
+                                                     rapidness_ch: rapidness_checked,
+                                                     rapidness_just: rapidness_justif,
                                                      resources_ch: resources_checked,
                                                      resources_just: resources_justif,
                                                      solutions_ch: solutions_checked,

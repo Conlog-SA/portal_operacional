@@ -8,25 +8,20 @@
 
 {% endblock %}
 
-<div class="d-flex flex-column align-items-center justify-content-start text-white w-95" style="margin-right:0px;width:100%;height:100svh">
-   <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;">
+<div class="d-flex flex-column align-items-center justify-content-start text-white w-100" style="margin-right:0px;width:100%;height:100svh">
+   <div class="d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;width:100%;border-radius:0px;">
        <div class="d-flex align-items-center justify-content-center">
             <i class="fa-solid fa-motorcycle" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
            <h1 class="titlePadraoMenu" style="margin-left:0px;">Blitz de Trajeto</h1>
        </div>
-        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
-            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
-        {% else %}
-            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
-        {% endif %}
    </div>
-    <div id="div_corpo_relato_blitz_trajeto" class="containerApp w-95 h-100" style="border-radius:0rem 0rem 0.5rem 0.5rem;margin-bottom:1rem">
+    <div id="div_corpo_relato_blitz_trajeto" class="containerApp w-100 h-100" style="min-height:fit-content;">
         <div class="form-group form_div_check w-100 h-100" >
             <div class="col-md-12 w-100 h-100">
-                <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
-                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px;font-size:15px;width:100%;max-width:100%;">
                         <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
-                                <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                <div class="h-100" style="text-align:left;flex-direction:column;justify-content:space-between;display:flex">
                                     <div style="padding:15px;padding-right:30px;padding-left:30px">
                                         <div class="form-group">
                                            <label for="unidade_colaborador_moto"> Unidade: </label>
@@ -59,17 +54,17 @@
                                            <input type="text" class="form-control responsive-font" id="placa_moto" name="placa_moto">
                                         </div>
                                     </div>
-                                    <div class="w-100" style="justify-content:space-between;display:flex;padding-right:2rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
+                                    <div class="w-100" style="justify-content:space-between;display:flex;padding-right:1rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
                                         <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
                                             <div style="display:flex;flex-direction:column">
                                                 <i class="fa-solid fa-arrow-left" style="color:#f46424;font-size:32px"></i>
-                                                <b style="color:white;font-size:17px">Voltar</b>
+                                                <b style="color:white;font-size:14px">Voltar</b>
                                             </div>
                                         </button>
                                         <button class="create-check-blitz-trajeto-moto" type="button" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
                                             <div style="display:flex;flex-direction:column">
                                                 <i class="fa-solid fa-circle-plus" style="font-size:32px; margin-left:0px;color:#f46424;"></i>
-                                                <b style="color:white;font-size:17px">Gerar check</b>
+                                                <b style="color:white;font-size:14px">Gerar check</b>
                                             </div>
                                         </button>
                                     </div>

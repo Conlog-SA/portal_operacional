@@ -452,7 +452,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
             .rename(columns={'atendente_ult_compra': 'nome_usuario_incluiu_compra'})
             .groupby(['nome_usuario_incluiu_compra', 'analise'])[['qtd_compras']].sum()
             .reset_index())
-        df_resumo_atendente.to_excel('df_resumo_atendente.xlsx')
+        #df_resumo_atendente.to_excel('df_resumo_atendente.xlsx')
         lista_ocorrencia_atendente = df_resumo_atendente['nome_usuario_incluiu_compra'].unique().tolist()
         lista_atendente = []
         lista_atendente_compra_maior = []

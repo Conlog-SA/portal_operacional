@@ -493,6 +493,10 @@ class Tabela_Ideias():
             nota_gut_u = 0
             nota_gut_t = 0
             nota_head = 0
+            desc_gut_g = ''
+            desc_gut_u = ''
+            desc_gut_t = ''
+            tt_nota = 0
             login_head = ''
             obs_usu_head = ''
             login_master = ''
@@ -506,23 +510,33 @@ class Tabela_Ideias():
                 nota_gut_g = i.cod_gut_g.peso
                 flag_gut_g = i.cod_gut_g.flag
                 color_flag_gut_g = i.cod_gut_g.color_flag
+                desc_gut_g = i.cod_gut_g.desc
             if i.cod_gut_u != None:
                 nota_gut_u = i.cod_gut_u.peso
                 flag_gut_u = i.cod_gut_u.flag
                 color_flag_gut_u = i.cod_gut_u.color_flag
+                desc_gut_u = i.cod_gut_u.desc
             if i.cod_gut_t != None:
                 nota_gut_t = i.cod_gut_t.peso
                 flag_gut_t = i.cod_gut_t.flag
                 color_flag_gut_t = i.cod_gut_t.color_flag
+                desc_gut_t = i.cod_gut_t.desc
             if i.cod_usu_head != None:
                 nota_head = i.nota_head
                 login_head = i.cod_usu_head.login_usu
                 obs_usu_head = i.obs_usu_head
             nota_gut = nota_gut_g * nota_gut_u * nota_gut_t
-            tt_nota = nota_gut * nota_head
+            if nota_head > 0:
+                tt_nota = nota_gut * nota_head
+            else:
+                tt_nota = nota_gut
 
             if i.cod_usu_master != None:
                 login_master = i.cod_usu_master.login_usu
+
+            empresa_usu = 'CONLOG'
+            if i.cod_usu_owner.cod_filial.cod_empresa.cod_empresa == 17:
+                empresa_usu = 'DEEP'
             ideia = {
                 'flag_gut_g': flag_gut_g,
                 'flag_gut_u': flag_gut_u,
@@ -534,7 +548,7 @@ class Tabela_Ideias():
                 'nota_gut_u': nota_gut_u,
                 'nota_gut_t': nota_gut_t,
                 'cod_status': i.cod_status,
-                'nome_empresa': i.cod_usu_owner.cod_filial.cod_empresa.cod_empresa,
+                'nome_empresa': empresa_usu,
                 'desc_area': i.cod_atividade.desc1_atividade,
                 'resumo_ideia': i.resumo_ideia,
                 'login_owner': i.cod_usu_owner.login_usu,
@@ -544,7 +558,10 @@ class Tabela_Ideias():
                 'nota_head': nota_head,
                 'nota_total': tt_nota,
                 'cod_ideia': i.cod_ideia,
-                'cod_usu_owner': i.cod_usu_owner.cod_usu
+                'cod_usu_owner': i.cod_usu_owner.cod_usu,
+                'desc_gut_g': desc_gut_g,
+                'desc_gut_u': desc_gut_u,
+                'desc_gut_t': desc_gut_t
             }
             lista_ideias_frm.append(ideia)
 

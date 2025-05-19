@@ -36,7 +36,7 @@
                             data-live-search="true"
                             title="Selecione o projeto">
                         {% for p in lista_projetos %}
-                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }}</option>
+                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }} (Serial: {{ p.cod_projeto.cod_serial_pag_terc }})</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -62,7 +62,7 @@
 
             <div class="d-flex justify-content-between align-items-between w-100 mb-3">
 
-                <div class="d-flex align-items-start" style="width: 60%;">
+                <div class="d-flex justify-content-start align-items-center" style="width: 60%;">
                     <div class="loader" id="loader_gera_pag_terc_2art">
                         <div class="loader-inner">
                             <div class="loader-block"></div>

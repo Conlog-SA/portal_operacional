@@ -191,7 +191,7 @@ $(document).on('click', 'a', function(){
                         "scrollY": "550px", //"50vh" 770px
                         "scrollX": true,
                         "scrollCollapse": true,
-                        "paging": false,
+                        "paging": true,
                         //"pageLength": 7,
                         "searching": true,
                         "dom": 'Bfrtip',

@@ -73,7 +73,7 @@ class Form_Imp_Cad_Conta_View(View):
         #    qtd_arquivos_postados = len(lista_arquivos)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu = 'A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
 
@@ -1163,7 +1163,7 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu='A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
@@ -1191,7 +1191,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_usuarios_contabil = (Usuario.objects
-                                   .filter(sala='CON',
+                                   .filter(sala='CON', status_usu='A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
         lista_contas_modelo_1 = Conta.objects.filter(tipo_modelo=1, status_comp='A')
@@ -2121,7 +2121,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    '''print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')'''
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas
@@ -2592,6 +2592,11 @@ class Form_Visualiza_Doc_Contrato_View(View):
 
 
 class Form_Status_Contrato_Composicao_View(View):
+    def get_object(self, pk):
+        try:
+            return Auditoria_Status_Composicao_Competencia.objects.get(pk=pk)
+        except Auditoria_Status_Composicao_Competencia.DoesNotExists:
+            return Http404
     def get(self, request):
         cod_conta_form = request.GET['cod_conta']
 
@@ -2613,6 +2618,7 @@ class Form_Status_Contrato_Composicao_View(View):
             reg['val_composicao'] = locale.currency(round(float(reg['val_composicao']), 2), grouping=True, symbol=None)
             reg['val_balancete'] = locale.currency(round(float(reg['val_balancete']), 2), grouping=True, symbol=None)
             reg['val_diferenca'] = locale.currency(round(float(reg['val_diferenca']), 2), grouping=True, symbol=None)
+            reg['data_lan_auditoria'] = datetime.strftime(reg['data_lan_auditoria'], '%d-%m-%Y')
 
             if reg['cod_status_comp__desc_status'] == None:
                 reg['cod_status_comp__desc_status'] = ''
@@ -2630,9 +2636,22 @@ class Form_Status_Contrato_Composicao_View(View):
 
         data = dict()
         data = {
-            'lista_status_contratos_comp': lista_status_contratos_comp
+            'lista_status_contratos_comp': lista_status_contratos_comp,
+            'perfil_usu': obj_usuario_sessao.tipo_colab
         }
         return JsonResponse(data, safe=False)
+
+    def delete(self, request, pk):
+        obj_aud_comp = self.get_object(pk)
+        cod_conta = obj_aud_comp.cod_conta.cod_conta
+        obj_aud_comp.delete()
+        data = dict()
+        data = {
+            'msg': 'Registro excluído com sucesso',
+            'cod_conta': cod_conta
+        }
+        return JsonResponse(data, safe=False)
+
 
 class Tabela_Pac_Contas_Modelo_1_View(View):
     def get(self, request):
@@ -3887,6 +3906,13 @@ class Form_Composicao_Auditoria_View(View):
                       contexto)
 
 class Form_Vincula_Resp_Contas_View(View):
+
+    def get_object(self, pk):
+        try:
+            return Responsaveis_Conta.objects.get(pk=pk)
+        except Responsaveis_Conta.DoesNotExists:
+            return Http404
+
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
@@ -3906,7 +3932,6 @@ class Form_Vincula_Resp_Contas_View(View):
             'obj_usuario_logado': obj_usuario_logado
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
-
 
     def post(self, request):
         lista_nome_responsavel_frm = request.POST['lista_nome_responsavel']
@@ -3929,6 +3954,19 @@ class Form_Vincula_Resp_Contas_View(View):
         data = dict()
         data = {
             'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+    def delete(self, request, pk):
+        obj_resp_conta = self.get_object(pk)
+        cod_conta = obj_resp_conta.cod_conta.cod_conta
+        obj_resp_conta.delete()
+
+        msg = 'Registro excluído com sucesso!'
+        data = dict()
+        data = {
+            'msg' : msg,
+            'cod_conta': cod_conta
         }
         return JsonResponse(data, safe=False)
 

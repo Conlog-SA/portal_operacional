@@ -205,10 +205,14 @@ class Form_Importa_Plan_Despesas_View(View):
                                     ~Q(tipo_depencencia__icontains='titular'))
 
                                 if lista_despesas_dependentes_titular.first() is not None:
-                                    if lista_despesas_dependentes_titular.count() == 1:
-                                        percentual_empresa = 90
-                                    if lista_despesas_dependentes_titular.count() > 1:
-                                        percentual_empresa = 0
+                                    dependente_foi_percorrido = lista_despesas_dependentes_titular.filter(nome_beneficiario=nome_beneficiario).first()
+                                    if dependente_foi_percorrido is not None:
+                                        percentual_empresa = dependente_foi_percorrido.percentual_empresa
+                                    else:
+                                        if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() == 1:
+                                            percentual_empresa = 90
+                                        if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() > 1:
+                                            percentual_empresa = 0
 
                         # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
                         if cod_plano == '33':
@@ -217,7 +221,8 @@ class Form_Importa_Plan_Despesas_View(View):
                                     Q(cod_arq_despesa__status_arquivo=1) &
                                     Q(matricula_titular=titular_senior['matricula_colab']) &
                                     Q(competencia=competencia) &
-                                    ~Q(tipo_depencencia__icontains='titular'))
+                                    ~Q(tipo_depencencia__icontains='titular') &
+                                    ~Q(nome_beneficiario=nome_beneficiario))
 
                                 if lista_despesas_dependentes_titular.first() is not None:
                                     percentual_empresa = 0
@@ -433,7 +438,7 @@ class Preenche_Colaborador(View):
         cod_plano = despesa_selecionada.cod_arq_despesa.cod_plano_saude.cod_plano_saude
 
         if despesa_selecionada.percentual_empresa is None:
-            novo_percentual_empresa = False
+            novo_percentual_empresa = True
             # REGRA DIFERENCIADA PLANO START - CUIABÁ
             if cod_plano == 31:
                 if 'titular' not in despesa_selecionada.tipo_depencencia.lower():
@@ -444,10 +449,15 @@ class Preenche_Colaborador(View):
                         ~Q(tipo_depencencia__icontains='titular'))
 
                     if lista_despesas_dependentes_titular.first() is not None:
-                        if lista_despesas_dependentes_titular.count() == 1:
-                            novo_percentual_empresa = 90
-                        if lista_despesas_dependentes_titular.count() > 1:
-                            novo_percentual_empresa = 0
+                        dependente_foi_percorrido = lista_despesas_dependentes_titular.filter(
+                            nome_beneficiario=despesa_selecionada.nome_beneficiario).first()
+                        if dependente_foi_percorrido is not None:
+                            novo_percentual_empresa = dependente_foi_percorrido.percentual_empresa
+                        else:
+                            if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() == 1:
+                                novo_percentual_empresa = 90
+                            if lista_despesas_dependentes_titular.values('nome_beneficiario').distinct().count() > 1:
+                                novo_percentual_empresa = 0
 
             # REGRA DIFERENCIADA PLANO SUPERCLASS - CUIABÁ
             elif cod_plano == 33:
@@ -456,12 +466,13 @@ class Preenche_Colaborador(View):
                         Q(cod_arq_despesa__status_arquivo=1) &
                         Q(matricula_titular=matricula) &
                         Q(competencia=despesa_selecionada.competencia) &
-                        ~Q(tipo_depencencia__icontains='titular'))
+                        ~Q(tipo_depencencia__icontains='titular') &
+                        ~Q(nome_beneficiario=despesa_selecionada.nome_beneficiario))
 
                     if lista_despesas_dependentes_titular.first() is not None:
                         novo_percentual_empresa = 0
 
-            if novo_percentual_empresa != False:
+            if novo_percentual_empresa != True:
                 despesa_selecionada.percentual_empresa = novo_percentual_empresa
 
         despesa_selecionada.save()
@@ -562,7 +573,7 @@ class Calcula_Rateio(View):
                                      .filter(cod_filial_senior__isnull=True,cod_empresa_senior__isnull=True,
                                              competencia=competencia_busca, cod_arq_despesa__status_arquivo=1))
 
-        #VERIFICA SE EXISTEM DESPESAS SEM COLABORADOR ENCONTRADO NO SENIOR.
+        #VERIFICA SE EXISTEM DESPESAS SEM COLABORADOR IDENTIFICADO NO SENIOR.
         if lista_despesas_pesquisa_sem_filial.first() == None:
             plano_saude = Plano_Saude.objects.filter(cod_plano_saude=cod_plano_saude).first()
             despesas_filial_plano_filtro = (Despesa_Unimed.objects
@@ -572,17 +583,19 @@ class Calcula_Rateio(View):
 
             calculo_filial = despesas_filial_plano_filtro.aggregate(Sum('valor'))
 
+            # DEFINE OS VALORES DAS DESPESAS DE TITULARES COM PORCENTAGEM INFORMADA
             despesas_titulares = despesas_filial_plano_filtro.filter(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'))
             despesas_titulares_porcentagem_excecao = despesas_titulares.exclude(percentual_empresa__isnull=True)
+            despesas_titulares_test_obj = despesas_titulares.filter(percentual_empresa__isnull=False)
             despesas_titulares = despesas_titulares.filter(percentual_empresa__isnull=True).aggregate(Sum('valor'))
 
-            # DEFINE OS VALORES DAS DESPESAS DE TITULARES COM PORCENTAGEM INFORMADA
             custo_empresa_titulares_excecao = 0
             custo_colaborador_titulares_excecao = 0
             for despesa in despesas_titulares_porcentagem_excecao:
                 if despesa.percentual_empresa is not None:
                     custo_empresa_titulares_excecao += float(despesa.valor)*float(despesa.percentual_empresa)/100
                     custo_colaborador_titulares_excecao += float(despesa.valor)*(100-float(despesa.percentual_empresa))/100
+                    #print(despesa.nome_beneficiario + ', Val. empresa: ' + str(custo_empresa_titulares_excecao) + ', Val. colaborador: ' + str(custo_colaborador_titulares_excecao))
             if despesas_titulares['valor__sum'] == None:
                 custo_total_empresa_titular = custo_empresa_titulares_excecao
                 custo_total_colaborador_titular = custo_colaborador_titulares_excecao
@@ -590,11 +603,12 @@ class Calcula_Rateio(View):
                 custo_total_empresa_titular = custo_empresa_titulares_excecao + float(despesas_titulares['valor__sum'])*(plano_saude.percentual_empresa_titular/100)
                 custo_total_colaborador_titular = custo_colaborador_titulares_excecao + float(despesas_titulares['valor__sum'])*((100-plano_saude.percentual_empresa_titular)/100)
 
+            # DEFINE OS VALORES DAS DESPESAS DE DEPENDENTES COM PORCENTAGEM INFORMADA
             despesas_dependentes = despesas_filial_plano_filtro.exclude(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'))
             despesas_dependentes_porcentagem_excecao = despesas_dependentes.exclude(percentual_empresa__isnull=True)
+            despesas_dependentes_test_obj = despesas_dependentes.filter(percentual_empresa__isnull=False)
             despesas_dependentes = despesas_dependentes.filter(percentual_empresa__isnull=True).aggregate(Sum('valor'))
 
-            # DEFINE OS VALORES DAS DESPESAS DE DEPENDENTES COM PORCENTAGEM INFORMADA
             custo_empresa_dependentes_excecao = 0
             custo_colaborador_dependentes_excecao = 0
             for despesa in despesas_dependentes_porcentagem_excecao:
@@ -613,14 +627,20 @@ class Calcula_Rateio(View):
             despesas_projetos_lista = despesas_filial_plano_filtro.values('desc_projeto_senior')
 
             custo_titulares_empresa_por_projeto = (despesas_projetos_lista
+                                                   .filter(percentual_empresa__isnull=True)
                                                    .filter(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'))
                                                    .annotate(valor_total=Sum('valor')))
-            custo_titulares_empresa_por_projeto = list(custo_titulares_empresa_por_projeto.filter(percentual_empresa__isnull=True))
+            custo_titulares_empresa_por_projeto = list(custo_titulares_empresa_por_projeto)
+
+            custo_titulares_empresa_por_projeto_teste = (despesas_projetos_lista
+                                                   .filter(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'),
+                                                           percentual_empresa__isnull=True))
 
             custo_titulares_por_projeto_percentual_informado = (despesas_filial_plano_filtro
                                                                .filter(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'))
                                                                .exclude(percentual_empresa__isnull=True))
             #CRIA UMA LISTA DE DICIONÁRIOS COM AS DESPESAS DE TITULARES COM PORCENTAGEM INFORMADA
+
             lista_dict_titulares_percentual_informado = []
             for despesa in custo_titulares_por_projeto_percentual_informado:
                 valor_empresa = float(despesa.valor) * float(despesa.percentual_empresa)/100
@@ -635,6 +655,7 @@ class Calcula_Rateio(View):
                 lista_dict_titulares_percentual_informado.append(disc_despesa_percentual_informado)
 
             custo_dependentes_empresa_por_projeto = (despesas_projetos_lista
+                                                   .filter(percentual_empresa__isnull=True)
                                                    .exclude(cpf_beneficiario__in=despesas_filial_plano_filtro.values('cpf_titular'))
                                                    .annotate(valor_total=Sum('valor')))
             custo_dependentes_empresa_por_projeto = list(custo_dependentes_empresa_por_projeto)
@@ -646,7 +667,7 @@ class Calcula_Rateio(View):
             lista_dict_dependentes_percentual_informado = []
             for despesa in custo_dependentes_por_projeto_percentual_informado:
                 valor_empresa = float(despesa.valor) * float(despesa.percentual_empresa)/100
-                valor_colaborador = float(despesa.valor) * (float(despesa.percentual_empresa)/100)
+                valor_colaborador = float(despesa.valor) * (100-float(despesa.percentual_empresa))/100
                 desc_projeto = despesa.desc_projeto_senior
 
                 disc_despesa_percentual_informado = {
@@ -658,36 +679,76 @@ class Calcula_Rateio(View):
             # PARA CADA PROJETO COM DESPESAS NA FILIAL DO RATEIO, SOMA TODOS OS CUSTOS DE PORCENTAGEM INFORMADA,
             # DE PORCENTAGEM DO PLANO E CALCULA AS PARCELAS TOTAIS DE CADA PROJETO.
             for projeto in despesas_projetos_lista.distinct():
+
                 despesa_titulares_empresa_do_projeto = [reg for reg in custo_titulares_empresa_por_projeto if reg['desc_projeto_senior'] == projeto['desc_projeto_senior']]
-                lista_custo_titulares_porcentagem_informado_do_projeto = [d for d in
-                                                                        lista_dict_titulares_percentual_informado if
-                                                                        d['desc_projeto'] ==
-                                                                        despesa_titulares_empresa_do_projeto[0][
-                                                                            'desc_projeto_senior']]
-                if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
-                    custo_total_titulares_do_projeto_porcentagem_informada = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa']) + float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa'])
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = float(lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
-                else:
-                    custo_total_titulares_do_projeto_porcentagem_informada = 0
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
-                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
+                custo_titulares_empresa_por_projeto_teste = [reg for reg in despesas_titulares_test_obj if reg.desc_projeto_senior == projeto['desc_projeto_senior']]
+                custo_titulares_empresa_por_projeto_teste_excecao = [reg for reg in despesas_titulares_test_obj if
+                                                             reg.desc_projeto_senior == projeto['desc_projeto_senior']]
+                print(despesa_titulares_empresa_do_projeto)
 
                 if despesa_titulares_empresa_do_projeto != []:
                     custo_total_titulares_do_projeto_porcentagem_plano = float(despesa_titulares_empresa_do_projeto[0]['valor_total'])
                     custo_titulares_do_projeto_porcentagem_plano_parcela_empresa = float((custo_total_titulares_do_projeto_porcentagem_plano)*(plano_saude.percentual_empresa_titular/100))
                     custo_titulares_do_projeto_porcentagem_plano_parcela_colaborador = float((custo_total_titulares_do_projeto_porcentagem_plano)*(100-plano_saude.percentual_empresa_titular)/100)
+
+                    lista_custo_titulares_porcentagem_informado_do_projeto = [d for d in
+                                                                              lista_dict_titulares_percentual_informado
+                                                                              if
+                                                                              d['desc_projeto'] ==
+                                                                              despesa_titulares_empresa_do_projeto[0][
+                                                                                  'desc_projeto_senior']]
+
+                    #if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
+                    #    custo_total_titulares_do_projeto_porcentagem_informada = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa']) + float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
+                    #    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_empresa'])
+                    #    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = float(
+                    #        lista_custo_titulares_porcentagem_informado_do_projeto[0]['valor_colaborador'])
+
+                    if len(lista_custo_titulares_porcentagem_informado_do_projeto) > 0:
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = sum(
+                            float(d['valor_empresa']) for d in lista_custo_titulares_porcentagem_informado_do_projeto)
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = sum(
+                            float(d['valor_colaborador']) for d in
+                            lista_custo_titulares_porcentagem_informado_do_projeto)
+                        custo_total_titulares_do_projeto_porcentagem_informada = (
+                                custo_titulares_do_projeto_porcentagem_informada_parcela_empresa +
+                                custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador)
+                    else:
+                        custo_total_titulares_do_projeto_porcentagem_informada = 0
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
+                        custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                 else:
                     custo_total_titulares_do_projeto_porcentagem_plano = 0
+                    custo_total_titulares_do_projeto_porcentagem_informada = 0
+                    custo_titulares_do_projeto_porcentagem_informada_parcela_empresa = 0
+                    custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador = 0
                     custo_titulares_do_projeto_porcentagem_plano_parcela_empresa = 0
                     custo_titulares_do_projeto_porcentagem_plano_parcela_colaborador = 0
-
 
                 custo_total_titulares_do_projeto = custo_total_titulares_do_projeto_porcentagem_informada + custo_total_titulares_do_projeto_porcentagem_plano
                 custo_titulares_do_projeto_parcela_empresa = custo_titulares_do_projeto_porcentagem_informada_parcela_empresa + custo_titulares_do_projeto_porcentagem_plano_parcela_empresa
                 custo_titulares_do_projeto_parcela_colaborador = custo_titulares_do_projeto_porcentagem_informada_parcela_colaborador + custo_titulares_do_projeto_porcentagem_plano_parcela_colaborador
-
                 despesa_dependentes_empresa_do_projeto = [reg for reg in custo_dependentes_empresa_por_projeto if reg['desc_projeto_senior'] == projeto['desc_projeto_senior']]
+                custo_dependentes_empresa_por_projeto_teste = [reg for reg in despesas_dependentes_test_obj if
+                                                             reg.desc_projeto_senior == projeto['desc_projeto_senior']]
+
+                for despesa in custo_dependentes_empresa_por_projeto_teste:
+                    if despesa.percentual_empresa is not None:
+                        val_empresa = str(float(despesa.valor) * float(despesa.percentual_empresa) / 100)
+                        val_colaborador = str(float(despesa.valor) * (100 - float(despesa.percentual_empresa)) / 100)
+                    else:
+                        val_empresa = str(float(despesa.valor) * float(plano_saude.percentual_empresa_dependente) / 100)
+                        val_colaborador = str(
+                            float(despesa.valor) * (100 - float(plano_saude.percentual_empresa_dependente)) / 100)
+
+                for despesa in despesas_dependentes_porcentagem_excecao:
+                    val_empresa = str(float(despesa.valor) * float(despesa.percentual_empresa) / 100)
+                    val_colaborador = str(
+                        float(despesa.valor) * (100 - float(despesa.percentual_empresa)) / 100)
+
                 if len(despesa_dependentes_empresa_do_projeto) > 0:
                     lista_custo_dependentes_porcentagem_informado_do_projeto = [d for d in
                                                                             lista_dict_dependentes_percentual_informado if
@@ -695,12 +756,11 @@ class Calcula_Rateio(View):
                                                                             despesa_dependentes_empresa_do_projeto[0][
                                                                                 'desc_projeto_senior']]
                     if len(lista_custo_dependentes_porcentagem_informado_do_projeto) > 0:
-                        custo_total_dependentes_do_projeto_porcentagem_informada = float(
-                            lista_custo_dependentes_porcentagem_informado_do_projeto[0]['valor_empresa']) + float(lista_custo_dependentes_porcentagem_informado_do_projeto[0]['valor_colaborador'])
-                        custo_dependentes_do_projeto_porcentagem_informada_parcela_empresa = float(
-                            lista_custo_dependentes_porcentagem_informado_do_projeto[0]['valor_empresa'])
-                        custo_dependentes_do_projeto_porcentagem_informada_parcela_colaborador = float(
-                            lista_custo_dependentes_porcentagem_informado_do_projeto[0]['valor_colaborador'])
+                        custo_dependentes_do_projeto_porcentagem_informada_parcela_empresa = (
+                            sum(despesa['valor_empresa'] for despesa in lista_custo_dependentes_porcentagem_informado_do_projeto))
+                        custo_dependentes_do_projeto_porcentagem_informada_parcela_colaborador = (
+                            sum(despesa['valor_colaborador'] for despesa in lista_custo_dependentes_porcentagem_informado_do_projeto))
+                        custo_total_dependentes_do_projeto_porcentagem_informada = custo_dependentes_do_projeto_porcentagem_informada_parcela_empresa + custo_dependentes_do_projeto_porcentagem_informada_parcela_colaborador
                     else:
                         custo_total_dependentes_do_projeto_porcentagem_informada = 0
                         custo_dependentes_do_projeto_porcentagem_informada_parcela_empresa = 0
@@ -736,7 +796,6 @@ class Calcula_Rateio(View):
                                'custo_dependentes_do_projeto_parcela_empresa': custo_dependentes_do_projeto_parcela_empresa,
                                'custo_dependentes_do_projeto_parcela_colaborador': custo_dependentes_do_projeto_parcela_colaborador
                                }
-
                 tab_rateio_despesas_busca.append(despesa_dict)
         else:
             response = HttpResponse('Resolva as despesas sem titular antes de fazer o rateio!')

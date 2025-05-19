@@ -3,6 +3,7 @@ from django.db import models
 class Filial_Nps(models.Model):
     cod_filial_nps = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     desc_filial_nps = models.CharField(max_length=50, blank=True, null=True)
+    cod_empresa_nps = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = True

@@ -155,9 +155,9 @@
                                 <tbody>
                                     {% for ideia in lista_ideias_frm %}
                                         <tr>
-                                            <td><i class="{{ ideia.flag_gut_g }}" style="color:{{ ideia.color_flag_gut_g }}" title="{{ ideia.nota_gut_g }}"></i></td>
-                                            <td><i class="{{ ideia.flag_gut_u }}" style="color:{{ ideia.color_flag_gut_u }}" title="{{ ideia.nota_gut_u }}"></i></td>
-                                            <td><i class="{{ ideia.flag_gut_t }}" style="color:{{ ideia.color_flag_gut_t }}" title="{{ ideia.nota_gut_t }}"></i></td>
+                                            <td><i class="{{ ideia.flag_gut_g }}" style="color:{{ ideia.color_flag_gut_g }}" title="{{ ideia.nota_gut_g }}({{ ideia.desc_gut_g }})"></i></td>
+                                            <td><i class="{{ ideia.flag_gut_u }}" style="color:{{ ideia.color_flag_gut_u }}" title="{{ ideia.nota_gut_u }}({{ ideia.desc_gut_u }})"></i></td>
+                                            <td><i class="{{ ideia.flag_gut_t }}" style="color:{{ ideia.color_flag_gut_t }}" title="{{ ideia.nota_gut_t }}({{ ideia.desc_gut_t }})"></i></td>
                                             <td>{{ideia.nota_total}}</td>
                                             <td>{{ideia.nota_gut}}</td>
                                             <td>{{ideia.nota_head}}</td>
@@ -358,7 +358,7 @@
                                 <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
                                     <label>Estimativa de Ganhos em horas</label>
                                     <input type="text" id="txt_horas_ganho_ideia_comitec" class="form-control"
-                                           name="txt_horas_ganho_ideia_comitec" />
+                                           name="txt_horas_ganho_ideia_comitec" placeholder="0"/>
                                 </div>
                             </div>
 
@@ -388,6 +388,13 @@
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
                                 </div>
                                 <div class="d-flex flex-column w-100" style="margin-top: 1.3rem; margin-right: 0.25rem;" id="div_btn_nova_ideia">
                                 </div>
@@ -468,6 +475,13 @@
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
                                 </div>
                                 <div class="d-flex flex-column w-100">
                                 </div>
@@ -565,8 +579,16 @@
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
                                 </div>
                                 <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
+                                </div>
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;
                                 </div>
                                 <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
                                     <button type="button" name="btn_add_aval_usu_head_ideia_comitec"

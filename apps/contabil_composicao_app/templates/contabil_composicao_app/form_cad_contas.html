@@ -309,16 +309,25 @@
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div id="div_btn_criar_nova_conta_manual"
-                                     class="d-flex flex-column w-100">
+                                <div class="d-flex flex-column w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div class="d-flex flex-column align-items-end w-100">
+                                <div class="d-flex flex-column w-100">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+
+                                <div id="div_btn_criar_nova_conta_manual"
+                                     class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;
+                                </div>
+
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100"
+                                     style="margin-left: .25rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                         <button type='button' id="btn_cadastra_nova_conta"
                                                 name="btn_cadastra_nova_conta"
-                                                class="mr-2 btn btn-primary btn-rounded botaoPrincipal icon-colorb"
+                                                class="mr-2 btn btn-primary btn-rounded botaoPrincipal"
                                                 value="0">
                                             <i class="fa-solid fa-plus "></i>
                                             <span>Criar conta</span>
@@ -334,6 +343,8 @@
                                         </button>
                                     {% endif %}
                                 </div>
+
+
                             </div>
 
                         </form>
@@ -415,7 +426,7 @@
 
                                 </div>
 
-                                <div class="d-flex flex-column justify-content-end align-items-end" style="width: 10%; margin-left:0.25rem;">
+                                <div class="d-flex flex-column justify-content-between align-items-between" style="width: 10%; margin-left:0.25rem; margin-top: 1.25rem;">
                                     <input type="hidden" id="hd_tipo_transacao_resp" value="C">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_associar_responsaveis_conta"
@@ -453,6 +464,7 @@
                                             <th scope="col">Início</th>
                                             <th scope="col">Fim</th>
                                             <th scope="col">Alterar</th>
+                                            <th scope="col">Excluir</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -510,8 +522,20 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100" >
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                    &nbsp;
+                                </div>
 
-                                <div class="d-flex flex-column align-items-end w-100"
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100"
                                      style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <button type='button' id="btn_anexa_doc_contrato"
@@ -592,9 +616,11 @@
                                             <th scope="col">Diferença</th>
 
                                             <th scope="col">Usuário</th>
+                                            <th scope="col">Composta em:</th>
                                             <th scope="col">Composição</th>
                                             <th scope="col">Análise</th>
                                             <th scope="col">Regularização</th>
+                                            <th scope="col">Excluir</th>
                                         </tr>
                                     </thead>
                                     <tbody>

@@ -170,6 +170,12 @@ $(document).on('change','#situacao_envolvido',function(){
         $('#nome_relatado').val('');
         $('#nome_relatado').selectpicker('refresh');
     }
+    else if ($(this).val() == '5') {
+        $('#div_relatado_terceiro').addClass('hidden-div');
+        $('#div_relatado').addClass('hidden-div');
+        $('#nome_relatado').val('');
+        $('#nome_relatado').selectpicker('refresh');
+    }
 
 
 });
