@@ -1232,7 +1232,8 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
 
                     id_obj_2art_ocorrencia = str(reg.mapa_ocorrencia) + str(obj_projeto.cod_filial.cod_promax)
                     obj_2art_terc_ocorrencia_financ = Registro2ArtTerceirosFinanceiro.objects.filter(
-                        cod_reg_2art__cod_reg_2art=id_obj_2art_ocorrencia, status_financeiro_2art_terc_financ='P').first()
+                        cod_reg_2art__cod_reg_2art=id_obj_2art_ocorrencia).first()
+                    #status_financeiro_2art_terc_financ='P'
 
 
                     lanc = LancamentosRegistro2ArtTerceirosFinanceiro(
