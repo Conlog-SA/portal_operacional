@@ -864,16 +864,20 @@ $(document).on('click','button', function(){
                 $("#porcenagem_barra").html(dados.dic_projeto.perc_progresso_acoes);
                 $("#btn_finaliza_projeto").val(dados.dic_projeto.status_proj);
                 if (dados.dic_projeto.cronograma == '0'){
-                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl" style="color:#3CB371!important;font-size: 1.5em!important;"></i>`)
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#3CB371!important;font-size: 1.5em!important;"></i>`);
                 } else if (dados.dic_projeto.cronograma == '1'){
-                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;font-size: 1.5em!important;"></i>`)
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#FFD700!important;font-size: 1.5em!important;"></i>`);
                 } else if (dados.dic_projeto.cronograma == '2'){
-                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;font-size: 1.5em!important;"></i>`)
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#FF0000!important;font-size: 1.5em!important;"></i>`);
                 }
 
                 let_div_evolucao_projeto.style.width = dados.dic_projeto.perc_progresso_acoes;
 
                 let_lista_usuarios = [];
+                $("#cb_usuarios_projeto option").remove();
                 dados.lista_usuarios.forEach( usu => {
                     let reg = [
                         usu.cod_usu,
@@ -881,7 +885,20 @@ $(document).on('click','button', function(){
                     ];
                     let_lista_usuarios.push(reg);
 
+                    let let_item_selected = ``;
+                    dados.dic_projeto.lista_cod_usuarios_vinculados.forEach( cod_usu_vinc => {
+                        if( cod_usu_vinc.cod_usu__cod_usu == usu.cod_usu){
+                            let_item_selected = `selected="selected"`;
+                        }
+                    });
+
+                    $("#cb_usuarios_projeto").append(`
+                        <option value="${usu.cod_usu}" ${let_item_selected}>${usu.nome_usu}</option>
+                    `);
+
                 });
+                $("#cb_usuarios_projeto").selectpicker('refresh');
+
                 let let_porcentagem_barra = dados.dic_projeto.perc_progresso_acoes;
                 if ( let_porcentagem_barra != '100%' ){
                     $("#key").prop("disabled", false);
@@ -943,7 +960,7 @@ $(document).on('click','button', function(){
         let let_cod_btn = let_id_btn.split('_')[3];
         let let_cod_btn_anterior = $("#hd_cod_btn_selecionado").val();
         let let_desc_tarefa = $("#td_desc_tarefa_"+let_cod_btn).html();
-        let let_atrib_para = $("#sl_usu_frm_edt_tarefa_"+let_cod_btn).val();
+
 
         $.ajax({
             type: 'POST',
@@ -953,7 +970,6 @@ $(document).on('click','button', function(){
                 'cod_projeto': let_cod_projeto,
                 'cod_tarefa': let_cod_tarefa,
                 'desc_tarefa': let_desc_tarefa,
-                'atrib_para': let_atrib_para
             },
             success: function (dados) {
                 let let_titulo_acao = `<strong>Tarefa: </strong>${dados.desc_tarefa}`;
@@ -1017,6 +1033,7 @@ $(document).on('click','button', function(){
         let let_cod_btn = let_id_btn.split('_')[3];
         let let_desc_acao = $("#td_desc_acao_"+let_cod_btn).html();
         let let_prazo = $("#dt_prazo_frm_edt_acao_"+let_cod_btn).val();
+        let let_cod_usu_atribuido = $("#sl_usu_frm_edt_acao_"+let_cod_btn).val();
         if((let_desc_acao != null && let_desc_acao != '') && (let_prazo != null && let_prazo!= '')) {
             let let_cod_projeto = $("#hd_cod_projeto").val();
             let let_cod_acao = $(this).val();
@@ -1034,7 +1051,8 @@ $(document).on('click','button', function(){
                     'cod_atividade_pai': let_cod_atividade_pai,
                     'desc_acao': let_desc_acao,
                     'observacao': let_observacao,
-                    'prazo': let_prazo
+                    'prazo': let_prazo,
+                    'cod_usu_atribuido': let_cod_usu_atribuido
                 },
                 success: function (dados) {
                     $.gritter.add({
@@ -1098,7 +1116,7 @@ $(document).on('click','button', function(){
                 'cod_tarefa': let_cod_tarefa
             },
             success: function (dados) {
-                $("#div_desc_tarefa").html(`<strong>Tarefa: </strong>${dados.desc_tarefa}`);
+                $("#div_desc_tarefa").html(`<strong style="color: #FFFFFF;">Tarefa: </strong>${dados.desc_tarefa}`);
                 let let_icone_acao_clicar =`
                     <i class="fa-solid fa-eye" style="color: #3CB371!important;"></i>
                 `;
@@ -1566,39 +1584,64 @@ $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
 
 function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
     if(lista_acoes == null) {
+        let let_options_usu = '';
+        for(let i=0; i <  let_lista_usuarios.length; i++){
+            let_options_usu += `
+                <option value="${let_lista_usuarios[i][0]}">${let_lista_usuarios[i][1]}</option>
+            `;
+        }
        $(`
         <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
-            <td contenteditable='true' name='td_desc_acao' id='td_desc_acao_${cod_linha}' style="padding: 0.25rem;"></td>
-            <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center">
-                <button style="width: 35px;" value="0"
+            <td contenteditable='true' name='td_desc_acao' id='td_desc_acao_${cod_linha}' style="padding: 0.25rem; align-content: start;"></td>
+            <td style="padding: 0.25rem;align-content: start;">
+                <select name="sl_usu_frm_edt_acao" id="sl_usu_frm_edt_acao_${cod_linha}">
+                    ${let_options_usu}
+                </select>
+            </td>
+            <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center" style="align-content: start;">
+                <button style="width: 35px;" value="0" title="Iniciar ação"
                     class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${cod_linha}' disabled >
                     <i class="fa-solid fa-play" style="color: #fd9a49!important;" ></i>
                 </button>
             </td>
-            <td contenteditable='false' style="padding: 0.25rem;" >
-                <input type="date" id='dt_prazo_frm_edt_acao_${cod_linha}' name="dt_prazo_frm_edt_acao">
+            <td contenteditable='false' style="padding: 0.25rem; align-content: start;" >
+                <input type="date" id='dt_prazo_frm_edt_acao_${cod_linha}' name="dt_prazo_frm_edt_acao" style="width: 90px;">
             </td>
-            <td contenteditable='true' name='td_observacao' id='td_observacao_${cod_linha}' style="padding: 0.25rem;"></td>
-            <td align="center">
-                <button style="width: 35px;" value="0"
+            <td contenteditable='true' name='td_observacao' id='td_observacao_${cod_linha}'
+                style="padding: 0.25rem;align-content: start;"></td>
+            <td align="center" style="align-content: start;">
+                <button style="width: 35px;" value="0" title="Salvar/Atualizar ação"
                     class="btn btn-rounded btn-space" name='btn_salvar_acao' id='btn_salvar_acao_${cod_linha}'>
                     <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
                 </button>
             </td>
-            <td  name="td_conclui_acao" id="td_conclui_acao_${cod_linha}" align="center" >
+            <td  name="td_conclui_acao" id="td_conclui_acao_${cod_linha}" align="center" style="align-content: start;" >
                 <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space" value="0"
-                name='btn_concluir_acao' id='btn_concluir_acao_${cod_linha}' disabled>
-                     <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                    name='btn_concluir_acao' id='btn_concluir_acao_${cod_linha}' title="Concluir ação" disabled>
+                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
                 </button>
             </td>
 
         </tr>`).insertAfter("#btnAddLineAcao");
     } else{
         lista_acoes.forEach( acao => {
+            let let_options_usu = '';
+            for(let i=0; i <  let_lista_usuarios.length; i++){
+                let let_selected = '';
+                if(let_lista_usuarios[i][0] == acao.cod_usu__cod_usu){
+                    let_selected = `selected="selected"`;
+                }
+                let_options_usu += `
+                    <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
+                `;
+            }
+            let let_atrib = `<select name="sl_usu_frm_edt_acao" id="sl_usu_frm_edt_acao_${acao.cod_atividade}">
+                        ${let_options_usu}
+                    </select>`;
             let let_btn_inicia_acao = ``;
             if(acao.data_ini == null) {
                 let_btn_inicia_acao = `
-                    <button style="width: 35px;" value="${acao.cod_atividade}"
+                    <button style="width: 35px;" value="${acao.cod_atividade}" title="Iniciar ação"
                         class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${acao.cod_atividade}'>
                         <i class="fa-solid fa-play" style="color: #fd9a49!important;"  ></i>
                     </button>
@@ -1611,13 +1654,14 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             if( acao.data_ini == null && acao.data_conclusao == null ) {
                 let_btn_data_conclusao = `
                    <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space"
-                        name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}" disabled>
-                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                        name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}"
+                        title="Concluir ação" disabled>
+                            <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
                    </button>
                 `;
             } else if(acao.data_conclusao == null && acao.data_ini != null) {
                 let_btn_data_conclusao = `
-                   <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space"
+                   <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space" title="Concluir ação"
                         name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}">
                         <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
                    </button>
@@ -1627,6 +1671,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             } else {
                 let_btn_data_conclusao = acao.data_conclusao.split('-')[2]+'-'+acao.data_conclusao.split('-')[1]+'-'+acao.data_conclusao.split('-')[0];
 
+
             }
             let let_edt = ``;
             let let_btn_edt = ``;
@@ -1634,40 +1679,55 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             if(acao.data_conclusao != null){
                 let_edt = `false`;
                 let_btn_edt =   `<button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
-                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' disabled>
+                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'
+                                    title="Salvar/Atualziar ação" disabled>
                                      <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
                                 </button>`;
-                let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao" value="${acao.data_fim}" disabled>
-                   `;
+                let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao"
+                    value="${acao.data_fim}" style="width: 90px;" disabled>`;
+
+                let_atrib = `
+                    <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${acao.cod_atividade}" disabled="disabled">
+                        ${let_options_usu}
+                    </select>`;
             } else {
                  let_btn_edt =   `<button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
-                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'>
+                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' title="Salvar/Atualizar ação">
                                     <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
                                 </button>`;
-                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao" value="${acao.data_fim}">
+                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' style="width: 90px;"
+                    name="dt_prazo_frm_edt_acao" value="${acao.data_fim}">
                    `;
             }
 
 
             $("#tb_acoes_modal_edt_proj").append(`
                <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
-                    <td contenteditable="${let_edt}" name='td_desc_acao' id='td_desc_acao_${acao.cod_atividade}' style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;">
-                        ${acao.desc_atividade}
+                    <td contenteditable="${let_edt}" name='td_desc_acao' id='td_desc_acao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal; align-content: start;">
+                            ${acao.desc_atividade}
                     </td>
-                    <td name="td_inicia_acao" id="td_inicia_acao_${acao.cod_atividade}" align="center" style="font-size: 10px;">
-                        ${let_btn_inicia_acao}
+                    <td contenteditable="${let_edt}" name='td_usu_acao' id='td_usu_acao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
+                            ${let_atrib}
                     </td>
-                    <td style="padding: 0.25rem;" >
+                    <td name="td_inicia_acao" id="td_inicia_acao_${acao.cod_atividade}" align="center"
+                        style="font-size: 10px;align-content: start;">
+                            ${let_btn_inicia_acao}
+                    </td>
+                    <td style="padding: 0.25rem; align-content: start;" >
                         ${let_dt_edt}
                     </td>
-                    <td contenteditable="${let_edt}" name='td_observacao' id='td_observacao_${acao.cod_atividade}' style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;">
+                    <td contenteditable="${let_edt}" name='td_observacao' id='td_observacao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
                            ${acao.observacao}
                     </td>
-                    <td align="center">
+                    <td align="center" style="align-content: start;">
                         ${let_btn_edt}
                     </td>
-                    <td name="td_conclui_acao" id="td_conclui_acao_${acao.cod_atividade}" align="center" style="font-size: 10px;">
-                        ${let_btn_data_conclusao}
+                    <td name="td_conclui_acao" id="td_conclui_acao_${acao.cod_atividade}" align="center"
+                        style="font-size: 10px;align-content: start;">
+                            ${let_btn_data_conclusao}
                     </td>
 
                 </tr>
@@ -1679,39 +1739,32 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
 
 function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
     if(lista_tarefas == null) {
-        let let_options_usu = '';
-        for(let i=0; i <  let_lista_usuarios.length; i++){
-            let_options_usu += `
-                <option value="${let_lista_usuarios[i][0]}">${let_lista_usuarios[i][1]}</option>
-            `;
-        }
+
         $(`
             <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
-                <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}" style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;"></td>
-                <td style="padding: 0.25rem;">
-                    <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${cod_linha}">
-                        ${let_options_usu}
-                    </select>
+                <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}"
+                    style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
                 </td>
-                <td style="padding: 0.25rem;">
+                <td style="padding: 0.25rem;align-content: center;">
                     &nbsp;
                 </td>
-                <td style="padding: 0.25rem;">
+                <td style="padding: 0.25rem;align-content: center;">
                     &nbsp;
                 </td>
-                <td style="padding: 0.25rem;">
+                <td style="padding: 0.25rem;align-content: center;">
                     &nbsp;
                 </td>
-                <td align="center">
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0" class="btn btn-rounded btn-space" style="width: 35px;">
-                        <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                <td align="center" style="align-content: center;">
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0"
+                        class="btn btn-rounded btn-space" style="width: 35px;" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
                     </button>
                 </td>
-                <td>
+                <td style="align-content: center;">
                     &nbsp;
                 </td>
-                <td align="center">
-                    <button style="width: 35px;" value="0" class="btn btn-rounded btn-space"
+                <td align="center" style="align-content: center;">
+                    <button style="width: 35px;" value="0" class="btn btn-rounded btn-space" title="Visualizar ações"
                         name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${cod_linha}" disabled>
                         <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
                     </button>
@@ -1721,47 +1774,37 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
     }
     else {
         lista_tarefas.forEach( tarefa => {
-            let let_options_usu = '';
-            for(let i=0; i <  let_lista_usuarios.length; i++){
-                let let_selected = '';
-                if(let_lista_usuarios[i][0] == tarefa.cod_usu__cod_usu){
-                    let_selected = `selected="selected"`;
-                }
-                let_options_usu += `
-                    <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
-                `;
-            }
 
             let let_btn_salva_tarefa = ``;
             let let_desc_tarefa = ``;
             let let_atrib = ``;
             if(tarefa.perc_progresso_tarefa != '100%') {
                 let_btn_salva_tarefa = `
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}" class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;">
-                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
                     </button>
                 `;
                 let_desc_tarefa = `
-                    <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}" style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;">
-                        ${tarefa.desc_atividade}
+                    <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${tarefa.desc_atividade}
                     </td>`;
-                let_atrib = `
-                    <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${tarefa.cod_atividade}">
-                        ${let_options_usu}
-                    </select>`;
+
             } else {
                 let_btn_salva_tarefa = `
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}" class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;" disabled="disabled">
-                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        disabled="disabled" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
                     </button>`;
                 let_desc_tarefa = `
-                    <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}" style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;">
-                        ${tarefa.desc_atividade}
+                    <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${tarefa.desc_atividade}
                     </td>`;
-                let_atrib = `
-                    <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${tarefa.cod_atividade}" disabled="disabled">
-                        ${let_options_usu}
-                    </select>`;
+
 
             }
 
@@ -1769,27 +1812,26 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
             $("#tb_tarefas").append(`
                 <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
                    ${let_desc_tarefa}
-                   <td style="padding: 0.25rem;">
-                        ${let_atrib}
-                    </td>
-                    <td style="padding: 0.25rem;font-size: 10px;" align="center">
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
                         ${tarefa.data_ini_tarefa}
                     </td>
-                    <td style="padding: 0.25rem;font-size: 10px;" align="center">
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
                         ${tarefa.data_prazo_tarefa}
                     </td>
-                    <td style="padding: 0.25rem;font-size: 10px;" align="center">
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
                         ${tarefa.data_termino_tarefa}
                     </td>
-                    <td style="padding: 0.25rem;" align="center">
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
                         ${let_btn_salva_tarefa}
                     </td>
-                    <td style="padding: 0.25rem;" align="right">
+                    <td style="padding: 0.25rem;align-content: center;" align="right">
                         ${tarefa.perc_progresso_tarefa}
                     </td>
-                    <td style="padding: 0.25rem;" align="center">
-                        <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}" >
-                            <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
+                        <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}"
+                            name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}"
+                            title="Visualizar ações">
+                                <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
                         </button>
                     </td>
                 </tr>
@@ -1798,3 +1840,38 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
         });
     }
 }
+
+
+
+$(document).on('change', '#cb_usuarios_projeto', function(){
+    let let_lista_cod_usuarios = $("#cb_usuarios_projeto").val().toString();
+    let let_cod_projeto = $("#hd_cod_projeto").val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/ti_comitec_app/vincula_usuarios_projeto',
+        data: {
+            'cod_projeto'  :   let_cod_projeto,
+            'lista_cod_usuarios' :   let_lista_cod_usuarios
+        },
+        success: function (dados) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+});

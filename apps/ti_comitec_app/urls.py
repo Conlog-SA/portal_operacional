@@ -23,6 +23,7 @@ urlpatterns = [
     path('retorna_acoes_tarefa', views.Frm_Acao_View.as_view(), name='retorna_acoes_tarefa'),
     path('inicia_acao', views.Frm_Acao_View.as_view(), name='inicia_acao'),
     path('conclui_acao', views.Frm_Acao_View.as_view(), name='conclui_acao'),
-    path('finaliza_projeto', views.Frm_Edita_Projetos_Ideia_View.as_view(), name='finaliza_projeto')
+    path('finaliza_projeto', views.Frm_Edita_Projetos_Ideia_View.as_view(), name='finaliza_projeto'),
+    path('vincula_usuarios_projeto', views.Frm_Usuarios_Projeto_View.as_view(), name='vincula_usuarios_projeto'),
 
 ]

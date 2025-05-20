@@ -5,7 +5,7 @@ from django.views import View
 from django.http import QueryDict
 
 from apps.help_desk_app.views import ConexaoHelpDesk
-from apps.ti_comitec_app.models import Item_Gut, Ideia, Projeto, Atividade
+from apps.ti_comitec_app.models import Item_Gut, Ideia, Projeto, Atividade, Usuarios_Projeto
 from apps.usuario_app.models import Usuario
 from datetime import datetime, timedelta
 
@@ -138,11 +138,15 @@ class Frm_Lista_Projetos_View(View):
             status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
             obj_proj.status_cronograma_proj = status_cronograma_proj
             obj_proj.save()
+
+            '''Verifica prazo última ação do projeto'''
+            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').last()
             proj = {
                 'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
                 'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
                 'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
                 'data_ini': obj_proj.data_ini,
+                'data_prazo': obj_ultima_acao.data_fim,
                 'data_fim': obj_proj.data_fim,
                 'data_atualizacao': obj_proj.data_atualizacao,
                 'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
@@ -180,7 +184,7 @@ class Frm_Lista_Projetos_View(View):
         if obj_ultima_acao:
             if obj_ultima_acao.data_conclusao is None and obj_ultima_acao.data_fim < datetime.now().date():
                 status = 2
-            elif obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
+            elif obj_ultima_acao.data_conclusao != None and obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
                 status = 2
         '''Verifica se o projeto está em risco'''
         lista_obj_acoes =  Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A')
@@ -188,7 +192,7 @@ class Frm_Lista_Projetos_View(View):
             if obj_ultima_acao:
                 if obj_acao.data_conclusao is None and obj_acao.data_fim < datetime.now().date():
                     status = 1
-                elif obj_acao.data_conclusao > obj_acao.data_fim:
+                elif obj_acao.data_conclusao != None and obj_acao.data_conclusao > obj_acao.data_fim:
                     status = 1
 
         return status
@@ -201,7 +205,7 @@ class Frm_Cad_Item_Gut_View(View):
         tipo_item_gut_frm = request.GET['tipo_item_gut']
         desc_head_modal_add_item_gut = ''
         icon_head_modal_add_item_gut = ''
-        c = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
+        lista_itens_gut = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
                                .values('cod_item_gut', 'desc', 'peso', 'ativo', 'flag', 'color_flag'))
         if tipo_item_gut_frm == 'G':
             desc_head_modal_add_item_gut = 'Gravidade - Matriz GUT'
@@ -578,7 +582,7 @@ class Frm_Edita_Projetos_Ideia_View(View):
         data_hora = data_hora_atual.strftime('%d-%m-%Y')
 
         lista_usuarios = list(
-            Usuario.objects.filter(status_usu='A', tipo_colab__in=['L', 'M', 'H', 'G']).values('cod_usu', 'login_usu'))
+            Usuario.objects.filter(status_usu='A', tipo_colab__in=['L', 'M', 'H', 'G']).values('cod_usu', 'login_usu', 'nome_usu'))
 
         data = dict()
         dic_projeto = None
@@ -688,6 +692,10 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 }
                 lista_dic_tarefas.append(reg)
 
+            lista_cod_usuarios_vinculados = list(
+                Usuarios_Projeto.objects.filter(cod_projeto=obj_proj).values('cod_usu__cod_usu')
+            )
+
             dic_projeto = {
                 'nome_projeto': obj_proj.cod_ideia.resumo_ideia,
                 'nome_sponsor': obj_proj.cod_ideia.cod_usu_owner.login_usu,
@@ -700,7 +708,8 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 'data_fim': ultima_tarefa,
                 'perc_progresso_acoes': str(perc_progresso_acoes) + '%',
                 'status_proj': obj_proj.status_proj,
-                'cronograma': obj_proj.status_cronograma_proj
+                'cronograma': obj_proj.status_cronograma_proj,
+                'lista_cod_usuarios_vinculados': lista_cod_usuarios_vinculados
             }
 
 
@@ -764,7 +773,6 @@ class Frm_Tarefa_View(View):
         cod_projeto_frm = request.POST['cod_projeto']
         cod_tarefa_frm = request.POST['cod_tarefa']
         desc_tarefa_frm = request.POST['desc_tarefa']
-        atrib_para_frm = request.POST['atrib_para']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -772,10 +780,9 @@ class Frm_Tarefa_View(View):
 
         lista_dic_acoes = list(Atividade.objects.filter(
             cod_atividade_pai=cod_tarefa_frm
-        ).values('cod_atividade', 'desc_atividade', 'data_ini', 'data_fim', 'observacao', 'data_conclusao'))
+        ).values('cod_atividade', 'desc_atividade', 'data_ini', 'data_fim', 'observacao', 'data_conclusao', 'cod_usu__cod_usu'))
 
 
-        obj_usu_atribuido_para = Usuario.objects.get(pk=atrib_para_frm)
         obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
         obj_tarefa = None
         msg = ''
@@ -785,7 +792,7 @@ class Frm_Tarefa_View(View):
                 cod_atividade_pai = 0,
                 desc_atividade = desc_tarefa_frm,
                 cod_projeto = obj_projeto,
-                cod_usu = obj_usu_atribuido_para
+                cod_usu = obj_usuario_sessao
             )
             obj_tarefa.save()
             msg = 'Tarefa adicionada ao projeto com sucesso!'
@@ -793,7 +800,7 @@ class Frm_Tarefa_View(View):
             obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
             obj_tarefa.cod_projeto = obj_projeto
             obj_tarefa.desc_atividade = desc_tarefa_frm
-            obj_tarefa.cod_usu = obj_usu_atribuido_para
+            obj_tarefa.cod_usu = obj_usuario_sessao
             obj_tarefa.save
             msg = 'Tarefa editada com sucesso!'
 
@@ -823,7 +830,7 @@ class Frm_Acao_View(View):
         data_conclusao = obj_tarefa.data_conclusao
         lista_dic_acoes = list(Atividade.objects.filter(
             cod_atividade_pai = cod_tarefa_frm
-        ).values('cod_atividade', 'desc_atividade',  'data_ini', 'data_fim',  'observacao', 'data_conclusao'))
+        ).values('cod_atividade', 'desc_atividade',  'data_ini', 'data_fim',  'observacao', 'data_conclusao', 'cod_usu__cod_usu'))
 
 
         data = dict()
@@ -843,9 +850,11 @@ class Frm_Acao_View(View):
         observacao_frm = request.POST['observacao']
         desc_acao_frm = request.POST['desc_acao']
         prazo_frm = request.POST['prazo']
+        cod_usu_atribuido_frm = request.POST['cod_usu_atribuido']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        obj_usu_resp_acao = Usuario.objects.get(pk=cod_usu_atribuido_frm)
         data_atual = datetime.now()
 
         obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
@@ -860,9 +869,9 @@ class Frm_Acao_View(View):
                 tipo_atividade='A',
                 cod_atividade_pai=cod_atividade_pai_frm,
                 desc_atividade=desc_acao_frm,
-                cod_usu=obj_usuario_sessao,
                 data_fim=prazo_frm,
                 observacao=observacao_frm,
+                cod_usu=obj_usu_resp_acao
             )
             obj_acao.save()
             msg = 'Acao adicionada ao projeto com sucesso!'
@@ -873,6 +882,7 @@ class Frm_Acao_View(View):
             obj_acao.desc_atividade = desc_acao_frm
             obj_acao.data_fim = prazo_frm
             obj_acao.observacao = observacao_frm
+            obj_acao.cod_usu = obj_usu_resp_acao
             obj_acao.save()
             msg = 'Acao editada com sucesso!'
 
@@ -948,8 +958,25 @@ class Frm_Acao_View(View):
         return JsonResponse(data, safe=False)
 
 
+class Frm_Usuarios_Projeto_View(View):
+    def post(self, request):
+        cod_projeto_frm = request.POST['cod_projeto']
+        lista_cod_usuarios = request.POST['lista_cod_usuarios']
 
+        lista_obj_vinculos_usu_proj = Usuarios_Projeto.objects.filter(cod_projeto__cod_projeto=cod_projeto_frm)
+        for reg in lista_obj_vinculos_usu_proj:
+            reg.delete()
 
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+        for cod_usu in lista_cod_usuarios.split(','):
+            obj_usu = Usuario.objects.get(pk=cod_usu)
+            obj_usu_proj = Usuarios_Projeto(
+                cod_usu=obj_usu,
+                cod_projeto=obj_projeto
+            ).save()
 
-
-
+        data = dict()
+        data = {
+            'msg': 'Usuário(s) vinculado(s) com sucesso!'
+        }
+        return JsonResponse(data, safe=False)

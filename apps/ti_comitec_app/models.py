@@ -90,6 +90,19 @@ class Atividade(models.Model):
         db_table = 'op_ti_comitec_atividades'
 
 
+class Usuarios_Projeto(models.Model):
+    id_usu_proj = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    envia_email = models.IntegerField(blank=True, null=True, default=1)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu',
+                                null=False, blank=False)
+    cod_projeto = models.ForeignKey(Projeto, models.DO_NOTHING, db_column='cod_projeto',
+                                    null=False, blank=False)
+    class Meta:
+        managed = True
+        db_table = 'op_ti_comitec_usuarios_projeto'
+
+
+
 
 
 

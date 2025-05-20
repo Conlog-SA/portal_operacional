@@ -39,7 +39,8 @@
                                                 <th scope="col">Owner</th>
                                                 <th scope="col">Sponsor</th>
                                                 <th scope="col">Inicio</th>
-                                                <th scope="col">Fim</th>
+                                                <th scope="col">Prazo</th>
+                                                <th scope="col">Conclusão</th>
                                                 <th scope="col">Atualização</th>
                                                 <th scope="col">Cronograma</th>
                                                 <th scope="col">Status</th>
@@ -54,6 +55,7 @@
                                                     <td>{{proj.login_owner}}</td>
                                                     <td>{{proj.login_sponsor}}</td>
                                                     <td>{{proj.data_ini|date:'d/m/Y'}}</td>
+                                                    <td>{{proj.data_prazo|date:'d/m/Y'}}</td>
                                                     <td>
                                                         {% if proj.data_fim == None %}
                                                             &nbsp;
@@ -79,11 +81,21 @@
                                                     </td>
                                                     <td>{{proj.status_proj}}</td>
                                                     <td>
-                                                        {{ proj.perc_progresso_proj }}%
+                                                        <div class="d-flex justify-content-start align-items-center w-100"
+                                                             style="background-color: #FFFFFF;" >
+                                                            <div  class="d-flex justify-content-center align-items-center"
+                                                                  style="width: {{ proj.perc_progresso_proj }}%; background-color:#f46424;">
+                                                                <span style="font-weight: 400; color: #000000;">
+                                                                    {{ proj.perc_progresso_proj }}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
                                                     </td>
                                                     <td>
                                                         <button class='btn btn-rounded btn-space'
-                                                         id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}" name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                                         id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}"
+                                                                name="btn_abre_modal_edita_proj_frm_lista_proj"
                                                         value="{{proj.cod_projeto}}">
                                                         <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
                                                         </button>
