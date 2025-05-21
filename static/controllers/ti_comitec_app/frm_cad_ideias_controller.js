@@ -776,13 +776,20 @@ $(document).on('click','button', function(){
             },
             dataType: 'json',
             success: function (dados) {
-                $("#div_nome_projeto_frm_edt_proj").html(dados.dic_projeto.nome_projeto);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                /*$("#div_nome_projeto_frm_edt_proj").html(dados.dic_projeto.nome_projeto);
                 $("#div_nome_sponsor_frm_edt_proj").html(dados.dic_projeto.nome_sponsor);
                 $("#div_nome_gerente_frm_edt_proj").html(dados.dic_projeto.nome_gerente);
                 $("#div_fase_proj_frm_edt_proj").html(dados.dic_projeto.fase);
                 $("#div_objetivo_projeto_frm_edt_proj").html(dados.dic_projeto.objetivos_proj);
                 $("#div_riscos_projeto_frm_edt_proj").html(dados.dic_projeto.riscos);
-                $("#porcenagem_barra").html(dados.dic_projeto.perc_progresso_acoes);
+                $("#porcenagem_barra").html(dados.dic_projeto.perc_progresso_acoes);*/
                 carrega_tabela_ideias(dados.lista_ideias_frm);
 
                 let_lista_usuarios = [];
@@ -794,11 +801,15 @@ $(document).on('click','button', function(){
                     let_lista_usuarios.push(reg);
 
                 });
-
+                /*
                 let let_porcentagem_barra = dados.dic_projeto.perc_progresso_acoes;
                 $("#td_evolucao_proj_"+let_val_btn).html(let_porcentagem_barra);
+                */
 
-                $("#modal_projeto").show();
+                /* $("#modal_projeto").show(); */
+
+                $("#modal_criar_projeto").hide();
+
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -1582,6 +1593,127 @@ $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
 
 })
 
+
+
+function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
+    if(lista_tarefas == null) {
+
+        $(`
+            <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}"
+                    style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td align="center" style="align-content: center;">
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0"
+                        class="btn btn-rounded btn-space" style="width: 35px;" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                    </button>
+                </td>
+                <td style="align-content: center;">
+                    &nbsp;
+                </td>
+                <td align="center" style="align-content: center;">
+                    <button style="width: 35px;" value="0" class="btn btn-rounded btn-space" title="Visualizar ações"
+                        name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${cod_linha}" disabled>
+                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                    </button>
+                </td>
+            </tr>
+        `).insertAfter("#btnAddLineTarefa");
+    }
+    else {
+        lista_tarefas.forEach( tarefa => {
+
+            let let_btn_salva_tarefa = ``;
+            let let_desc_tarefa = ``;
+            let let_atrib = ``;
+            let let_img_status_tarefa = `
+                <i class="fa-solid fa-circle" style="color:#6495ED!important;" title="Em andamento"></i>
+            `;
+            if(tarefa.status_tarefa == 'Concluída'){
+                let_img_status_tarefa = `
+                    <i class="fa-solid fa-circle" style="color:#3CB371!important;" title="Concluída"></i>
+                `;
+            } else if(tarefa.status_tarefa == 'Atrasada'){
+                let_img_status_tarefa = `
+                    <i class="fa-solid fa-circle" style="color:#FF0000!important;" title="Atrasada"></i>
+                `;
+            }
+
+            if(tarefa.perc_progresso_tarefa != '100%') {
+                let_btn_salva_tarefa = `
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>
+                `;
+                let_desc_tarefa = `
+                    <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${let_img_status_tarefa} ${tarefa.desc_atividade}
+                    </td>`;
+
+            } else {
+                let_btn_salva_tarefa = `
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        disabled="disabled" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
+                let_desc_tarefa = `
+                    <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${let_img_status_tarefa} ${tarefa.desc_atividade}
+                    </td>`;
+
+
+            }
+
+
+            $("#tb_tarefas").append(`
+                <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                   ${let_desc_tarefa}
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_ini_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_prazo_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_termino_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
+                        ${let_btn_salva_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="right">
+                        ${tarefa.perc_progresso_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
+                        <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}"
+                            name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}"
+                            title="Visualizar ações">
+                                <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+        });
+    }
+}
+
+
+
 function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
     if(lista_acoes == null) {
         let let_options_usu = '';
@@ -1598,7 +1730,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                     ${let_options_usu}
                 </select>
             </td>
-            <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center" style="align-content: start;">
+            <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center" style="align-content: start;padding-top: .5rem;">
                 <button style="width: 35px;" value="0" title="Iniciar ação"
                     class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${cod_linha}' disabled >
                     <i class="fa-solid fa-play" style="color: #fd9a49!important;" ></i>
@@ -1700,19 +1832,32 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                    `;
             }
 
+            let let_img_status_acao = `
+                <i class="fa-solid fa-circle" style="color:#6495ED!important;" title="Em andamento"></i>
+            `;
+            if(acao.status_acao == 'Concluída'){
+                let_img_status_acao = `
+                    <i class="fa-solid fa-circle" style="color:#3CB371!important;" title="Concluída"></i>
+                `;
+            } else if(acao.status_acao == 'Atrasada'){
+                let_img_status_acao = `
+                    <i class="fa-solid fa-circle" style="color:#FF0000!important;" title="Atrasada"></i>
+                `;
+            }
+
 
             $("#tb_acoes_modal_edt_proj").append(`
                <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
                     <td contenteditable="${let_edt}" name='td_desc_acao' id='td_desc_acao_${acao.cod_atividade}'
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal; align-content: start;">
-                            ${acao.desc_atividade}
+                            ${let_img_status_acao} ${acao.desc_atividade}
                     </td>
                     <td contenteditable="${let_edt}" name='td_usu_acao' id='td_usu_acao_${acao.cod_atividade}'
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
                             ${let_atrib}
                     </td>
                     <td name="td_inicia_acao" id="td_inicia_acao_${acao.cod_atividade}" align="center"
-                        style="font-size: 10px;align-content: start;">
+                        style="font-size: 10px;align-content: start;padding-top: .5rem;">
                             ${let_btn_inicia_acao}
                     </td>
                     <td style="padding: 0.25rem; align-content: start;" >
@@ -1737,109 +1882,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
  }
 
 
-function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
-    if(lista_tarefas == null) {
 
-        $(`
-            <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
-                <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}"
-                    style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
-                </td>
-                <td style="padding: 0.25rem;align-content: center;">
-                    &nbsp;
-                </td>
-                <td style="padding: 0.25rem;align-content: center;">
-                    &nbsp;
-                </td>
-                <td style="padding: 0.25rem;align-content: center;">
-                    &nbsp;
-                </td>
-                <td align="center" style="align-content: center;">
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0"
-                        class="btn btn-rounded btn-space" style="width: 35px;" title="Salvar/Atualizar tarefa">
-                            <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
-                    </button>
-                </td>
-                <td style="align-content: center;">
-                    &nbsp;
-                </td>
-                <td align="center" style="align-content: center;">
-                    <button style="width: 35px;" value="0" class="btn btn-rounded btn-space" title="Visualizar ações"
-                        name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${cod_linha}" disabled>
-                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
-                    </button>
-                </td>
-            </tr>
-        `).insertAfter("#btnAddLineTarefa");
-    }
-    else {
-        lista_tarefas.forEach( tarefa => {
-
-            let let_btn_salva_tarefa = ``;
-            let let_desc_tarefa = ``;
-            let let_atrib = ``;
-            if(tarefa.perc_progresso_tarefa != '100%') {
-                let_btn_salva_tarefa = `
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
-                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
-                        title="Salvar/Atualizar tarefa">
-                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
-                    </button>
-                `;
-                let_desc_tarefa = `
-                    <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
-                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
-                            ${tarefa.desc_atividade}
-                    </td>`;
-
-            } else {
-                let_btn_salva_tarefa = `
-                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
-                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
-                        disabled="disabled" title="Salvar/Atualizar tarefa">
-                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
-                    </button>`;
-                let_desc_tarefa = `
-                    <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
-                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
-                            ${tarefa.desc_atividade}
-                    </td>`;
-
-
-            }
-
-
-            $("#tb_tarefas").append(`
-                <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
-                   ${let_desc_tarefa}
-                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
-                        ${tarefa.data_ini_tarefa}
-                    </td>
-                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
-                        ${tarefa.data_prazo_tarefa}
-                    </td>
-                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
-                        ${tarefa.data_termino_tarefa}
-                    </td>
-                    <td style="padding: 0.25rem;align-content: center;" align="center">
-                        ${let_btn_salva_tarefa}
-                    </td>
-                    <td style="padding: 0.25rem;align-content: center;" align="right">
-                        ${tarefa.perc_progresso_tarefa}
-                    </td>
-                    <td style="padding: 0.25rem;align-content: center;" align="center">
-                        <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}"
-                            name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}"
-                            title="Visualizar ações">
-                                <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
-                        </button>
-                    </td>
-                </tr>
-            `);
-
-        });
-    }
-}
 
 
 

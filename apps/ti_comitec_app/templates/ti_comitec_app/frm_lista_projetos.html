@@ -51,7 +51,7 @@
                                         <tbody>
                                             {% for proj in lista_projetos %}
                                                 <tr>
-                                                    <td>{{proj.resumo_ideia}}</td>
+                                                    <td style="text-align: left;">{{proj.resumo_ideia}}</td>
                                                     <td>{{proj.login_owner}}</td>
                                                     <td>{{proj.login_sponsor}}</td>
                                                     <td>{{proj.data_ini|date:'d/m/Y'}}</td>
@@ -85,7 +85,7 @@
                                                              style="background-color: #FFFFFF;" >
                                                             <div  class="d-flex justify-content-center align-items-center"
                                                                   style="width: {{ proj.perc_progresso_proj }}%; background-color:#f46424;">
-                                                                <span style="font-weight: 400; color: #000000;">
+                                                                <span style="font-weight: 400; color: #000000; margin-left: 1.3rem;">
                                                                     {{ proj.perc_progresso_proj }}%
                                                                 </span>
                                                             </div>
