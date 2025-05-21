@@ -1600,6 +1600,9 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 
         $(`
             <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
                 <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}"
                     style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
                 </td>
@@ -1660,7 +1663,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 let_desc_tarefa = `
                     <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
-                            ${let_img_status_tarefa} ${tarefa.desc_atividade}
+                            ${tarefa.desc_atividade}
                     </td>`;
 
             } else {
@@ -1673,7 +1676,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 let_desc_tarefa = `
                     <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
-                            ${let_img_status_tarefa} ${tarefa.desc_atividade}
+                            ${tarefa.desc_atividade}
                     </td>`;
 
 
@@ -1682,6 +1685,9 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 
             $("#tb_tarefas").append(`
                 <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${let_img_status_tarefa}
+                    </td>
                    ${let_desc_tarefa}
                     <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
                         ${tarefa.data_ini_tarefa}
@@ -1724,7 +1730,11 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
         }
        $(`
         <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
-            <td contenteditable='true' name='td_desc_acao' id='td_desc_acao_${cod_linha}' style="padding: 0.25rem; align-content: start;"></td>
+            <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+            </td>
+            <td contenteditable='true' name='td_desc_acao' id='td_desc_acao_${cod_linha}'
+                style="padding: 0.25rem; align-content: start;">
+            </td>
             <td style="padding: 0.25rem;align-content: start;">
                 <select name="sl_usu_frm_edt_acao" id="sl_usu_frm_edt_acao_${cod_linha}">
                     ${let_options_usu}
@@ -1848,9 +1858,12 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
 
             $("#tb_acoes_modal_edt_proj").append(`
                <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
+                    <td style="padding: .8rem;font-size: 10px;align-content: start;" align="center">
+                            ${let_img_status_acao}
+                    </td>
                     <td contenteditable="${let_edt}" name='td_desc_acao' id='td_desc_acao_${acao.cod_atividade}'
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal; align-content: start;">
-                            ${let_img_status_acao} ${acao.desc_atividade}
+                            ${acao.desc_atividade}
                     </td>
                     <td contenteditable="${let_edt}" name='td_usu_acao' id='td_usu_acao_${acao.cod_atividade}'
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
