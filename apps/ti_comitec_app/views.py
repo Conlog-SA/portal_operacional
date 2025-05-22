@@ -644,24 +644,28 @@ class Frm_Edita_Projetos_Ideia_View(View):
             )
             obj_novo_projeto.save()
 
-            '''dic_projeto = {
-                'nome_projeto': obj_ideia.resumo_ideia,
-                'nome_sponsor': obj_ideia.cod_usu_owner.login_usu,
-                'nome_gerente': obj_ideia.cod_usu_master.login_usu,
-                'objetivos_proj': obj_ideia.obs_usu_owner,
-                'riscos': obj_ideia.obs_usu_master,
-                'desc_fase': 'Inicial',
-                'ult_atualização': data_hora_atual,
-                'data_inicio': data_hora
-            }
-            
-            data = {
-                'dic_projeto': dic_projeto,
-                'lista_ideias_frm': lista_ideias_frm,
-                'lista_usuarios': lista_usuarios,
-                #'dic_atividade': dic_atividade
-            }
-            '''
+
+
+            '''Vincula usuarios owner,master e head ao projeto'''
+            if obj_ideia.cod_usu_owner != None:
+                obj_usu_proj = Usuarios_Projeto(
+                    envia_email=1,
+                    cod_usu=obj_ideia.cod_usu_owner,
+                    cod_projeto=obj_novo_projeto
+                ).save()
+            if obj_ideia.cod_usu_master != None:
+                obj_usu_proj = Usuarios_Projeto(
+                    envia_email=1,
+                    cod_usu=obj_ideia.cod_usu_master,
+                    cod_projeto=obj_novo_projeto
+                ).save()
+            if obj_ideia.cod_usu_head != None:
+                obj_usu_proj = Usuarios_Projeto(
+                    envia_email=1,
+                    cod_usu=obj_ideia.cod_usu_head,
+                    cod_projeto=obj_novo_projeto
+                ).save()
+
 
             lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
 
