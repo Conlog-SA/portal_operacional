@@ -1,5 +1,9 @@
 {% load static %}
 
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/ti_comitec_app/frm_lista_projetos.css' %}"/>
+{% endblock %}
+
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
@@ -31,7 +35,181 @@
                              role="tabpanel"
                              aria-labelledby="a_tab_ideias_comitec">
                             <div class="mt-3 form-group  cl_div_tabela_principal_pagina w-100">
-                                <div class="d-flex flex-column w-100">
+
+                                <div class="d-flex flex-column align-items-center w-100 ">
+                                    {% for col in lista_col %}
+                                        <div class="d-flex justify-content-start align-items-center w-100">
+                                            {% for proj in lista_projetos %}
+                                                {% if proj.col == col %}
+                                                    <div class="d-flex flex-column justify-content-between align-items-center"
+                                                         style="border: .3px solid #f46424; border-radius: 1rem;
+                                                            box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5); padding: .5rem;
+                                                            margin: .5rem; width: 420px; height: 390px;">
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                                            <div class="d-flex justify-content-start align-items-center w-100">
+                                                                Atualizado em :
+                                                                {% if proj.data_atualizacao == None %}
+                                                                    &nbsp;
+                                                                {% else %}
+                                                                    {{proj.data_atualizacao|date:'d/m/Y H:i'}}
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="d-flex justify-content-end align-items-center w-100">
+                                                                {% if proj.status_cronograma_proj == 0 %}
+                                                                    <i class="fa-solid fa-circle fa-xl" style="color:#00FA9A!important;" title="Dentro do esperado"></i>
+                                                                {% elif proj.status_cronograma_proj == 1 %}
+                                                                    <i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;" title="Em risco"></i>
+                                                                {% elif proj.status_cronograma_proj == 2 %}
+                                                                    <i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;" title="Atrasado"></i>
+                                                                {% endif %}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100"
+                                                             style=" padding: .5rem;">
+                                                            <div class="d-flex justify-content-center align-items-center w-25"
+                                                                 style="padding: .5rem;">
+                                                                <i class="fa-solid fa-gears" style="color: #DCDCDC;!important; font-size: 40px;"></i>
+                                                            </div>
+                                                            <div class="d-flex justify-content-center align-items-center w-75"
+                                                                 style="padding: .5rem;box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);
+                                                                    height: 65px; font-size: 12px;color: white;font-weight: 400; border-radius: .1rem">
+                                                                {{proj.resumo_ideia}}
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                                            <div class="d-flex justify-content-center align-items-center w-25"
+                                                                 style="padding: .5rem;">
+                                                                {{proj.status_proj}}
+                                                            </div>
+                                                            <div class="d-flex justify-content-between align-items-center w-75"
+                                                                 style="padding: .5rem;">
+                                                                <div class="d-flex justify-content-start align-items-center w-100"
+                                                                     style="background-color: #FFFFFF;" >
+                                                                    <div  class="d-flex justify-content-center align-items-center"
+                                                                          style="width: {{ proj.perc_progresso_proj }}%; background-color:#f46424;">
+                                                                        <span style="font-weight: 400; color: #000000; margin-left: 1.3rem;">
+                                                                            {{ proj.perc_progresso_proj }}%
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100"
+                                                             style="padding: 1rem;">
+                                                            <div class="d-flex justify-content-between align-items-center w-25">
+                                                                <div class="foto-usu"
+                                                                     style="padding: .5rem; background-image: url({{ proj.foto_owner }});">
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex flex-column justify-content-start align-items-start w-75"
+                                                                 style="padding: .5rem;">
+                                                                <span>{{proj.login_owner}}(Owner)</span>
+                                                                <span>{{proj.desc_area}}</span>
+                                                            </div>
+                                                            <div class="d-flex justify-content-between align-items-center w-25">
+                                                                <div class="foto-usu"
+                                                                     style="padding: .5rem; background-image: url({{ proj.foto_sponsor }});">
+
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="d-flex justify-content-start align-items-center w-75"
+                                                                 style="padding: .5rem;">
+                                                                {{proj.login_sponsor}}(Master)
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100"
+                                                             style="padding: .25rem;">
+                                                            <div class="d-flex justify-content-center align-items-center w-100"
+                                                                 style="font-size: 14px;">
+                                                                <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;
+                                                                Início&nbsp;&nbsp;:&nbsp;&nbsp;<strong>{{proj.data_ini|date:'d/m/Y'}}</strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100"
+                                                             style="padding: .25rem;">
+                                                            <div class="d-flex justify-content-center align-items-center w-100"
+                                                                 style="font-size: 14px;">
+                                                                <i class="fa-solid fa-calendar-check"></i>&nbsp;&nbsp;
+                                                                Prazo&nbsp;&nbsp;:&nbsp;&nbsp;<strong>{{proj.data_prazo|date:'d/m/Y'}}</strong>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                                            <div class="d-flex justify-content-start align-items-center w-100">
+                                                                Concluído em :
+                                                                {% if proj.data_fim == None %}
+                                                                    &nbsp;
+                                                                {% else %}
+                                                                    {{proj.data_fim|date:'d/m/Y'}}
+                                                                {% endif %}
+                                                            </div>
+                                                            <div class="d-flex justify-content-end align-items-center w-100">
+                                                                <button class='btn btn-rounded btn-space'
+                                                                        id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}"
+                                                                        name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                                                        value="{{proj.cod_projeto}}" title="Ver detalhes projeto">
+                                                                    <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                                                </button>
+
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-between align-items-center w-100">
+                                                            <div class="d-flex justify-content-start align-items-center w-100"
+                                                                 style="border-bottom: .1px solid #363636; padding-top: .25rem;">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="d-flex justify-content-start align-items-center w-100"
+                                                             style="margin: .2rem;">
+                                                            {% for usu in proj.lista_dic_usu_envolvidos %}
+                                                                <div class="d-flex flex-column justify-content-start align-items-center"
+                                                                     style="margin: .3rem;">
+                                                                    <div class="foto-usu-vinc"
+                                                                         style="padding: .5rem; background-image: url({{ usu.foto_user }});">
+
+                                                                    </div>
+                                                                    <span>{{usu.login_usu}}</span>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+
+
+
+                                                    </div>
+
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+
+                            </div>
+                          </div>
+                        </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% include 'ti_comitec_app/modais_frm_lista_projetos.html' %}
+{% include 'ti_comitec_app/modal_abrir_edita_projeto.html' %}
+
+
+<!--
+<div class="d-flex flex-column w-100">
                                     <table class="display wrap w-100 cl_tab_principal_pagina cl_tab_comitec">
                                         <thead>
                                             <tr>
@@ -105,18 +283,5 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                          </div>
-                        </div>
-                     </div>
-                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-
-{% include 'ti_comitec_app/modais_frm_lista_projetos.html' %}
-{% include 'ti_comitec_app/modal_abrir_edita_projeto.html' %}
-
-
+-->

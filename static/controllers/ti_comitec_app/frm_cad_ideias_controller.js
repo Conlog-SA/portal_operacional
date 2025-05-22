@@ -1640,15 +1640,15 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
             let let_desc_tarefa = ``;
             let let_atrib = ``;
             let let_img_status_tarefa = `
-                <i class="fa-solid fa-circle" style="color:#6495ED!important;" title="Em andamento"></i>
+                <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
             `;
             if(tarefa.status_tarefa == 'Concluída'){
                 let_img_status_tarefa = `
-                    <i class="fa-solid fa-circle" style="color:#3CB371!important;" title="Concluída"></i>
+                    <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
                 `;
             } else if(tarefa.status_tarefa == 'Atrasada'){
                 let_img_status_tarefa = `
-                    <i class="fa-solid fa-circle" style="color:#FF0000!important;" title="Atrasada"></i>
+                    <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
                 `;
             }
 
@@ -1843,15 +1843,15 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             }
 
             let let_img_status_acao = `
-                <i class="fa-solid fa-circle" style="color:#6495ED!important;" title="Em andamento"></i>
+                <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
             `;
             if(acao.status_acao == 'Concluída'){
                 let_img_status_acao = `
-                    <i class="fa-solid fa-circle" style="color:#3CB371!important;" title="Concluída"></i>
+                    <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
                 `;
             } else if(acao.status_acao == 'Atrasada'){
                 let_img_status_acao = `
-                    <i class="fa-solid fa-circle" style="color:#FF0000!important;" title="Atrasada"></i>
+                    <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
                 `;
             }
 

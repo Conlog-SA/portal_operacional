@@ -134,7 +134,14 @@ class Frm_Lista_Projetos_View(View):
 
         lista_dic_proj = []
         lista_obj_projetos = Projeto.objects.all()
+        contador = 0
+        col = 0
+        lista_col = []
         for obj_proj in lista_obj_projetos:
+            if contador % 3 == 0:
+                col += 1
+                lista_col.append(col)
+
             perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
             status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
             obj_proj.status_cronograma_proj = status_cronograma_proj
@@ -146,10 +153,33 @@ class Frm_Lista_Projetos_View(View):
             if obj_ultima_acao != None:
                 dt_prazo_proj = obj_ultima_acao.data_fim
 
+            foto_owner = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_owner.caminho_foto != None:
+                foto_owner = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_owner.caminho_foto
+
+            foto_sponsor = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_master.caminho_foto != None:
+                foto_sponsor = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_master.caminho_foto
+
+            lista_dic_usu_envolvidos = []
+            lista_obj_usu_envolvidos = Usuarios_Projeto.objects.filter(cod_projeto=obj_proj)
+            for obj_usu_proj in lista_obj_usu_envolvidos:
+                foto_user = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+                if obj_usu_proj.cod_usu.caminho_foto != None:
+                    foto_user = 'https://operacional.conlogsa.com.br/media/' + obj_usu_proj.cod_usu.caminho_foto
+                reg_usu = {
+                    'login_usu': obj_usu_proj.cod_usu.login_usu,
+                    'foto_user': foto_user
+                }
+                lista_dic_usu_envolvidos.append(reg_usu)
+
             proj = {
                 'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
+                'desc_area': obj_proj.cod_ideia.cod_atividade.desc1_atividade,
                 'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'foto_owner': foto_owner,
                 'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
+                'foto_sponsor': foto_sponsor,
                 'data_ini': obj_proj.data_ini,
                 'data_prazo': dt_prazo_proj,
                 'data_fim': obj_proj.data_fim,
@@ -157,11 +187,15 @@ class Frm_Lista_Projetos_View(View):
                 'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
                 'status_cronograma_proj': obj_proj.status_cronograma_proj,
                 'perc_progresso_proj': perc_progresso_proj,
-                'cod_projeto': obj_proj.cod_projeto
+                'cod_projeto': obj_proj.cod_projeto,
+                'lista_dic_usu_envolvidos': lista_dic_usu_envolvidos,
+                'col': col
             }
             lista_dic_proj.append(proj)
+            contador += 1
         context = {
-            'lista_projetos': lista_dic_proj
+            'lista_projetos': lista_dic_proj,
+            'lista_col': lista_col
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
@@ -824,10 +858,9 @@ class Frm_Tarefa_View(View):
             msg = 'Tarefa adicionada ao projeto com sucesso!'
         else:
             obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
-            obj_tarefa.cod_projeto = obj_projeto
             obj_tarefa.desc_atividade = desc_tarefa_frm
             obj_tarefa.cod_usu = obj_usuario_sessao
-            obj_tarefa.save
+            obj_tarefa.save()
             msg = 'Tarefa editada com sucesso!'
 
         obj_projeto.data_atualizacao = data_atual
