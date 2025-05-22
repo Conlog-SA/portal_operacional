@@ -11,6 +11,22 @@
              <i class="fa-solid fa-thumbtack"></i>
              <h1 class=" titlePadraoMenu">Comitec - Gerenciamento de Projetos</h1>
         </div>
+        <span style="font-style: italic;">
+            {{ obj_usuario_sessao.nome_usu }}
+            {% if obj_usuario_sessao.tipo_colab == 'L' %}
+                (Líder).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'M' %}
+                (Master).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'H' %}
+                (Head).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'G' %}
+                (Gerente).
+            {% endif %}
+            Bem vindo!
+        </span>
         {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
             <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
         {% else %}
@@ -38,11 +54,11 @@
 
                                 <div class="d-flex flex-column align-items-center w-100 ">
                                     {% for col in lista_col %}
-                                        <div class="d-flex justify-content-start align-items-center w-100">
+                                        <div class="d-flex justify-content-between align-items-center w-100">
                                             {% for proj in lista_projetos %}
                                                 {% if proj.col == col %}
                                                     <div class="d-flex flex-column justify-content-between align-items-center"
-                                                         style="border: .3px solid #f46424; border-radius: 1rem;
+                                                         style="border: .1px solid rgba(244, 100, 36, .2); border-radius: 1rem;
                                                             box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5); padding: .5rem;
                                                             margin: .5rem; width: 420px; height: 390px;">
 

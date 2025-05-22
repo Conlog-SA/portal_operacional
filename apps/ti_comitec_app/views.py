@@ -133,7 +133,14 @@ class Frm_Lista_Projetos_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_dic_proj = []
-        lista_obj_projetos = Projeto.objects.all()
+        lista_obj_projetos = []
+        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
+            lista_obj_projetos = Projeto.objects.all()
+        else:
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            for proj in lista_obj_usu_projetos:
+                lista_obj_projetos.append(proj.cod_projeto)
+
         contador = 0
         col = 0
         lista_col = []
@@ -195,7 +202,8 @@ class Frm_Lista_Projetos_View(View):
             contador += 1
         context = {
             'lista_projetos': lista_dic_proj,
-            'lista_col': lista_col
+            'lista_col': lista_col,
+            'obj_usuario_sessao': obj_usuario_sessao
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
