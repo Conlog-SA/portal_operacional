@@ -1283,6 +1283,136 @@ $(document).on('click','button', function(){
           }
       });
     }
+    else if ( let_nome_btn == "btn_atualizar_dados_tab_acoes_proj_comitec") {
+        $.ajax({
+            type: 'GET',
+            url: '/ti_comitec_app/atualiza_tab_prox_acoes_proj',
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_lista_acoes = []
+                dados.lista_obj_acoes_prox_ou_atradadas.forEach(acao => {
+                    let let_img_status_acao = `
+                        <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
+                    `;
+                    if(acao.status == "Concluída"){
+                        let_img_status_acao = `
+                            <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
+                        `;
+                    } else if(acao.status == "Atrasada"){
+                        let_img_status_acao = `
+                            <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
+                        `;
+                    }
+
+                    let let_cronograma_projeto = `
+                        <i class="fa-solid fa-circle fa-xl" style="color:#00FA9A!important;" title="Dentro do esperado"></i>
+                    `;
+                    if(acao.cronograma_projeto == 1){
+                        let_cronograma_projeto = `
+                            <i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;" title="Em risco"></i>
+                        `;
+                    } else if(acao.cronograma_projeto == 2){
+                        let_cronograma_projeto = `
+                            <i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;" title="Atrasado"></i>
+                        `;
+                    }
+
+                    let let_btn_editar_projeto = `
+                        <button class='btn btn-rounded btn-space'
+                                id="btn_abre_modal_edita_proj_frm_lista_proj_{{acao.cod_projeto}}"
+                                name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                value="${acao.cod_projeto}" title="Ver detalhes projeto">
+                            <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                        </button>
+                    `;
+
+
+                    let reg = [
+                        let_img_status_acao,
+                        acao.login_master,
+                        acao.desc_projeto,
+                        let_cronograma_projeto,
+                        acao.desc_acao,
+                        acao.prazo,
+                        acao.data_ultima_atualizacao_proj,
+                        let_btn_editar_projeto
+                    ]
+                    let_lista_acoes.push(reg);
+                });
+                $('#tab_acoes_proj_comitec').DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": '50vh',
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    //"paging": true,
+                    //"pageLength": 6,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_acoes,
+                    "columns": [
+                        { title: "Status" },
+                        { title: "Usuário" },
+                        { title: "Projeto" },
+                        { title: "Cronograma" },
+                        { title: "Ação" },
+                        { title: "Prazo" },
+                        { title: "Últ. Atualização Proj." },
+                        { title: "Abrir" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [0,1,3,5,6,7]},
+                        {"className": "dt-left", "targets": [2,4]}
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+
+
+            },error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
 });
 
 
@@ -1880,11 +2010,11 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
                            ${acao.observacao}
                     </td>
-                    <td align="center" style="align-content: start;">
+                    <td align="center" style="align-content: start; padding-top: .5rem;">
                         ${let_btn_edt}
                     </td>
                     <td name="td_conclui_acao" id="td_conclui_acao_${acao.cod_atividade}" align="center"
-                        style="font-size: 10px;align-content: start;">
+                        style="font-size: 10px;align-content: start; padding-top: .5rem;">
                             ${let_btn_data_conclusao}
                     </td>
 

@@ -132,6 +132,9 @@ class Frm_Lista_Projetos_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+
         lista_dic_proj = []
         lista_obj_projetos = []
         if obj_usuario_sessao.tipo_colab in ('H', 'G'):
@@ -200,10 +203,15 @@ class Frm_Lista_Projetos_View(View):
             }
             lista_dic_proj.append(proj)
             contador += 1
+
+        lista_obj_acoes_prox_ou_atradadas = self.retorna_prox_acoes_proj(obj_usuario_sessao, lista_obj_projetos)
+
+
         context = {
             'lista_projetos': lista_dic_proj,
             'lista_col': lista_col,
-            'obj_usuario_sessao': obj_usuario_sessao
+            'obj_usuario_sessao': obj_usuario_sessao,
+            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
@@ -243,6 +251,133 @@ class Frm_Lista_Projetos_View(View):
                     status = 1
 
         return status
+
+
+    def retorna_prox_acoes_proj(self, obj_usuario_sessao, lista_obj_projetos):
+        data_hora_atual = datetime.now()
+        lista_obj_acoes_prox_ou_atradadas = []
+        if obj_usuario_sessao.tipo_colab in ('L', 'M'):
+            '''Ações atrasadas'''
+            lista_obj_acoes_atrasadas = Atividade.objects.filter(
+                tipo_atividade='A', data_conclusao__isnull=True, data_fim__lt=data_hora_atual,
+                cod_usu=obj_usuario_sessao
+            )
+            for acao_atrasada in lista_obj_acoes_atrasadas:
+                status_acao = Frm_Acao_View().retorna_status_acao(acao_atrasada)
+                acao = {
+                    'status': status_acao,
+                    'login_master': acao_atrasada.cod_usu.login_usu,
+                    'desc_projeto': acao_atrasada.cod_projeto.cod_ideia.resumo_ideia,
+                    'cronograma_projeto': acao_atrasada.cod_projeto.status_cronograma_proj,
+                    'desc_acao': acao_atrasada.desc_atividade,
+                    'prazo': datetime.strftime(acao_atrasada.data_fim, '%d-%m-%Y'),
+                    'cod_projeto': acao_atrasada.cod_projeto.cod_projeto,
+                    'data_ultima_atualizacao_proj': datetime.strftime(acao_atrasada.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                }
+                lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+            for proj in lista_obj_projetos:
+                if proj.status_proj == 0:
+                    '''Proximas ações'''
+                    obj_prox_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim__gt=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    ).first()
+                    if obj_prox_acoes_proj != None:
+                        status_acao = Frm_Acao_View().retorna_status_acao(obj_prox_acoes_proj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': obj_prox_acoes_proj.cod_usu.login_usu,
+                            'desc_projeto': obj_prox_acoes_proj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': obj_prox_acoes_proj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': obj_prox_acoes_proj.desc_atividade,
+                            'prazo': datetime.strftime(obj_prox_acoes_proj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': obj_prox_acoes_proj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(obj_prox_acoes_proj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+                    '''Ações no dia corrrente'''
+                    obj_dia_corrente_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    )
+                    for acao_hj in obj_dia_corrente_acoes_proj:
+                        status_acao = Frm_Acao_View().retorna_status_acao(acao_hj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': acao_hj.cod_usu.login_usu,
+                            'desc_projeto': acao_hj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': acao_hj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': acao_hj.desc_atividade,
+                            'prazo': datetime.strftime(acao_hj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': acao_hj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(
+                                acao_hj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+        else:
+            '''Ações atrasadas'''
+            lista_obj_acoes_atrasadas = Atividade.objects.filter(
+                tipo_atividade='A', data_conclusao__isnull=True, data_fim__lt=data_hora_atual
+            )
+            for acao_atrasada in lista_obj_acoes_atrasadas:
+                status_acao = Frm_Acao_View().retorna_status_acao(acao_atrasada)
+                acao = {
+                    'status': status_acao,
+                    'login_master': acao_atrasada.cod_usu.login_usu,
+                    'desc_projeto': acao_atrasada.cod_projeto.cod_ideia.resumo_ideia,
+                    'cronograma_projeto': acao_atrasada.cod_projeto.status_cronograma_proj,
+                    'desc_acao': acao_atrasada.desc_atividade,
+                    'prazo': datetime.strftime(acao_atrasada.data_fim, '%d-%m-%Y'),
+                    'cod_projeto': acao_atrasada.cod_projeto.cod_projeto,
+                    'data_ultima_atualizacao_proj': datetime.strftime(acao_atrasada.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                }
+                lista_obj_acoes_prox_ou_atradadas.append(acao)
+            for proj in lista_obj_projetos:
+                if proj.status_proj == 0:
+                    '''Proximas ações'''
+                    obj_prox_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim__gte=data_hora_atual,
+                        cod_projeto=proj
+                    ).first()
+                    if obj_prox_acoes_proj != None:
+                        status_acao = Frm_Acao_View().retorna_status_acao(obj_prox_acoes_proj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': obj_prox_acoes_proj.cod_usu.login_usu,
+                            'desc_projeto': obj_prox_acoes_proj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': obj_prox_acoes_proj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': obj_prox_acoes_proj.desc_atividade,
+                            'prazo': datetime.strftime(obj_prox_acoes_proj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': obj_prox_acoes_proj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(obj_prox_acoes_proj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+                    '''Ações no dia corrrente'''
+                    obj_dia_corrente_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    )
+                    for acao_hj in obj_dia_corrente_acoes_proj:
+                        status_acao = Frm_Acao_View().retorna_status_acao(acao_hj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': acao_hj.cod_usu.login_usu,
+                            'desc_projeto': acao_hj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': acao_hj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': acao_hj.desc_atividade,
+                            'prazo': datetime.strftime(acao_hj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': acao_hj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(
+                                acao_hj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+        return lista_obj_acoes_prox_ou_atradadas
 
 
 
@@ -654,17 +789,23 @@ class Frm_Edita_Projetos_Ideia_View(View):
                     cod_projeto=obj_novo_projeto
                 ).save()
             if obj_ideia.cod_usu_master != None:
-                obj_usu_proj = Usuarios_Projeto(
-                    envia_email=1,
-                    cod_usu=obj_ideia.cod_usu_master,
-                    cod_projeto=obj_novo_projeto
-                ).save()
+                obj_usu_proj = (Usuarios_Projeto.objects
+                                .filter(cod_usu=obj_ideia.cod_usu_master, cod_projeto=obj_novo_projeto).first())
+                if obj_usu_proj == None:
+                    obj_usu_proj = Usuarios_Projeto(
+                        envia_email=1,
+                        cod_usu=obj_ideia.cod_usu_master,
+                        cod_projeto=obj_novo_projeto
+                    ).save()
             if obj_ideia.cod_usu_head != None:
-                obj_usu_proj = Usuarios_Projeto(
-                    envia_email=1,
-                    cod_usu=obj_ideia.cod_usu_head,
-                    cod_projeto=obj_novo_projeto
-                ).save()
+                obj_usu_proj = (Usuarios_Projeto.objects
+                                .filter(cod_usu=obj_ideia.cod_usu_head, cod_projeto=obj_novo_projeto).first())
+                if obj_usu_proj == None:
+                    obj_usu_proj = Usuarios_Projeto(
+                        envia_email=1,
+                        cod_usu=obj_ideia.cod_usu_head,
+                        cod_projeto=obj_novo_projeto
+                    ).save()
 
 
             lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
@@ -905,15 +1046,7 @@ class Frm_Acao_View(View):
         ))
         lista_dic_acoes = []
         for acao in lista_obj_acoes:
-            status_acao =  'Em andamento'
-            '''Verifica status da ação'''
-            if acao.data_ini == None and acao.data_fim < data_hora_atual.date():
-                status_acao = 'Atrasada'
-            elif acao.data_ini != None and acao.data_conclusao != None:
-                if acao.data_conclusao > acao.data_fim:
-                    status_acao = 'Atrasada'
-                elif  acao.data_conclusao <= acao.data_fim:
-                    status_acao = 'Concluída'
+            status_acao =  self.retorna_status_acao(acao)
             reg = {
                 'cod_atividade': acao.cod_atividade,
                 'desc_atividade': acao.desc_atividade,
@@ -1051,6 +1184,20 @@ class Frm_Acao_View(View):
 
         return JsonResponse(data, safe=False)
 
+    def retorna_status_acao(self, obj_acao):
+        data_hora_atual = datetime.now()
+        status_acao = 'Em andamento'
+        '''Verifica status da ação'''
+        if obj_acao.data_ini == None and obj_acao.data_fim < data_hora_atual.date():
+            status_acao = 'Atrasada'
+        elif obj_acao.data_ini != None and obj_acao.data_conclusao != None:
+            if obj_acao.data_conclusao > obj_acao.data_fim:
+                status_acao = 'Atrasada'
+            elif obj_acao.data_conclusao <= obj_acao.data_fim:
+                status_acao = 'Concluída'
+
+        return status_acao
+
 
 class Frm_Usuarios_Projeto_View(View):
     def post(self, request):
@@ -1072,5 +1219,27 @@ class Frm_Usuarios_Projeto_View(View):
         data = dict()
         data = {
             'msg': 'Usuário(s) vinculado(s) com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
+
+class Frm_Acoes_Usuario_View(View):
+    def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_obj_projetos = []
+        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
+            lista_obj_projetos = Projeto.objects.all()
+        else:
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            for proj in lista_obj_usu_projetos:
+                lista_obj_projetos.append(proj.cod_projeto)
+
+        lista_obj_acoes_prox_ou_atradadas = Frm_Lista_Projetos_View().retorna_prox_acoes_proj(obj_usuario_sessao,
+                                                                                              lista_obj_projetos)
+        data = dict()
+        data = {
+            'msg': 'Dados atualizados',
+            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas
         }
         return JsonResponse(data, safe=False)

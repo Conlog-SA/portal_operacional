@@ -25,5 +25,6 @@ urlpatterns = [
     path('conclui_acao', views.Frm_Acao_View.as_view(), name='conclui_acao'),
     path('finaliza_projeto', views.Frm_Edita_Projetos_Ideia_View.as_view(), name='finaliza_projeto'),
     path('vincula_usuarios_projeto', views.Frm_Usuarios_Projeto_View.as_view(), name='vincula_usuarios_projeto'),
+    path('atualiza_tab_prox_acoes_proj', views.Frm_Acoes_Usuario_View.as_view(), name='atualiza_tab_prox_acoes_proj'),
 
 ]
