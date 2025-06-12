@@ -137,12 +137,21 @@ class Frm_Lista_Projetos_View(View):
 
         lista_dic_proj = []
         lista_obj_projetos = []
+        lista_obj_usuarios = []
+        lista_area = []
         if obj_usuario_sessao.tipo_colab in ('H', 'G'):
             lista_obj_projetos = Projeto.objects.all()
+            lista_area = list(Projeto.objects.all().values('cod_ideia__cod_atividade__cod_atividade', 'cod_ideia__cod_atividade__desc1_atividade').distinct())
+            lista_obj_usuarios = Usuarios_Projeto.objects.prefetch_related('cod_usu').distinct()
         else:
             lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
+            lista_obj_usuarios = Usuarios_Projeto.objects.filter(cod_projeto__in=lista_obj_usu_projetos).prefetch_related('cod_usu').distinct()
             for proj in lista_obj_usu_projetos:
                 lista_obj_projetos.append(proj.cod_projeto)
+
+        for area in lista_area:
+            print(area)
 
         contador = 0
         col = 0
@@ -211,7 +220,9 @@ class Frm_Lista_Projetos_View(View):
             'lista_projetos': lista_dic_proj,
             'lista_col': lista_col,
             'obj_usuario_sessao': obj_usuario_sessao,
-            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas
+            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas,
+            'lista_obj_usuarios': lista_obj_usuarios,
+            'lista_area': lista_area
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
@@ -892,6 +903,10 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 if perc_progresso_tarefa == 100:
                     status_tarefa = 'Concluída'
 
+                status_edicao_campos = 'ok'
+                if tarefa.cod_usu != obj_usuario_sessao and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                    status_edicao_campos = 'nok'
+
                 reg = {
                     'cod_atividade': tarefa.cod_atividade,
                     'desc_atividade': tarefa.desc_atividade,
@@ -901,7 +916,8 @@ class Frm_Edita_Projetos_Ideia_View(View):
                     'cod_usu__cod_usu': tarefa.cod_usu.cod_usu,
                     'cod_usu__login_usu': tarefa.cod_usu.login_usu,
                     'perc_progresso_tarefa': str(perc_progresso_tarefa) + '%',
-                    'status_tarefa': status_tarefa
+                    'status_tarefa': status_tarefa,
+                    'status_edicao_campos': status_edicao_campos
                 }
                 lista_dic_tarefas.append(reg)
 
@@ -912,6 +928,7 @@ class Frm_Edita_Projetos_Ideia_View(View):
             dic_projeto = {
                 'nome_projeto': obj_proj.cod_ideia.resumo_ideia,
                 'nome_sponsor': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'cod_usu_master': obj_proj.cod_ideia.cod_usu_master.cod_usu,
                 'nome_gerente': obj_proj.cod_ideia.cod_usu_master.login_usu,
                 'objetivos_proj': obj_proj.cod_ideia.obs_usu_owner,
                 'riscos': obj_proj.cod_ideia.obs_usu_master,
@@ -924,12 +941,16 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 'cronograma': obj_proj.status_cronograma_proj,
                 'lista_cod_usuarios_vinculados': lista_cod_usuarios_vinculados
             }
+            usu_logado_edt_proj = 'ok'
+            if obj_usuario_sessao != obj_proj.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                usu_logado_edt_proj = 'nok'
 
 
             data = {
                 'dic_projeto': dic_projeto,
                 'lista_dic_tarefas': lista_dic_tarefas,
                 'lista_usuarios': lista_usuarios,
+                'usu_logado_edt_proj': usu_logado_edt_proj
             }
 
         return JsonResponse(data, safe=False)
@@ -1005,7 +1026,7 @@ class Frm_Tarefa_View(View):
                 cod_atividade_pai = 0,
                 desc_atividade = desc_tarefa_frm,
                 cod_projeto = obj_projeto,
-                cod_usu = obj_usuario_sessao
+                cod_usu = obj_projeto.cod_ideia.cod_usu_master
             )
             obj_tarefa.save()
             msg = 'Tarefa adicionada ao projeto com sucesso!'
@@ -1024,6 +1045,7 @@ class Frm_Tarefa_View(View):
             'lista_dic_acoes': lista_dic_acoes,
             'cod_tarefa': obj_tarefa.cod_atividade,
             'desc_tarefa': obj_tarefa.desc_atividade,
+            'cod_usu_master': obj_projeto.cod_ideia.cod_usu_master.cod_usu,
             'msg': msg
         }
 
@@ -1034,6 +1056,8 @@ class Frm_Acao_View(View):
         cod_tarefa_frm = request.GET['cod_tarefa']
 
         data_hora_atual = datetime.now()
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
         desc_tarefa = obj_tarefa.desc_atividade
@@ -1047,6 +1071,9 @@ class Frm_Acao_View(View):
         lista_dic_acoes = []
         for acao in lista_obj_acoes:
             status_acao =  self.retorna_status_acao(acao)
+            status_edicao_campos = 'ok'
+            if acao.cod_usu != obj_usuario_sessao and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                status_edicao_campos = 'nok'
             reg = {
                 'cod_atividade': acao.cod_atividade,
                 'desc_atividade': acao.desc_atividade,
@@ -1055,9 +1082,14 @@ class Frm_Acao_View(View):
                 'observacao': acao.observacao,
                 'data_conclusao': acao.data_conclusao,
                 'cod_usu__cod_usu': acao.cod_usu.cod_usu,
-                'status_acao': status_acao
+                'status_acao': status_acao,
+                'status_edicao_campos': status_edicao_campos
             }
             lista_dic_acoes.append(reg)
+
+            usu_logado_edt_proj = 'ok'
+            if obj_usuario_sessao != obj_tarefa.cod_projeto.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                usu_logado_edt_proj = 'nok'
 
 
         data = dict()
@@ -1065,7 +1097,8 @@ class Frm_Acao_View(View):
             'lista_dic_acoes': lista_dic_acoes,
             'desc_tarefa': desc_tarefa,
             'data_fim': data_fim,
-            'data_ini': data_ini
+            'data_ini': data_ini,
+            'usu_logado_edt_proj': usu_logado_edt_proj
         }
 
         return JsonResponse(data, safe=False)
@@ -1195,6 +1228,9 @@ class Frm_Acao_View(View):
                 status_acao = 'Atrasada'
             elif obj_acao.data_conclusao <= obj_acao.data_fim:
                 status_acao = 'Concluída'
+        elif obj_acao.data_ini != None and obj_acao.data_conclusao == None:
+            if obj_acao.data_fim < data_hora_atual.date():
+                status_acao = 'Atrasada'
 
         return status_acao
 

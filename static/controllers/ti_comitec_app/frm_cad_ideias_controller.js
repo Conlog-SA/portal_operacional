@@ -845,7 +845,7 @@ $(document).on('click','button', function(){
     }
     else if (let_nome_btn == "btn_add_tr_acao") {
         let_count_tr_acoes += 1;
-        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null);
+        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
 
     }
     else if (let_nome_btn == "btn_abre_modal_edita_proj_frm_lista_proj") {
@@ -863,6 +863,7 @@ $(document).on('click','button', function(){
             dataType: 'json',
             success: function (dados) {
                 $("#hd_desc_ideia_comitec").val(let_count_tr_tarefas);
+                $("#hd_cod_usu_master").val(dados.dic_projeto.cod_usu_master);
                 $("#div_nome_projeto_frm_edt_proj").html(dados.dic_projeto.nome_projeto);
                 $("#div_nome_sponsor_frm_edt_proj").html(dados.dic_projeto.nome_sponsor);
                 $("#div_nome_gerente_frm_edt_proj").html(dados.dic_projeto.nome_gerente);
@@ -908,17 +909,33 @@ $(document).on('click','button', function(){
                     `);
 
                 });
+                if(dados.usu_logado_edt_proj == 'nok'){
+                    $("#cb_usuarios_projeto").prop("disabled", true)
+                    $("#sl_fase_proj_modal_edita_proj").prop("disabled", true);
+                    $("#btn_add_tr_tarefas").prop("disabled", true);
+                    $("#btn_add_tr_acao").prop("disabled", true);
+                    $("#btn_finaliza_projeto").prop("disabled", true);
+
+                }
                 $("#cb_usuarios_projeto").selectpicker('refresh');
 
                 let let_porcentagem_barra = dados.dic_projeto.perc_progresso_acoes;
                 if ( let_porcentagem_barra != '100%' ){
                     $("#key").prop("disabled", false);
-                    $("#btn_add_tr_tarefas").prop("disabled", false);
+                    if(dados.usu_logado_edt_proj == 'ok'){
+                        $("#btn_add_tr_tarefas").prop("disabled", false);
+                    } else {
+                        $("#btn_add_tr_tarefas").prop("disabled", true);
+                    }
                     $("#btn_finaliza_projeto").prop("disabled", true);
                     let_btn_finalizado =`FINALIZAR PROJETO`;
                     $("#btn_finaliza_projeto").html(let_btn_finalizado);
                 } else if ( let_porcentagem_barra == '100%' ) {
-                    $("#btn_finaliza_projeto").prop("disabled", false);
+                    if(dados.usu_logado_edt_proj == 'ok'){
+                        $("#btn_finaliza_projeto").prop("disabled", false);
+                    } else {
+                        $("#btn_finaliza_projeto").prop("disabled", true);
+                    }
                     let let_btn_finaliza_projeto = dados.dic_projeto.status_proj;
                     if ( let_btn_finaliza_projeto == 1 ){
                         let_btn_finalizado =`PROJETO FINALIZADO`;
@@ -929,7 +946,7 @@ $(document).on('click','button', function(){
                         $("#key").prop("disabled", true);
                         $("#btn_salvar_tarefa").prop("disabled", true);
                         $("#td_desc_tarefa_"+let_cod_btn).prop("contenteditable", false);
-                    } else if ( let_btn_finaliza_projeto == 0 ){
+                    } else if ( let_btn_finaliza_projeto == 0 && dados.usu_logado_edt_proj == 'ok'){
                         let_btn_finalizado =`FINALIZAR PROJETO`;
                         $("#btn_finaliza_projeto").html(let_btn_finalizado);
                         $("#btn_finaliza_projeto").prop("disabled", false);
@@ -939,7 +956,7 @@ $(document).on('click','button', function(){
                 }
 
                 $("#modal_projeto").show();
-                $("#btn_add_tr_acao").prop("disabled", true);
+                //$("#btn_add_tr_acao").prop("disabled", true);
                 $("#div_desc_tarefa").html('');
                 fn_add_tr_tarefa(0, dados.lista_dic_tarefas);
             },
@@ -971,6 +988,7 @@ $(document).on('click','button', function(){
         let let_cod_btn = let_id_btn.split('_')[3];
         let let_cod_btn_anterior = $("#hd_cod_btn_selecionado").val();
         let let_desc_tarefa = $("#td_desc_tarefa_"+let_cod_btn).html();
+        let let_cod_usu_master = $("#hd_cod_usu_master").val();
 
 
         $.ajax({
@@ -1020,12 +1038,12 @@ $(document).on('click','button', function(){
                 if (let_cod_btn !== let_cod_tarefa_anterior) {
                     $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
                 }
-                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes);
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,0);
 
                 if(let_cod_tarefa == '0'){
                     let_count_tr_acoes += 1;
                     $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
-                    fn_add_nova_tr_table_acoes(let_count_tr_acoes, null);
+                    fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,let_cod_usu_master);
 
                 }
             },
@@ -1085,7 +1103,7 @@ $(document).on('click','button', function(){
 
                     if(let_cod_acao == '0'){
                         let_count_tr_acoes += 1;
-                        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null);
+                        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
                     }
 
                 },
@@ -1143,8 +1161,11 @@ $(document).on('click','button', function(){
                 $("#hd_cod_tarefa_selecionada").val(let_cod_btn);
                 $("#hd_cod_btn_selecionado").val(let_cod_btn);
                 $("#dt_prazo_frm_edt_acao").val(dados.data_fim);
-                $("#btn_add_tr_acao").prop("disabled", false);
-                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes);
+                if(dados.usu_logado_edt_proj == 'ok'){
+                    $("#btn_add_tr_acao").prop("disabled", false);
+                }
+
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes, 0);
                 let let_btn_finaliza_projeto = $("#btn_finaliza_projeto").val();
                 if ( let_btn_finaliza_projeto == 1 ){
                     $("#btn_add_tr_acao").prop("disabled", true);
@@ -1772,6 +1793,18 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
             let let_img_status_tarefa = `
                 <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
             `;
+            let let_habilita_btn = ``;
+            let let_edicao_td = `
+                contenteditable='true'
+            `;
+            if(tarefa.status_edicao_campos == 'nok'){
+                let_habilita_btn = `
+                    disabled="disabled"
+                `;
+                let_edicao_td = `
+                    contenteditable='false'
+                `;
+            }
             if(tarefa.status_tarefa == 'Concluída'){
                 let_img_status_tarefa = `
                     <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
@@ -1786,12 +1819,12 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 let_btn_salva_tarefa = `
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
                         class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
-                        title="Salvar/Atualizar tarefa">
+                        title="Salvar/Atualizar tarefa" ${let_habilita_btn}>
                             <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
                     </button>
                 `;
                 let_desc_tarefa = `
-                    <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                    <td ${let_edicao_td} name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
                         style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
                             ${tarefa.desc_atividade}
                     </td>`;
@@ -1850,12 +1883,16 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 
 
 
-function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
+function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
     if(lista_acoes == null) {
         let let_options_usu = '';
         for(let i=0; i <  let_lista_usuarios.length; i++){
+            let let_selected = ``;
+            if(let_lista_usuarios[i][0] == cod_usu_master){
+                let_selected = `selected="selected"`;
+            }
             let_options_usu += `
-                <option value="${let_lista_usuarios[i][0]}">${let_lista_usuarios[i][1]}</option>
+                <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
             `;
         }
        $(`
@@ -1895,8 +1932,22 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             </td>
 
         </tr>`).insertAfter("#btnAddLineAcao");
-    } else{
+    }
+    else{
         lista_acoes.forEach( acao => {
+            let let_habilita_btn = ``;
+            let let_edicao_td = `
+                contenteditable='true'
+            `;
+            if(acao.status_edicao_campos == 'nok'){
+                let_habilita_btn = `
+                    disabled="disabled"
+                `;
+                let_edicao_td = `
+                    contenteditable='false'
+                `;
+            }
+
             let let_options_usu = '';
             for(let i=0; i <  let_lista_usuarios.length; i++){
                 let let_selected = '';
@@ -1907,13 +1958,14 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                     <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
                 `;
             }
-            let let_atrib = `<select name="sl_usu_frm_edt_acao" id="sl_usu_frm_edt_acao_${acao.cod_atividade}">
-                        ${let_options_usu}
-                    </select>`;
+            let let_atrib = `
+                <select name="sl_usu_frm_edt_acao" ${let_habilita_btn} id="sl_usu_frm_edt_acao_${acao.cod_atividade}">
+                    ${let_options_usu}
+                </select>`;
             let let_btn_inicia_acao = ``;
             if(acao.data_ini == null) {
                 let_btn_inicia_acao = `
-                    <button style="width: 35px;" value="${acao.cod_atividade}" title="Iniciar ação"
+                    <button style="width: 35px;" value="${acao.cod_atividade}" title="Iniciar ação" ${let_habilita_btn}
                         class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${acao.cod_atividade}'>
                         <i class="fa-solid fa-play" style="color: #fd9a49!important;"  ></i>
                     </button>
@@ -1933,7 +1985,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                 `;
             } else if(acao.data_conclusao == null && acao.data_ini != null) {
                 let_btn_data_conclusao = `
-                   <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space" title="Concluir ação"
+                   <button style="width: 35px;margin-left: 11px;"  ${let_habilita_btn} class="btn btn-rounded btn-space" title="Concluir ação"
                         name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}">
                         <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
                    </button>
@@ -1950,11 +2002,12 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
             let let_dt_edt = ``;
             if(acao.data_conclusao != null){
                 let_edt = `false`;
-                let_btn_edt =   `<button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
-                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'
-                                    title="Salvar/Atualziar ação" disabled>
-                                     <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
-                                </button>`;
+                let_btn_edt =   `
+                    <button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
+                        name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'
+                        title="Salvar/Atualziar ação" disabled>
+                         <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao"
                     value="${acao.data_fim}" style="width: 90px;" disabled>`;
 
@@ -1963,11 +2016,15 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes) {
                         ${let_options_usu}
                     </select>`;
             } else {
-                 let_btn_edt =   `<button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
-                                    name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' title="Salvar/Atualizar ação">
-                                    <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
-                                </button>`;
-                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' style="width: 90px;"
+                if(acao.status_edicao_campos == 'nok'){
+                    let_edt = `false`;
+                }
+                 let_btn_edt =
+                    `<button style="width: 35px;" value="${acao.cod_atividade}" ${let_habilita_btn} class="btn btn-rounded btn-space"
+                        name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' title="Salvar/Atualizar ação">
+                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
+                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' ${let_habilita_btn} style="width: 90px;"
                     name="dt_prazo_frm_edt_acao" value="${acao.data_fim}">
                    `;
             }
