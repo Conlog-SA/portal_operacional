@@ -1038,7 +1038,7 @@ $(document).on('click','button', function(){
                 if (let_cod_btn !== let_cod_tarefa_anterior) {
                     $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
                 }
-                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,0);
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,let_cod_usu_master);
 
                 if(let_cod_tarefa == '0'){
                     let_count_tr_acoes += 1;

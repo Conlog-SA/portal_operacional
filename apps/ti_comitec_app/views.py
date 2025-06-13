@@ -146,12 +146,12 @@ class Frm_Lista_Projetos_View(View):
         else:
             lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
             lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
-            lista_obj_usuarios = Usuarios_Projeto.objects.filter(cod_projeto__in=lista_obj_usu_projetos).prefetch_related('cod_usu').distinct()
             for proj in lista_obj_usu_projetos:
                 lista_obj_projetos.append(proj.cod_projeto)
+            lista_obj_usuarios = Usuarios_Projeto.objects.filter(
+                cod_projeto__in=lista_obj_projetos).prefetch_related('cod_usu').distinct()
 
-        for area in lista_area:
-            print(area)
+
 
         contador = 0
         col = 0
@@ -167,7 +167,7 @@ class Frm_Lista_Projetos_View(View):
             obj_proj.save()
 
             '''Verifica prazo última ação do projeto'''
-            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').last()
+            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').order_by('-data_fim').first()
             dt_prazo_proj = ''
             if obj_ultima_acao != None:
                 dt_prazo_proj = obj_ultima_acao.data_fim
@@ -839,12 +839,12 @@ class Frm_Edita_Projetos_Ideia_View(View):
             ultima_tarefa = ' '
             obj_ultima_tarefa = (
                 Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='T').order_by(
-                    'cod_atividade').last())
+                    '-data_fim', 'cod_atividade').first())
 
             if obj_ultima_tarefa:
                 obj_ultima_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_projeto=obj_proj)
-                    .order_by('cod_atividade').last())
+                    .order_by('-data_fim', 'cod_atividade').first())
 
                 if obj_ultima_acao != None:
                     if obj_ultima_acao.data_fim != None:
@@ -861,7 +861,7 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 data_ini_tarefa = '-'
                 obj_primeira_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
-                    .order_by('cod_atividade').first())
+                    .order_by('data_fim', 'cod_atividade').first())
 
                 if obj_primeira_acao != None:
                     if obj_primeira_acao.data_ini != None:
@@ -872,7 +872,7 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 data_termino_tarefa = '-'
                 obj_ultima_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
-                    .order_by('cod_atividade').last())
+                    .order_by('-data_fim', 'cod_atividade').first())
                 if obj_ultima_acao != None:
                     if obj_ultima_acao.data_fim != None:
                         data_prazo_tarefa = datetime.strftime(obj_ultima_acao.data_fim, '%d-%m-%Y')
@@ -1087,9 +1087,9 @@ class Frm_Acao_View(View):
             }
             lista_dic_acoes.append(reg)
 
-            usu_logado_edt_proj = 'ok'
-            if obj_usuario_sessao != obj_tarefa.cod_projeto.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
-                usu_logado_edt_proj = 'nok'
+        usu_logado_edt_proj = 'ok'
+        if obj_usuario_sessao != obj_tarefa.cod_projeto.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+            usu_logado_edt_proj = 'nok'
 
 
         data = dict()
