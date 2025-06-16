@@ -1,0 +1,295 @@
+{% load static %}
+
+<style>
+
+    #modal_projeto *{
+        color: black;
+        font-size: 12px;
+        margin: 0
+    }
+    .scroll {
+        max-height: 350px;
+        /*width: 630px;*/
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+    .borda{
+        border: 1px solid #c6683dd6;
+        border-radius: 5px;
+    }
+    h1{
+        color: white !important;
+    }
+    .label_titulo_comp_table{
+     color: #FFFFFF!important;
+     font-weight: 400!important;
+    }
+    .label_titulo_comp{
+        color: #000000;
+        font-weight: 400!important;
+    }
+    .barra-progresso{
+        /*border: 1px solid #c6683dd6;*/
+        background-color: #f46424;
+        width: 79px;
+        height: 28px;
+        margin: 7px;
+        border-radius: 5px;
+        bottom: 40px;
+    }
+    .def-tamanho-colunas{
+        width: 19%;
+        font-weight: 400;
+        padding: 0.1rem;
+    }
+    .campos_dados{
+        background: #DCDCDC;
+        font-weight: 400;
+    }
+    .btn-add-tr:hover{
+        border-color: #FFFFFF!important;
+    }
+    #tb_tarefas tr td{
+        border-bottom: 1px solid #C0C0C0;
+    }
+    #tb_acoes_modal_edt_proj tr td{
+        border-bottom: 1px solid #C0C0C0;
+    }
+
+
+</style>
+
+<div role="dialog" class="modal" id="modal_projeto">
+    <div class="modal-dialog" style="border-radius: 10px; max-width: 1400px;height: 40px;left: 36px;">
+        <div class="modal-content">
+            <div class="modal-header" style="padding: 8px;">
+                <div class="d-flex justify-content-between align-items-between w-100" >
+                    <div class="d-flex justify-content-start align-items-center w-100">
+                        <i class="fa-solid fa-list-check"></i>
+                        <span style="color:#ffffff;font-size: 14px;font-weight: 400;padding: .25rem;">Projeto</span>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center w-100">
+                        <button type="button" name="btn_fecha_modal_edt_proj"
+                                id="btn_fecha_modal_edt_proj" class="btn btn-sm btn-rounded btn_fecha_modal">
+                            <i class="fa-solid fa-circle-xmark fa-2xl btn_fecha_modais"
+                               style="font-size: 1.5rem;margin-right: 1rem;"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-body"  style="max-width: 1400px;height: 620px;">
+
+                <input type="hidden" id="hd_cod_projeto" name="hd_cod_projeto"/>
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column align-items-start" style="width: 40%;">
+                        <div class="d-flex justify-content-start align-items-start w-100 borda"
+                             id="div_nome_projeto_frm_edt_proj"
+                             style="background-color: #f46424;box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);
+                             height: 65px; font-size: 15px;color: white;font-weight: 600; padding: .25rem;overflow: auto;">
+                        </div>
+                        <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100">
+                                <h2 class="label_titulo_comp">Owner</h2>
+                                <div id="div_nome_sponsor_frm_edt_proj"
+                                     class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;">
+
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" style="margin-left: .25rem;">
+                                <h2 class="label_titulo_comp">Master</h2>
+                                <input type="hidden" id="hd_cod_usu_master" />
+                                <div id="div_nome_gerente_frm_edt_proj"
+                                     class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;"></div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" style="margin-left: .25rem;">
+                                <h2 class="label_titulo_comp">Fase</h2>
+                                <div id="div_select" class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;">
+                                    <select style="border:none;border-radius: 3px;background-color: #dcdcdc;color: #030201;font-weight: 500;"
+                                            name="sl_fase_proj_modal_edita_proj" id="sl_fase_proj_modal_edita_proj">
+                                        <option value="0" selected="selected">Inicial&nbsp;</option>
+                                        <option value="1">Teste&nbsp;</option>
+                                        <option value="2">Implementação&nbsp;</option>
+                                        <option value="3">Concluído&nbsp;</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100">
+                                <h2 class="label_titulo_comp">Objetivo</h2>
+                                <div id="div_objetivo_projeto_frm_edt_proj"
+                                     class="d-flex justify-content-start align-items-start w-100 borda campos_dados"
+                                     style="height: 65px;overflow: auto;"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex justify-content-between align-items-center w-100"
+                                 style="background: #343537; border-radius: 5px 5px 0px 0px; padding: .25rem;">
+                                <h2 class="label_titulo_comp_table" style="margin-left: .5rem;">Cronograma macro</h2>
+                                <button  name="btn_add_tr_tarefas" id="btn_add_tr_tarefas"
+                                         class="btn btn-rounded btn-space btn-add-tr" title="Adicionar nova tarefa"
+                                         style="padding: .25rem!important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);">
+                                     <i class="fa-solid fa-plus" style="color: #f46424!important; font-size: 15px"></i>
+                                 </button>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-between w-100"
+                             style="box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);">
+                            <div class="d-flex flex-column justify-content-between align-items-between w-100 scroll">
+                                <table id="tb_tarefas" class='scroll' style="border: 1px;border-color: #000000;">
+                                    <thead style="position: sticky; top: 0; z-index: 7;">
+                                        <tr style="background: #f46424!important;" id="btnAddLineTarefa" align="center">
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1rem;text-align: left;">Status</th>
+                                            <th style="width: 50%;font-weight: 400;padding: 0.1rem;text-align: left;">Tarefa</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Início</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Prazo</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Termino</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Salvar</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">%</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Ações</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="d-flex flex-column align-items-start" style="width: 60%;margin-left: .25rem;">
+                        <div class="d-flex justify-content-start align-items-start w-100" style="height: 65px;">
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100">
+                                <h2 class="label_titulo_comp">Evolução geral do projeto</h2>
+                                <div class="d-flex align-items-center justify-content-center w-100 borda" style="padding: .5rem;">
+                                    <div class="d-flex justify-content-start align-items-center w-100 borda"
+                                         style="margin-left: .5rem;width: 301px;height: 33px;border-radius: 5px;background-color: #FFFFFF;" >
+                                        <div  id="div_evolucao_projeto"
+                                              class="d-flex justify-content-center align-items-center barra-progresso"
+                                              style="box-shadow: 2px 2px 2px 1px rgba(244,100,36,.5);">
+                                            <span id="porcenagem_barra" style="font-weight: 400;margin-left: 2rem;"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" style="margin-left: .25rem;">
+                                <h2 class="label_titulo_comp">Cronograma</h2>
+                                <div class="d-flex align-items-center justify-content-center w-100 borda" style="padding: 1rem;">
+                                    <div class="d-flex align-items-center justify-content-center w-25" id="div_status_cronograma_proj">
+
+                                    </div>
+                                   <div class="d-flex align-items-center justify-content-center w-75">
+                                       <p style="font-size: 10px;font-weight: 400;">
+                                           <i class="fa-solid fa-circle" style="color:#3CB371!important;"></i> Dentro do esperado</p>
+                                       <p style="font-size: 10px;font-weight: 400;">
+                                           <i class="fa-solid fa-circle" style="color:#FFD700!important;"></i> Em risco</p>
+                                       <p style="font-size: 10px;font-weight: 400;">
+                                           <i class="fa-solid fa-circle" style="color:#FF0000!important;"></i> Atrasado</p>
+                                   </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" >
+                                <h2 class="label_titulo_comp">Início</h2>
+                                <div id="div_data_ini_proj_frm_edt_proj"
+                                     class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;"></div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" style="margin-left: .25rem;">
+                                <h2 class="label_titulo_comp">Fim planejado</h2>
+                                <div id="div_data_fim_proj_frm_edt_proj"
+                                     class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;"></div>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-start w-100" style="margin-left: .25rem;">
+                                <h2 class="label_titulo_comp">Atualização</h2>
+                                <div id="div_atualizacao_proj_frm_edt_proj"
+                                     class="d-flex justify-content-center align-items-start w-100 borda campos_dados"
+                                     style="padding: .7rem;"></div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex flex-column justify-content-center align-items-left w-100">
+                                <h2 class="label_titulo_comp">Riscos e pontos de atenção</h2>
+                                <div id="div_riscos_projeto_frm_edt_proj"
+                                     class="d-flex justify-content-start align-items-start w-100 borda campos_dados"
+                                     style="height: 65px; overflow: auto;"></div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" id="hd_cod_tarefa_selecionada"
+                               name="hd_cod_tarefa_selecionada">
+
+                        <input type="hidden" id="hd_cod_btn_selecionado"
+                               name="hd_cod_btn_selecionado">
+
+                        <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
+                            <div class="d-flex justify-content-between align-items-center w-100"
+                                 style="background: #343537; border-radius: 5px 5px 0px 0px; padding: .25rem;">
+                                <h2 class="label_titulo_comp_table" style="margin-left: .5rem;">Ações Previstas</h2>
+                                <div  style="color: #FFFFFF;" name="div_desc_tarefa" id="div_desc_tarefa"></div>
+                                <button  name="btn_add_tr_acao" id="btn_add_tr_acao"
+                                         class="btn btn-rounded btn-space btn-add-tr"
+                                         style="padding: .25rem!important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);"
+                                         disabled="disabled" title="Adicionar nova ação">
+                                     <i class="fa-solid fa-plus" style="color: #ff5900!important; font-size: 15px"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100"
+                             style="box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);">
+                            <div class="d-flex justify-content-between align-items-between w-100 scroll">
+                                <table id="tb_acoes_modal_edt_proj" class='scroll' style="width: 100%">
+                                    <thead>
+                                        <tr style="background: #f46424!important;padding: 0.25rem!important;" class="linha" id="btnAddLineAcao" align="center">
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1rem;text-align: left;">Status</th>
+                                            <th style="width: 30%;font-weight: 400;padding: 0.1rem;text-align: left;">Ações</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Executor</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Início</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Prazo</th>
+                                            <th style="width: 40%;font-weight: 400;padding: 0.1">Observação</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Salvar</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Concluir</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="modal-footer" style="background-color:#363636;">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex justify-content-end align-items-center w-100">
+                        <select class="selectpicker form-control" id="cb_usuarios_projeto"
+                                name="cb_usuarios_projeto"
+                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true" title="Selecione os usuário envolvidos">
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center w-100">
+                        <button name="btn_finaliza_projeto" id="btn_finaliza_projeto"
+                                style='background-color:#ff6300;color: white;'
+                                class="btn btn-rounded btn-space"  disabled="disabled">
+                            FINALIZAR PROJETO
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

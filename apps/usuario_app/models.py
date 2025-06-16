@@ -14,6 +14,7 @@ class Usuario(models.Model):
     perfil_usu = models.TextField(max_length=30)
     login_usu = models.TextField(max_length=50)
     sala = models.CharField(max_length=3,null=True)
+    '''L: líder, M: master, H: head, G: gerente '''
     tipo_colab = models.CharField(max_length=1, null=True, blank=True)
     corporativo = models.TextField(max_length=1,default='N')
     tel = models.TextField(max_length=25, default='00 9 0000 0000', null=True, blank=True)

@@ -1,4 +1,7 @@
 let let_dic_usu_sessao = null;
+let let_count_tr_tarefas = 9999;
+let let_count_tr_acoes = 9999;
+let let_lista_usuarios = [];
 
 // using jQuery
 function getCookie(name) {
@@ -28,8 +31,6 @@ $.ajaxSetup({
         }
     }
 });
-
-
 
 
 
@@ -756,8 +757,683 @@ $(document).on('click','button', function(){
         }
 
     }
+    else if (let_nome_btn == "btn_abre_modal_muda_idea_proj") {
+        $("#btn_cria_projeto").val(let_val_btn);
+        $("#modal_criar_projeto").show();
+    } else if (let_nome_btn == "btn_não_cria_projeto") {
+        $("#btn_não_cria_projeto").val(let_val_btn);
+        $("#modal_criar_projeto").hide();
+    }
+    else if (let_nome_btn == "btn_cria_projeto") {
+        let let_cod_ideia = let_val_btn;
+        $.ajax({
+            type: 'GET',
+            url: '/ti_comitec_app/abrir_modal_edita_projeto',
+            data: {
+                'tipo_processo': 'novo',
+                'cod_ideia'  :   let_cod_ideia,
+
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                /*$("#div_nome_projeto_frm_edt_proj").html(dados.dic_projeto.nome_projeto);
+                $("#div_nome_sponsor_frm_edt_proj").html(dados.dic_projeto.nome_sponsor);
+                $("#div_nome_gerente_frm_edt_proj").html(dados.dic_projeto.nome_gerente);
+                $("#div_fase_proj_frm_edt_proj").html(dados.dic_projeto.fase);
+                $("#div_objetivo_projeto_frm_edt_proj").html(dados.dic_projeto.objetivos_proj);
+                $("#div_riscos_projeto_frm_edt_proj").html(dados.dic_projeto.riscos);
+                $("#porcenagem_barra").html(dados.dic_projeto.perc_progresso_acoes);*/
+                carrega_tabela_ideias(dados.lista_ideias_frm);
+
+                let_lista_usuarios = [];
+                dados.lista_usuarios.forEach( usu => {
+                    let reg = [
+                        usu.cod_usu,
+                        usu.login_usu
+                    ];
+                    let_lista_usuarios.push(reg);
+
+                });
+                /*
+                let let_porcentagem_barra = dados.dic_projeto.perc_progresso_acoes;
+                $("#td_evolucao_proj_"+let_val_btn).html(let_porcentagem_barra);
+                */
+
+                /* $("#modal_projeto").show(); */
+
+                $("#modal_criar_projeto").hide();
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
 
 
+    }  else if (let_nome_btn == "btn_fecha_modal_criar_proj") {
+        $("#modal_criar_projeto").hide();
+    } else if (let_nome_btn == "btn_abre_proj") {
+        $("#modal_editar_projeto").show();
+    } else if (let_nome_btn == "btn_fecha_modal_proj_frm_proj") {
+        $("#modal_editar_projeto").hide();
+    } else if (let_nome_btn == "btn_fecha_proj") {
+        $("#modal_projeto").hide();
+    } else if (let_nome_btn == "btn_add_tr_tarefas") {
+        $("#div_desc_tarefa").html('');
+        $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+        let let_cod_tarefa_anterior = $("#hd_cod_btn_selecionado").val();
+        let let_icone_acao_clicar_btn_anterior =`
+                       <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                   `;
+        $("#btn_visualiza_acoes_tarefa_"+let_cod_tarefa_anterior).html(let_icone_acao_clicar_btn_anterior);
+        let_count_tr_tarefas += 1;
+        fn_add_tr_tarefa(let_count_tr_tarefas, null);
+
+    }
+    else if (let_nome_btn == "btn_add_tr_acao") {
+        let_count_tr_acoes += 1;
+        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
+
+    }
+    else if (let_nome_btn == "btn_abre_modal_edita_proj_frm_lista_proj") {
+        let let_cod_btn = let_id_btn.split('_')[3];
+        let let_div_evolucao_projeto = document.getElementById("div_evolucao_projeto");
+        let let_cod_projeto = let_val_btn;
+        $("#hd_cod_projeto").val(let_cod_projeto);
+        $.ajax({
+            type: 'GET',
+            url: '/ti_comitec_app/abrir_modal_edita_projeto',
+            data: {
+                'tipo_processo': 'edicao',
+                'cod_projeto'  :   let_cod_projeto,
+            },
+            dataType: 'json',
+            success: function (dados) {
+                $("#hd_desc_ideia_comitec").val(let_count_tr_tarefas);
+                $("#hd_cod_usu_master").val(dados.dic_projeto.cod_usu_master);
+                $("#div_nome_projeto_frm_edt_proj").html(dados.dic_projeto.nome_projeto);
+                $("#div_nome_sponsor_frm_edt_proj").html(dados.dic_projeto.nome_sponsor);
+                $("#div_nome_gerente_frm_edt_proj").html(dados.dic_projeto.nome_gerente);
+                $("#div_objetivo_projeto_frm_edt_proj").html(dados.dic_projeto.objetivos_proj);
+                $("#div_riscos_projeto_frm_edt_proj").html(dados.dic_projeto.riscos);
+                $("#sl_fase_proj_modal_edita_proj").val(dados.dic_projeto.desc_fase);
+                $("#div_atualizacao_proj_frm_edt_proj").html(dados.dic_projeto.ult_atualização);
+                $("#div_data_ini_proj_frm_edt_proj").html(dados.dic_projeto.data_inicio);
+                $("#div_data_fim_proj_frm_edt_proj").html(dados.dic_projeto.data_fim);
+                $("#porcenagem_barra").html(dados.dic_projeto.perc_progresso_acoes);
+                $("#btn_finaliza_projeto").val(dados.dic_projeto.status_proj);
+                if (dados.dic_projeto.cronograma == '0'){
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#3CB371!important;font-size: 1.5em!important;"></i>`);
+                } else if (dados.dic_projeto.cronograma == '1'){
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#FFD700!important;font-size: 1.5em!important;"></i>`);
+                } else if (dados.dic_projeto.cronograma == '2'){
+                    $("#div_status_cronograma_proj").html(`<i class="fa-solid fa-circle fa-xl"
+                        style="color:#FF0000!important;font-size: 1.5em!important;"></i>`);
+                }
+
+                let_div_evolucao_projeto.style.width = dados.dic_projeto.perc_progresso_acoes;
+
+                let_lista_usuarios = [];
+                $("#cb_usuarios_projeto option").remove();
+                dados.lista_usuarios.forEach( usu => {
+                    let reg = [
+                        usu.cod_usu,
+                        usu.login_usu
+                    ];
+                    let_lista_usuarios.push(reg);
+
+                    let let_item_selected = ``;
+                    dados.dic_projeto.lista_cod_usuarios_vinculados.forEach( cod_usu_vinc => {
+                        if( cod_usu_vinc.cod_usu__cod_usu == usu.cod_usu){
+                            let_item_selected = `selected="selected"`;
+                        }
+                    });
+
+                    $("#cb_usuarios_projeto").append(`
+                        <option value="${usu.cod_usu}" ${let_item_selected}>${usu.nome_usu}</option>
+                    `);
+
+                });
+                if(dados.usu_logado_edt_proj == 'nok'){
+                    $("#cb_usuarios_projeto").prop("disabled", true)
+                    $("#sl_fase_proj_modal_edita_proj").prop("disabled", true);
+                    $("#btn_add_tr_tarefas").prop("disabled", true);
+                    $("#btn_add_tr_acao").prop("disabled", true);
+                    $("#btn_finaliza_projeto").prop("disabled", true);
+
+                }
+                $("#cb_usuarios_projeto").selectpicker('refresh');
+
+                let let_porcentagem_barra = dados.dic_projeto.perc_progresso_acoes;
+                if ( let_porcentagem_barra != '100%' ){
+                    $("#key").prop("disabled", false);
+                    if(dados.usu_logado_edt_proj == 'ok'){
+                        $("#btn_add_tr_tarefas").prop("disabled", false);
+                    } else {
+                        $("#btn_add_tr_tarefas").prop("disabled", true);
+                    }
+                    $("#btn_finaliza_projeto").prop("disabled", true);
+                    let_btn_finalizado =`FINALIZAR PROJETO`;
+                    $("#btn_finaliza_projeto").html(let_btn_finalizado);
+                } else if ( let_porcentagem_barra == '100%' ) {
+                    if(dados.usu_logado_edt_proj == 'ok'){
+                        $("#btn_finaliza_projeto").prop("disabled", false);
+                    } else {
+                        $("#btn_finaliza_projeto").prop("disabled", true);
+                    }
+                    let let_btn_finaliza_projeto = dados.dic_projeto.status_proj;
+                    if ( let_btn_finaliza_projeto == 1 ){
+                        let_btn_finalizado =`PROJETO FINALIZADO`;
+                        $("#btn_finaliza_projeto").html(let_btn_finalizado);
+                        $("#btn_finaliza_projeto").prop("disabled", true);
+                        $("#btn_add_tr_tarefas").prop("disabled", true);
+                        $("#btn_add_tr_acao").prop("disabled", true);
+                        $("#key").prop("disabled", true);
+                        $("#btn_salvar_tarefa").prop("disabled", true);
+                        $("#td_desc_tarefa_"+let_cod_btn).prop("contenteditable", false);
+                    } else if ( let_btn_finaliza_projeto == 0 && dados.usu_logado_edt_proj == 'ok'){
+                        let_btn_finalizado =`FINALIZAR PROJETO`;
+                        $("#btn_finaliza_projeto").html(let_btn_finalizado);
+                        $("#btn_finaliza_projeto").prop("disabled", false);
+                        $("#key").prop("disabled", false);
+                        $("#btn_add_tr_tarefas").prop("disabled", false);
+                    }
+                }
+
+                $("#modal_projeto").show();
+                //$("#btn_add_tr_acao").prop("disabled", true);
+                $("#div_desc_tarefa").html('');
+                fn_add_tr_tarefa(0, dados.lista_dic_tarefas);
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+
+    } else if (let_nome_btn == "btn_fecha_modal_edt_proj") {
+        $("#tb_tarefas tr[name='tr_tarefa']").remove();
+        $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+        $("#hd_cod_tarefa_selecionada").val('0');
+        $("#modal_projeto").hide();
+        let_count_tr_tarefas = 9999;
+        let_count_tr_acoes = 9999;
+    }
+     else  if (let_nome_btn == "btn_fecha_modal_proj") {
+        $("#modal_criar_projeto").hide();
+    } else  if (let_nome_btn == "btn_salvar_tarefa") {
+        $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+        let let_cod_projeto = $("#hd_cod_projeto").val();
+        let let_cod_tarefa = $(this).val();
+        let let_cod_btn = let_id_btn.split('_')[3];
+        let let_cod_btn_anterior = $("#hd_cod_btn_selecionado").val();
+        let let_desc_tarefa = $("#td_desc_tarefa_"+let_cod_btn).html();
+        let let_cod_usu_master = $("#hd_cod_usu_master").val();
+
+
+        $.ajax({
+            type: 'POST',
+            url: '/ti_comitec_app/salva_edita_tarefa',
+            dataType: 'json',
+            data: {
+                'cod_projeto': let_cod_projeto,
+                'cod_tarefa': let_cod_tarefa,
+                'desc_tarefa': let_desc_tarefa,
+            },
+            success: function (dados) {
+                let let_titulo_acao = `<strong>Tarefa: </strong>${dados.desc_tarefa}`;
+                $("#div_desc_tarefa").html(let_titulo_acao);
+                $("#hd_cod_tarefa_selecionada").val(dados.cod_tarefa);
+                $("#hd_cod_btn_selecionado").val(let_cod_btn)
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_imagem_editar = `
+                    <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                `;
+                $("#btn_salvar_tarefa_"+let_cod_btn).val(dados.cod_tarefa);
+                $("#btn_salvar_tarefa_"+let_cod_btn).html(let_imagem_editar);
+
+                let let_imagem_visualizar = `
+                    <i class="fa-solid fa-eye" style="color: #3CB371!important;"></i>
+                `;
+                $("#btn_visualiza_acoes_tarefa_"+let_cod_btn).val(dados.cod_tarefa);
+                $("#btn_visualiza_acoes_tarefa_"+let_cod_btn).prop('disabled', false);
+                $("#btn_visualiza_acoes_tarefa_"+let_cod_btn).html(let_imagem_visualizar);
+
+
+                if( let_cod_btn != let_cod_btn_anterior){
+                    let img_btn_anterior = `
+                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                    `;
+                    $("#btn_visualiza_acoes_tarefa_"+let_cod_btn_anterior).html(img_btn_anterior);
+
+                }
+
+                let let_cod_tarefa_anterior = $("#hd_cod_tarefa_selecionada").val();
+                if (let_cod_btn !== let_cod_tarefa_anterior) {
+                    $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+                }
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,let_cod_usu_master);
+
+                if(let_cod_tarefa == '0'){
+                    let_count_tr_acoes += 1;
+                    $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+                    fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,let_cod_usu_master);
+
+                }
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+    }
+    else  if (let_nome_btn == "btn_salvar_acao") {
+        let let_cod_btn = let_id_btn.split('_')[3];
+        let let_desc_acao = $("#td_desc_acao_"+let_cod_btn).html();
+        let let_prazo = $("#dt_prazo_frm_edt_acao_"+let_cod_btn).val();
+        let let_cod_usu_atribuido = $("#sl_usu_frm_edt_acao_"+let_cod_btn).val();
+        if((let_desc_acao != null && let_desc_acao != '') && (let_prazo != null && let_prazo!= '')) {
+            let let_cod_projeto = $("#hd_cod_projeto").val();
+            let let_cod_acao = $(this).val();
+
+            let let_cod_atividade_pai = $("#hd_cod_tarefa_selecionada").val();
+
+            let let_observacao = $("#td_observacao_"+let_cod_btn).html();
+            $.ajax({
+                type: 'POST',
+                url: '/ti_comitec_app/salva_edita_acao',
+                dataType: 'json',
+                data: {
+                    'cod_projeto': let_cod_projeto,
+                    'cod_acao': let_cod_acao,
+                    'cod_atividade_pai': let_cod_atividade_pai,
+                    'desc_acao': let_desc_acao,
+                    'observacao': let_observacao,
+                    'prazo': let_prazo,
+                    'cod_usu_atribuido': let_cod_usu_atribuido
+                },
+                success: function (dados) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    let let_imagem_editar = `
+                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    `;
+                    $("#btn_salvar_acao_"+let_cod_btn).val(dados.cod_acao);
+                    $("#btn_salvar_acao_"+let_cod_btn).html(let_imagem_editar);
+
+
+                    $("#btn_inicia_acao_"+let_cod_btn).prop('disabled', false);
+                    $("#btn_inicia_acao_"+let_cod_btn).val(dados.cod_acao);
+
+                    if(let_cod_acao == '0'){
+                        let_count_tr_acoes += 1;
+                        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
+                    }
+
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+              }
+            });
+        } else {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Descrição e/ou prazo da ação, não informados!',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+
+
+    }
+    else  if (let_nome_btn == "btn_visualiza_acoes_tarefa") {
+        $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
+        $("#div_desc_tarefa").html('');
+        $("#dt_prazo_frm_edt_acao").val('');
+        $("#td_inicia_acao").val('');
+        let let_cod_tarefa = let_val_btn;
+        let let_cod_btn = let_id_btn.split('_')[4];
+
+        $.ajax({
+            type: 'GET',
+            url: '/ti_comitec_app/retorna_acoes_tarefa',
+            dataType: 'json',
+            data: {
+                'cod_tarefa': let_cod_tarefa
+            },
+            success: function (dados) {
+                $("#div_desc_tarefa").html(`<strong style="color: #FFFFFF;">Tarefa: </strong>${dados.desc_tarefa}`);
+                let let_icone_acao_clicar =`
+                    <i class="fa-solid fa-eye" style="color: #3CB371!important;"></i>
+                `;
+                $("#btn_visualiza_acoes_tarefa_"+let_cod_btn).html(let_icone_acao_clicar);
+                /* Altera icone do btn anterior q foi clicado*/
+                let let_cod_tarefa_anterior = $("#hd_cod_btn_selecionado").val();
+                if( let_cod_tarefa_anterior != '0'){
+                    let let_icone_acao_clicar_btn_anterior =`
+                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                    `;
+                $("#btn_visualiza_acoes_tarefa_"+let_cod_tarefa_anterior).html(let_icone_acao_clicar_btn_anterior);
+                }
+                $("#hd_cod_tarefa_selecionada").val(let_cod_btn);
+                $("#hd_cod_btn_selecionado").val(let_cod_btn);
+                $("#dt_prazo_frm_edt_acao").val(dados.data_fim);
+                if(dados.usu_logado_edt_proj == 'ok'){
+                    $("#btn_add_tr_acao").prop("disabled", false);
+                }
+
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes, 0);
+                let let_btn_finaliza_projeto = $("#btn_finaliza_projeto").val();
+                if ( let_btn_finaliza_projeto == 1 ){
+                    $("#btn_add_tr_acao").prop("disabled", true);
+                }
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+    }
+    else  if (let_nome_btn == "btn_inicia_acao") {
+        let let_cod_btn = let_id_btn.split('_')[3];
+         let let_data_ini = $("#td_inicia_acao_"+let_cod_btn).html()
+         let let_cod_acao = $(this).val();
+         $.ajax({
+            type: 'PUT',
+            url: '/ti_comitec_app/inicia_acao',
+            dataType: 'json',
+            data: {
+                'tipo_data': 'data_ini',
+                'cod_acao': let_cod_acao,
+                'cod_projeto': let_cod_acao
+            },
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_data_ini = dados.data_ini.split('-')[2]+'-'+dados.data_ini.split('-')[1]+'-'+dados.data_ini.split('-')[0]
+                $("#td_inicia_acao_"+let_cod_btn).html(let_data_ini);
+                $("#btn_concluir_acao_"+let_cod_btn).prop("disabled", false);
+                $("#btn_concluir_acao_"+let_cod_btn).val(dados.cod_acao);
+
+              },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+     }
+    else  if (let_nome_btn == "btn_concluir_acao") {
+        let let_cod_btn = let_id_btn.split('_')[3];
+         let let_data_conclusao= $("#btn_concluir_acao_"+let_cod_btn).html()
+         let let_cod_acao = $(this).val();
+         $.ajax({
+            type: 'PUT',
+            url: '/ti_comitec_app/conclui_acao',
+            dataType: 'json',
+            data: {
+                'tipo_data': 'data_conclusao',
+                'cod_acao': let_cod_acao
+            },
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_data_conclusao = dados.data_conclusao.split('-')[2]+'-'+dados.data_conclusao.split('-')[1]+'-'+dados.data_conclusao.split('-')[0]
+                $("#td_conclui_acao_"+let_cod_btn).html(let_data_conclusao);
+                $("#td_desc_acao_"+let_cod_btn).prop("contenteditable", false);
+                $("#td_observacao_"+let_cod_btn).prop("contenteditable", false);
+                $("#btn_salvar_acao_"+let_cod_btn).prop("disabled", true);
+                $("#dt_prazo_frm_edt_acao_"+let_cod_btn).prop('disabled', true);
+              },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+        });
+     }
+    else  if (let_nome_btn == "btn_finaliza_projeto") {
+         let let_cod_projeto = $("#hd_cod_projeto").val();
+         let let_cod_btn = let_id_btn.split('_')[3];
+
+         $.ajax({
+            type: 'PUT',
+            url: '/ti_comitec_app/finaliza_projeto',
+            dataType: 'json',
+            data: {
+                'cod_projeto': let_cod_projeto,
+            },
+            success: function (dados) {
+                $("#btn_finaliza_projeto").val(dados.status_proj);
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_btn_finaliza_projeto = dados.status_proj;
+                if ( let_btn_finaliza_projeto == 1 ){
+                    let_btn_finalizado =`PROJETO FINALIZADO`;
+                    $("#btn_finaliza_projeto"+let_cod_btn).html(let_btn_finalizado);
+                } else {
+                    let_btn_finalizado =`FINALIZAR PROJETO`;
+                    $("#btn_finaliza_projeto"+let_cod_btn).html(let_btn_finalizado);
+                }
+
+                $("#btn_finaliza_projeto").prop("disabled", true);
+                $("#sl_fase_proj_modal_edita_proj").prop("disabled", true);
+                $("#sl_fase_proj_modal_edita_proj").val(3);
+                $("#td_desc_tarefa").prop("contenteditable", false);
+
+              },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+          }
+      });
+    }
+    else if ( let_nome_btn == "btn_atualizar_dados_tab_acoes_proj_comitec") {
+        $.ajax({
+            type: 'GET',
+            url: '/ti_comitec_app/atualiza_tab_prox_acoes_proj',
+            dataType: 'json',
+            success: function (dados) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                let let_lista_acoes = []
+                dados.lista_obj_acoes_prox_ou_atradadas.forEach(acao => {
+                    let let_img_status_acao = `
+                        <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
+                    `;
+                    if(acao.status == "Concluída"){
+                        let_img_status_acao = `
+                            <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
+                        `;
+                    } else if(acao.status == "Atrasada"){
+                        let_img_status_acao = `
+                            <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
+                        `;
+                    }
+
+                    let let_cronograma_projeto = `
+                        <i class="fa-solid fa-circle fa-xl" style="color:#00FA9A!important;" title="Dentro do esperado"></i>
+                    `;
+                    if(acao.cronograma_projeto == 1){
+                        let_cronograma_projeto = `
+                            <i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;" title="Em risco"></i>
+                        `;
+                    } else if(acao.cronograma_projeto == 2){
+                        let_cronograma_projeto = `
+                            <i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;" title="Atrasado"></i>
+                        `;
+                    }
+
+                    let let_btn_editar_projeto = `
+                        <button class='btn btn-rounded btn-space'
+                                id="btn_abre_modal_edita_proj_frm_lista_proj_{{acao.cod_projeto}}"
+                                name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                value="${acao.cod_projeto}" title="Ver detalhes projeto">
+                            <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                        </button>
+                    `;
+
+
+                    let reg = [
+                        let_img_status_acao,
+                        acao.login_master,
+                        acao.desc_projeto,
+                        let_cronograma_projeto,
+                        acao.desc_acao,
+                        acao.prazo,
+                        acao.data_ultima_atualizacao_proj,
+                        let_btn_editar_projeto
+                    ]
+                    let_lista_acoes.push(reg);
+                });
+                $('#tab_acoes_proj_comitec').DataTable( {
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": '50vh',
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    //"paging": true,
+                    //"pageLength": 6,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":let_lista_acoes,
+                    "columns": [
+                        { title: "Status" },
+                        { title: "Usuário" },
+                        { title: "Projeto" },
+                        { title: "Cronograma" },
+                        { title: "Ação" },
+                        { title: "Prazo" },
+                        { title: "Últ. Atualização Proj." },
+                        { title: "Abrir" }
+                    ],
+                    "columnDefs": [
+                        {"className": "dt-center", "targets": [0,1,3,5,6,7]},
+                        {"className": "dt-left", "targets": [2,4]}
+                    ],
+                    "oLanguage": {
+                        "sProcessing":   "Processando...",
+                        "sLengthMenu":   "Mostrar _MENU_ registros",
+                        "sZeroRecords":  "Não foram encontrados resultados",
+                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                        "sInfoFiltered": "",
+                        "sInfoPostFix":  "",
+                        "sSearch":       "Pesquisar:",
+                        "sUrl":          "",
+                        "oPaginate": {
+                            "sFirst":    "Primeiro",
+                            "sPrevious": "Anterior",
+                            "sNext":     "Proximo",
+                            "sLast":     "Último"
+                        },
+                        "buttons":{
+                            "copyTitle": 'Dados Copiados',
+                            "copySuccess": {
+                                _: '%d linhas copiadas',
+                                1: '1 linha copiada'
+                            }
+                        }
+                    }
+                });
+
+
+            },error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
 });
 
 
@@ -784,13 +1460,13 @@ function carrega_tabela_ideias(lista_ideias_frm) {
         `;
 
         let let_flag_gut_g = `
-            <i class="${ideia.flag_gut_g}" style="color:${ideia.color_flag_gut_g}" title="${ideia.nota_gut_g}"></i>
+            <i class="${ideia.flag_gut_g}" style="color:${ideia.color_flag_gut_g}" title="${ideia.nota_gut_g}(${ideia.desc_gut_g})"></i>
         `;
         let let_flag_gut_u = `
-            <i class="${ideia.flag_gut_u}" style="color:${ideia.color_flag_gut_u}" title="${ideia.nota_gut_u}"></i>
+            <i class="${ideia.flag_gut_u}" style="color:${ideia.color_flag_gut_u}" title="${ideia.nota_gut_u}(${ideia.desc_gut_u})"></i>
         `;
         let let_flag_gut_t = `
-            <i class="${ideia.flag_gut_t}" style="color:${ideia.color_flag_gut_t}" title="${ideia.nota_gut_t}"></i>
+            <i class="${ideia.flag_gut_t}" style="color:${ideia.color_flag_gut_t}" title="${ideia.nota_gut_t}(${ideia.desc_gut_t})"></i>
         `;
 
         let reg = [
@@ -924,6 +1600,7 @@ $(document).on('change','input', function(){
     }
 });
 
+
 function limpa_campos_frm_ideia_comitec(dic_usuario){
     let let_img_flags = `
         <i class="fa-regular fa-flag" style="color: #f46424; width: 40px;"></i>
@@ -1030,4 +1707,414 @@ function limpa_campos_frm_ideia_comitec(dic_usuario){
         top: 0,
         behavior: 'smooth'
     });
+};
+
+
+$(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
+    let let_cod_projeto = $("#hd_cod_projeto").val();
+    let let_fase_projeto = $(this).val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/ti_comitec_app/abrir_modal_edita_projeto',
+        data: {
+            'cod_projeto'  :   let_cod_projeto,
+            'fase_projeto' :   let_fase_projeto
+        },
+        success: function (dados) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+
+})
+
+
+
+function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
+    if(lista_tarefas == null) {
+
+        $(`
+            <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td contenteditable='true' name='td_desc_tarefa' id="td_desc_tarefa_${cod_linha}"
+                    style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td style="padding: 0.25rem;align-content: center;">
+                    &nbsp;
+                </td>
+                <td align="center" style="align-content: center;">
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0"
+                        class="btn btn-rounded btn-space" style="width: 35px;" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                    </button>
+                </td>
+                <td style="align-content: center;">
+                    &nbsp;
+                </td>
+                <td align="center" style="align-content: center;">
+                    <button style="width: 35px;" value="0" class="btn btn-rounded btn-space" title="Visualizar ações"
+                        name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${cod_linha}" disabled>
+                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                    </button>
+                </td>
+            </tr>
+        `).insertAfter("#btnAddLineTarefa");
+    }
+    else {
+        lista_tarefas.forEach( tarefa => {
+
+            let let_btn_salva_tarefa = ``;
+            let let_desc_tarefa = ``;
+            let let_atrib = ``;
+            let let_img_status_tarefa = `
+                <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
+            `;
+            let let_habilita_btn = ``;
+            let let_edicao_td = `
+                contenteditable='true'
+            `;
+            if(tarefa.status_edicao_campos == 'nok'){
+                let_habilita_btn = `
+                    disabled="disabled"
+                `;
+                let_edicao_td = `
+                    contenteditable='false'
+                `;
+            }
+            if(tarefa.status_tarefa == 'Concluída'){
+                let_img_status_tarefa = `
+                    <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
+                `;
+            } else if(tarefa.status_tarefa == 'Atrasada'){
+                let_img_status_tarefa = `
+                    <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
+                `;
+            }
+
+            if(tarefa.perc_progresso_tarefa != '100%') {
+                let_btn_salva_tarefa = `
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        title="Salvar/Atualizar tarefa" ${let_habilita_btn}>
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>
+                `;
+                let_desc_tarefa = `
+                    <td ${let_edicao_td} name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${tarefa.desc_atividade}
+                    </td>`;
+
+            } else {
+                let_btn_salva_tarefa = `
+                    <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
+                        class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
+                        disabled="disabled" title="Salvar/Atualizar tarefa">
+                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
+                let_desc_tarefa = `
+                    <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: center;">
+                            ${tarefa.desc_atividade}
+                    </td>`;
+
+
+            }
+
+
+            $("#tb_tarefas").append(`
+                <tr style="background-color: #e9e9e9c4; font-size: 0.5rem!important;" name="tr_tarefa" class='scroll'>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${let_img_status_tarefa}
+                    </td>
+                   ${let_desc_tarefa}
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_ini_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_prazo_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+                        ${tarefa.data_termino_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
+                        ${let_btn_salva_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="right">
+                        ${tarefa.perc_progresso_tarefa}
+                    </td>
+                    <td style="padding: 0.25rem;align-content: center;" align="center">
+                        <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}"
+                            name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}"
+                            title="Visualizar ações">
+                                <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                        </button>
+                    </td>
+                </tr>
+            `);
+
+        });
+    }
 }
+
+
+
+function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
+    if(lista_acoes == null) {
+        let let_options_usu = '';
+        for(let i=0; i <  let_lista_usuarios.length; i++){
+            let let_selected = ``;
+            if(let_lista_usuarios[i][0] == cod_usu_master){
+                let_selected = `selected="selected"`;
+            }
+            let_options_usu += `
+                <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
+            `;
+        }
+       $(`
+        <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
+            <td style="padding: 0.25rem;font-size: 10px;align-content: center;" align="center">
+            </td>
+            <td contenteditable='true' name='td_desc_acao' id='td_desc_acao_${cod_linha}'
+                style="padding: 0.25rem; align-content: start;">
+            </td>
+            <td style="padding: 0.25rem;align-content: start;">
+                <select name="sl_usu_frm_edt_acao" id="sl_usu_frm_edt_acao_${cod_linha}">
+                    ${let_options_usu}
+                </select>
+            </td>
+            <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center" style="align-content: start;padding-top: .5rem;">
+                <button style="width: 35px;" value="0" title="Iniciar ação"
+                    class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${cod_linha}' disabled >
+                    <i class="fa-solid fa-play" style="color: #fd9a49!important;" ></i>
+                </button>
+            </td>
+            <td contenteditable='false' style="padding: 0.25rem; align-content: start;" >
+                <input type="date" id='dt_prazo_frm_edt_acao_${cod_linha}' name="dt_prazo_frm_edt_acao" style="width: 90px;">
+            </td>
+            <td contenteditable='true' name='td_observacao' id='td_observacao_${cod_linha}'
+                style="padding: 0.25rem;align-content: start;"></td>
+            <td align="center" style="align-content: start;">
+                <button style="width: 35px;" value="0" title="Salvar/Atualizar ação"
+                    class="btn btn-rounded btn-space" name='btn_salvar_acao' id='btn_salvar_acao_${cod_linha}'>
+                    <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                </button>
+            </td>
+            <td  name="td_conclui_acao" id="td_conclui_acao_${cod_linha}" align="center" style="align-content: start;" >
+                <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space" value="0"
+                    name='btn_concluir_acao' id='btn_concluir_acao_${cod_linha}' title="Concluir ação" disabled>
+                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                </button>
+            </td>
+
+        </tr>`).insertAfter("#btnAddLineAcao");
+    }
+    else{
+        lista_acoes.forEach( acao => {
+            let let_habilita_btn = ``;
+            let let_edicao_td = `
+                contenteditable='true'
+            `;
+            if(acao.status_edicao_campos == 'nok'){
+                let_habilita_btn = `
+                    disabled="disabled"
+                `;
+                let_edicao_td = `
+                    contenteditable='false'
+                `;
+            }
+
+            let let_options_usu = '';
+            for(let i=0; i <  let_lista_usuarios.length; i++){
+                let let_selected = '';
+                if(let_lista_usuarios[i][0] == acao.cod_usu__cod_usu){
+                    let_selected = `selected="selected"`;
+                }
+                let_options_usu += `
+                    <option value="${let_lista_usuarios[i][0]}" ${let_selected}>${let_lista_usuarios[i][1]}</option>
+                `;
+            }
+            let let_atrib = `
+                <select name="sl_usu_frm_edt_acao" ${let_habilita_btn} id="sl_usu_frm_edt_acao_${acao.cod_atividade}">
+                    ${let_options_usu}
+                </select>`;
+            let let_btn_inicia_acao = ``;
+            if(acao.data_ini == null) {
+                let_btn_inicia_acao = `
+                    <button style="width: 35px;" value="${acao.cod_atividade}" title="Iniciar ação" ${let_habilita_btn}
+                        class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${acao.cod_atividade}'>
+                        <i class="fa-solid fa-play" style="color: #fd9a49!important;"  ></i>
+                    </button>
+                `;
+            } else {
+                let_btn_inicia_acao = acao.data_ini.split('-')[2]+'-'+acao.data_ini.split('-')[1]+'-'+acao.data_ini.split('-')[0];
+            }
+
+            let let_btn_data_conclusao = ``;
+            if( acao.data_ini == null && acao.data_conclusao == null ) {
+                let_btn_data_conclusao = `
+                   <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space"
+                        name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}"
+                        title="Concluir ação" disabled>
+                            <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                   </button>
+                `;
+            } else if(acao.data_conclusao == null && acao.data_ini != null) {
+                let_btn_data_conclusao = `
+                   <button style="width: 35px;margin-left: 11px;"  ${let_habilita_btn} class="btn btn-rounded btn-space" title="Concluir ação"
+                        name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}">
+                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                   </button>
+                `;
+
+
+            } else {
+                let_btn_data_conclusao = acao.data_conclusao.split('-')[2]+'-'+acao.data_conclusao.split('-')[1]+'-'+acao.data_conclusao.split('-')[0];
+
+
+            }
+            let let_edt = ``;
+            let let_btn_edt = ``;
+            let let_dt_edt = ``;
+            if(acao.data_conclusao != null){
+                let_edt = `false`;
+                let_btn_edt =   `
+                    <button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
+                        name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'
+                        title="Salvar/Atualziar ação" disabled>
+                         <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
+                let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao"
+                    value="${acao.data_fim}" style="width: 90px;" disabled>`;
+
+                let_atrib = `
+                    <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${acao.cod_atividade}" disabled="disabled">
+                        ${let_options_usu}
+                    </select>`;
+            } else {
+                if(acao.status_edicao_campos == 'nok'){
+                    let_edt = `false`;
+                }
+                 let_btn_edt =
+                    `<button style="width: 35px;" value="${acao.cod_atividade}" ${let_habilita_btn} class="btn btn-rounded btn-space"
+                        name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' title="Salvar/Atualizar ação">
+                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                    </button>`;
+                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' ${let_habilita_btn} style="width: 90px;"
+                    name="dt_prazo_frm_edt_acao" value="${acao.data_fim}">
+                   `;
+            }
+
+            let let_img_status_acao = `
+                <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
+            `;
+            if(acao.status_acao == 'Concluída'){
+                let_img_status_acao = `
+                    <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
+                `;
+            } else if(acao.status_acao == 'Atrasada'){
+                let_img_status_acao = `
+                    <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
+                `;
+            }
+
+
+            $("#tb_acoes_modal_edt_proj").append(`
+               <tr style="background-color: #e9e9e9c4;" name="tr_acao" class='scroll'>
+                    <td style="padding: .8rem;font-size: 10px;align-content: start;" align="center">
+                            ${let_img_status_acao}
+                    </td>
+                    <td contenteditable="${let_edt}" name='td_desc_acao' id='td_desc_acao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal; align-content: start;">
+                            ${acao.desc_atividade}
+                    </td>
+                    <td contenteditable="${let_edt}" name='td_usu_acao' id='td_usu_acao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
+                            ${let_atrib}
+                    </td>
+                    <td name="td_inicia_acao" id="td_inicia_acao_${acao.cod_atividade}" align="center"
+                        style="font-size: 10px;align-content: start;padding-top: .5rem;">
+                            ${let_btn_inicia_acao}
+                    </td>
+                    <td style="padding: 0.25rem; align-content: start;" >
+                        ${let_dt_edt}
+                    </td>
+                    <td contenteditable="${let_edt}" name='td_observacao' id='td_observacao_${acao.cod_atividade}'
+                        style="padding: 0.25rem; width: 50px; word-break: break-all; white-space: normal;align-content: start;">
+                           ${acao.observacao}
+                    </td>
+                    <td align="center" style="align-content: start; padding-top: .5rem;">
+                        ${let_btn_edt}
+                    </td>
+                    <td name="td_conclui_acao" id="td_conclui_acao_${acao.cod_atividade}" align="center"
+                        style="font-size: 10px;align-content: start; padding-top: .5rem;">
+                            ${let_btn_data_conclusao}
+                    </td>
+
+                </tr>
+             `);
+         });
+      }
+ }
+
+
+
+
+
+
+$(document).on('change', '#cb_usuarios_projeto', function(){
+    let let_lista_cod_usuarios = $("#cb_usuarios_projeto").val().toString();
+    let let_cod_projeto = $("#hd_cod_projeto").val();
+
+    $.ajax({
+        type: 'POST',
+        url: '/ti_comitec_app/vincula_usuarios_projeto',
+        data: {
+            'cod_projeto'  :   let_cod_projeto,
+            'lista_cod_usuarios' :   let_lista_cod_usuarios
+        },
+        success: function (dados) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        },
+        error: function (request, status, error) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+      }
+    });
+
+});
