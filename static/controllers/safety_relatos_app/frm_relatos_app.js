@@ -13,7 +13,6 @@ $(document).on('change','#unidade',function(){
     $('#situacao_envolvido').val('');
     $('#situacao_envolvido').selectpicker('refresh');
 
-
 });
 
 $(document).on('click','.create-check-relatos' , function(){
@@ -28,6 +27,12 @@ $(document).on('click','.create-check-relatos' , function(){
     let let_nome_relatado = "";
     let let_situacao_envolvido = "";
     let let_local_relato = $('#local_relato').val();
+    let let_setor_relato = $('#setor_relato').val();
+
+    let let_relato_anonimo = false;
+    if($('#relatante_anonimo_check_box').prop('checked') == true) {
+        let_relato_anonimo = true;
+    }
 
     if (let_tipo_relato != '2') {
         let_situacao_envolvido = $('#situacao_envolvido').val();
@@ -58,8 +63,21 @@ $(document).on('click','.create-check-relatos' , function(){
     if ((let_situacao_envolvido == '' || let_situacao_envolvido == null) && let_tipo_relato != '2') {
         msg_erro += 'Informe a situação do relatado!<br>';
     }
-    if ((let_nome_relatado == '' || let_nome_relatado == null) && let_tipo_relato != '2') {
+    if ((let_nome_relatado == '' || let_nome_relatado == null) && let_tipo_relato != '2' && let_situacao_envolvido != '5') {
         msg_erro += 'Informe o nome do relatado!<br>';
+    }
+    if (flag_deep == false) {
+        if (let_setor_relato == '' || let_setor_relato == null) {
+            msg_erro += 'Informe o setor do relato!<br>';
+        }
+
+        if (let_atividade_relato == '' || let_atividade_relato == null) {
+            msg_erro += 'Informe a atividade do relato!<br>';
+        }
+
+        if (let_processo_relato == '' || let_processo_relato == null) {
+            msg_erro += 'Informe o processo do relato!<br>';
+        }
     }
     if (let_local_relato == '') {
         msg_erro += 'Informe o local do relato!<br>';
@@ -72,17 +90,18 @@ $(document).on('click','.create-check-relatos' , function(){
             type: 'POST',
             url: '/safety_relatos_app/relatos_check',
             data: {
-                'unidade_relato'   :   let_unidade_relato,
-                'tipo_relato'   :   let_tipo_relato,
-                'situacao_envolvido'   :   let_situacao_envolvido,
-                'nome_relatado'   :   let_nome_relatado,
-                'local_relato'   :   let_local_relato,
+                'unidade_relato' : let_unidade_relato,
+                'tipo_relato' : let_tipo_relato,
+                'situacao_envolvido' : let_situacao_envolvido,
+                'nome_relatado' : let_nome_relatado,
+                'local_relato' : let_local_relato,
+                'setor_relato' : let_setor_relato,
                 'processo_relato' : let_processo_relato,
                 'atividade_relato' : let_atividade_relato,
                 'categoria_ato_inseguro' : let_categoria_ato_inseguro,
                 'categoria_condicao_insegura' : let_categoria_condicao_insegura,
-                'comportamento_seguro_categoria' : let_comportamento_seguro_categoria
-
+                'comportamento_seguro_categoria' : let_comportamento_seguro_categoria,
+                'relato_anonimo': let_relato_anonimo
             },
             success: function (dados) {
                 $("#div_corpo_relatos").html(dados);
@@ -177,7 +196,6 @@ $(document).on('change','#situacao_envolvido',function(){
         $('#nome_relatado').selectpicker('refresh');
     }
 
-
 });
 
 $(document).on('change','#processo_relato',function(){
@@ -253,4 +271,31 @@ $(document).on('change','#tipo_relato',function(){
         }
     }
 
+});
+
+$(document).on('change','#setor_relato',function(){
+    let cod_processo = $(this).val();
+    $.ajax({
+        type: 'GET',
+        url: '/safety_relatos_app/lista_atividades',
+        data: {
+            'cod_processo'   :   cod_processo,
+        },
+        dataType: 'json',
+        success: function (dados) {
+            $('#processo_relato option').remove();
+            $('#atividade_relato option').remove();
+            dados.lista_atividades.forEach(processo => {
+                $("#processo_relato").append("<option value='"+
+                processo.cod_atividade+"'>"+processo.desc_atividade+"</option>");
+            });
+            $('#processo_relato').val('');
+            $('#atividade_relato').val('');
+
+            $('#processo_relato').prop('disabled',false);
+            $('#processo_relato').selectpicker('refresh');
+            $('#atividade_relato').prop('disabled',true);
+            $('#atividade_relato').selectpicker('refresh');
+        }
+    });
 });

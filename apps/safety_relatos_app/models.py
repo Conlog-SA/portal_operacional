@@ -14,6 +14,8 @@ class Relato(models.Model):
     categoria_comportamento_seguro = models.IntegerField(blank=True, null=True)
     cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=True,
                                          null=True)
+    setor_relato = models.IntegerField(blank=True, null=True)
+    anonimo = models.IntegerField(blank=True, null=True)
 
     class Meta:
         managed = True
