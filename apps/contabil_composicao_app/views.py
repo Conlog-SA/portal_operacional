@@ -63,6 +63,11 @@ class Form_Imp_Cad_Conta_View(View):
         diretorio_arquivos_postados = os.path.join(BASE_DIR,
                                                    f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
 
+<<<<<<< Updated upstream
+=======
+        #diretorio_arquivos_postados = 'docs/contabil_composicao_app/anexos_pendentes_importacao'
+        diretorio_arquivos_postados = os.path.join(BASE_DIR, 'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao')
+>>>>>>> Stashed changes
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = 0
         for arq in lista_arquivos:
