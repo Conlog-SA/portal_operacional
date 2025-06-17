@@ -1,6 +1,8 @@
 from django.urls import path
 
 from apps.plan_controle_fat_2art_terc_app import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('acessa_form_gerar_pag_2art_terc', views.Form_Gerar_Pag_2Art_View.as_view(),
@@ -90,5 +92,10 @@ urlpatterns = [
          name='gera_rel_pdf_acres_desc_pagamento_mapas_terc'),
     path('atualiza_dados_reg_2art_terc_financ', views.Form_Gerar_Pag_2Art_View.as_view(),
          name='atualiza_dados_reg_2art_terc_financ'),
-
+    path('upload_layout_file_update_frete_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
+         name='upload_layout_file_update_frete_by_id'),
+    path('carrega_update_fretes_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
+         name='carrega_update_fretes_by_id')
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

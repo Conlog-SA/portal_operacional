@@ -52,7 +52,16 @@ class CadFreteSpot(models.Model):
         db_table = 'ger_cad_frete_spot'#op_plan_controle_cad_frete_spot'
         unique_together = ('tipo_entrega', 'data_ini_vigencia','data_fim_vigencia', 'tipo_perfil_veiculo', 'cod_regiao', 'qtd_min', 'qtd_max', 'tipo_pessoa', 'cod_projeto')
 
-
+class Arq_Update_Cad_Frete(models.Model):
+    cod_arq_update_cad_frete_spot = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    '''A: arquivo, E: editado'''
+    tipo_update = models.CharField(max_length=1, null=False, blank=False, default='E' )
+    arq_update = models.CharField(max_length=300)
+    data_ultima_atualizacao = models.DateField(auto_now_add=True, null=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True)
+    class Meta():
+        managed = True
+        db_table = 'op_plan_controle_arq_update_cad_frete'
 
 class CadastroPlacaTerceiro(models.Model):
     cod_cad_placa_terc = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)

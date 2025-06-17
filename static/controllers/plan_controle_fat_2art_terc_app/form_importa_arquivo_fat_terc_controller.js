@@ -203,7 +203,8 @@ $(document).on('click', 'button', function(){
 			   }			  
 		  	});
 		
-	} else if (nomeDoButton == "btnImportaArquivoPagamentosExtraFatTerc") {
+	}
+	else if (nomeDoButton == "btnImportaArquivoPagamentosExtraFatTerc") {
 	    let let_loader_arq_fat = document.getElementById("loader_arq_fat");
         var formData = new FormData();
         formData.append("file", $('#campoArquivoImpArqFatTerc')[0].files[0]);

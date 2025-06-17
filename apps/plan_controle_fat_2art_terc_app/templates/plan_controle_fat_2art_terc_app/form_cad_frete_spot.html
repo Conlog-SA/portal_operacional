@@ -22,7 +22,8 @@
     <div class="containerApp">
         <form id="frm_cad_frete_2art_terc" name="frm_cad_frete_2art_terc"
               method="POST"
-              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
+              enctype="multipart/form-data">
             {% csrf_token %}
 
 
@@ -76,6 +77,29 @@
                         <i class="fa-solid fa-location-dot"></i>
                         Frete
                     </button>
+                </div>
+
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mt-3">
+                <div class="d-flex flex-column align-items-start" style="width: 90%;">
+                    <label for="fl_atualiza_valores_cad_frete_por_id">
+                        Arquivo de atualização de fretes
+                    </label>
+                    <input type="file" name="fl_atualiza_valores_cad_frete_por_id"
+                           id="fl_atualiza_valores_cad_frete_por_id"
+                           class="containerApp"
+                           placeholder='Selecione um arquivo 2art válido...'
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                </div>
+
+                <div class="d-flex flex-column"
+                     style="width: 10%; padding-left: 0.25rem; margin-top: 1.2rem;">
+                    <a href="/plan_controle_fat_2art_terc_app/upload_layout_file_update_frete_by_id" name="a_layout_atualiza_val_cad_frete" id="a_layout_atualiza_val_cad_frete"
+                            class="btn btn-primary btn-rounded botaoPrincipal" title="Baixar arquivo layout de atualização dos fretes">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Layout
+                    </a>
                 </div>
 
             </div>

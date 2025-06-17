@@ -5,11 +5,12 @@ from datetime import datetime, date
 import json
 from math import trunc
 
+import pandas as pd
 import xlrd
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Sum
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, FileResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -19,9 +20,11 @@ from apps.plan_controle_fat_2art_terc_app.models import BeneficiarioTerceiro, Re
     HistAcaoMapas2ArtTerceiros, CadastroPlacaTerceiro, CadFreteSpot, TipoOcorrenciasFinanceiroTerceiros, \
     Pagamento2ArtTerceirosFinanceiro, LancamentosRegistro2ArtTerceirosFinanceiro, Tab_Cad_Placa_Terc_Financ, \
     LinhaExcelArquivoLanAcresDesc, LinhaExcelArquivoPagamentosExtra, LancamentoPagamentoExtras, \
-    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros, Estorno_Pagamentos_2Art_Terc
+    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros, Estorno_Pagamentos_2Art_Terc, \
+    Arq_Update_Cad_Frete
 from apps.plan_controle_fat_2art_terc_app.uteis import Uteis
 from apps.usuario_app.models import Usuario, Proj_Usu
+from proj_portal_operacional import settings
 from proj_portal_operacional.settings import BASE_DIR
 
 
@@ -2216,3 +2219,68 @@ class Pdf_Rel_Acres_Desc_Pagamento_Terc(View):
         }
 
         return Render.render('plan_controle_fat_2art_terc_app/rel_pdf_acresc_desc_pagamento_2art_terc.html', params, 'myfile')
+
+
+class Frm_Upload_Layout_Cad_Frete_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Layout_Atualizacao_Fretes_Plan_Controle_Pag_Terc.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+    def post(self, request):
+        file_update_fretes_frm = request.FILES['file_update_fretes']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%d/%m/%Y')
+        hota_atual = data_hora_atual.strftime('%H:%M:%S')
+        caminho_arq_importado = ('docs/fat_terceiros_update_fretes/' + obj_usu.login_usu.replace('.', '_') + '_' +
+                                 str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' +
+                                 str(hota_atual).replace(':', '_') + '.xlsx')
+
+        obj_arq_update_cad_frete = Arq_Update_Cad_Frete(
+            tipo_update = 'A',
+            arq_update = caminho_arq_importado,
+            cod_usu = obj_usu
+        ).save()
+        fs = FileSystemStorage()
+        filename = fs.save(caminho_arq_importado, file_update_fretes_frm)
+        upload_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
+        df_conteudo_arq = pd.read_excel(upload_file_url)
+        df_conteudo_arq.rename(columns=lambda x : str(x).strip(), inplace=True)
+        df_conteudo_arq.reset_index()
+        lista_cod_frete = df_conteudo_arq['cod_cad_frete_spot'].unique().tolist()
+        lista_obj_terc_financ_pago = (Registro2ArtTerceirosFinanceiro
+                                      .objects
+                                      .filter(cod_cad_frete_spot__in=lista_cod_frete,
+                                              status_financeiro_2art_terc_financ='P'))
+        msg = ''
+        if len(lista_obj_terc_financ_pago) == 0:
+            for index, row in df_conteudo_arq.iterrows():
+                cod_frete = df_conteudo_arq.loc[index, 'cod_cad_frete_spot']
+                obj_frete = CadFreteSpot.objects.get(pk=cod_frete)
+                obj_frete.qtd_min = int(df_conteudo_arq.loc[index, 'qtd_min'])
+                obj_frete.val_frete_carreteiro_min = float(df_conteudo_arq.loc[index, 'val_frete_carreteiro_min'])
+                obj_frete.val_descarga_min = float(df_conteudo_arq.loc[index, 'val_descarga_min'])
+                obj_frete.val_pedagio_min = float(df_conteudo_arq.loc[index, 'val_pedagio_min'])
+                obj_frete.val_cprb_min = float(df_conteudo_arq.loc[index, 'val_cprb_min'])
+                obj_frete.val_lucro_min = float(df_conteudo_arq.loc[index, 'val_lucro_min'])
+                obj_frete.qtd_max = int(df_conteudo_arq.loc[index, 'qtd_max'])
+                obj_frete.val_frete_carreteiro_max = float(df_conteudo_arq.loc[index, 'val_frete_carreteiro_max'])
+                obj_frete.val_descarga_max = float(df_conteudo_arq.loc[index, 'val_descarga_max'])
+                obj_frete.val_pedagio_max = float(df_conteudo_arq.loc[index, 'val_pedagio_max'])
+                obj_frete.val_cprb_max = float(df_conteudo_arq.loc[index, 'val_cprb_max'])
+                obj_frete.val_lucro_max = float(df_conteudo_arq.loc[index, 'val_lucro_max'])
+                obj_frete.save()
+                msg = 'Fretes atualizados!'
+        else:
+            msg = 'Atualização abortada. Há fretes informados que possui mapas pagos. Verifique!'
+
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
