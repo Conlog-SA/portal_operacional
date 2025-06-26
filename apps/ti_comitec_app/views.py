@@ -21,7 +21,7 @@ class Frm_Cad_Ideias_View(View):
 
         lista_usu_owners = Usuario.objects.filter(status_usu='A',tipo_colab__in=['L', 'H', 'M'])
         lista_usu_heads = Usuario.objects.filter(status_usu='A', tipo_colab='H')
-        lista_usu_masters = Usuario.objects.filter(status_usu='A', tipo_colab='M')
+        lista_usu_masters = Usuario.objects.filter(status_usu='A', tipo_colab__in=['H', 'M'])
         lista_atividades = atv.objects.all()
         lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
 
