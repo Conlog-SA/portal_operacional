@@ -279,7 +279,10 @@ $(document).on('click','button', function(){
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[1] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[0];
         $("#textFieldIniVigenciaCadFreteSpot").val(let_data_ini);
+
         $("#textFieldFimVigenciaCadFreteSpot").val(let_data_fim);
+        $("#textFieldFimVigenciaCadFreteSpot").prop("readonly", listaDados[varIndiceListaDadosCadFreteSpot][28] );
+
         $("#listTipoPessoaCadFreteSpot").val(listaDados[varIndiceListaDadosCadFreteSpot][21]);
         $("#listTipoPessoaCadFreteSpot").selectpicker('refresh');
         $("#listTipoEntrega").val(listaDados[varIndiceListaDadosCadFreteSpot][22]);
@@ -502,7 +505,8 @@ function povoa_tab_fretes_terc(){
                     varDataStringFim,
                     varButtonEditarCaddFreteSpot,
                     varButtonExcluirCadFreteSpot,
-                    data.registros_cad_frete_terc[i].cod_cad_frete_spot
+                    data.registros_cad_frete_terc[i].cod_cad_frete_spot,
+                    data.registros_cad_frete_terc[i].campo_readonly,
 
                 ];
                 listaDados.push(registro);

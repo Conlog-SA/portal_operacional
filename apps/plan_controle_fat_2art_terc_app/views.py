@@ -587,38 +587,49 @@ class Form_Cad_Placa_2Art_Terc_View(View):
         return render(request, 'plan_controle_fat_2art_terc_app/form_cad_placas_fat_2art_terc.html', contexto)
 
     def post(self, request):
-        id_benef = request.POST['id_benef']
-        placa = request.POST['placa']
-        perfil_veic = request.POST['perfil_veic']
-        inicio_vigencia = request.POST['inicio_vig']
-        fim_vigencia = request.POST['fim_vig']
-        cod_proj = request.POST['cod_proj']
+        tipo_transacao_frm = request.POST['tipo_transacao']
 
-        projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
-        obj_beneficiario = BeneficiarioTerceiro.objects.filter(cod_benef_terc=id_benef).first()
-        handle_benner_placa = ConexaoBancoBenner().retorna_dados_placa_benef_a_sincronizar(projeto.handle_benner,
-                                                                                           placa,
-                                                                                           '')[0].handle_placa
-        obj_cad_placa_pesq = CadastroPlacaTerceiro.objects.filter(
-            Q(data_ini_vigencia__range=[inicio_vigencia, fim_vigencia]) | Q(data_fim_vigencia__range=[inicio_vigencia, fim_vigencia]),
-            placa_cad_placa_terc=placa, cod_projeto=projeto, cod_benef_terc=obj_beneficiario,
-            perfil_veiculo_cad_placa_terc=perfil_veic,
-        ).first()
         msg = ''
-        if obj_cad_placa_pesq == None:
-            reg_cad_placa_terc = CadastroPlacaTerceiro(
-                placa_cad_placa_terc=placa,
-                cod_benef_terc=obj_beneficiario,
+        if tipo_transacao_frm == 'novo':
+            id_benef = request.POST['id_benef']
+            placa = request.POST['placa']
+            perfil_veic = request.POST['perfil_veic']
+            inicio_vigencia = request.POST['inicio_vig']
+            fim_vigencia = request.POST['fim_vig']
+            cod_proj = request.POST['cod_proj']
+
+            projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
+            obj_beneficiario = BeneficiarioTerceiro.objects.filter(cod_benef_terc=id_benef).first()
+            handle_benner_placa = ConexaoBancoBenner().retorna_dados_placa_benef_a_sincronizar(projeto.handle_benner,
+                                                                                               placa,
+                                                                                               '')[0].handle_placa
+            obj_cad_placa_pesq = CadastroPlacaTerceiro.objects.filter(
+                Q(data_ini_vigencia__range=[inicio_vigencia, fim_vigencia]) | Q(data_fim_vigencia__range=[inicio_vigencia, fim_vigencia]),
+                placa_cad_placa_terc=placa, cod_projeto=projeto, cod_benef_terc=obj_beneficiario,
                 perfil_veiculo_cad_placa_terc=perfil_veic,
-                cod_projeto=projeto,
-                handle_benner=handle_benner_placa,
-                data_ini_vigencia=datetime.strptime(inicio_vigencia, '%Y-%m-%d'),
-                data_fim_vigencia=datetime.strptime(fim_vigencia, '%Y-%m-%d')
-            )
-            reg_cad_placa_terc.save()
-            msg = 'Placa ' + placa + ', cadastrada com sucesso!'
-        else:
-            msg = 'Já possui a placa ' + placa + ', cadastrada nesta mesma vigência. Verifique!'
+            ).first()
+            if obj_cad_placa_pesq == None:
+                reg_cad_placa_terc = CadastroPlacaTerceiro(
+                    placa_cad_placa_terc=placa,
+                    cod_benef_terc=obj_beneficiario,
+                    perfil_veiculo_cad_placa_terc=perfil_veic,
+                    cod_projeto=projeto,
+                    handle_benner=handle_benner_placa,
+                    data_ini_vigencia=datetime.strptime(inicio_vigencia, '%Y-%m-%d'),
+                    data_fim_vigencia=datetime.strptime(fim_vigencia, '%Y-%m-%d')
+                )
+                reg_cad_placa_terc.save()
+                msg = 'Placa ' + placa + ', cadastrada com sucesso!'
+            else:
+                msg = 'Já possui a placa ' + placa + ', cadastrada nesta mesma vigência. Verifique!'
+        elif tipo_transacao_frm == 'editar':
+            cod_cad_placa_frm = request.POST['cod_cad_placa']
+            dt_fim_vigencia_placa_frm = request.POST['dt_fim_vigencia_placa']
+            obj_plca = CadastroPlacaTerceiro.objects.get(pk=cod_cad_placa_frm)
+            obj_plca.data_fim_vigencia = dt_fim_vigencia_placa_frm
+            obj_plca.save()
+            msg = 'Placa editada com sucesso'
+
 
         data = dict()
         data = {
@@ -638,15 +649,23 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
         periodo_vigencia = request.GET['periodo_vig']
         mes_vigencia = periodo_vigencia.split("-")[1]
         ano_vigencia = periodo_vigencia.split("-")[0]
+        data_vigencia = ano_vigencia + '-' + mes_vigencia + "-01"
 
         projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
         registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(
             cod_projeto=projeto).extra(
+            where=[f" '{data_vigencia}' BETWEEN data_ini_vigencia AND data_fim_vigencia"])
+
+        '''registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(
+            cod_projeto=projeto).extra(
             where=[
                 " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
-                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
+                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])'''
         tab_form_cad_placa_terc = []
         for reg in registros_cad_placa_terc:
+            campo_readonly = ''
+            if reg.data_fim_vigencia < datetime.now().date():
+                campo_readonly = 'readonly'
             reg_tab_cad_placa = Tab_Cad_Placa_Terc_Financ(
                 id_cad_placa_terc=reg.cod_cad_placa_terc,
                 placa=reg.placa_cad_placa_terc,
@@ -657,7 +676,8 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
                 tipo_pessoa_benef=reg.cod_benef_terc.tipo_pessoa_benef_terc,
                 handle_benef=reg.cod_benef_terc.handle_benner,
                 data_ini=reg.data_ini_vigencia,
-                data_fim=reg.data_fim_vigencia
+                data_fim=reg.data_fim_vigencia,
+                campo_readonly = campo_readonly
             )
             tab_form_cad_placa_terc.append(reg_tab_cad_placa.__dict__)
 
@@ -1012,22 +1032,20 @@ class Tab_Cad_Fretes_Terc_View(View):
         periodo_vigencia = request.GET['periodo_vig']
         mes_vigencia = periodo_vigencia.split("-")[1]
         ano_vigencia = periodo_vigencia.split("-")[0]
+        data_vigencia = ano_vigencia + '-' + mes_vigencia + '-01'
 
         projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
         registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
             cod_projeto=projeto).extra(
-            where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
-                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
-                                        .values())
+            where=[f" '{data_vigencia}' BETWEEN data_ini_vigencia AND data_fim_vigencia "]).values())
 
-        '''registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
-            cod_projeto=projeto).extra(
-            where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " OR MONTH(data_fim_vigencia) = " + mes_vigencia + " ) " +
-                " AND (YEAR(data_ini_vigencia) = " + ano_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
-                                        .values())
-        '''
+        for cad_frete in registros_cad_frete_terc:
+            campo_readonly = ''
+            if cad_frete['data_fim_vigencia'] < datetime.now().date():
+                campo_readonly = 'readonly'
+            cad_frete['campo_readonly'] = campo_readonly
+
+
 
         data = dict()
         data = {

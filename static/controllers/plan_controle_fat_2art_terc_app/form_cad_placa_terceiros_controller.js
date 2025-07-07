@@ -85,6 +85,7 @@ $(document).on('click','button', function(){
             type: 'POST',
             url:"/plan_controle_fat_2art_terc_app/salva_registro_cad_placa_terceiros",
             data: {
+                'tipo_transacao':   'novo',
                 'id_benef'      :   varIdBeneficiario,
                 'placa'         :   varPlaca,
                 'perfil_veic'   :   varPerfilVeiculo,
@@ -191,7 +192,8 @@ $(document).on('click','button', function(){
         });
 
 
-    } else if ( nomeDoButton == "btnReplicaCadPlacaTerceiros") {
+    }
+    else if ( nomeDoButton == "btnReplicaCadPlacaTerceiros") {
         let let_loader_cad_placa = document.getElementById("loader_cad_placa");
         $('#textFieldIniVigenciaCadTercReplic').val("");
         $('#textFieldFimVigenciaCadTercReplic').val("");
@@ -301,7 +303,8 @@ $(document).on('click','button', function(){
             });
         }
 
-    } else if (nomeDoButton == "btnCadBeneficiarioTerceiros") {
+    }
+    else if (nomeDoButton == "btnCadBeneficiarioTerceiros") {
         var var_cod_projeto_pesq_placas = $("#listProjetosPesqCadPlacaTerc").val();
         if (var_cod_projeto_pesq_placas == '') {
             $.gritter.add({
@@ -385,7 +388,8 @@ $(document).on('click','button', function(){
         }
 
 
-    } else if (nomeDoButton == "btn_ativa_benef_terc" || nomeDoButton == "btn_desativa_benef_terc") {
+    }
+    else if (nomeDoButton == "btn_ativa_benef_terc" || nomeDoButton == "btn_desativa_benef_terc") {
          var varCodRegistroCadBenefTerc = valButton;
 
         $.ajax({
@@ -650,6 +654,47 @@ $(document).on('change', '#listProjetosCadPlacaTerc', function(){
     atualiza_comp_beneficiarios_benner_cad_placa(var_cod_projeto);
 });
 
+$(document).on('change', 'input[name="dt_fim_vigencia_frm_cad_placa"]', function(){
+    let let_loader_cad_placa = document.getElementById("loader_cad_placa");
+    let_loader_cad_placa.style.display = "flex";
+
+    let let_cod_cad_placa = $(this).attr('id').split("_")[6];
+    let let_dt_fim_vigencia_placa = $(this).val();
+
+    $.ajax({
+        type: 'POST',
+        url:"/plan_controle_fat_2art_terc_app/salva_registro_cad_placa_terceiros",
+        data : {
+            'tipo_transacao':   'editar',
+            'cod_cad_placa': let_cod_cad_placa,
+            'dt_fim_vigencia_placa': let_dt_fim_vigencia_placa
+        },
+        success: function(dados){
+            $.gritter.add({
+                title: 'Atenção!',
+                text: dados.msg,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            let_loader_cad_placa.style.display = "none";
+
+        },
+        error: function (request, status, error) {
+            let_loader_cad_placa.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: error,
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+
+});
+
 
 function povoa_tab_cad_placas_terc(){
     var varCodProjeto = $("#listProjetosPesqCadPlacaTerc").val();
@@ -668,7 +713,13 @@ function povoa_tab_cad_placas_terc(){
             var img =  "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
             for (var i = 0; i < data.registros_cad_placa_terc.length; i++) {
                 var varDataStringIni = data.registros_cad_placa_terc[i].data_ini.split("-")[2]+"/"+data.registros_cad_placa_terc[i].data_ini.split("-")[1]+"/"+data.registros_cad_placa_terc[i].data_ini.split("-")[0];
-                var varDataStringFim = data.registros_cad_placa_terc[i].data_fim.split("-")[2]+"/"+data.registros_cad_placa_terc[i].data_fim.split("-")[1]+"/"+data.registros_cad_placa_terc[i].data_fim.split("-")[0];
+                var varDataStringFim = `
+                    <input type="date" id="dt_fim_vigencia_frm_cad_placa_${data.registros_cad_placa_terc[i].id_cad_placa_terc}"
+                    name="dt_fim_vigencia_frm_cad_placa"
+                    value="${data.registros_cad_placa_terc[i].data_fim}"
+                    ${data.registros_cad_placa_terc[i].campo_readonly}/>
+                `;
+                /* data.registros_cad_placa_terc[i].data_fim.split("-")[2]+"/"+data.registros_cad_placa_terc[i].data_fim.split("-")[1]+"/"+data.registros_cad_placa_terc[i].data_fim.split("-")[0]; */
                 var varButtonExcluirCadPlacaTerc = `
                     <button type="button" class="btn btn-rounded btn-space"
                     id="btnExcluirCadPlacaTerc_${data.registros_cad_placa_terc[i].id_cad_placa_terc}"

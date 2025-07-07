@@ -215,7 +215,7 @@ class Estorno_Pagamentos_2Art_Terc(models.Model):
 
 class Tab_Cad_Placa_Terc_Financ():
     def __init__(self, id_cad_placa_terc, placa, perfil_veic, handle_placa, nome_beneficiario, doc_benef, tipo_pessoa_benef,
-                 handle_benef, data_ini, data_fim, ):
+                 handle_benef, data_ini, data_fim, campo_readonly):
         self.id_cad_placa_terc = id_cad_placa_terc
         self.placa = placa
         self.perfil_veic = perfil_veic
@@ -226,6 +226,7 @@ class Tab_Cad_Placa_Terc_Financ():
         self.handle_benef = handle_benef
         self.data_ini = data_ini
         self.data_fim = data_fim
+        self.campo_readonly = campo_readonly
 
 
 
