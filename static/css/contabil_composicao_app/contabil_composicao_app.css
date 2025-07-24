@@ -272,5 +272,6 @@
 }
 
 .filter-option {
-    width: 222.38px !important;
+    /*width: 222.38px !important; */
+    width: 100% !important;
 }

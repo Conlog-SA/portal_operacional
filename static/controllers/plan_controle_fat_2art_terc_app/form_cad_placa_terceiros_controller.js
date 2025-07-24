@@ -82,38 +82,38 @@ $(document).on('click','button', function(){
             });
         } else {
             $.ajax({
-            type: 'POST',
-            url:"/plan_controle_fat_2art_terc_app/salva_registro_cad_placa_terceiros",
-            data: {
-                'tipo_transacao':   'novo',
-                'id_benef'      :   varIdBeneficiario,
-                'placa'         :   varPlaca,
-                'perfil_veic'   :   varPerfilVeiculo,
-                'inicio_vig'    :   varDataInicioVigencia,
-                'fim_vig'       :   varDataFimVigencia,
-                'cod_proj'      :   varCodProjeto
+                type: 'POST',
+                url:"/plan_controle_fat_2art_terc_app/salva_registro_cad_placa_terceiros",
+                data: {
+                    'tipo_transacao':   'novo',
+                    'id_benef'      :   varIdBeneficiario,
+                    'placa'         :   varPlaca,
+                    'perfil_veic'   :   varPerfilVeiculo,
+                    'inicio_vig'    :   varDataInicioVigencia,
+                    'fim_vig'       :   varDataFimVigencia,
+                    'cod_proj'      :   varCodProjeto
 
-              },
-            success: function(dados){
-                $("#modalCadPlacaTerceiros").hide();
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: dados.msg,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            },
-            error: function (request, status, error) {
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: error,
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-        });
+                  },
+                success: function(dados){
+                    $("#modalCadPlacaTerceiros").hide();
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: dados.msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                },
+                error: function (request, status, error) {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                }
+            });
         }
     
     } else if (nomeDoButton == "btnPesqCadPlacaTerceiros") {       
@@ -258,11 +258,27 @@ $(document).on('click','button', function(){
         var varCodProjeto = $("#listProjetosPesqCadPlacaTerc").val();
         var varDataVigencia = $("#cb_vigencias_cad_placa_terc").val();
         var varDataIniVigencia = $("#textFieldIniVigenciaCadTercReplic").val();        
-        var varDataFimVigencia = $("#textFieldFimVigenciaCadTercReplic").val();        
-        if ( varDataVigencia == '0' ) {
+        var varDataFimVigencia = $("#textFieldFimVigenciaCadTercReplic").val();
+
+        let let_placas_selecionadas = $('input[name="ck_placa_para_replicacao"]:checked');
+        let let_cod_reg_placa = [];
+        let_placas_selecionadas.each(function(){
+            let_cod_reg_placa.push($(this).attr('id').split('_')[4]);
+        });
+
+        if( varDataVigencia == '' && let_cod_reg_placa.toString() == '') {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: "Informe vigência a ser replicada ou seleciona as placas a qual queira replicar",
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+        } else if ( varDataIniVigencia == '' || varDataFimVigencia == '' ) {
              $.gritter.add({
                 title: 'Atenção!',
-                text: "Informe a vigência de origem!",
+                text: "Informe o intervalo datas para a nova vigência!",
                 image: '/static/icons/triangle-exclamation-solid.svg',
                 sticky: false,
                 time: '',
@@ -272,12 +288,14 @@ $(document).on('click','button', function(){
                 type: 'POST',
                 url:"/plan_controle_fat_2art_terc_app/replica_registro_cad_placa_terceiros",
                 data: {
-                    'cod_proj'          :   varCodProjeto,
-                    'data_vigencia'     :   varDataVigencia,
-                    'data_ini_vigencia' :   varDataIniVigencia,
-                    'data_fim_vigencia' :   varDataFimVigencia
+                    'cod_proj'              :   varCodProjeto,
+                    'data_vigencia'         :   varDataVigencia,
+                    'data_ini_vigencia'     :   varDataIniVigencia,
+                    'data_fim_vigencia'     :   varDataFimVigencia,
+                    'placas_selecionadas'   :   let_cod_reg_placa.toString()
                 },
                 success: function(dados){
+
                     $("#modalReplicaCadPlacaTerc").hide();
                     $.gritter.add({
                         title: 'Atenção!',
@@ -302,6 +320,7 @@ $(document).on('click','button', function(){
                 }
             });
         }
+
 
     }
     else if (nomeDoButton == "btnCadBeneficiarioTerceiros") {
@@ -654,6 +673,8 @@ $(document).on('change', '#listProjetosCadPlacaTerc', function(){
     atualiza_comp_beneficiarios_benner_cad_placa(var_cod_projeto);
 });
 
+
+
 $(document).on('change', 'input[name="dt_fim_vigencia_frm_cad_placa"]', function(){
     let let_loader_cad_placa = document.getElementById("loader_cad_placa");
     let_loader_cad_placa.style.display = "flex";
@@ -710,8 +731,11 @@ function povoa_tab_cad_placas_terc(){
           },
         success: function(data){
             listaDados = [];
-            var img =  "<i class='fa-solid fa-caret-right' style='color: #f46424;'></i>";
+
             for (var i = 0; i < data.registros_cad_placa_terc.length; i++) {
+                var check_placa =  `
+                    <input type="checkbox" id="ck_placa_para_replicacao_${data.registros_cad_placa_terc[i].id_cad_placa_terc}" name="ck_placa_para_replicacao" >
+                `;
                 var varDataStringIni = data.registros_cad_placa_terc[i].data_ini.split("-")[2]+"/"+data.registros_cad_placa_terc[i].data_ini.split("-")[1]+"/"+data.registros_cad_placa_terc[i].data_ini.split("-")[0];
                 var varDataStringFim = `
                     <input type="date" id="dt_fim_vigencia_frm_cad_placa_${data.registros_cad_placa_terc[i].id_cad_placa_terc}"
@@ -730,7 +754,7 @@ function povoa_tab_cad_placas_terc(){
                 `;
 
                 var registro = [
-                    img,
+                    check_placa,
                     data.registros_cad_placa_terc[i].placa,
                     data.registros_cad_placa_terc[i].perfil_veic,
                     data.registros_cad_placa_terc[i].handle_placa,
@@ -749,12 +773,12 @@ function povoa_tab_cad_placas_terc(){
                 "bJQueryUI": true,
                 "destroy": true,
                 "fixedHeader": true,
-                "scrollY": "770px",
+                "scrollY": "630px",
                 "scrollX": true,
                 "scrollCollapse": true,
-                "paging": true,
+                "paging": false,
                 "searching": true,
-                "pageLength": 10,
+                //"pageLength": 10,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'

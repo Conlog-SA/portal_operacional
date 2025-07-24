@@ -1269,11 +1269,11 @@ $(document).on('click','button', function(){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": false,//"770px",
+                    "scrollY": "570px",
                     "scrollX": true,
                     "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
+                    "paging": true,
+                    "pageLength": 7,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'

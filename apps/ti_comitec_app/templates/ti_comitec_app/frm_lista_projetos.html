@@ -70,10 +70,13 @@
 
 
                 <div class="d-flex mt-3 justify-content-between align-items-between w-100">
-                    <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
-                        &nbsp;&nbsp;
+                    <div class="d-flex flex-column align-items-center w-100" style="padding-left: 0.25rem;">
+                        <label for="chk_pesq_proj_concluidos">
+                            Somente concluídos ?</label>
+                       <input type="checkbox" class="checkbox" name="chk_pesq_proj_concluidos"
+                                id="chk_pesq_proj_concluidos"/>
                     </div>
-                    <!--
+
                     <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
                         <select class="selectpicker form-control" id="cd_pesq_proj_por_area"
                                 name="cd_pesq_proj_por_area"
@@ -105,8 +108,8 @@
                                 data-live-search="true" title="Usuários">
                         </select>
                     </div>
-                    -->
-            </div>
+
+                </div>
 
                 <div class="d-flex justify-content-between align-items-between w-100">
                     <div class="d-flex flex-wrap w-100">
@@ -142,7 +145,7 @@
                                              style="padding: .5rem;">
                                             <i class="fa-solid fa-gears" style="color: #DCDCDC;!important; font-size: 40px;"></i>
                                         </div>
-                                        <div class="d-flex justify-content-center align-items-center w-75"
+                                        <div class="d-flex justify-content-center align-items-center w-75" id="dv_desc_proj"
                                              style="padding: .5rem;box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);
                                                 height: 65px; font-size: 12px;color: white;font-weight: 400; border-radius: .1rem">
                                             {{proj.resumo_ideia}}
@@ -150,7 +153,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center w-100">
-                                        <div class="d-flex justify-content-center align-items-center w-25"
+                                        <div class="d-flex justify-content-center align-items-center w-25" id="dv_status_proj"
                                              style="padding: .5rem;">
                                             {{proj.status_proj}}
                                         </div>
@@ -180,7 +183,7 @@
                                         <div class="d-flex flex-column justify-content-start align-items-start w-75"
                                              style="padding: .5rem;">
                                             <span>{{proj.login_owner}}</span>
-                                            <span>{{proj.desc_area}}</span>
+                                            <span id="sp_desc_area_proj">{{proj.desc_area}}</span>
                                             <span>(Owner)</span>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center w-25">
@@ -251,7 +254,7 @@
                                                      style="padding: .5rem; background-image: url({{ usu.foto_user }});">
 
                                                 </div>
-                                                <span>{{usu.login_usu}}</span>
+                                                <span id="sp_usuarios_envolvidos_proj">{{usu.login_usu}}</span>
                                             </div>
                                         {% endfor %}
                                     </div>

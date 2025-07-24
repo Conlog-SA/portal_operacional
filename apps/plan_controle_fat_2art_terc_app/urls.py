@@ -95,7 +95,11 @@ urlpatterns = [
     path('upload_layout_file_update_frete_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
          name='upload_layout_file_update_frete_by_id'),
     path('carrega_update_fretes_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
-         name='carrega_update_fretes_by_id')
+         name='carrega_update_fretes_by_id'),
+    path('lancamentos_pag_extra_terc', views.Frm_Lanc_Pag_Extras_View.as_view(),
+         name='lancamentos_pag_extra_terc'),
+    path('confirma_status_lanc_pag_extra', views.Frm_Lanc_Pag_Extras_View.as_view(),
+         name='confirma_status_lanc_pag_extra'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
