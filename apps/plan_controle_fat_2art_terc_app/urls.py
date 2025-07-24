@@ -100,6 +100,10 @@ urlpatterns = [
          name='lancamentos_pag_extra_terc'),
     path('confirma_status_lanc_pag_extra', views.Frm_Lanc_Pag_Extras_View.as_view(),
          name='confirma_status_lanc_pag_extra'),
+    path('upload_layout_file_imp_pag_extra', views.Frm_Layout_Arq_Pag_Extra_View.as_view(),
+         name='upload_layout_file_imp_pag_extra'),
+    path('upload_layout_file_imp_acresc_desc', views.Frm_Layout_Arq_Acresc_Desc_View.as_view(),
+         name='upload_layout_file_imp_acresc_desc')
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

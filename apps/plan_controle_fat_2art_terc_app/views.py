@@ -1522,7 +1522,7 @@ class ImportaArquivosFatTer():
                 else:
                     row_lanc = LinhaExcelArquivoLanAcresDesc(
                         cod_lanc_banco=None,
-                        serial_proj=plan.row_values(i)[0],
+                        serial_proj=plan.row_values(i)[0].split(' - ')[0],
                         desc_tipo_lanc=plan.row_values(i)[1],
                         desc_ocorrencia_lan='',
                         mapa_ocorrencia=int(plan.row_values(i)[2]),
@@ -2506,4 +2506,14 @@ class Frm_Lanc_Pag_Extras_View(View):
 
 
 
+
+class Frm_Layout_Arq_Pag_Extra_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Lanc_Pagamentos_Extra_Oficial_v1.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+class Frm_Layout_Arq_Acresc_Desc_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Lan_Acres_Desc_Oficial_v1.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
 
