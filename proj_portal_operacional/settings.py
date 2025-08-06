@@ -18,7 +18,7 @@ load_dotenv()
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 VERSAO_PORTAL = '1.3'
-VERSAO_SAFETY = '1.7'
+VERSAO_SAFETY = '1.9'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -97,7 +97,6 @@ INSTALLED_APPS = [
     'apps.safety_gso_app',
     'apps.frota_custos_placa_app',
     'apps.ti_painel_processos_automaticos_app',
-    'apps.freightech_remunerado_qlp_app',
     'apps.contratos_frete_deep_app',
     'apps.nps_ti_app',
     'apps.gente_gestao_comunicado_admitidos_app',
@@ -105,6 +104,11 @@ INSTALLED_APPS = [
     'apps.gente_gestao_entrevista_desligamento_app',
     'apps.gente_gestao_comun_encarreiramentos_app',
     'apps.utilitarios_assinatura_email_app',
+    'apps.safety_gab_empilhadeira_app',
+    'apps.dp_quadro_vagas_app',
+    'apps.safety_predial_app',
+    'apps.safety_pci_app',
+    'apps.freightech_remunerado_qlp_app',
 ]
 
 MIDDLEWARE = [
