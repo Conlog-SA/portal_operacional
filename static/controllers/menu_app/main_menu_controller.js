@@ -67,7 +67,20 @@ $(document).on('click', 'a', function(){
                 $("#main_menu").html(dados);
 
                 $('.selectpicker').selectpicker();
-                $('.class_mask_campo_val').mask('###0,00', {reverse: true});
+                $('.class_mask_campo_val').mask('###0,00', {
+                    reverse: true
+                });
+
+                $('.class_mask_campo_val').on('keydown', function(e) {
+                    if(e.key === '-' || e.keyCode === 189){
+                        e.preventDefault();
+                        if($(this).val().indexOf('-') === -1){
+                            $(this).val('-' + $(this).val());
+                        } else {
+                            $(this).val($(this).val().replace('-', ''));
+                        }
+                    }
+                });
 
                 $(".class_mask_negative_number").inputmask({
                     alias: 'decimal',

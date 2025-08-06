@@ -18,7 +18,7 @@ class Envio_Email():
         server_email.login(self.login, self.senha)
         email_msg = MIMEMultipart()
         email_msg['FROM'] = self.login #'desenvolvimento@conlogsa.com.br'
-        email_msg['CCO'] = 'desenvolvimento@conlogsa.com.br'
+        email_msg['CCO'] = '; '.join(["danilo.costa@conlogsa.com.br", "kaian.almeida@conlogsa.com.br", "maria.carvalho@conlogsa.com.br"])
         email_msg['Subject'] = "Solicitação Acesso Portal Operacional"
 
         corpo_email = f'''
@@ -44,7 +44,7 @@ class Envio_Email():
 
         email_msg.attach(MIMEText(corpo_email, 'html'))
 
-        server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
 
 
@@ -54,7 +54,7 @@ class Envio_Email():
         server_email.login(self.login, self.senha)
         email_msg = MIMEMultipart()
         email_msg['FROM'] = self.login #'desenvolvimento@conlogsa.com.br'
-        email_msg['CCO'] = 'desenvolvimento@conlogsa.com.br'
+        email_msg['CCO'] = '; '.join(["danilo.costa@conlogsa.com.br", "kaian.almeida@conlogsa.com.br", "maria.carvalho@conlogsa.com.br"])
         email_msg['Subject'] = "Solicitação Acesso Portal Operacional"
 
         corpo_email = f'''
@@ -83,6 +83,6 @@ class Envio_Email():
 
         email_msg.attach(MIMEText(corpo_email, 'html'))
 
-        server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
 

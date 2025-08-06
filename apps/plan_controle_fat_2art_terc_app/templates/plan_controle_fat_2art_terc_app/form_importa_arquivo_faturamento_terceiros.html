@@ -47,12 +47,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column w-100">
-                    &nbsp;&nbsp;
-                </div>
-                <div class="d-flex flex-column w-100">
-                    &nbsp;&nbsp;
-                </div>
+
                 <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                     <button type="button" name="btnImportaArquivoAcresDescFatTerc"
                             id="btnImportaArquivoAcresDescFatTerc"
@@ -70,13 +65,193 @@
                         Importar Pagamentos Extras
                     </button>
                 </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <a href="/plan_controle_fat_2art_terc_app/upload_layout_file_imp_pag_extra"
+                       name="a_layout_arq_pag_extra_terc" id="a_layout_arq_pag_extra_terc"
+                            class="btn btn-primary btn-rounded botaoPrincipal" title="Baixar arquivo layout de importação de pagamento extras">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Layout Pag. Extra
+                    </a>
+                </div>
+
+                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                    <a href="/plan_controle_fat_2art_terc_app/upload_layout_file_imp_acresc_desc"
+                       name="a_layout_arq_acresc_desc_pag_terc" id="a_layout_arq_acresc_desc_pag_terc"
+                            class="btn btn-primary btn-rounded botaoPrincipal" title="Baixar arquivo layout de acréscimos e descontos">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Layout Acrésc./Desc.
+                    </a>
+                </div>
             </div>
 
-
-
         </form>
-        <div id="divConteudoImportadoFatTerc" class="form-group  cl_div_tabela_principal_pagina w-100">
 
+
+        <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="form-group cl_div_abas_paginas w-100" >
+                <div class="col-md-12 w-100 h-100">
+                    <nav>
+                        <div class="nav nav-tabs" id="myTab" role="tablist">
+                            <button class="nav-link active" id="a_tab_conteudo_imp_fat_terc" data-bs-toggle="tab"
+                                    data-bs-target="#div_tab_conteudo_imp_fat_terc" type="button" role="tab"
+                                    aria-controls="div_tab_conteudo_imp_fat_terc" aria-selected="true">
+                                <i class="fa-regular fa-lightbulb" style="color: #f46424;"></i>
+                                Conteúdo importado
+                            </button>
+                            {% if obj_usuario_logado.corporativo == 'S' %}
+                            <button class="nav-link" id="a_tab_pag_extras_pendentes_fat_terc" data-bs-toggle="tab"
+                                    data-bs-target="#div_tab_pag_extras_pendentes_fat_terc" type="button" role="tab"
+                                    aria-controls="div_tab_pag_extras_pendentes_fat_terc" aria-selected="false">
+                                <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                                Pagamentos Extras Pendentes Aprovação
+                            </button>
+                            {% endif %}
+                        </div>
+                    </nav>
+
+                    <div class="tab-content" style="border-radius:0 0 10px 10px;">
+                        <div class="tab-pane active" id="div_tab_conteudo_imp_fat_terc" name="div_tab_conteudo_imp_fat_terc"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_conteudo_imp_fat_terc">
+
+                            <div id="divConteudoImportadoFatTerc" class="mt-3 form-group  cl_div_tabela_principal_pagina w-100">
+                            </div>
+
+                        </div>
+
+                        {% if obj_usuario_logado.corporativo == 'S' %}
+                            <div class="tab-pane" id="div_tab_pag_extras_pendentes_fat_terc" role="tabpanel"
+                                 aria-labelledby="a_tab_pag_extras_pendentes_fat_terc">
+
+                                <form id="frm_lanc_pag_extras_pendentes" name="frm_lanc_pag_extras_pendentes"
+                                      class="d-flex flex-column align-items-center justify-content-between">
+
+                                    <div class="d-flex justify-content-between align-items-between w-100">
+                                        <div class="d-flex flex-column align-items-start" style="width: 20%; padding-left: 0.25rem;">
+                                            &nbsp;
+                                        </div>
+                                        <div class="d-flex flex-column align-items-start" style="width: 20%;padding-left: 0.25rem;">
+                                            <label for="dt_ref_pag_extra_terc">
+                                                Competência
+                                            </label>
+                                            <input type="month" class="form-control" name="dt_ref_pag_extra_terc"
+                                                   id="dt_ref_pag_extra_terc" autocomplete="off"/>
+                                        </div>
+                                        <div class="d-flex flex-column align-items-start" style="width: 40%; padding-left: 0.25rem;">
+                                        <label for="sl_filial_frm_imp_arq_pag_terc">
+                                            Filial
+                                        </label>
+                                        <select class="selectpicker form-control" id="sl_filial_frm_imp_arq_pag_terc"
+                                            name="sl_filial_frm_imp_arq_pag_terc"
+                                            data-live-search="true"
+                                            title="Selecione a filial">
+                                                <option value="0">Todas as filiais</option>
+                                            {% for f in lista_filiais %}
+                                                <option value="{{ f.cod_filial }}">{{f.nome_filial }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                        <div class="d-flex flex-column align-items-center" style="width:10%;padding-left: 0.25rem;">
+                                        <label for="chk_lanc_pag_extra_reprovados">
+                                            Reprovados ?</label>
+                                       <input type="checkbox" class="checkbox" name="chk_lanc_pag_extra_reprovados"
+                                                id="chk_lanc_pag_extra_reprovados"/>
+                                    </div>
+                                        <div class="d-flex flex-column align-items-center"
+                                             style="width: 10%; padding-left: 0.25rem; margin-top: 1.2rem;">
+                                            <button type="button" name="btn_pesq_lanc_pag_extra" id="btn_pesq_lanc_pag_extra"
+                                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                                                <i class="fa-solid fa-magnifying-glass"></i>
+                                                Pesquisar
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex mt-2 justify-content-between align-items-between w-100">
+                                    <div class="form-group  cl_div_tabela_principal_pagina w-100">
+                                        <table id="tab_pag_extras_pendentes_fat_terc"  class="display wrap w-100 cl_tab_principal_pagina">
+                                            <thead>
+                                                  <tr>
+                                                      <th scope="col"></th>
+                                                      <th scope="col">Filial</th>
+                                                      <th scope="col">CPF/CNPJ</th>
+                                                      <th scope="col">Beneficiário</th>
+                                                      <th scope="col">Pag. Referência</th>
+                                                      <th scope="col">R$ Total</th>
+                                                      <th scope="col">Detalhes</th>
+                                                      <th scope="col">Aprovar</th>
+                                                      <th scope="col">Reprovar</th>
+                                                  </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for lanc in lista_dic_lanc_pendentes_validado %}
+                                                    <tr>
+                                                        <td>
+                                                            <i class='fa-solid fa-caret-right' style='color: #f46424;'></i>
+                                                        </td>
+                                                        <td>
+                                                            {{lanc.nome_filial}}
+                                                        </td>
+                                                        <td>
+                                                            {{lanc.doc_benef}}
+                                                        </td>
+                                                        <td>
+                                                            {{lanc.nome_benef}}
+                                                        </td>
+                                                        <td>
+                                                            {{lanc.data_ref_pagamento|date:'m-Y'}}
+                                                        </td>
+                                                        <td>
+                                                            {{lanc.valor}}
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-rounded btn-space"
+                                                                    id="btn_detalhes_lanc_pag_extra_terc"
+                                                                    name="btn_detalhes_lanc_pag_extra_terc" value="{{lanc.cod_lanc_pag_extra}}"
+                                                                    title="Ver lançamentos">
+                                                                <i class="fa-solid fa-eye" style="color: #f46424;"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-rounded btn-space"
+                                                                    id="btn_aprova_lanc_pag_extra"
+                                                                    name="btn_abre_modal_status_lanc_pag_extra" value="{{lanc.cod_lanc_pag_extra}}/{{lanc.cod_benef}}"
+                                                                    title="Aprovar Pagamento">
+                                                                <i class="fa-solid fa-thumbs-up" style="color: #f46424;"></i>
+                                                            </button>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-rounded btn-space"
+                                                                    id="btn_reprova_lanc_pag_extra"
+                                                                    name="btn_abre_modal_status_lanc_pag_extra" value="{{lanc.cod_lanc_pag_extra}}/{{lanc.cod_benef}}"
+                                                                    title="Reprovar Pagamento">
+                                                                <i class="fa-solid fa-thumbs-down" style="color: #f46424;"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                {% endfor %}
+
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+                                </form>
+
+
+
+
+
+
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+            </div>
 
 
         </div>
@@ -86,3 +261,4 @@
 
 
 
+{% include 'plan_controle_fat_2art_terc_app/modais_frm_importa_arq_fat_terc.html' %}

@@ -488,7 +488,7 @@
                                 <div class="d-flex flex-column w-100" style="margin-top: 1.3rem;">
                                     <button type="button" name="btn_add_aval_usu_master_ideia_comitec"
                                           id="btn_add_aval_usu_master_ideia_comitec"
-                                            {% if obj_usuario_sessao.tipo_colab != 'M' %}
+                                            {% if obj_usuario_sessao.tipo_colab == 'L' %}
                                                     disabled
                                                 {% endif %}
                                           class="btn btn-primary btn-rounded botaoPrincipal cl_campo_master">

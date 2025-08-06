@@ -145,9 +145,18 @@ $(document).on('click','button', function(){
     else if (nomeDoButton == "btnCadFreteTerceiros") {
         $("#hiddenCodCadFreteSpot").val("");   
         $("#listProjetosCadFreteSpot").val($("#listProjetosPesqCadFreteTerc").val());
+        $("#listProjetosCadFreteSpot").prop("disabled", false);
+        $("#listProjetosCadFreteSpot").selectpicker('refresh');
+
         $("#listTipoPessoaCadFreteSpot").val("0");
+        $("#listTipoPessoaCadFreteSpot").selectpicker('refresh');
+
         $("#listTipoEntrega").val("0");
+        $("#listTipoEntrega").selectpicker('refresh');
+
         $("#listPerfilVeiculoCadFreteSpot").val("0");
+        $("#listPerfilVeiculoCadFreteSpot").selectpicker('refresh');
+
         $("#textFieldCodRegiao").val("");
         $("#textFieldDescRegiao").val("");
         $("#textFieldQtdMin").val("0");
@@ -179,7 +188,8 @@ $(document).on('click','button', function(){
         $("#hiddenCodCadFreteSpot").val('0');
         $("#modalCadFreteSpot").show();
 
-    } else if ( nomeDoButton == 'fechaModalCadFreteSpot') {
+    }
+    else if ( nomeDoButton == 'fechaModalCadFreteSpot') {
         $("#modalCadFreteSpot").hide();
     } else if (nomeDoButton == "btnSalvaRegCadFreteSpot") {  
         var varCodRegistroCadFreteSpot = $("#hiddenCodCadFreteSpot").val();   
@@ -254,11 +264,13 @@ $(document).on('click','button', function(){
                 });
             }
         });    
-    } else if (nomeDoButton == "btnEditaCadFreteSpot") {   
+    }
+    else if (nomeDoButton == "btnEditaCadFreteSpot") {
         var varIndiceListaDadosCadFreteSpot =  valButton;
 
         $('#hiddenCodCadFreteSpot').val(listaDados[varIndiceListaDadosCadFreteSpot][27]);
         $("#listProjetosCadFreteSpot").val($('#listProjetosPesqCadFreteTerc').val());
+        $("#listProjetosCadFreteSpot").prop("disabled", true);
         $("#listProjetosCadFreteSpot").selectpicker('refresh');
         let let_data_ini = listaDados[varIndiceListaDadosCadFreteSpot][23].split('/')[2] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][23].split('/')[1] + '-' +
@@ -267,7 +279,10 @@ $(document).on('click','button', function(){
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[1] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[0];
         $("#textFieldIniVigenciaCadFreteSpot").val(let_data_ini);
+
         $("#textFieldFimVigenciaCadFreteSpot").val(let_data_fim);
+        $("#textFieldFimVigenciaCadFreteSpot").prop("readonly", listaDados[varIndiceListaDadosCadFreteSpot][28] );
+
         $("#listTipoPessoaCadFreteSpot").val(listaDados[varIndiceListaDadosCadFreteSpot][21]);
         $("#listTipoPessoaCadFreteSpot").selectpicker('refresh');
         $("#listTipoEntrega").val(listaDados[varIndiceListaDadosCadFreteSpot][22]);
@@ -302,7 +317,8 @@ $(document).on('click','button', function(){
 
         $("#modalCadFreteSpot").show();         
 
-    } else if (nomeDoButton == "btnExcluirCadFreteSpot") {
+    }
+    else if (nomeDoButton == "btnExcluirCadFreteSpot") {
         let let_loader_cad_frete = document.getElementById("loader_cad_frete");
         let_loader_cad_frete.style.display = "flex";
         $.ajax({
@@ -344,7 +360,8 @@ $(document).on('click','button', function(){
         });
 
 
-    } else if ( nomeDoButton == "btnFechaModalExcluiCadFreteSpot") {
+    }
+    else if ( nomeDoButton == "btnFechaModalExcluiCadFreteSpot") {
         $("#modalExcluiCadFreteSpot").hide();
     } else if ( nomeDoButton == "btnExcluiRegCadFreteSpotSelecionado") {
 
@@ -378,6 +395,7 @@ $(document).on('click','button', function(){
         });
 
     }
+
 
 
 });    
@@ -442,6 +460,7 @@ function povoa_tab_fretes_terc(){
                 var varDataStringFim = data.registros_cad_frete_terc[i].data_fim_vigencia.split("-")[2]+
                     "/"+data.registros_cad_frete_terc[i].data_fim_vigencia.split("-")[1]+
                     "/"+data.registros_cad_frete_terc[i].data_fim_vigencia.split("-")[0];
+
                 var varButtonEditarCaddFreteSpot =
                     "<button type='button' class='btn btn-rounded btn-space' id='btnEditaCadFreteSpot"+
                     i+
@@ -455,6 +474,8 @@ function povoa_tab_fretes_terc(){
                     "' name='btnExcluirCadFreteSpot' value='"+
                     data.registros_cad_frete_terc[i].cod_cad_frete_spot+
                     "'><i class='fa-solid fa-trash' style='color: #f46424;'></i></button>"
+
+
 
                 var registro = [
                     img,
@@ -484,7 +505,8 @@ function povoa_tab_fretes_terc(){
                     varDataStringFim,
                     varButtonEditarCaddFreteSpot,
                     varButtonExcluirCadFreteSpot,
-                    data.registros_cad_frete_terc[i].cod_cad_frete_spot
+                    data.registros_cad_frete_terc[i].cod_cad_frete_spot,
+                    data.registros_cad_frete_terc[i].campo_readonly,
 
                 ];
                 listaDados.push(registro);
@@ -647,3 +669,44 @@ function povoa_tab_fretes_terc(){
         }
     });
 }
+
+
+$(document).on('change','#fl_atualiza_valores_cad_frete_por_id', function(){
+    let let_loader_cad_frete = document.getElementById("loader_cad_frete");
+    let_loader_cad_frete.style.display = "flex";
+    var var_frm_data = new FormData();
+    var_frm_data.append("file_update_fretes", $("#fl_atualiza_valores_cad_frete_por_id")[0].files[0]);
+    $.ajax({
+        type: 'POST',
+        enctype: "multipart/form-data; charset=utf-8",
+        url: "/plan_controle_fat_2art_terc_app/carrega_update_fretes_by_id",
+        data: var_frm_data,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+        cache: false,
+        success: function(data){
+
+            $.gritter.add({
+                title: 'Atenção!',
+                text: data.msg,
+                image: '../../static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            let_loader_cad_frete.style.display = "none";
+
+        },
+        error: function (request, status, error) {
+            let_loader_cad_frete.style.display = "none";
+            $.gritter.add({
+                title: 'Atenção!',
+                text: "Erro no processo, contate o adm.",
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+        }
+    });
+
+});

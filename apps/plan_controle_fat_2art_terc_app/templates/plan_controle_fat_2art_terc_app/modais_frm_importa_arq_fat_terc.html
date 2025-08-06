@@ -1,0 +1,104 @@
+{% load static %}
+
+<!-- Modal Confirmação para aprovar ou reprovar os lancamentos dos pagamentos extras -->
+<div id="modal_confirma_status_lanc_pag_extra_terc" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;height: 30px;margin-top: 35px;"  >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-clock-rotate-left fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px' id="sp_desc_status_lanc_pag_extra_terc"></span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btn_fecha_modal_confirma_status_lanc_pag_extra_terc"
+                          name="btn_fecha_modal_confirma_status_lanc_pag_extra_terc"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_confirma_status_lanc_pag_extra_terc" id="frm_confirma_status_lanc_pag_extra_terc"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <input type="hidden" name="hd_status_lanc_pag_extra_terc"
+                       id="hd_status_lanc_pag_extra_terc">
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div id="dv_msg_status_lanc_pag_extra_terc" class="d-flex justify-content-center align-items-center w-100"
+                         style="color:#000000;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <textarea class="form-control" id="ta_justificativa_status_lanc_pag_extra_terc"
+                            name="ta_justificativa_status_lanc_pag_extra_terc"
+                            autocomplete="off" placeholder="Justificativa" rows="5" cols="33"
+                            style="padding-left: 5px;padding-right: 5px;height: 108px;width: 100%;"></textarea>
+                </div>
+
+                <div class="d-flex mt-3 justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        <button type="button" name="btn_confirma_status_lanc_pag_extra"
+                            id="btn_confirma_status_lanc_pag_extra"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-check"></i>
+                        Confirmar operação
+                    </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
+
+
+
+{% load static %}
+
+<!-- Modal detalhes dos lancamentos dos pagamentos extras -->
+<div id="modal_detalhes_lanc_pag_extra_terc" role="dialog" class="modal">
+    <div class="modal-dialog"  style="border-radius: 10px;max-width: 530px;width:530px;">
+        <div class="modal-content">
+        <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                    padding-top: 10px;font-size:10px">
+            <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;height: 30px;margin-top: 35px;"  >
+              <div class="col-md-6" align="left">
+                  <p>
+                      <i class="fa-solid fa-clock-rotate-left fa-2xl" style="color: #FFFFFF;"></i>
+                      <span style='color:#ffffff; font-size:12px'>Detalhes Lançamentos Pagamento Extra</span>
+                  </p>
+              </div>
+              <div class="col-md-6" align="right">
+                  <button type="button" id="btn_fecha_modal_detalhes_lanc_pag_extra_terc"
+                          name="btn_fecha_modal_detalhes_lanc_pag_extra_terc"
+                          data-dismiss="modal" aria-hidden="true" class="btn btn-sm btn-rounded">
+                      <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <form name="frm_detalhes_lanc_pag_extra_terc" id="frm_detalhes_lanc_pag_extra_terc"
+                  class="d-flex flex-column align-items-center justify-content-between" method="post">
+
+                <div class="d-flex mt-2 justify-content-between align-items-between w-100">
+                    <div class="form-group  cl_div_tabela_principal_pagina w-100">
+                        <table id="tab_detalhes_lanc_pag_extra_terc"  class="display wrap w-100 cl_tab_principal_pagina">
+                        </table>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    </div>
+</div>
