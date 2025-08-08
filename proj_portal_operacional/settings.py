@@ -17,8 +17,8 @@ load_dotenv()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-VERSAO_PORTAL = '1.3'
-VERSAO_SAFETY = '1.9'
+VERSAO_PORTAL = '1.4'
+VERSAO_SAFETY = '2.1'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/

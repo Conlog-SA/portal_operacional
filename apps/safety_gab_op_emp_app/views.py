@@ -23,7 +23,7 @@ from proj_portal_operacional.settings import BASE_DIR
 
 
 # Create your views here.
-class Form_Gerar_Gab_Emp(View):
+class Form_Gerar_Gab_GSO_Emp(View):
     @csrf_exempt
     def get(self, request):
         cod_colaborador = request.session['cod_colaborador']
