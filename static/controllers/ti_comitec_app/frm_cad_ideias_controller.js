@@ -840,12 +840,14 @@ $(document).on('click','button', function(){
                    `;
         $("#btn_visualiza_acoes_tarefa_"+let_cod_tarefa_anterior).html(let_icone_acao_clicar_btn_anterior);
         let_count_tr_tarefas += 1;
-        fn_add_tr_tarefa(let_count_tr_tarefas, null);
+        let let_cor_empresa = $("#hd_cor_empresa_hx").val();
+        fn_add_tr_tarefa(let_count_tr_tarefas, null, let_cor_empresa);
 
     }
     else if (let_nome_btn == "btn_add_tr_acao") {
         let_count_tr_acoes += 1;
-        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
+        let let_cor_empresa = $("#hd_cor_empresa_hx").val();
+        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0, let_cor_empresa);
 
     }
     else if (let_nome_btn == "btn_abre_modal_edita_proj_frm_lista_proj") {
@@ -958,7 +960,7 @@ $(document).on('click','button', function(){
                 $("#modal_projeto").show();
                 //$("#btn_add_tr_acao").prop("disabled", true);
                 $("#div_desc_tarefa").html('');
-                fn_add_tr_tarefa(0, dados.lista_dic_tarefas);
+                fn_add_tr_tarefa(0, dados.lista_dic_tarefas, dados.cor_emp_hex);
             },
             error: function (request, status, error) {
                 $.gritter.add({
@@ -989,6 +991,7 @@ $(document).on('click','button', function(){
         let let_cod_btn_anterior = $("#hd_cod_btn_selecionado").val();
         let let_desc_tarefa = $("#td_desc_tarefa_"+let_cod_btn).html();
         let let_cod_usu_master = $("#hd_cod_usu_master").val();
+        let let_cor_empresa = $("#hd_cor_empresa_hx").val();
 
 
         $.ajax({
@@ -1038,12 +1041,12 @@ $(document).on('click','button', function(){
                 if (let_cod_btn !== let_cod_tarefa_anterior) {
                     $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
                 }
-                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,let_cod_usu_master);
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes,let_cod_usu_master, let_cor_empresa);
 
                 if(let_cod_tarefa == '0'){
                     let_count_tr_acoes += 1;
                     $("#tb_acoes_modal_edt_proj tr[name='tr_acao']").remove();
-                    fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,let_cod_usu_master);
+                    fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,let_cod_usu_master, let_cor_empresa);
 
                 }
             },
@@ -1063,6 +1066,7 @@ $(document).on('click','button', function(){
         let let_desc_acao = $("#td_desc_acao_"+let_cod_btn).html();
         let let_prazo = $("#dt_prazo_frm_edt_acao_"+let_cod_btn).val();
         let let_cod_usu_atribuido = $("#sl_usu_frm_edt_acao_"+let_cod_btn).val();
+        let let_cor_empresa = $("#hd_cor_empresa_hx").val();
         if((let_desc_acao != null && let_desc_acao != '') && (let_prazo != null && let_prazo!= '')) {
             let let_cod_projeto = $("#hd_cod_projeto").val();
             let let_cod_acao = $(this).val();
@@ -1103,7 +1107,7 @@ $(document).on('click','button', function(){
 
                     if(let_cod_acao == '0'){
                         let_count_tr_acoes += 1;
-                        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0);
+                        fn_add_nova_tr_table_acoes(let_count_tr_acoes, null,0, let_cor_empresa);
                     }
 
                 },
@@ -1136,6 +1140,7 @@ $(document).on('click','button', function(){
         $("#td_inicia_acao").val('');
         let let_cod_tarefa = let_val_btn;
         let let_cod_btn = let_id_btn.split('_')[4];
+        let let_cor_emp_hex = $("#hd_cor_empresa_hx").val();
 
         $.ajax({
             type: 'GET',
@@ -1154,7 +1159,7 @@ $(document).on('click','button', function(){
                 let let_cod_tarefa_anterior = $("#hd_cod_btn_selecionado").val();
                 if( let_cod_tarefa_anterior != '0'){
                     let let_icone_acao_clicar_btn_anterior =`
-                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                        <i class="fa-solid fa-eye-slash" style="color: ${let_cor_emp_hex}"></i>
                     `;
                 $("#btn_visualiza_acoes_tarefa_"+let_cod_tarefa_anterior).html(let_icone_acao_clicar_btn_anterior);
                 }
@@ -1165,7 +1170,7 @@ $(document).on('click','button', function(){
                     $("#btn_add_tr_acao").prop("disabled", false);
                 }
 
-                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes, 0);
+                fn_add_nova_tr_table_acoes(0, dados.lista_dic_acoes, 0, let_cor_emp_hex);
                 let let_btn_finaliza_projeto = $("#btn_finaliza_projeto").val();
                 if ( let_btn_finaliza_projeto == 1 ){
                     $("#btn_add_tr_acao").prop("disabled", true);
@@ -1746,7 +1751,7 @@ $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
 
 
 
-function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
+function fn_add_tr_tarefa(cod_linha, lista_tarefas, cor_empresa_hex) {
     if(lista_tarefas == null) {
 
         $(`
@@ -1769,7 +1774,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 <td align="center" style="align-content: center;">
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${cod_linha}" value="0"
                         class="btn btn-rounded btn-space" style="width: 35px;" title="Salvar/Atualizar tarefa">
-                            <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                            <i class="fa-solid fa-check" style="color: ${cor_empresa_hex}"></i>
                     </button>
                 </td>
                 <td style="align-content: center;">
@@ -1778,7 +1783,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 <td align="center" style="align-content: center;">
                     <button style="width: 35px;" value="0" class="btn btn-rounded btn-space" title="Visualizar ações"
                         name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${cod_linha}" disabled>
-                        <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                        <i class="fa-solid fa-eye-slash" style="color: ${cor_empresa_hex}"></i>
                     </button>
                 </td>
             </tr>
@@ -1820,7 +1825,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
                         class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
                         title="Salvar/Atualizar tarefa" ${let_habilita_btn}>
-                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                            <i class="fa-solid fa-pen-to-square" style="color: ${cor_empresa_hex}"></i>
                     </button>
                 `;
                 let_desc_tarefa = `
@@ -1834,7 +1839,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}"
                         class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;"
                         disabled="disabled" title="Salvar/Atualizar tarefa">
-                            <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                            <i class="fa-solid fa-pen-to-square" style="color: ${cor_empresa_hex}"></i>
                     </button>`;
                 let_desc_tarefa = `
                     <td contenteditable='false' name='td_desc_tarefa' id="td_desc_tarefa_${tarefa.cod_atividade}"
@@ -1871,7 +1876,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                         <button style="width: 35px;"  class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}"
                             name="btn_visualiza_acoes_tarefa" id="btn_visualiza_acoes_tarefa_${tarefa.cod_atividade}"
                             title="Visualizar ações">
-                                <i class="fa-solid fa-eye-slash" style="color: #fd9a49!important;"></i>
+                                <i class="fa-solid fa-eye-slash" style="color: ${cor_empresa_hex}"></i>
                         </button>
                     </td>
                 </tr>
@@ -1883,7 +1888,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 
 
 
-function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
+function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_empresa_hex) {
     if(lista_acoes == null) {
         let let_options_usu = '';
         for(let i=0; i <  let_lista_usuarios.length; i++){
@@ -1910,7 +1915,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
             <td name="td_inicia_acao" id="td_inicia_acao_${cod_linha}" align="center" style="align-content: start;padding-top: .5rem;">
                 <button style="width: 35px;" value="0" title="Iniciar ação"
                     class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${cod_linha}' disabled >
-                    <i class="fa-solid fa-play" style="color: #fd9a49!important;" ></i>
+                    <i class="fa-solid fa-play" style="color: {{cor_empresa_hex}}" ></i>
                 </button>
             </td>
             <td contenteditable='false' style="padding: 0.25rem; align-content: start;" >
@@ -1921,13 +1926,13 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
             <td align="center" style="align-content: start;">
                 <button style="width: 35px;" value="0" title="Salvar/Atualizar ação"
                     class="btn btn-rounded btn-space" name='btn_salvar_acao' id='btn_salvar_acao_${cod_linha}'>
-                    <i class="fa-solid fa-check" style="color: #fd9a49!important;"></i>
+                    <i class="fa-solid fa-check" style="color: {{cor_empresa_hex}}"></i>
                 </button>
             </td>
             <td  name="td_conclui_acao" id="td_conclui_acao_${cod_linha}" align="center" style="align-content: start;" >
                 <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space" value="0"
                     name='btn_concluir_acao' id='btn_concluir_acao_${cod_linha}' title="Concluir ação" disabled>
-                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                        <i class="fa-solid fa-thumbs-up" style="color: {{cor_empresa_hex}}"></i>
                 </button>
             </td>
 
@@ -1967,7 +1972,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
                 let_btn_inicia_acao = `
                     <button style="width: 35px;" value="${acao.cod_atividade}" title="Iniciar ação" ${let_habilita_btn}
                         class="btn btn-rounded btn-space" name='btn_inicia_acao' id='btn_inicia_acao_${acao.cod_atividade}'>
-                        <i class="fa-solid fa-play" style="color: #fd9a49!important;"  ></i>
+                        <i class="fa-solid fa-play" style="color: {{cor_empresa_hex}}"  ></i>
                     </button>
                 `;
             } else {
@@ -1980,14 +1985,14 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
                    <button style="width: 35px;margin-left: 11px;"  class="btn btn-rounded btn-space"
                         name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}"
                         title="Concluir ação" disabled>
-                            <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                            <i class="fa-solid fa-thumbs-up" style="color: {{cor_empresa_hex}}"></i>
                    </button>
                 `;
             } else if(acao.data_conclusao == null && acao.data_ini != null) {
                 let_btn_data_conclusao = `
                    <button style="width: 35px;margin-left: 11px;"  ${let_habilita_btn} class="btn btn-rounded btn-space" title="Concluir ação"
                         name='btn_concluir_acao' id='btn_concluir_acao_${acao.cod_atividade}' value="${acao.cod_atividade}">
-                        <i class="fa-solid fa-thumbs-up" style="color: #fd9a49!important;"></i>
+                        <i class="fa-solid fa-thumbs-up" style="color: {{cor_empresa_hex}}"></i>
                    </button>
                 `;
 
@@ -2006,7 +2011,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
                     <button style="width: 35px;" value="${acao.cod_atividade}" class="btn btn-rounded btn-space"
                         name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}'
                         title="Salvar/Atualziar ação" disabled>
-                         <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                         <i class="fa-solid fa-pen-to-square" style="color: {{cor_empresa_hex}}"></i>
                     </button>`;
                 let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' name="dt_prazo_frm_edt_acao"
                     value="${acao.data_fim}" style="width: 90px;" disabled>`;
@@ -2022,7 +2027,7 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master) {
                  let_btn_edt =
                     `<button style="width: 35px;" value="${acao.cod_atividade}" ${let_habilita_btn} class="btn btn-rounded btn-space"
                         name='btn_salvar_acao' id='btn_salvar_acao_${acao.cod_atividade}' title="Salvar/Atualizar ação">
-                        <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
+                        <i class="fa-solid fa-pen-to-square" style="color: {{cor_empresa_hex}}"></i>
                     </button>`;
                  let_dt_edt = `<input type="date" id='dt_prazo_frm_edt_acao_${acao.cod_atividade}' ${let_habilita_btn} style="width: 90px;"
                     name="dt_prazo_frm_edt_acao" value="${acao.data_fim}">

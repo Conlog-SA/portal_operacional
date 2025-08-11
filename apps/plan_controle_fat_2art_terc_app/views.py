@@ -1218,6 +1218,7 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                       context)
 
     def retorna_lista_lanc_pag_extra_pendentes(self, status, cod_filial, dt_competencia):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
         if status == 0:
             if dt_competencia == None:
                 lista_obj_lancamentos_pag_extras_pendentes = LancamentoPagamentoExtras.objects.filter(status__isnull=True)
@@ -1247,8 +1248,8 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                     'nome_benef': obj_placa.cod_benef_terc.nome_benef_terc,
                     'placa': obj_lanc.placa_pag_extra,
                     'data_pag': obj_lanc.data_pag_extra,
-                    'data_ref_pagamento': obj_lanc.periodo_ref_pag_extra,
-                    'valor': obj_lanc.val_pag_extra,
+                    'data_ref_pagamento': obj_lanc.periodo_ref_pag_extra.strftime("%d-%m-%Y"),
+                    'valor': locale.currency(obj_lanc.val_pag_extra, grouping=True, symbol=None),
                     'status': 'NA' if obj_lanc.status == None else str(obj_lanc.status )
                 }
                 lista_dic_lanc_pendentes.append(dic_lanc)
@@ -1376,6 +1377,8 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
             }
 
         elif tipo_arq_form == 'arq_pag_extras':
+            lista_dic_lanc_pendentes_validado = []
+            lista_filiais_pesq = []
             lista_form_pagamentos_extra_tab = []
             try:
                 fs = FileSystemStorage()
@@ -1419,6 +1422,7 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                         cod_tipo_ocor_financ_terc=obj_tipo_ocorrencia,
                         cod_pag_2art_terc_financ=None
                     )
+                    obj_pag_extra.save()
                     desc_tt += reg.desc
                     acres_tt += reg.acres
                     val_tt += reg.valor
@@ -1462,6 +1466,8 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                         p.save()'''
 
                 msg = 'Arquivo importado com sucesso!'
+                lista_dic_lanc_pendentes_validado, lista_filiais_pesq = self.retorna_lista_lanc_pag_extra_pendentes(0, 0,
+                                                                                                               None)
             except Exception as e:
                 lista_form_pagamentos_extra_tab = []
                 if 'cod_benef_terc' in str(e):
@@ -1472,7 +1478,9 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
 
             data = {
                 'msg': msg,
-                'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab
+                'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab,
+                'lista_dic_lanc_pendentes_validado': lista_dic_lanc_pendentes_validado,
+                'lista_filiais_pesq': lista_filiais_pesq
             }
 
         return JsonResponse(data, safe=False)

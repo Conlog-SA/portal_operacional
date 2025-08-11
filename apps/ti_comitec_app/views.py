@@ -139,90 +139,31 @@ class Frm_Lista_Projetos_View(View):
         lista_obj_projetos = []
         lista_obj_usuarios = []
         lista_area = []
-        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
-            lista_obj_projetos = Projeto.objects.all()
-            lista_area = list(Projeto.objects.all().values('cod_ideia__cod_atividade__cod_atividade', 'cod_ideia__cod_atividade__desc1_atividade').distinct())
-            lista_obj_usuarios = Usuarios_Projeto.objects.prefetch_related('cod_usu').distinct()
-        else:
-            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
-            lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
-            for proj in lista_obj_usu_projetos:
-                lista_obj_projetos.append(proj.cod_projeto)
-            lista_obj_usuarios = Usuarios_Projeto.objects.filter(
-                cod_projeto__in=lista_obj_projetos).prefetch_related('cod_usu').distinct()
-
-
-
-        contador = 0
-        col = 0
-        lista_col = []
-        for obj_proj in lista_obj_projetos:
-            if contador % 3 == 0:
-                col += 1
-                lista_col.append(col)
-
-            perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
-            status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
-            obj_proj.status_cronograma_proj = status_cronograma_proj
-            obj_proj.save()
-
-            '''Verifica prazo última ação do projeto'''
-            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').order_by('-data_fim').first()
-            dt_prazo_proj = ''
-            if obj_ultima_acao != None:
-                dt_prazo_proj = obj_ultima_acao.data_fim
-
-            foto_owner = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
-            if obj_proj.cod_ideia.cod_usu_owner.caminho_foto != None:
-                foto_owner = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_owner.caminho_foto
-
-            foto_sponsor = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
-            if obj_proj.cod_ideia.cod_usu_master.caminho_foto != None:
-                foto_sponsor = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_master.caminho_foto
-
-            lista_dic_usu_envolvidos = []
-            lista_obj_usu_envolvidos = Usuarios_Projeto.objects.filter(cod_projeto=obj_proj)
-            for obj_usu_proj in lista_obj_usu_envolvidos:
-                foto_user = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
-                if obj_usu_proj.cod_usu.caminho_foto != None:
-                    foto_user = 'https://operacional.conlogsa.com.br/media/' + obj_usu_proj.cod_usu.caminho_foto
-                reg_usu = {
-                    'login_usu': obj_usu_proj.cod_usu.login_usu,
-                    'foto_user': foto_user
-                }
-                lista_dic_usu_envolvidos.append(reg_usu)
-
-            proj = {
-                'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
-                'desc_area': obj_proj.cod_ideia.cod_atividade.desc1_atividade,
-                'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
-                'foto_owner': foto_owner,
-                'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
-                'foto_sponsor': foto_sponsor,
-                'data_ini': obj_proj.data_ini,
-                'data_prazo': dt_prazo_proj,
-                'data_fim': obj_proj.data_fim,
-                'data_atualizacao': obj_proj.data_atualizacao,
-                'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
-                'status_cronograma_proj': obj_proj.status_cronograma_proj,
-                'perc_progresso_proj': perc_progresso_proj,
-                'cod_projeto': obj_proj.cod_projeto,
-                'lista_dic_usu_envolvidos': lista_dic_usu_envolvidos,
-                'col': col
-            }
-            lista_dic_proj.append(proj)
-            contador += 1
+        '''Chama metodo aqui'''
 
         lista_obj_acoes_prox_ou_atradadas = self.retorna_prox_acoes_proj(obj_usuario_sessao, lista_obj_projetos)
+
+        cor_emp_hex = ''
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
+            cor_emp_hex = '#f46424 !important;'
+            cor_caixa_titulo = 'rgba(244, 100, 36, 0.7)!important'
+            borda_caixa_projetos = 'rgba(244, 100, 36, 0.2)!important'
+        elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            cor_emp_hex = '#3b8eed !important;'
+            cor_caixa_titulo = 'rgba(59, 142, 237, 0.7)!important'
+            borda_caixa_projetos = 'rgba(59, 142, 237, 0.2)!important'
+
 
 
         context = {
             'lista_projetos': lista_dic_proj,
-            'lista_col': lista_col,
             'obj_usuario_sessao': obj_usuario_sessao,
             'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas,
             'lista_obj_usuarios': lista_obj_usuarios,
-            'lista_area': lista_area
+            'lista_area': lista_area,
+            'cor_emp_hex': cor_emp_hex,
+            'borda_caixa_projetos': borda_caixa_projetos,
+            'cor_caixa_titulo': cor_caixa_titulo
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
@@ -262,7 +203,6 @@ class Frm_Lista_Projetos_View(View):
                     status = 1
 
         return status
-
 
     def retorna_prox_acoes_proj(self, obj_usuario_sessao, lista_obj_projetos):
         data_hora_atual = datetime.now()
@@ -389,6 +329,70 @@ class Frm_Lista_Projetos_View(View):
                         lista_obj_acoes_prox_ou_atradadas.append(acao)
 
         return lista_obj_acoes_prox_ou_atradadas
+
+    def retorna_lista_projetos(self, obj_usuario_sessao):
+        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
+            lista_obj_projetos = Projeto.objects.all()
+            lista_area = list(Projeto.objects.all().values('cod_ideia__cod_atividade__cod_atividade', 'cod_ideia__cod_atividade__desc1_atividade').distinct())
+            lista_obj_usuarios = Usuarios_Projeto.objects.prefetch_related('cod_usu').distinct()
+        else:
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
+            for proj in lista_obj_usu_projetos:
+                lista_obj_projetos.append(proj.cod_projeto)
+            lista_obj_usuarios = Usuarios_Projeto.objects.filter(
+                cod_projeto__in=lista_obj_projetos).prefetch_related('cod_usu').distinct()
+
+        for obj_proj in lista_obj_projetos:
+            perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
+            status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
+            obj_proj.status_cronograma_proj = status_cronograma_proj
+            obj_proj.save()
+
+            '''Verifica prazo última ação do projeto'''
+            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').order_by('-data_fim').first()
+            dt_prazo_proj = ''
+            if obj_ultima_acao != None:
+                dt_prazo_proj = obj_ultima_acao.data_fim
+
+            foto_owner = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_owner.caminho_foto != None:
+                foto_owner = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_owner.caminho_foto
+
+            foto_sponsor = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_master.caminho_foto != None:
+                foto_sponsor = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_master.caminho_foto
+
+            lista_dic_usu_envolvidos = []
+            lista_obj_usu_envolvidos = Usuarios_Projeto.objects.filter(cod_projeto=obj_proj)
+            for obj_usu_proj in lista_obj_usu_envolvidos:
+                foto_user = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+                if obj_usu_proj.cod_usu.caminho_foto != None:
+                    foto_user = 'https://operacional.conlogsa.com.br/media/' + obj_usu_proj.cod_usu.caminho_foto
+                reg_usu = {
+                    'login_usu': obj_usu_proj.cod_usu.login_usu,
+                    'foto_user': foto_user
+                }
+                lista_dic_usu_envolvidos.append(reg_usu)
+
+            proj = {
+                'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
+                'desc_area': obj_proj.cod_ideia.cod_atividade.desc1_atividade,
+                'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'foto_owner': foto_owner,
+                'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
+                'foto_sponsor': foto_sponsor,
+                'data_ini': obj_proj.data_ini,
+                'data_prazo': dt_prazo_proj,
+                'data_fim': obj_proj.data_fim,
+                'data_atualizacao': obj_proj.data_atualizacao,
+                'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
+                'status_cronograma_proj': obj_proj.status_cronograma_proj,
+                'perc_progresso_proj': perc_progresso_proj,
+                'cod_projeto': obj_proj.cod_projeto,
+                'lista_dic_usu_envolvidos': lista_dic_usu_envolvidos
+            }
+            lista_dic_proj.append(proj)
 
 
 
@@ -952,6 +956,14 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 'lista_usuarios': lista_usuarios,
                 'usu_logado_edt_proj': usu_logado_edt_proj
             }
+
+        cor_emp_hex = ''
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
+            cor_emp_hex = '#f46424 !important;'
+        elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            cor_emp_hex = '#3b8eed !important;'
+
+        data['cor_emp_hex'] =  cor_emp_hex
 
         return JsonResponse(data, safe=False)
 

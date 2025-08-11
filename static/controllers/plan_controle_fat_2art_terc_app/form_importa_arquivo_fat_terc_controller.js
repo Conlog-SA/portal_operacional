@@ -340,6 +340,17 @@ $(document).on('click', 'button', function(){
                     });
 
 			    }
+			    povoa_tab_pag_extras_pendentes_fat_terc(dados.lista_dic_lanc_pendentes_validado);
+			    $("#sl_filial_frm_imp_arq_pag_terc option").remove();
+                $("#sl_filial_frm_imp_arq_pag_terc")
+                    .append("<option value='0' selected='selected'>-- Todas as filiais --</option>");
+                dados.lista_filiais_pesq.forEach(fil => {
+                    $("#sl_filial_frm_imp_arq_pag_terc").append("<option value='"+
+                    fil.cod_filial+"'>"+fil.nome_filial+")</option>");
+
+                });
+                $("#sl_filial_frm_imp_arq_pag_terc").selectpicker('val', '0');
+                $("#sl_filial_frm_imp_arq_pag_terc").selectpicker('refresh');
 
                 let_loader_arq_fat.style.display = "none";
 

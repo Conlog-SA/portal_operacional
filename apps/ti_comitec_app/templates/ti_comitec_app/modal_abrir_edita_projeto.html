@@ -14,7 +14,7 @@
         overflow-x: auto;
     }
     .borda{
-        border: 1px solid #c6683dd6;
+        border: 1px solid {{borda_caixa_projetos}};
         border-radius: 5px;
     }
     h1{
@@ -30,7 +30,6 @@
     }
     .barra-progresso{
         /*border: 1px solid #c6683dd6;*/
-        background-color: #f46424;
         width: 79px;
         height: 28px;
         margin: 7px;
@@ -83,10 +82,10 @@
                 <input type="hidden" id="hd_cod_projeto" name="hd_cod_projeto"/>
                 <div class="d-flex justify-content-between align-items-between w-100">
                     <div class="d-flex flex-column align-items-start" style="width: 40%;">
-                        <div class="d-flex justify-content-start align-items-start w-100 borda"
+                        <div class="d-flex justify-content-start align-items-start w-100"
                              id="div_nome_projeto_frm_edt_proj"
-                             style="background-color: #f46424;box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);
-                             height: 65px; font-size: 15px;color: white;font-weight: 600; padding: .25rem;overflow: auto;">
+                             style="border-radius: .25rem;background-color: {{cor_caixa_titulo}};box-shadow: 2px 2px 2px 0px rgba(0,0,0,.5);
+                             height: 65px; font-size: 15px;color: #363636;font-weight: 600; padding: .25rem;overflow: auto;">
                         </div>
                         <div class="d-flex justify-content-between align-items-between w-100" style="margin-top: .25rem;">
                             <div class="d-flex flex-column justify-content-center align-items-start w-100">
@@ -136,7 +135,7 @@
                                 <button  name="btn_add_tr_tarefas" id="btn_add_tr_tarefas"
                                          class="btn btn-rounded btn-space btn-add-tr" title="Adicionar nova tarefa"
                                          style="padding: .25rem!important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);">
-                                     <i class="fa-solid fa-plus" style="color: #f46424!important; font-size: 15px"></i>
+                                     <i class="fa-solid fa-plus" style="color: {{cor_emp_hex}} font-size: 15px"></i>
                                  </button>
                             </div>
                         </div>
@@ -145,15 +144,15 @@
                             <div class="d-flex flex-column justify-content-between align-items-between w-100 scroll">
                                 <table id="tb_tarefas" class='scroll' style="border: 1px;border-color: #000000;">
                                     <thead style="position: sticky; top: 0; z-index: 7;">
-                                        <tr style="background: #f46424!important;" id="btnAddLineTarefa" align="center">
+                                        <tr style="background-color:{{cor_caixa_titulo}}" id="btnAddLineTarefa" align="center">
                                             <th style="width: 5%;font-weight: 400;padding: 0.1rem;text-align: left;">Status</th>
-                                            <th style="width: 50%;font-weight: 400;padding: 0.1rem;text-align: left;">Tarefa</th>
-                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Início</th>
-                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Prazo</th>
-                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;">Termino</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Salvar</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">%</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Ações</th>
+                                            <th style="width: 50%;font-weight: 400;padding: 0.1rem;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Tarefa</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Início</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Prazo</th>
+                                            <th style="width: 10%;font-weight: 400;padding: 0.1rem;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Termino</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Salvar</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>%</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Ações</th>
                                         </tr>
                                     </thead>
                                 </table>
@@ -168,10 +167,10 @@
                                 <h2 class="label_titulo_comp">Evolução geral do projeto</h2>
                                 <div class="d-flex align-items-center justify-content-center w-100 borda" style="padding: .5rem;">
                                     <div class="d-flex justify-content-start align-items-center w-100 borda"
-                                         style="margin-left: .5rem;width: 301px;height: 33px;border-radius: 5px;background-color: #FFFFFF;" >
+                                         style="margin-left: .5rem;width: 301px;height: 33px;border-radius: 5px;background-color: #FFFFFF; padding: 2px;" >
                                         <div  id="div_evolucao_projeto"
                                               class="d-flex justify-content-center align-items-center barra-progresso"
-                                              style="box-shadow: 2px 2px 2px 1px rgba(244,100,36,.5);">
+                                              style="background-color: {{cor_caixa_titulo}}">
                                             <span id="porcenagem_barra" style="font-weight: 400;margin-left: 2rem;"></span>
                                         </div>
                                     </div>
@@ -241,7 +240,7 @@
                                          class="btn btn-rounded btn-space btn-add-tr"
                                          style="padding: .25rem!important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);"
                                          disabled="disabled" title="Adicionar nova ação">
-                                     <i class="fa-solid fa-plus" style="color: #ff5900!important; font-size: 15px"></i>
+                                     <i class="fa-solid fa-plus" style="color: {{cor_emp_hex}} font-size: 15px"></i>
                                 </button>
                             </div>
                         </div>
@@ -251,15 +250,15 @@
                             <div class="d-flex justify-content-between align-items-between w-100 scroll">
                                 <table id="tb_acoes_modal_edt_proj" class='scroll' style="width: 100%">
                                     <thead>
-                                        <tr style="background: #f46424!important;padding: 0.25rem!important;" class="linha" id="btnAddLineAcao" align="center">
+                                        <tr style="background-color: {{cor_caixa_titulo}};padding: 0.25rem!important;" class="linha" id="btnAddLineAcao" align="center">
                                             <th style="width: 5%;font-weight: 400;padding: 0.1rem;text-align: left;">Status</th>
-                                            <th style="width: 30%;font-weight: 400;padding: 0.1rem;text-align: left;">Ações</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Executor</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Início</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Prazo</th>
-                                            <th style="width: 40%;font-weight: 400;padding: 0.1">Observação</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Salvar</th>
-                                            <th style="width: 5%;font-weight: 400;padding: 0.1">Concluir</th>
+                                            <th style="width: 30%;font-weight: 400;padding: 0.1rem;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Ações</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Executor</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Início</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Prazo</th>
+                                            <th style="width: 40%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Observação</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Salvar</th>
+                                            <th style="width: 5%;font-weight: 400;padding: 0.1;text-align: left;"><span style="color:#343537;">&nbsp;|</span>Concluir</th>
                                         </tr>
                                     </thead>
                                 </table>

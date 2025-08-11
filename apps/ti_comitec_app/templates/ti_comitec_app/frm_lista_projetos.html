@@ -6,6 +6,7 @@
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <input type="hidden" id="hd_cor_empresa_hx" name="hd_cor_empresa_hx" value="{{cor_emp_hex}}"/>
     <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
              <i class="fa-solid fa-thumbtack"></i>
@@ -115,7 +116,7 @@
                     <div class="d-flex flex-wrap w-100">
                         {% for proj in lista_projetos %}
                                 <div class="d-flex flex-column justify-content-between align-items-center"
-                                     style="border: .1px solid rgba(244, 100, 36, .2); border-radius: 1rem;
+                                     style="border: .1px solid {{borda_caixa_projetos}}; border-radius: 1rem;
                                         box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5); padding: .5rem;
                                         margin: .5rem; width: 420px;" id="div_proj_{{proj.cod_projeto}}">
 
@@ -160,9 +161,9 @@
                                         <div class="d-flex justify-content-between align-items-center w-75"
                                              style="padding: .5rem;">
                                             <div class="d-flex justify-content-start align-items-center w-100"
-                                                 style="background-color: #FFFFFF;" >
+                                                 style="background-color: #FFFFFF;border: #FFFFFF solid 1px;" >
                                                 <div  class="d-flex justify-content-center align-items-center"
-                                                      style="width: {{ proj.perc_progresso_proj }}%; background-color:#f46424;">
+                                                      style="width: {{ proj.perc_progresso_proj }}%; background-color:{{cor_emp_hex}};">
                                                     <span style="font-weight: 400; color: #000000; margin-left: 1.3rem;">
                                                         {{ proj.perc_progresso_proj }}%
                                                     </span>

@@ -146,7 +146,7 @@
                                             name="sl_filial_frm_imp_arq_pag_terc"
                                             data-live-search="true"
                                             title="Selecione a filial">
-                                                <option value="0">Todas as filiais</option>
+                                                <option value="0" selected='selected'>Todas as filiais</option>
                                             {% for f in lista_filiais %}
                                                 <option value="{{ f.cod_filial }}">{{f.nome_filial }}</option>
                                             {% endfor %}
