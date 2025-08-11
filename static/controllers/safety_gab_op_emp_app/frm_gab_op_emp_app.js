@@ -200,7 +200,7 @@ $(document).on('click','.create-check' , function(){
     if (msg_erro == '') {
         $.ajax({
             type: 'POST',
-            url: '/safety_gab_op_emp_app/empilhadeira_check',
+            url: '/safety_gab_op_emp_app/empilhadeira_gso_check',
             data: {
                 'unidade_operador'   :   let_unidade_operador,
                 'tipo_operador'   :   let_tp_operador,

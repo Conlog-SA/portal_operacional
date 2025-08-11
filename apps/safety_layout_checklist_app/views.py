@@ -28,7 +28,8 @@ class Form_Seguranca_Check(View):
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
         lista_tipos = {'1': 'GSO - Empilhadeiras', '2': 'Relatos', #'3': 'GSDPQ',
                        '4': 'Blitz - Carro', '5': 'Blitz - Moto', '6': 'Blitz - Bicicleta',
-                       '7': 'Blitz - Outros Meios', '8': 'GSO - Ônibus'}
+                       '7': 'Blitz - Outros Meios', '8': 'GSO - Ônibus', '9': 'Empilhadeiras',
+                       '10': 'Infra. e Predial', '11': 'PCI'}
         cod_usuario_sessao = request.session['cod_usuario_logado']
         usuario = Usuario.objects.get(pk=cod_usuario_sessao)
         flag_corporativo = 0

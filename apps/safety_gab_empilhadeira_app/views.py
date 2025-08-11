@@ -16,14 +16,15 @@ from django.db.models import Q
 from apps.estrut_org_app.models import Filial
 from apps.safety_checks_aplicados_app.models import Colaborador, Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado
-from apps.safety_gab_op_emp_app.models import Empilhadeira, Gabarito_Operacional_Emp
+from apps.safety_gab_op_emp_app.models import Empilhadeira
+from apps.safety_gab_empilhadeira_app.models import Check_Empilhadeira
 from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Item_Check
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
 
 
 # Create your views here.
-class Form_Gerar_Gab_GSO_Emp(View):
+class Form_Gerar_Gab_Emp(View):
     @csrf_exempt
     def get(self, request):
         cod_colaborador = request.session['cod_colaborador']
@@ -37,9 +38,8 @@ class Form_Gerar_Gab_GSO_Emp(View):
         filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
-
             data_atual = datetime.now()
-            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1,
+            check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=9,
                                                              cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                    data_atual.month,
                                                                                                    data_atual.day),
@@ -68,30 +68,13 @@ class Form_Gerar_Gab_GSO_Emp(View):
         context = {
             'nome_operador': nome_colaborador,
             'cod_filial_operador': filial_colaborador.cod_filial,
-       #     'lista_modelos_emp': lista_modelos_emp_dict,
             'options_select': str_options_select_unidade,
         }
-        return render(request, 'safety_gab_op_emp_app/gab_op_emp_form_gerar_check.html', context)
+        return render(request, 'safety_gab_empilhadeira_app/gab_empilhadeira_form_gerar_check.html', context)
 
     @csrf_exempt
     def post(self, request):
-        tipo_colaborador = request.POST['tipo_operador']
         filial_colaborador = request.POST['unidade_operador']
-        usuario_informado = request.POST['nome_operador']
-        colaborador = None
-        if tipo_colaborador == '1':
-            colaborador = Colaborador.objects.get(pk=int(usuario_informado))
-
-        elif tipo_colaborador == '2':
-            documento_usuario_informado = request.POST['documento_operador']
-
-            colaborador = Colaborador(
-                nome_colaborador=usuario_informado,
-                cpf=documento_usuario_informado,
-                cod_filial=filial_colaborador,
-                situacao=0
-            )
-            colaborador.save()
 
         cod_empilhadeira = request.POST['cod_empilhadeira']
 
@@ -100,7 +83,7 @@ class Form_Gerar_Gab_GSO_Emp(View):
         cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
         data_atual = datetime.now()
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=1, cod_filial=colaborador.cod_filial,
+        check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=9, cod_filial=filial_colaborador,
                                                          cod_check__data_desativacao__gte=date(data_atual.year,
                                                                                                data_atual.month,
                                                                                                data_atual.day),
@@ -113,9 +96,8 @@ class Form_Gerar_Gab_GSO_Emp(View):
             return HttpResponse('Não há check de empilhadeiras ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=colaborador.cod_filial,
+            cod_filial=filial_colaborador,
             cod_colaborador_aplicante=colaborador_envio,
-            cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
             cod_layout_check=check_ativo.cod_check
         )
@@ -137,14 +119,15 @@ class Form_Gerar_Gab_GSO_Emp(View):
                 desc_resposta_botao = 'SIM/NÃO'.split('/')
             if item.tipo_resposta == 4 or item.tipo_resposta == '4':
                 desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
+            if item.tipo_resposta == 5 or item.tipo_resposta == '5':
+                desc_resposta_botao = 'SIM/NA/NÃO'.split('/')
 
             lista_itens_dict.append({'cod_item_check': item.cod_item_check, 'desc_check': item.desc_check,
                                      'tipo_resposta': item.tipo_resposta, 'campo_obs_img': item.campo_obs_img,
                                      'ordem_item': item.ordem_item, 'tipo_item': item.tipo_item,
                                      'desc_resposta': desc_resposta_botao, 'obrigatorio': item.obrigatorio})
 
-        check_cabecalho = Gabarito_Operacional_Emp(
-            tipo_operador=tipo_colaborador,
+        check_cabecalho = Check_Empilhadeira(
             cod_empilhadeira=Empilhadeira.objects.get(pk=cod_empilhadeira),
             cod_check_aplicado=check_aplicado,
         )
@@ -174,7 +157,7 @@ class Empilhadeiras_Filial(View):
     def get(self, request):
         unidade = request.GET['cod_unidade']
         filial_selecionada = Filial.objects.get(pk=unidade)
-        lista_empilhadeiras = Empilhadeira.objects.filter(cod_filial=filial_selecionada.cod_filial).order_by('desc_placa')
+        lista_empilhadeiras = Empilhadeira.objects.filter(cod_filial=filial_selecionada.cod_filial)
         dict_empilhadeiras = []
         for emp in lista_empilhadeiras:
             dict_empilhadeiras.append({'cod_emp': emp.cod_emp, 'placa': emp.placa})
@@ -182,6 +165,7 @@ class Empilhadeiras_Filial(View):
             'lista_empilhadeiras': dict_empilhadeiras
         }
         return JsonResponse(data)
+
 
         #msg = ''
         #obj_anexo_conta_pesq
