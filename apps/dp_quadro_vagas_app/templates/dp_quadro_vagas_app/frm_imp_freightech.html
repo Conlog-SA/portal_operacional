@@ -1,0 +1,70 @@
+{% load static %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-file-arrow-down" style="color: #f46424;"></i>
+            <h1 class="titlePadraoMenu">Importa Planilhas Quadro</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+    <div class="containerApp">
+        <form id="frm_importa_plan_quadro" name="frm_importa_plan_quadro"
+              method="POST" enctype="multipart/form-data"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
+              style="border-radius: 0px 0px 10px 10px;padding-bottom:40px;">
+            {% csrf_token %}
+
+            <div class="d-flex justify-content-between align-items-between w-100 ">
+                <div class="d-flex flex-column align-items-start w-25" style="padding-right: 0.25rem;">
+                    <label>Tipo de planilha</label>
+                    <select class="selectpicker form-control" id="sl_arquivo_quadro"
+                            name="sl_arquivo_quadro"
+                            data-live-search="true"
+                            title="Selecione o tipo do layout do arquivo que deseja importar">
+                        <option value="QLP_OPERACIONAL">QLP OPERACIONAL</option>
+                        <option value="QLP_ADMINISTRATIVO">QLP ADMINISTRATIVO</option>
+                    </select>
+                </div>
+                <div class="d-flex flex-column align-items-start w-75" style="padding-left: 0.25rem;">
+                    <label>Selecione o arquivo </label>
+                    <input type="file" name="fl_arquivo_quadro" id="fl_arquivo_quadro"
+                           class="containerApp"
+                           placeholder='Selecione um arquivo válido, conforme tipo selecionado ...'
+                           accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100" >
+                <div class="d-flex flex-column w-100 cl_div_loader">
+                    <div class="loader" id="loader_frm_imp_plan_quadro">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+

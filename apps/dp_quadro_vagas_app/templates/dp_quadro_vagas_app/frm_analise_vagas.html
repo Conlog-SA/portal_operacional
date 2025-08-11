@@ -1,0 +1,66 @@
+{% load static %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-file-arrow-down" style="color: #f46424;"></i>
+            <h1 class="titlePadraoMenu">Freightech x Senior</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+
+    <div class="containerApp">
+        <form id="frm_importa_plan_quadro" name="frm_importa_plan_quadro"
+              method="POST" enctype="multipart/form-data"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas"
+              style="border-radius: 0px 0px 10px 10px;padding-bottom:40px;">
+            {% csrf_token %}
+
+            <div class="d-flex mt-3 justify-content-between align-items-between w-100" style="align-items:center;">
+                <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                    <select class="selectpicker form-control" id="cd_pesq_filial"
+                            name="cd_pesq_filial"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            multiple data-selected-text-format="count > 0"
+                            data-live-search="true" title="Filiais">
+                        {% for filial in filiais %}
+                            <option value="{{ filial.cod_filial }}">{{ filial.desc_filial }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                    <input class="selectpicker form-control" id="cd_mes_ano"
+                            name="cd_mes_ano"
+                            style="color: #999999;"
+                            type="month" title="Ano/Mês">
+                </div>
+                <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                   <select class="selectpicker form-control" id="cd_quinzena"
+                            name="cd_quinzena"
+                            style="color: #999999;"
+                            data-live-search="true" title="Quinzena">
+
+                            <option value="0">1ª Quinzena</option>
+                            <option value="1">2ª Quinzena</option>
+                    </select>
+                </div>
+                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                    <button type="button" name="btn_pesq_analise"
+                          id="btn_pesq_analise"
+                          class="btn btn-primary btn-rounded botaoPrincipal">
+                    <i class="fa-solid fa-check" style="color: #FFFFFF;"></i>
+                      Pesquisar
+                  </button>
+                </div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+
+
+
