@@ -52,7 +52,16 @@ class CadFreteSpot(models.Model):
         db_table = 'ger_cad_frete_spot'#op_plan_controle_cad_frete_spot'
         unique_together = ('tipo_entrega', 'data_ini_vigencia','data_fim_vigencia', 'tipo_perfil_veiculo', 'cod_regiao', 'qtd_min', 'qtd_max', 'tipo_pessoa', 'cod_projeto')
 
-
+class Arq_Update_Cad_Frete(models.Model):
+    cod_arq_update_cad_frete_spot = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    '''A: arquivo, E: editado'''
+    tipo_update = models.CharField(max_length=1, null=False, blank=False, default='E' )
+    arq_update = models.CharField(max_length=300)
+    data_ultima_atualizacao = models.DateField(auto_now_add=True, null=True)
+    cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu', null=True)
+    class Meta():
+        managed = True
+        db_table = 'op_plan_controle_arq_update_cad_frete'
 
 class CadastroPlacaTerceiro(models.Model):
     cod_cad_placa_terc = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
@@ -86,7 +95,7 @@ class Pagamento2ArtTerceirosFinanceiro(models.Model):
     val_pago = models.DecimalField(max_digits=8, decimal_places=2)
     val_conlog = models.DecimalField(max_digits=8, decimal_places=2)
     periodo_ref_pag = models.DateField(null=True)
-    data_geracao_pag = models.DateField(null=True)
+    data_geracao_pag = models.DateField(auto_now_add=True,null=True)
     obs_pag = models.CharField(max_length=500, null=True)
     complemento_pag = models.CharField(max_length=100, null=True)
     status_pagamento = models.CharField(max_length=1, null=True, default='G')
@@ -183,6 +192,12 @@ class LancamentoPagamentoExtras(models.Model):
     periodo_ref_pag_extra = models.DateField(null=True)
     obs_pag_extra = models.CharField(max_length=300, null=True)
     data_imp = models.DateField(auto_now_add=True)
+    '''0(Aprovado) 1(Reprovado)'''
+    status = models.IntegerField(null=True, blank=True)
+    data_status = models.DateField(auto_now_add=True, null=False, blank=False)
+    obs_status = models.CharField(max_length=300, null=True, blank=True)
+    cod_usu_status = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu_status',
+                                          related_name='cod_usu_status', null=True, blank=True)
     cod_tipo_ocor_financ_terc = models.ForeignKey(TipoOcorrenciasFinanceiroTerceiros, models.DO_NOTHING,
                                                   db_column='cod_tipo_ocor_financ_terc', null=True, blank=True)
     cod_pag_2art_terc_financ = models.ForeignKey(Pagamento2ArtTerceirosFinanceiro, models.DO_NOTHING,
@@ -206,7 +221,7 @@ class Estorno_Pagamentos_2Art_Terc(models.Model):
 
 class Tab_Cad_Placa_Terc_Financ():
     def __init__(self, id_cad_placa_terc, placa, perfil_veic, handle_placa, nome_beneficiario, doc_benef, tipo_pessoa_benef,
-                 handle_benef, data_ini, data_fim, ):
+                 handle_benef, data_ini, data_fim, campo_readonly):
         self.id_cad_placa_terc = id_cad_placa_terc
         self.placa = placa
         self.perfil_veic = perfil_veic
@@ -217,6 +232,7 @@ class Tab_Cad_Placa_Terc_Financ():
         self.handle_benef = handle_benef
         self.data_ini = data_ini
         self.data_fim = data_fim
+        self.campo_readonly = campo_readonly
 
 
 

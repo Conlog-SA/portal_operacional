@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-    Login | Portal Operacional
+    Safety
 {% endblock %}
 
 {% block link_static_css %}
@@ -122,6 +122,15 @@
           type="text/javascript">
   </script>
   <script src="{% static 'controllers/safety_checks_aplicados_app/frm_checks_aplicados_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_gab_empilhadeira_app/frm_gab_empilhadeira_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_predial_app/frm_predial_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
+          type="text/javascript">
+  </script>
+  <script src="{% static 'controllers/safety_pci_app/frm_pci_app.js' %}?v='{{VERSAO_SAFETY}}' %}"
           type="text/javascript">
   </script>
 {% endblock %}

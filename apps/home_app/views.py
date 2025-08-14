@@ -8,7 +8,8 @@ from apps.calendario_app.views import gera_datas_previstas_requisicoes_frota
 from apps.conecta_ad_app.views import Conexao_AD
 from apps.envio_email_app.views import Envio_Email
 from apps.estrut_org_app.models import Filial
-from apps.usuario_app.models import Usuario
+from apps.menu_app.models import Menu
+from apps.usuario_app.models import Usuario, Usu_Menu
 from apps.usuario_app.views import Usuario_View
 
 
@@ -138,6 +139,24 @@ class Solicitacao_Acesso_View(View):
             sala = 'T'
         )
         obj_usu_sol.save()
+
+        '''Seta acessos publicos para todos os usuários'''
+        lista_obj_menu_publicos = Menu.objects.filter(tipo_acesso='P', status_menu='A', pai_menu=0)
+        for menu_publico in lista_obj_menu_publicos:
+            obj_usu_menu_publico = Usu_Menu(
+                cod_usu=obj_usu_sol,
+                cod_menu=menu_publico
+            ).save()
+            lista_obj_sub_menu_publicos = Menu.objects.filter(pai_menu=menu_publico.cod_menu, status_menu='A')
+            for sub_menu_publico in lista_obj_sub_menu_publicos:
+                obj_usu_sub_menu_publico = Usu_Menu(
+                    cod_usu=obj_usu_sol,
+                    cod_menu=sub_menu_publico
+                ).save()
+
+
+
+
         Envio_Email().envia_email_solicitacao_acesso_adm(obj_usu_sol)
         msg_solicitacao_usu = {
             'msg' : f'''{obj_usu_sol.nome_usu} , sua solicitação foi enviada com sucesso!. Aguarde contato do adm para liberação 

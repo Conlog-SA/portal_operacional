@@ -55,7 +55,6 @@ urlpatterns = [
     path('safety_gso_app/', include('apps.safety_gso_app.urls')),
     path('frota_custos_placa_app/', include('apps.frota_custos_placa_app.urls')),
     path('ti_painel_processos_automaticos_app/', include('apps.ti_painel_processos_automaticos_app.urls')),
-    path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
     path('contratos_frete_deep_app/', include('apps.contratos_frete_deep_app.urls')),
     path('nps_ti_app/', include('apps.nps_ti_app.urls')),
     path('gente_gestao_comunicado_admitidos_app/', include('apps.gente_gestao_comunicado_admitidos_app.urls')),
@@ -63,6 +62,11 @@ urlpatterns = [
     path('gente_gestao_entrevista_desligamento_app/', include('apps.gente_gestao_entrevista_desligamento_app.urls')),
     path('gente_gestao_comun_encarreiramentos_app/', include('apps.gente_gestao_comun_encarreiramentos_app.urls')),
     path('utilitarios_assinatura_email_app/', include('apps.utilitarios_assinatura_email_app.urls')),
+    path('safety_gab_empilhadeira_app/', include('apps.safety_gab_empilhadeira_app.urls')),
+    path('dp_quadro_vagas_app/', include('apps.dp_quadro_vagas_app.urls')),
+    path('safety_predial_app/', include('apps.safety_predial_app.urls')),
+    path('safety_pci_app/', include('apps.safety_pci_app.urls')),
+    path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

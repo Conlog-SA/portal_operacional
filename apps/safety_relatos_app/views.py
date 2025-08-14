@@ -64,12 +64,19 @@ class Form_Gerar_Relatos_Check(View):
             lista_categorias_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_empresa=17)
 
         str_options_select_local = ''
+        lista_setores = []
         if filial_usuario.cod_empresa.cod_empresa == 17 or filial_usuario.cod_filial in [34, 57, 89]:
             flag_deep = True
             locais = Itens_Componentes.objects.filter(tipo_check=2, campo_check=6)
             for local in locais:
                 str_options_select_local += f'<option value="{local.cod_componente}">{local.desc_componente}</option>'
         else:
+            setores = Itens_Componentes.objects.filter(tipo_check=2, campo_check=7)
+            for setor in setores:
+                lista_setores.append({
+                    'id_setor': setor.cod_componente,
+                    'desc_setor': setor.desc_componente
+                })
             flag_deep = False
 
         context = {
@@ -82,9 +89,11 @@ class Form_Gerar_Relatos_Check(View):
             'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
             'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura,
             'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro,
+            'lista_setores_relatos': lista_setores
         }
 
         if "Visitante" in colaborador.nome_colaborador:
+            request.session['flag_deep'] = flag_deep
             return render(request, 'safety_relatos_app/relatos_form_gerar_check_visitante.html', context)
 
         return render(request, 'safety_relatos_app/relatos_form_gerar_check.html', context)
@@ -101,6 +110,8 @@ class Form_Gerar_Relatos_Check(View):
         categoria_ato_inseguro = request.POST['categoria_ato_inseguro']
         categoria_condicao_insegura = request.POST['categoria_condicao_insegura']
         comportamento_seguro_categoria = request.POST['comportamento_seguro_categoria']
+        setor_relato = request.POST.get('setor_relato', None)
+        relato_anonimo = request.POST.get('relato_anonimo', 'false')
 
         if categoria_ato_inseguro == '':
             categoria_ato_inseguro = None
@@ -116,7 +127,6 @@ class Form_Gerar_Relatos_Check(View):
         colaborador = None
         if situacao_envolvido == '1':
             colaborador = Colaborador.objects.get(pk=int(nome_relatado))
-
         elif (situacao_envolvido == '2' or situacao_envolvido == '3' or situacao_envolvido == '4') and tipo_relato != '2':
 
             colaborador = Colaborador(
@@ -126,13 +136,22 @@ class Form_Gerar_Relatos_Check(View):
             )
             colaborador.save()
 
-        cod_colaborador = request.session['cod_colaborador']
-        colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador).first()
-        filial_colaborador_envio = Filial.objects.get(pk=colaborador_envio.cod_filial)
+        cod_colaborador_envio = request.session['cod_colaborador']
+        colaborador_envio_original = Colaborador.objects.filter(pk=cod_colaborador_envio).first()
+        filial_colaborador_envio_original = Filial.objects.get(pk=colaborador_envio_original.cod_filial)
 
-        if filial_colaborador_envio.cod_empresa.cod_empresa == 17:
+        if relato_anonimo == 'false':
+            colaborador_envio = colaborador_envio_original
+            filial_colaborador_envio = filial_colaborador_envio_original
+        elif relato_anonimo == 'true':
+            filial_colaborador_envio = Filial.objects.get(pk=int(unidade_relato))
+            colaborador_envio = Colaborador.objects.filter(cod_filial=filial_colaborador_envio.cod_filial,perfil_usu='V').first()
+            filial_colaborador_envio = Filial.objects.get(pk=colaborador_envio.cod_filial)
 
+        if filial_colaborador_envio.cod_empresa.cod_empresa == 17 or filial_colaborador_envio.cod_filial in [34, 57, 89]:
             local_relato = Itens_Componentes.objects.filter(pk=int(local_relato)).first().desc_componente
+        elif setor_relato == None:
+            return HttpResponse('Setor do relato não informado', status=404)
 
         filial = Filial.objects.get(pk=unidade_relato)
 
@@ -191,7 +210,8 @@ class Form_Gerar_Relatos_Check(View):
             cod_check_aplicado=check_aplicado,
             categoria_ato_inseguro=categoria_ato_inseguro,
             categoria_condicao_insegura=categoria_condicao_insegura,
-            categoria_comportamento_seguro=comportamento_seguro_categoria
+            categoria_comportamento_seguro=comportamento_seguro_categoria,
+            setor_relato=setor_relato
         )
         check_cabecalho.save()
 
@@ -225,4 +245,3 @@ class Lista_Atividades(View):
             'lista_atividades': dict_atividades_options
         }
         return JsonResponse(data)
-

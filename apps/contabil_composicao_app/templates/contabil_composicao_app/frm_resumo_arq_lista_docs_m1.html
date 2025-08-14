@@ -10,19 +10,34 @@
                 data-bs-target="#collapse{{ arq.cod_arquivo__cod_arquivo }}" aria-expanded="false"
                 aria-controls="collapse{{ arq.cod_arquivo__cod_arquivo }}" style="font-size:12px;">
             <i class="fa-solid fa-bookmark icon-color-e"></i>&nbsp;&nbsp;
-            <b>Competência:</b>&nbsp;{{ arq.cod_arquivo__data_competencia }}&nbsp;&nbsp;
-            <b>Arquivo:</b>&nbsp;{{ arq.cod_arquivo__nome_arqv_original }}&nbsp;&nbsp;
-            <b>Qtd.: Registros:</b>&nbsp;{{ arq.qtd_registros }}&nbsp;&nbsp;
-            <b>Val. Relatório(R$):</b>&nbsp;{{ arq.tt_val_rel }}&nbsp;&nbsp;
-            <b>Val. Razão(R$):</b>&nbsp;{{ arq.tt_val_razao }}&nbsp;&nbsp;
-            <b>Dif.(R$):</b>&nbsp;{{ arq.tt_dif }}&nbsp;&nbsp;
-            <b>Usuário:</b>&nbsp;{{ arq.cod_arquivo__cod_usu__login_usu }}&nbsp;&nbsp;
-            <b>Importado em:</b>&nbsp;{{ arq.cod_arquivo__data_imp }}
+            <b style="font-weight: 600;">Comp.:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.cod_arquivo__data_competencia }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">Arquivo:</b>
+            <span style="font-weight: 400;">{{ arq.cod_arquivo__nome_arqv_original }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">Qtd. Reg.:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.qtd_registros }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">R$ Rel.:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.tt_val_rel }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">R$ Razão:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.tt_val_razao }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">Dif.(R$):</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.tt_dif }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">Usuário:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.cod_arquivo__cod_usu__login_usu }}</span>
+            <b style="color: #f46424 ;">&nbsp;|&nbsp;</b>
+            <b style="font-weight: 600;">Imp. em:</b>&nbsp;
+            <span style="font-weight: 400;">{{ arq.cod_arquivo__data_imp }}</span>
         </button>
       </h6>
       <div id="collapse{{ arq.cod_arquivo__cod_arquivo }}" class="accordion-collapse collapse"
            aria-labelledby="heading{{ arq.cod_arquivo__cod_arquivo }}" data-bs-parent="#accordion_docs">
-        <div class="accordion-body d-flex flex-column" style="padding-left: 3.75rem;"
+        <div class="accordion-body d-flex flex-column"
              id="div_docs_arq_competencia_{{ arq.cod_arquivo__cod_arquivo }}">
 
 

@@ -1,6 +1,8 @@
 from django.urls import path
 
 from apps.plan_controle_fat_2art_terc_app import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('acessa_form_gerar_pag_2art_terc', views.Form_Gerar_Pag_2Art_View.as_view(),
@@ -90,5 +92,18 @@ urlpatterns = [
          name='gera_rel_pdf_acres_desc_pagamento_mapas_terc'),
     path('atualiza_dados_reg_2art_terc_financ', views.Form_Gerar_Pag_2Art_View.as_view(),
          name='atualiza_dados_reg_2art_terc_financ'),
-
+    path('upload_layout_file_update_frete_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
+         name='upload_layout_file_update_frete_by_id'),
+    path('carrega_update_fretes_by_id', views.Frm_Upload_Layout_Cad_Frete_View.as_view(),
+         name='carrega_update_fretes_by_id'),
+    path('lancamentos_pag_extra_terc', views.Frm_Lanc_Pag_Extras_View.as_view(),
+         name='lancamentos_pag_extra_terc'),
+    path('confirma_status_lanc_pag_extra', views.Frm_Lanc_Pag_Extras_View.as_view(),
+         name='confirma_status_lanc_pag_extra'),
+    path('upload_layout_file_imp_pag_extra', views.Frm_Layout_Arq_Pag_Extra_View.as_view(),
+         name='upload_layout_file_imp_pag_extra'),
+    path('upload_layout_file_imp_acresc_desc', views.Frm_Layout_Arq_Acresc_Desc_View.as_view(),
+         name='upload_layout_file_imp_acresc_desc')
 ]
+
+urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)

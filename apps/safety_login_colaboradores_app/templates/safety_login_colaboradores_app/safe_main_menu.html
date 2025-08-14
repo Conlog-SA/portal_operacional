@@ -17,9 +17,11 @@
                 <i style="font-size:11px;">{{desc_filial_colaborador}}</i>
             </div>
         </div>
-        {% autoescape off %}
-            {{str_menu_colaborador}}
-        {% endautoescape %}
+        <div style="height:100%;overflow-y:scroll">
+            {% autoescape off %}
+                {{str_menu_colaborador}}
+            {% endautoescape %}
+        </div>
         <div style="display:flex;justify-content:flex-end;height:10%">
             <button class="btn btn-space btn-sair-safety">
                 <div style="display:flex;flex-direction:column">

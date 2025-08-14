@@ -23,7 +23,7 @@ from proj_portal_operacional.settings import BASE_DIR
 
 
 # Create your views here.
-class Form_Gerar_Gab_Emp(View):
+class Form_Gerar_Gab_GSO_Emp(View):
     @csrf_exempt
     def get(self, request):
         cod_colaborador = request.session['cod_colaborador']
@@ -174,7 +174,7 @@ class Empilhadeiras_Filial(View):
     def get(self, request):
         unidade = request.GET['cod_unidade']
         filial_selecionada = Filial.objects.get(pk=unidade)
-        lista_empilhadeiras = Empilhadeira.objects.filter(cod_filial=filial_selecionada.cod_filial)
+        lista_empilhadeiras = Empilhadeira.objects.filter(cod_filial=filial_selecionada.cod_filial).order_by('desc_placa')
         dict_empilhadeiras = []
         for emp in lista_empilhadeiras:
             dict_empilhadeiras.append({'cod_emp': emp.cod_emp, 'placa': emp.placa})
@@ -182,7 +182,6 @@ class Empilhadeiras_Filial(View):
             'lista_empilhadeiras': dict_empilhadeiras
         }
         return JsonResponse(data)
-
 
         #msg = ''
         #obj_anexo_conta_pesq

@@ -1,15 +1,16 @@
 import os
 import locale
 import decimal
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 import json
 from math import trunc
 
+import pandas as pd
 import xlrd
 from django.core.files.storage import FileSystemStorage
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Q, Sum
-from django.http import JsonResponse, Http404
+from django.http import JsonResponse, Http404, FileResponse
 from django.shortcuts import render
 from django.views import View
 
@@ -19,9 +20,11 @@ from apps.plan_controle_fat_2art_terc_app.models import BeneficiarioTerceiro, Re
     HistAcaoMapas2ArtTerceiros, CadastroPlacaTerceiro, CadFreteSpot, TipoOcorrenciasFinanceiroTerceiros, \
     Pagamento2ArtTerceirosFinanceiro, LancamentosRegistro2ArtTerceirosFinanceiro, Tab_Cad_Placa_Terc_Financ, \
     LinhaExcelArquivoLanAcresDesc, LinhaExcelArquivoPagamentosExtra, LancamentoPagamentoExtras, \
-    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros, Estorno_Pagamentos_2Art_Terc
+    Tab_Pagamentos_Terceiros, Render, Tab_Lancamentos_Pagamento_Terceiros, Estorno_Pagamentos_2Art_Terc, \
+    Arq_Update_Cad_Frete
 from apps.plan_controle_fat_2art_terc_app.uteis import Uteis
 from apps.usuario_app.models import Usuario, Proj_Usu
+from proj_portal_operacional import settings
 from proj_portal_operacional.settings import BASE_DIR
 
 
@@ -584,38 +587,49 @@ class Form_Cad_Placa_2Art_Terc_View(View):
         return render(request, 'plan_controle_fat_2art_terc_app/form_cad_placas_fat_2art_terc.html', contexto)
 
     def post(self, request):
-        id_benef = request.POST['id_benef']
-        placa = request.POST['placa']
-        perfil_veic = request.POST['perfil_veic']
-        inicio_vigencia = request.POST['inicio_vig']
-        fim_vigencia = request.POST['fim_vig']
-        cod_proj = request.POST['cod_proj']
+        tipo_transacao_frm = request.POST['tipo_transacao']
 
-        projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
-        obj_beneficiario = BeneficiarioTerceiro.objects.filter(cod_benef_terc=id_benef).first()
-        handle_benner_placa = ConexaoBancoBenner().retorna_dados_placa_benef_a_sincronizar(projeto.handle_benner,
-                                                                                           placa,
-                                                                                           '')[0].handle_placa
-        obj_cad_placa_pesq = CadastroPlacaTerceiro.objects.filter(
-            Q(data_ini_vigencia__range=[inicio_vigencia, fim_vigencia]) | Q(data_fim_vigencia__range=[inicio_vigencia, fim_vigencia]),
-            placa_cad_placa_terc=placa, cod_projeto=projeto, cod_benef_terc=obj_beneficiario,
-            perfil_veiculo_cad_placa_terc=perfil_veic,
-        ).first()
         msg = ''
-        if obj_cad_placa_pesq == None:
-            reg_cad_placa_terc = CadastroPlacaTerceiro(
-                placa_cad_placa_terc=placa,
-                cod_benef_terc=obj_beneficiario,
+        if tipo_transacao_frm == 'novo':
+            id_benef = request.POST['id_benef']
+            placa = request.POST['placa']
+            perfil_veic = request.POST['perfil_veic']
+            inicio_vigencia = request.POST['inicio_vig']
+            fim_vigencia = request.POST['fim_vig']
+            cod_proj = request.POST['cod_proj']
+
+            projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
+            obj_beneficiario = BeneficiarioTerceiro.objects.filter(cod_benef_terc=id_benef).first()
+            handle_benner_placa = ConexaoBancoBenner().retorna_dados_placa_benef_a_sincronizar(projeto.handle_benner,
+                                                                                               placa,
+                                                                                               '')[0].handle_placa
+            obj_cad_placa_pesq = CadastroPlacaTerceiro.objects.filter(
+                Q(data_ini_vigencia__range=[inicio_vigencia, fim_vigencia]) | Q(data_fim_vigencia__range=[inicio_vigencia, fim_vigencia]),
+                placa_cad_placa_terc=placa, cod_projeto=projeto, cod_benef_terc=obj_beneficiario,
                 perfil_veiculo_cad_placa_terc=perfil_veic,
-                cod_projeto=projeto,
-                handle_benner=handle_benner_placa,
-                data_ini_vigencia=datetime.strptime(inicio_vigencia, '%Y-%m-%d'),
-                data_fim_vigencia=datetime.strptime(fim_vigencia, '%Y-%m-%d')
-            )
-            reg_cad_placa_terc.save()
-            msg = 'Placa ' + placa + ', cadastrada com sucesso!'
-        else:
-            msg = 'Já possui a placa ' + placa + ', cadastrada nesta mesma vigência. Verifique!'
+            ).first()
+            if obj_cad_placa_pesq == None:
+                reg_cad_placa_terc = CadastroPlacaTerceiro(
+                    placa_cad_placa_terc=placa,
+                    cod_benef_terc=obj_beneficiario,
+                    perfil_veiculo_cad_placa_terc=perfil_veic,
+                    cod_projeto=projeto,
+                    handle_benner=handle_benner_placa,
+                    data_ini_vigencia=datetime.strptime(inicio_vigencia, '%Y-%m-%d'),
+                    data_fim_vigencia=datetime.strptime(fim_vigencia, '%Y-%m-%d')
+                )
+                reg_cad_placa_terc.save()
+                msg = 'Placa ' + placa + ', cadastrada com sucesso!'
+            else:
+                msg = 'Já possui a placa ' + placa + ', cadastrada nesta mesma vigência. Verifique!'
+        elif tipo_transacao_frm == 'editar':
+            cod_cad_placa_frm = request.POST['cod_cad_placa']
+            dt_fim_vigencia_placa_frm = request.POST['dt_fim_vigencia_placa']
+            obj_plca = CadastroPlacaTerceiro.objects.get(pk=cod_cad_placa_frm)
+            obj_plca.data_fim_vigencia = dt_fim_vigencia_placa_frm
+            obj_plca.save()
+            msg = 'Placa editada com sucesso'
+
 
         data = dict()
         data = {
@@ -636,14 +650,18 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
         mes_vigencia = periodo_vigencia.split("-")[1]
         ano_vigencia = periodo_vigencia.split("-")[0]
 
+
         projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
         registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(
             cod_projeto=projeto).extra(
-            where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
-                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
+            where=[f" {mes_vigencia} BETWEEN month(data_ini_vigencia) AND month(data_fim_vigencia)"
+                   f" AND {ano_vigencia} BETWEEN year(data_ini_vigencia) AND year(data_fim_vigencia) "])
+
         tab_form_cad_placa_terc = []
         for reg in registros_cad_placa_terc:
+            campo_readonly = ''
+            if reg.data_fim_vigencia < datetime.now().date():
+                campo_readonly = 'readonly'
             reg_tab_cad_placa = Tab_Cad_Placa_Terc_Financ(
                 id_cad_placa_terc=reg.cod_cad_placa_terc,
                 placa=reg.placa_cad_placa_terc,
@@ -654,7 +672,8 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
                 tipo_pessoa_benef=reg.cod_benef_terc.tipo_pessoa_benef_terc,
                 handle_benef=reg.cod_benef_terc.handle_benner,
                 data_ini=reg.data_ini_vigencia,
-                data_fim=reg.data_fim_vigencia
+                data_fim=reg.data_fim_vigencia,
+                campo_readonly = campo_readonly
             )
             tab_form_cad_placa_terc.append(reg_tab_cad_placa.__dict__)
 
@@ -703,11 +722,12 @@ class Form_Replica_Cad_Placas_2Art_Terc_View(View):
     def get(self, request):
         comp_form = request.GET['comp']
         cod_proj_form = request.GET['cod_proj']
-        lista_datas_comp = list(CadastroPlacaTerceiro.objects.filter(
-            Q(data_ini_vigencia__month=comp_form.split('-')[1], data_ini_vigencia__year=comp_form.split('-')[0]) |
-            Q(data_fim_vigencia__month=comp_form.split('-')[1], data_fim_vigencia__year=comp_form.split('-')[0]),
-            cod_projeto__cod_projeto=cod_proj_form
-        ).values('data_ini_vigencia', 'data_fim_vigencia').distinct())
+
+        data_vigencia = comp_form + "-01"
+        lista_datas_comp = list(CadastroPlacaTerceiro.objects
+                                .filter(cod_projeto__cod_projeto=cod_proj_form)
+                                .extra(where=[f" '{data_vigencia}' BETWEEN data_ini_vigencia AND data_fim_vigencia"])
+                                .values('data_ini_vigencia', 'data_fim_vigencia').distinct())
         '''for reg in lista_datas_comp:
             print(reg.data_ini_vigencia__month + ' : ' + reg.data_fim_vigencia__month)'''
         data = dict()
@@ -719,8 +739,8 @@ class Form_Replica_Cad_Placas_2Art_Terc_View(View):
     def post(self, request):
         cod_proj = request.POST['cod_proj']
         periodo_vigencia = request.POST['data_vigencia']
-        data_vigencia_origem_ini = periodo_vigencia.split("_")[0]
-        data_vigencia_origem_fim = periodo_vigencia.split("_")[1]
+        placas_selecionadas_frm = request.POST['placas_selecionadas']
+
 
         data_ini_vigencia_YYYY_MM_DD = request.POST['data_ini_vigencia']
         data_fim_vigencia_YYYY_MM_DD = request.POST['data_fim_vigencia']
@@ -729,9 +749,16 @@ class Form_Replica_Cad_Placas_2Art_Terc_View(View):
 
         projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
         msg = ''
-        registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(cod_projeto=projeto,
-                                                                        data_ini_vigencia=data_vigencia_origem_ini,
-                                                                        data_fim_vigencia=data_vigencia_origem_fim)
+        registros_cad_placa_terc = None
+        if placas_selecionadas_frm == '' or placas_selecionadas_frm == None:
+            data_vigencia_origem_ini = periodo_vigencia.split("_")[0]
+            data_vigencia_origem_fim = periodo_vigencia.split("_")[1]
+            registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(cod_projeto=projeto,
+                                                                            data_ini_vigencia=data_vigencia_origem_ini,
+                                                                            data_fim_vigencia=data_vigencia_origem_fim)
+        else:
+            registros_cad_placa_terc = CadastroPlacaTerceiro.objects.filter(cod_cad_placa_terc__in=placas_selecionadas_frm.split(','))
+
 
         count_reg_replicados = 0
         for reg in registros_cad_placa_terc:
@@ -741,9 +768,9 @@ class Form_Replica_Cad_Placas_2Art_Terc_View(View):
                                                                            cod_benef_terc=reg.cod_benef_terc) \
                 .extra(where=[
                 " '" + str(data_ini_vigencia_YYYY_MM_DD) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia OR " +
-                " '" + str(data_fim_vigencia_YYYY_MM_DD) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                " '" + str(data_fim_vigencia_YYYY_MM_DD) + "' BETWEEN data_ini_vigencia AND data_fim_vigencia"])
 
-            if verifica_reg_cadastrado == None:
+            if verifica_reg_cadastrado == None or len(verifica_reg_cadastrado) == 1:
                 reg_cad_placa = CadastroPlacaTerceiro(
                     placa_cad_placa_terc=reg.placa_cad_placa_terc,
                     cod_benef_terc=reg.cod_benef_terc,
@@ -755,12 +782,18 @@ class Form_Replica_Cad_Placas_2Art_Terc_View(View):
                     data_fim_vigencia=datetime.strptime(data_fim_vigencia_YYYY_MM_DD, '%Y-%m-%d')
                 )
                 reg_cad_placa.save()
+
+                data_fim_registro_anterior = datetime.strptime(data_ini_vigencia_YYYY_MM_DD, '%Y-%m-%d') - timedelta(1)
+                reg.data_fim_vigencia = data_fim_registro_anterior
+                reg.save()
                 count_reg_replicados += 1
 
         if count_reg_replicados == 0:
             msg = 'Verifique o periodo informado. Talvez já tenha registros no período!'
         else:
             msg = str(count_reg_replicados) + ' registros replicados com sucesso!'
+
+
 
         data = dict()
         data = {
@@ -1013,18 +1046,16 @@ class Tab_Cad_Fretes_Terc_View(View):
         projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
         registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
             cod_projeto=projeto).extra(
-            where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " AND YEAR(data_ini_vigencia) = " + ano_vigencia + " ) " +
-                " OR (MONTH(data_fim_vigencia) = " + mes_vigencia + " AND YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
-                                        .values())
+            where=[f" {mes_vigencia} BETWEEN month(data_ini_vigencia) AND month(data_fim_vigencia)"
+                   f" AND {ano_vigencia} BETWEEN year(data_ini_vigencia) AND year(data_fim_vigencia) "]).values())
 
-        '''registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
-            cod_projeto=projeto).extra(
-            where=[
-                " ( MONTH(data_ini_vigencia) = " + mes_vigencia + " OR MONTH(data_fim_vigencia) = " + mes_vigencia + " ) " +
-                " AND (YEAR(data_ini_vigencia) = " + ano_vigencia + " OR YEAR(data_fim_vigencia) = " + ano_vigencia + " ) "])
-                                        .values())
-        '''
+        for cad_frete in registros_cad_frete_terc:
+            campo_readonly = ''
+            if cad_frete['data_fim_vigencia'] < datetime.now().date():
+                campo_readonly = 'readonly'
+            cad_frete['campo_readonly'] = campo_readonly
+
+
 
         data = dict()
         data = {
@@ -1173,14 +1204,80 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
 
         cad_projetos = Projeto.objects.filter(cod_atividade__desc2_atividade='Terceiro').order_by('cod_projeto')
+        #lista_filiais = cad_projetos.filter(cod_filial__desc_filial__icontains='AMBEV').values('cod_filial__cod_filial', 'cod_filial__desc_filial').distinct()
+        lista_dic_lanc_pendentes_validado, lista_filiais = self.retorna_lista_lanc_pag_extra_pendentes(0, 0, None)
 
         context = {
             "cad_projetos": cad_projetos,
-            'obj_usuario_logado': obj_usuario_logado
+            'lista_filiais': lista_filiais,
+            'obj_usuario_logado': obj_usuario_logado,
+            'lista_dic_lanc_pendentes_validado': lista_dic_lanc_pendentes_validado
         }
         return render(request,
                       'plan_controle_fat_2art_terc_app/form_importa_arquivo_faturamento_terceiros.html',
                       context)
+
+    def retorna_lista_lanc_pag_extra_pendentes(self, status, cod_filial, dt_competencia):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+        if status == 0:
+            if dt_competencia == None:
+                lista_obj_lancamentos_pag_extras_pendentes = LancamentoPagamentoExtras.objects.filter(status__isnull=True)
+            else:
+                lista_obj_lancamentos_pag_extras_pendentes = LancamentoPagamentoExtras.objects.filter(
+                    status__isnull=True, periodo_ref_pag_extra=dt_competencia)
+        else:
+            if dt_competencia == None:
+                lista_obj_lancamentos_pag_extras_pendentes = LancamentoPagamentoExtras.objects.filter(status=status)
+            else:
+                lista_obj_lancamentos_pag_extras_pendentes = (LancamentoPagamentoExtras
+                                                              .objects.filter(status=status, periodo_ref_pag_extra=dt_competencia))
+
+        lista_dic_lanc_pendentes = []
+        lista_dic_lanc_pendentes_validado = []
+        lista_dic_filiais_com_lanc_pag_extras_pendentes = []
+        if len(lista_obj_lancamentos_pag_extras_pendentes) > 0:
+            for obj_lanc in lista_obj_lancamentos_pag_extras_pendentes:
+                obj_placa = CadastroPlacaTerceiro.objects.filter(placa_cad_placa_terc=obj_lanc.placa_pag_extra) \
+                    .extra(where=[f"'{obj_lanc.data_pag_extra}' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first()
+                dic_lanc = {
+                    'cod_lanc_pag_extra': obj_lanc.cod_lanc_pag_extra,
+                    'cod_filial': obj_placa.cod_benef_terc.cod_projeto.cod_filial.cod_filial,
+                    'nome_filial': obj_placa.cod_benef_terc.cod_projeto.cod_filial.desc_filial,
+                    'cod_benef': obj_placa.cod_benef_terc.cod_benef_terc,
+                    'doc_benef': obj_placa.cod_benef_terc.doc_benef_terc,
+                    'nome_benef': obj_placa.cod_benef_terc.nome_benef_terc,
+                    'placa': obj_lanc.placa_pag_extra,
+                    'data_pag': obj_lanc.data_pag_extra,
+                    'data_ref_pagamento': obj_lanc.periodo_ref_pag_extra.strftime("%d-%m-%Y"),
+                    'valor': locale.currency(obj_lanc.val_pag_extra, grouping=True, symbol=None),
+                    'status': 'NA' if obj_lanc.status == None else str(obj_lanc.status )
+                }
+                lista_dic_lanc_pendentes.append(dic_lanc)
+            df_pag_pendentes = pd.DataFrame(lista_dic_lanc_pendentes).reset_index()
+            df_pag_pendentes_agrupado = df_pag_pendentes.groupby(
+                ['cod_filial', 'nome_filial', 'cod_benef', 'doc_benef', 'nome_benef', 'data_ref_pagamento', 'status']).agg({
+                'valor': 'sum',
+                'cod_lanc_pag_extra': lambda x: '_'.join(str(i) for i in x),
+                'placa': lambda x: ', '.join(x)
+            }).reset_index()
+
+            if int(cod_filial) != 0:
+                df_pag_pendentes_agrupado['cod_filial'] = df_pag_pendentes_agrupado['cod_filial'].apply(
+                    lambda x: int(x))
+                df_pag_pendentes_agrupado = df_pag_pendentes_agrupado[df_pag_pendentes_agrupado['cod_filial'] == int(cod_filial)].reset_index()
+            else:
+                df_pag_pendentes_agrupado = df_pag_pendentes_agrupado
+
+            lista_dic_lanc_pendentes_validado = df_pag_pendentes_agrupado.to_dict(orient='records')
+            df_filiais_com_lanc_pag_extras_pendentes = df_pag_pendentes_agrupado[['cod_filial', 'nome_filial']].drop_duplicates().reset_index()
+            for index, row in df_filiais_com_lanc_pag_extras_pendentes.iterrows():
+                filial = {
+                    'cod_filial': int(df_filiais_com_lanc_pag_extras_pendentes.loc[index, 'cod_filial']),
+                    'nome_filial': df_filiais_com_lanc_pag_extras_pendentes.loc[index, 'nome_filial']
+                }
+                lista_dic_filiais_com_lanc_pag_extras_pendentes.append(filial)
+
+        return lista_dic_lanc_pendentes_validado, lista_dic_filiais_com_lanc_pag_extras_pendentes
 
     def post(self, request):
         tipo_arq_form = request.POST['tipo_arq']
@@ -1280,6 +1377,8 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
             }
 
         elif tipo_arq_form == 'arq_pag_extras':
+            lista_dic_lanc_pendentes_validado = []
+            lista_filiais_pesq = []
             lista_form_pagamentos_extra_tab = []
             try:
                 fs = FileSystemStorage()
@@ -1323,6 +1422,7 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
                         cod_tipo_ocor_financ_terc=obj_tipo_ocorrencia,
                         cod_pag_2art_terc_financ=None
                     )
+                    obj_pag_extra.save()
                     desc_tt += reg.desc
                     acres_tt += reg.acres
                     val_tt += reg.valor
@@ -1335,7 +1435,7 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
 
                     lista_form_pagamentos_extra_tab.append(reg.__dict__)
 
-                if len(lista_obj_pag_extra) > 0:
+                '''if len(lista_obj_pag_extra) > 0:
                     obj_placa = CadastroPlacaTerceiro.objects.filter(
                         placa_cad_placa_terc=lista_obj_pag_extra[0].placa_pag_extra).extra(
                         where=["' " + datetime.strftime(lista_obj_pag_extra[0].data_pag_extra,
@@ -1363,9 +1463,11 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
 
                     for p in lista_obj_pag_extra:
                         p.cod_pag_2art_terc_financ = pag
-                        p.save()
+                        p.save()'''
 
                 msg = 'Arquivo importado com sucesso!'
+                lista_dic_lanc_pendentes_validado, lista_filiais_pesq = self.retorna_lista_lanc_pag_extra_pendentes(0, 0,
+                                                                                                               None)
             except Exception as e:
                 lista_form_pagamentos_extra_tab = []
                 if 'cod_benef_terc' in str(e):
@@ -1376,7 +1478,9 @@ class Form_Importa_Arquivo_Fat_Terc_View(View):
 
             data = {
                 'msg': msg,
-                'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab
+                'lista_form_pagamentos_extra_tab': lista_form_pagamentos_extra_tab,
+                'lista_dic_lanc_pendentes_validado': lista_dic_lanc_pendentes_validado,
+                'lista_filiais_pesq': lista_filiais_pesq
             }
 
         return JsonResponse(data, safe=False)
@@ -1426,7 +1530,7 @@ class ImportaArquivosFatTer():
                 else:
                     row_lanc = LinhaExcelArquivoLanAcresDesc(
                         cod_lanc_banco=None,
-                        serial_proj=plan.row_values(i)[0],
+                        serial_proj=plan.row_values(i)[0].split(' - ')[0],
                         desc_tipo_lanc=plan.row_values(i)[1],
                         desc_ocorrencia_lan='',
                         mapa_ocorrencia=int(plan.row_values(i)[2]),
@@ -2216,3 +2320,208 @@ class Pdf_Rel_Acres_Desc_Pagamento_Terc(View):
         }
 
         return Render.render('plan_controle_fat_2art_terc_app/rel_pdf_acresc_desc_pagamento_2art_terc.html', params, 'myfile')
+
+
+class Frm_Upload_Layout_Cad_Frete_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Layout_Atualizacao_Fretes_Plan_Controle_Pag_Terc.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+    def post(self, request):
+        file_update_fretes_frm = request.FILES['file_update_fretes']
+
+        cod_usu_session = request.session['cod_usuario_logado']
+        obj_usu = Usuario.objects.filter(cod_usu=cod_usu_session).first()
+
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%d/%m/%Y')
+        hota_atual = data_hora_atual.strftime('%H:%M:%S')
+        caminho_arq_importado = ('docs/fat_terceiros_update_fretes/' + obj_usu.login_usu.replace('.', '_') + '_' +
+                                 str(data_atual_dd_mm_yyyy).replace('/', '_') + '_' +
+                                 str(hota_atual).replace(':', '_') + '.xlsx')
+
+        obj_arq_update_cad_frete = Arq_Update_Cad_Frete(
+            tipo_update = 'A',
+            arq_update = caminho_arq_importado,
+            cod_usu = obj_usu
+        ).save()
+        fs = FileSystemStorage()
+        filename = fs.save(caminho_arq_importado, file_update_fretes_frm)
+        upload_file_url = os.path.join(BASE_DIR, 'media/' + caminho_arq_importado)
+        df_conteudo_arq = pd.read_excel(upload_file_url)
+        df_conteudo_arq.rename(columns=lambda x : str(x).strip(), inplace=True)
+        df_conteudo_arq.reset_index()
+        lista_cod_frete = df_conteudo_arq['cod_cad_frete_spot'].unique().tolist()
+        lista_obj_terc_financ_pago = (Registro2ArtTerceirosFinanceiro
+                                      .objects
+                                      .filter(cod_cad_frete_spot__in=lista_cod_frete,
+                                              status_financeiro_2art_terc_financ='P'))
+        msg = ''
+        if len(lista_obj_terc_financ_pago) == 0:
+            for index, row in df_conteudo_arq.iterrows():
+                cod_frete = df_conteudo_arq.loc[index, 'cod_cad_frete_spot']
+                obj_frete = CadFreteSpot.objects.get(pk=cod_frete)
+                obj_frete.qtd_min = int(df_conteudo_arq.loc[index, 'qtd_min'])
+                obj_frete.val_frete_carreteiro_min = float(df_conteudo_arq.loc[index, 'val_frete_carreteiro_min'])
+                obj_frete.val_descarga_min = float(df_conteudo_arq.loc[index, 'val_descarga_min'])
+                obj_frete.val_pedagio_min = float(df_conteudo_arq.loc[index, 'val_pedagio_min'])
+                obj_frete.val_cprb_min = float(df_conteudo_arq.loc[index, 'val_cprb_min'])
+                obj_frete.val_lucro_min = float(df_conteudo_arq.loc[index, 'val_lucro_min'])
+                obj_frete.qtd_max = int(df_conteudo_arq.loc[index, 'qtd_max'])
+                obj_frete.val_frete_carreteiro_max = float(df_conteudo_arq.loc[index, 'val_frete_carreteiro_max'])
+                obj_frete.val_descarga_max = float(df_conteudo_arq.loc[index, 'val_descarga_max'])
+                obj_frete.val_pedagio_max = float(df_conteudo_arq.loc[index, 'val_pedagio_max'])
+                obj_frete.val_cprb_max = float(df_conteudo_arq.loc[index, 'val_cprb_max'])
+                obj_frete.val_lucro_max = float(df_conteudo_arq.loc[index, 'val_lucro_max'])
+                obj_frete.save()
+                msg = 'Fretes atualizados!'
+        else:
+            msg = 'Atualização abortada. Há fretes informados que possui mapas pagos. Verifique!'
+
+        data = dict()
+        data = {
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+
+class Frm_Lanc_Pag_Extras_View(View):
+    def get(self, request):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+        tipo_transacao_frm = request.GET['tipo_transacao']
+
+        data = dict()
+        if tipo_transacao_frm == 'por_lancamento':
+            lista_codigos_lanc_pag_extra_frm = request.GET['lista_codigos_lanc_pag_extra']
+            lista_dic_lanc_pag_extra = list(LancamentoPagamentoExtras.objects
+                                        .filter(cod_lanc_pag_extra__in=lista_codigos_lanc_pag_extra_frm.split('_'))
+                                        .values('data_pag_extra', 'placa_pag_extra', 'val_pag_extra', 'obs_pag_extra')
+                                        )
+            for lanc in lista_dic_lanc_pag_extra:
+                lanc['data_pag_extra'] = datetime.strftime(lanc['data_pag_extra'], '%d-%m-%Y')
+                lanc['val_pag_extra'] = locale.currency(lanc['val_pag_extra'], grouping=True, symbol=None)
+
+            data = {
+                'lista_dic_lanc_pag_extra': lista_dic_lanc_pag_extra
+            }
+        elif tipo_transacao_frm == 'por_filial':
+            competencia_frm = request.GET['competencia']
+            cod_filial_pesq_frm = request.GET['cod_filial_pesq']
+            chk_lanc_reprovado_frm = request.GET['chk_lanc_reprovado']
+
+            status_lan = 1
+            if chk_lanc_reprovado_frm == 'false':
+                status_lan = 0
+            cod_filial_pesq = 0
+            if cod_filial_pesq_frm != None and cod_filial_pesq_frm != '':
+                cod_filial_pesq = cod_filial_pesq_frm
+
+            competencia_pesq = competencia_frm + '-01'
+            lista_dic_lanc_pendentes_validado, lista_filiais_lanc_pendentes = (Form_Importa_Arquivo_Fat_Terc_View()
+                                                 .retorna_lista_lanc_pag_extra_pendentes(status_lan, cod_filial_pesq, competencia_pesq))
+
+            for lanc in lista_dic_lanc_pendentes_validado:
+                lanc['data_ref_pagamento'] = datetime.strftime(lanc['data_ref_pagamento'], '%m-%Y')
+                lanc['valor'] = locale.currency(lanc['valor'], grouping=True, symbol=None)
+
+
+
+            data = {
+                'lista_dic_lanc_pendentes_validado': lista_dic_lanc_pendentes_validado,
+                'lista_filiais_lanc_pendentes': lista_filiais_lanc_pendentes
+            }
+
+
+        return JsonResponse(data, safe=False)
+
+    def post(self, request):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+        status_frm = request.POST['status']
+        justificativa_frm = request.POST['justificativa']
+        lista_reg_lanc_pag_extra_frm = request.POST['lista_reg_lanc_pag_extra']
+        competencia_frm = request.POST['competencia']
+        cod_filial_pesq_frm = request.POST['cod_filial_pesq']
+        chk_lanc_reprovado_frm = request.POST['chk_lanc_reprovado']
+
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+
+        lista_obj_lanc_pag_extra = (LancamentoPagamentoExtras.objects
+                                    .filter(cod_lanc_pag_extra__in=lista_reg_lanc_pag_extra_frm.split('_')))
+        obj_pag = None
+        msg = ''
+        if status_frm == '0':
+            cod_benef_frm = request.POST['cod_benef']
+            obj_benef = BeneficiarioTerceiro.objects.get(pk=cod_benef_frm)
+            val_tt_loanc_extra = lista_obj_lanc_pag_extra.aggregate(val_total=Sum('val_pag_extra'))
+            primeiro_lanc = lista_obj_lanc_pag_extra.first()
+            data_ref_pag_extra = primeiro_lanc.periodo_ref_pag_extra
+            obj_projeto = obj_benef.cod_projeto
+            cod_ultimo_pagamento = obj_projeto.ultimo_num_pagamento
+            obj_tipo_ocorrencia = TipoOcorrenciasFinanceiroTerceiros.objects.get(pk=15)
+            obj_pag = Pagamento2ArtTerceirosFinanceiro(
+                valor_frete_calc_pag=0.00,
+                desc_pag=0,
+                acresc_pag=0,
+                val_pago=val_tt_loanc_extra['val_total'],
+                val_conlog=0.00,
+                periodo_ref_pag=data_ref_pag_extra,
+                obs_pag='',
+                complemento_pag='',
+                cod_tipo_ocor_financ_terc=obj_tipo_ocorrencia,
+                cod_benef_terc=obj_benef,
+                cod_usu=obj_usuario_logado,
+                num_doc_pagamento=cod_ultimo_pagamento + 1
+            )
+            obj_pag.save()
+            obj_projeto.ultimo_num_pagamento = cod_ultimo_pagamento + 1
+            obj_projeto.save()
+            msg = 'Lançamento aprovado com sucesso'
+        else:
+            msg = 'Lançamento reprovado'
+        for obj_lanc in lista_obj_lanc_pag_extra:
+            obj_lanc.data_status = date.today()
+            obj_lanc.status = status_frm
+            obj_lanc.obs_status = justificativa_frm
+            obj_lanc.cod_usu_status = obj_usuario_logado
+            obj_lanc.cod_pag_2art_terc_financ = obj_pag
+            obj_lanc.save()
+
+        status_lan = 1
+        if chk_lanc_reprovado_frm == 'false':
+            status_lan = 0
+        cod_filial_pesq = 0
+        if cod_filial_pesq_frm != None and cod_filial_pesq_frm != '':
+            cod_filial_pesq = cod_filial_pesq_frm
+
+        comp_pesq = None
+        if competencia_frm != '' and competencia_frm != None:
+            comp_pesq = competencia_frm + '-01'
+        lista_dic_lanc_pendentes_validado, lista_filiais_lanc_pendentes = (Form_Importa_Arquivo_Fat_Terc_View()
+                                             .retorna_lista_lanc_pag_extra_pendentes(status_lan, cod_filial_pesq, comp_pesq))
+
+        for lanc in lista_dic_lanc_pendentes_validado:
+            lanc['data_ref_pagamento'] = datetime.strftime(lanc['data_ref_pagamento'], '%m-%Y')
+            lanc['valor'] = locale.currency(lanc['valor'], grouping=True, symbol=None)
+
+        data = dict()
+        data = {
+            'msg': msg,
+            'lista_dic_lanc_pendentes_validado': lista_dic_lanc_pendentes_validado,
+            'lista_filiais_lanc_pendentes': lista_filiais_lanc_pendentes
+        }
+        return JsonResponse(data, safe=False)
+
+
+
+
+class Frm_Layout_Arq_Pag_Extra_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Lanc_Pagamentos_Extra_Oficial_v1.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+
+class Frm_Layout_Arq_Acresc_Desc_View(View):
+    def get(self, request):
+        file_path = os.path.join(BASE_DIR, 'media/docs/layouts/Lan_Acres_Desc_Oficial_v1.xlsx')
+        return FileResponse(open(file_path, 'rb'), as_attachment=True)
+

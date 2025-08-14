@@ -1,12 +1,33 @@
 {% load static %}
 
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/ti_comitec_app/frm_lista_projetos.css' %}"/>
+{% endblock %}
+
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <input type="hidden" id="hd_cor_empresa_hx" name="hd_cor_empresa_hx" value="{{cor_emp_hex}}"/>
     <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
              <i class="fa-solid fa-thumbtack"></i>
              <h1 class=" titlePadraoMenu">Comitec - Gerenciamento de Projetos</h1>
         </div>
+        <span style="font-style: italic;">
+            {{ obj_usuario_sessao.nome_usu }}
+            {% if obj_usuario_sessao.tipo_colab == 'L' %}
+                (Líder).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'M' %}
+                (Master).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'H' %}
+                (Head).
+            {% endif %}
+            {% if obj_usuario_sessao.tipo_colab == 'G' %}
+                (Gerente).
+            {% endif %}
+            Bem vindo!
+        </span>
         {% if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12 %}
             <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
         {% else %}
@@ -21,17 +42,329 @@
     </div>
 
     <div class="containerApp">
+
+        <div class="form-group cl_div_abas_paginas w-100" >
+            <div class="col-md-12 w-100 h-100">
+                <nav>
+                    <div class="nav nav-tabs" id="tab_proj_comitec" role="tablist">
+                        <button class="nav-link active" id="btn_tab_proj_comitec" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_proj_comitec" type="button" role="tab"
+                                aria-controls="div_tab_proj_comitec" aria-selected="true" style="font-weight: 400;">
+                            <i class="fa-regular fa-lightbulb" style="color: #f46424;"></i>
+                            Projetos
+                        </button>
+                        <button class="nav-link" id="tab_prox_acoes_proj_comitec" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_prox_acoes_proj_comitec" type="button" role="tab"
+                                aria-controls="div_tab_prox_acoes_proj_comitec" aria-selected="false"
+                                style="font-weight: 400;">
+                            <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                            Próximas Ações/Ações Atrasadas
+                        </button>
+                    </div>
+                </nav>
+
+
         <div class="tab-content" style="border-radius:0 0 10px 10px;">
             <div class="tab-pane active"
                  role="tabpanel"
-                 aria-labelledby="a_tab_ideias_comitec">
-                <div class="form-group cl_div_abas_paginas w-100" >
-                    <div class="tab-content" style="border-radius:0 0 10px 10px;">
-                        <div class="tab-pane active"
-                             role="tabpanel"
-                             aria-labelledby="a_tab_ideias_comitec">
-                            <div class="mt-3 form-group  cl_div_tabela_principal_pagina w-100">
-                                <div class="d-flex flex-column w-100">
+                 aria-labelledby="tab_proj_comitec" id="div_tab_proj_comitec">
+
+
+                <div class="d-flex mt-3 justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column align-items-center w-100" style="padding-left: 0.25rem;">
+                        <label for="chk_pesq_proj_concluidos">
+                            Somente concluídos ?</label>
+                       <input type="checkbox" class="checkbox" name="chk_pesq_proj_concluidos"
+                                id="chk_pesq_proj_concluidos"/>
+                    </div>
+
+                    <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                        <select class="selectpicker form-control" id="cd_pesq_proj_por_area"
+                                name="cd_pesq_proj_por_area"
+                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true" title="Áreas">
+                            {% for area in lista_area %}
+                                <option value="{{ area.cod_ideia__cod_atividade__cod_atividade }}">{{ area.cod_ideia__cod_atividade__desc1_atividade }}</option>
+
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                        <select class="selectpicker form-control" id="cd_pesq_proj_desc"
+                                name="cd_pesq_proj_desc"
+                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true" title="Pesquisa projeto">
+                            {% for proj in lista_projetos %}
+                                <option value="{{proj.cod_projeto}}">{{proj.resumo_ideia}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                        <select class="selectpicker form-control" id="cd_pesq_proj_por_usu_envolvidos"
+                                name="cd_pesq_proj_por_usu_envolvidos"
+                                style="color: #999999; font-size: 20px; height: 54.65px"
+                                multiple data-selected-text-format="count > 0"
+                                data-live-search="true" title="Usuários">
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-wrap w-100">
+                        {% for proj in lista_projetos %}
+                                <div class="d-flex flex-column justify-content-between align-items-center"
+                                     style="border: .1px solid {{borda_caixa_projetos}}; border-radius: 1rem;
+                                        box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5); padding: .5rem;
+                                        margin: .5rem; width: 420px;" id="div_proj_{{proj.cod_projeto}}">
+
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div class="d-flex justify-content-start align-items-center w-100">
+                                            Atualizado em :
+                                            {% if proj.data_atualizacao == None %}
+                                                &nbsp;
+                                            {% else %}
+                                                {{proj.data_atualizacao|date:'d/m/Y H:i'}}
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex justify-content-end align-items-center w-100">
+                                            {% if proj.status_cronograma_proj == 0 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#00FA9A!important;" title="Dentro do esperado"></i>
+                                            {% elif proj.status_cronograma_proj == 1 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;" title="Em risco"></i>
+                                            {% elif proj.status_cronograma_proj == 2 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;" title="Atrasado"></i>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100"
+                                         style=" padding: .5rem;">
+                                        <div class="d-flex justify-content-center align-items-center w-25"
+                                             style="padding: .5rem;">
+                                            <i class="fa-solid fa-gears" style="color: #DCDCDC;!important; font-size: 40px;"></i>
+                                        </div>
+                                        <div class="d-flex justify-content-center align-items-center w-75" id="dv_desc_proj"
+                                             style="padding: .5rem;box-shadow: 2px 2px 2px 1px rgba(0,0,0,.5);
+                                                height: 65px; font-size: 12px;color: white;font-weight: 400; border-radius: .1rem">
+                                            {{proj.resumo_ideia}}
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div class="d-flex justify-content-center align-items-center w-25" id="dv_status_proj"
+                                             style="padding: .5rem;">
+                                            {{proj.status_proj}}
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center w-75"
+                                             style="padding: .5rem;">
+                                            <div class="d-flex justify-content-start align-items-center w-100"
+                                                 style="background-color: #FFFFFF;border: #FFFFFF solid 1px;" >
+                                                <div  class="d-flex justify-content-center align-items-center"
+                                                      style="width: {{ proj.perc_progresso_proj }}%; background-color:{{cor_emp_hex}};">
+                                                    <span style="font-weight: 400; color: #000000; margin-left: 1.3rem;">
+                                                        {{ proj.perc_progresso_proj }}%
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100"
+                                         style="padding: 1rem;">
+                                        <div class="d-flex justify-content-between align-items-center w-25">
+                                            <div class="foto-usu"
+                                                 style="padding: .5rem; background-image: url({{ proj.foto_owner }});">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-column justify-content-start align-items-start w-75"
+                                             style="padding: .5rem;">
+                                            <span>{{proj.login_owner}}</span>
+                                            <span id="sp_desc_area_proj">{{proj.desc_area}}</span>
+                                            <span>(Owner)</span>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center w-25">
+                                            <div class="foto-usu"
+                                                 style="padding: .5rem; background-image: url({{ proj.foto_sponsor }});">
+
+                                            </div>
+                                        </div>
+
+                                        <div class="d-flex flex-column justify-content-start align-items-start w-75"
+                                             style="padding: .5rem;">
+
+                                            <span>{{proj.login_sponsor}}</span>
+                                            <span>(Master)</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100"
+                                         style="padding: .25rem;">
+                                        <div class="d-flex justify-content-center align-items-center w-100"
+                                             style="font-size: 14px;">
+                                            <i class="fa-solid fa-calendar-day"></i>&nbsp;&nbsp;
+                                            Início&nbsp;&nbsp;:&nbsp;&nbsp;<strong>{{proj.data_ini|date:'d/m/Y'}}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100"
+                                         style="padding: .25rem;">
+                                        <div class="d-flex justify-content-center align-items-center w-100"
+                                             style="font-size: 14px;">
+                                            <i class="fa-solid fa-calendar-check"></i>&nbsp;&nbsp;
+                                            Prazo&nbsp;&nbsp;:&nbsp;&nbsp;<strong>{{proj.data_prazo|date:'d/m/Y'}}</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div class="d-flex justify-content-start align-items-center w-100">
+                                            Concluído em :
+                                            {% if proj.data_fim == None %}
+                                                &nbsp;
+                                            {% else %}
+                                                {{proj.data_fim|date:'d/m/Y'}}
+                                            {% endif %}
+                                        </div>
+                                        <div class="d-flex justify-content-end align-items-center w-100">
+                                            <button class='btn btn-rounded btn-space'
+                                                    id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}"
+                                                    name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                                    value="{{proj.cod_projeto}}" title="Ver detalhes projeto">
+                                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center w-100">
+                                        <div class="d-flex justify-content-start align-items-center w-100"
+                                             style="border-bottom: .1px solid #363636; padding-top: .25rem;">
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex flex-wrap justify-content-start align-items-center w-100"
+                                         style="margin: .2rem;">
+                                        {% for usu in proj.lista_dic_usu_envolvidos %}
+                                            <div class="d-flex flex-column justify-content-start align-items-center"
+                                                 style="margin: .3rem;">
+                                                <div class="foto-usu-vinc"
+                                                     style="padding: .5rem; background-image: url({{ usu.foto_user }});">
+
+                                                </div>
+                                                <span id="sp_usuarios_envolvidos_proj">{{usu.login_usu}}</span>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
+
+                        {% endfor %}
+                    </div>
+
+                </div>
+
+
+            </div>
+        </div>
+
+        <div class="tab-content" style="border-radius:0 0 10px 10px;">
+            <div class="tab-pane" id="div_tab_prox_acoes_proj_comitec" name="div_tab_prox_acoes_proj_comitec"
+                 role="tabpanel"
+                 aria-labelledby="tab_prox_acoes_proj_comitec">
+
+                <div class="mt-3 d-flex justify-content-between align-items-between w-100">
+                    <div class="d-flex flex-column align-items-end w-100">
+                        <button type='button' id="btn_atualizar_dados_tab_acoes_proj_comitec"
+                                name="btn_atualizar_dados_tab_acoes_proj_comitec"
+                                class="btn btn-primary btn-rounded botaoPrincipal" >
+                            <i class="fa-solid fa-rotate"></i>
+                            Atualiza Ações
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mt-3 d-flex flex-column w-100">
+                    <table id="tab_acoes_proj_comitec"  class="display wrap w-100 cl_tab_principal_pagina">
+                            <thead>
+                                <tr>
+                                    <th scope="col" title="Status ação" style="text-align: center!important;">Status</th>
+                                    <th scope="col" title="Usuário master" style="text-align: center!important;">Usuário</th>
+                                    <th scope="col" style="text-align: left!important;">Projeto</th>
+                                    <th scope="col" style="text-align: center!important;">Cronograma</th>
+                                    <th scope="col" style="text-align: left!important;">Ação</th>
+                                    <th scope="col" style="text-align: center!important;">Prazo</th>
+                                    <th scope="col" style="text-align: center!important;">Últ. Atualização Proj.</th>
+                                    <th scope="col" style="text-align: center!important;">Abrir</th>
+                                  </tr>
+                            </thead>
+                            <tbody>
+                                {% for acao in lista_obj_acoes_prox_ou_atradadas %}
+                                    <tr>
+                                        <td style="text-align: center!important;">
+                                            {% if acao.status == 'Em andamento' %}
+                                                <i class="fa-solid fa-thumbs-up" style="color:#6495ED!important;" title="Em andamento"></i>
+                                            {% elif acao.status == 'Concluída' %}
+                                                <i class="fa-solid fa-thumbs-up" style="color:#3CB371!important;" title="Concluída"></i>
+                                            {% elif acao.status == 'Atrasada' %}
+                                                <i class="fa-solid fa-thumbs-down" style="color:#FF0000!important;" title="Atrasada"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center!important;">
+                                            {{ acao.login_master }}
+                                        </td>
+                                        <td style="text-align: left!important;">
+                                            {{ acao.desc_projeto }}
+                                        </td>
+                                        <td style="text-align: center!important;">
+                                            {% if acao.cronograma_projeto == 0 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#00FA9A!important;" title="Dentro do esperado"></i>
+                                            {% elif acao.cronograma_projeto == 1 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#FFD700!important;" title="Em risco"></i>
+                                            {% elif acao.cronograma_projeto == 2 %}
+                                                <i class="fa-solid fa-circle fa-xl" style="color:#FF0000!important;" title="Atrasado"></i>
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: left!important;">
+                                            {{ acao.desc_acao }}
+                                        </td>
+                                        <td style="text-align: center!important;">
+                                            {{ acao.prazo }}
+                                        </td>
+                                        <td style="text-align: center!important;">
+                                            {{ acao.data_ultima_atualizacao_proj }}
+                                        </td>
+                                        <td style="text-align: center!important;">
+                                            <button class='btn btn-rounded btn-space'
+                                                    id="btn_abre_modal_edita_proj_frm_lista_proj_{{acao.cod_projeto}}"
+                                                    name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                                    value="{{acao.cod_projeto}}" title="Ver detalhes projeto">
+                                                <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{% include 'ti_comitec_app/modais_frm_lista_projetos.html' %}
+{% include 'ti_comitec_app/modal_abrir_edita_projeto.html' %}
+
+
+<!--
+<div class="d-flex flex-column w-100">
                                     <table class="display wrap w-100 cl_tab_principal_pagina cl_tab_comitec">
                                         <thead>
                                             <tr>
@@ -39,7 +372,8 @@
                                                 <th scope="col">Owner</th>
                                                 <th scope="col">Sponsor</th>
                                                 <th scope="col">Inicio</th>
-                                                <th scope="col">Fim</th>
+                                                <th scope="col">Prazo</th>
+                                                <th scope="col">Conclusão</th>
                                                 <th scope="col">Atualização</th>
                                                 <th scope="col">Cronograma</th>
                                                 <th scope="col">Status</th>
@@ -50,10 +384,11 @@
                                         <tbody>
                                             {% for proj in lista_projetos %}
                                                 <tr>
-                                                    <td>{{proj.resumo_ideia}}</td>
+                                                    <td style="text-align: left;">{{proj.resumo_ideia}}</td>
                                                     <td>{{proj.login_owner}}</td>
                                                     <td>{{proj.login_sponsor}}</td>
                                                     <td>{{proj.data_ini|date:'d/m/Y'}}</td>
+                                                    <td>{{proj.data_prazo|date:'d/m/Y'}}</td>
                                                     <td>
                                                         {% if proj.data_fim == None %}
                                                             &nbsp;
@@ -79,11 +414,21 @@
                                                     </td>
                                                     <td>{{proj.status_proj}}</td>
                                                     <td>
-                                                        {{ proj.perc_progresso_proj }}%
+                                                        <div class="d-flex justify-content-start align-items-center w-100"
+                                                             style="background-color: #FFFFFF;" >
+                                                            <div  class="d-flex justify-content-center align-items-center"
+                                                                  style="width: {{ proj.perc_progresso_proj }}%; background-color:#f46424;">
+                                                                <span style="font-weight: 400; color: #000000; margin-left: 1.3rem;">
+                                                                    {{ proj.perc_progresso_proj }}%
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
                                                     </td>
                                                     <td>
                                                         <button class='btn btn-rounded btn-space'
-                                                         id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}" name="btn_abre_modal_edita_proj_frm_lista_proj"
+                                                         id="btn_abre_modal_edita_proj_frm_lista_proj_{{proj.cod_projeto}}"
+                                                                name="btn_abre_modal_edita_proj_frm_lista_proj"
                                                         value="{{proj.cod_projeto}}">
                                                         <i class="fa-solid fa-pen-to-square" style="color: #f46424;"></i>
                                                         </button>
@@ -93,18 +438,5 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </div>
-                          </div>
-                        </div>
-                     </div>
-                 </div>
-            </div>
-        </div>
-    </div>
-</div>
 
-
-{% include 'ti_comitec_app/modais_frm_lista_projetos.html' %}
-{% include 'ti_comitec_app/modal_abrir_edita_projeto.html' %}
-
-
+-->

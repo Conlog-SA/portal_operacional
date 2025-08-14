@@ -10,6 +10,8 @@ class Menu(models.Model):
     pai_menu = models.IntegerField(default=0)
     nome_icone = models.CharField(max_length=200, null=True)
     url_menu = models.CharField(max_length=150, default=0)
+    '''Tipo de acesso - P(Publico) / R(Restrito)'''
+    tipo_acesso = models.CharField(max_length=1,default='R')
     class Meta:
         managed = True
         db_table = 'ger_menus'

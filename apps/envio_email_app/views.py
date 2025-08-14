@@ -6,10 +6,10 @@ from email.mime.text import MIMEText
 
 class Envio_Email():
     def __init__(self):
-        self.host = 'zimbra.conlogsa.com.br'
+        self.host = 'smtp-mail.outlook.com'
         self.port = '587'
-        self.login = 'danilo.costa@conlogsa.com.br'
-        self.senha = '@WSX3edc$RFV5tgb'
+        self.login = 'no-reply@conlogsa.com.br'
+        self.senha = 'lLhBtApClEJ@911!@#'
 
 
     def envia_email_alerta_adm(self, msg):
@@ -17,8 +17,8 @@ class Envio_Email():
         server_email.starttls()
         server_email.login(self.login, self.senha)
         email_msg = MIMEMultipart()
-        email_msg['FROM'] = 'desenvolvimento@conlogsa.com.br'
-        email_msg['CCO'] = 'desenvolvimento@conlogsa.com.br'
+        email_msg['FROM'] = self.login #'desenvolvimento@conlogsa.com.br'
+        email_msg['CCO'] = '; '.join(["danilo.costa@conlogsa.com.br", "kaian.almeida@conlogsa.com.br", "maria.carvalho@conlogsa.com.br"])
         email_msg['Subject'] = "Solicitação Acesso Portal Operacional"
 
         corpo_email = f'''
@@ -44,7 +44,7 @@ class Envio_Email():
 
         email_msg.attach(MIMEText(corpo_email, 'html'))
 
-        server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
 
 
@@ -53,8 +53,8 @@ class Envio_Email():
         server_email.starttls()
         server_email.login(self.login, self.senha)
         email_msg = MIMEMultipart()
-        email_msg['FROM'] = 'desenvolvimento@conlogsa.com.br'
-        email_msg['CCO'] = 'desenvolvimento@conlogsa.com.br'
+        email_msg['FROM'] = self.login #'desenvolvimento@conlogsa.com.br'
+        email_msg['CCO'] = '; '.join(["danilo.costa@conlogsa.com.br", "kaian.almeida@conlogsa.com.br", "maria.carvalho@conlogsa.com.br"])
         email_msg['Subject'] = "Solicitação Acesso Portal Operacional"
 
         corpo_email = f'''
@@ -83,6 +83,6 @@ class Envio_Email():
 
         email_msg.attach(MIMEText(corpo_email, 'html'))
 
-        server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
 

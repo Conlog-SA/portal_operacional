@@ -63,6 +63,7 @@ class Form_Imp_Cad_Conta_View(View):
         diretorio_arquivos_postados = os.path.join(BASE_DIR,
                                                    f'media\\docs\\contabil_composicao_app\\anexos_pendentes_importacao\\{nome_pasta_empresa}\\')
 
+
         lista_arquivos = os.listdir(diretorio_arquivos_postados)
         qtd_arquivos_postados = 0
         for arq in lista_arquivos:
@@ -2972,41 +2973,42 @@ class Form_Imp_Arq_Contas_M1_View(View):
                 context = decimal.Context(prec=12)
 
                 val_depreciacao_acum = 0.00
-                if row['Depreciação Acumulada'] != None:
+                if row['Depreciação Acumulada'] != None and row['Depreciação Acumulada'] != '':
+                    print(f"Valor : {row['Depreciação Acumulada']}")
                     val_depreciacao_acum = decimal.Decimal(row['Depreciação Acumulada'])
                     val_depreciacao_acum = val_depreciacao_acum.quantize(decimal.Decimal(1).scaleb(-decimal_places),
                                                                          context=context)
 
                 val_rel = 0.00
-                if row['Valor Relatório'] != None:
+                if row['Valor Relatório'] != None and row['Valor Relatório'] != '':
                     val_rel = decimal.Decimal(row['Valor Relatório'])
                     val_rel = val_rel.quantize(decimal.Decimal(1).scaleb(-decimal_places),
                                                                          context=context)
 
                 val_razao = 0.00
-                if row['Valor Razão'] != None:
+                if row['Valor Razão'] != None and row['Valor Razão'] != '':
                     val_razao = decimal.Decimal(row['Valor Razão'])
                     val_razao = val_razao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=Context(prec=12))
 
                 val_aquisicao = 0.00
-                if row['Valor aquisição'] != None:
+                if row['Valor aquisição'] != None and row['Valor aquisição'] != '':
                     val_aquisicao = decimal.Decimal(row['Valor aquisição'])
                     val_aquisicao = val_aquisicao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
 
                 val_liq = 0.00
-                if row['Valor Liquido'] != None:
+                if row['Valor Liquido'] != None and row['Valor Liquido'] != '':
                     val_liq = decimal.Decimal(row['Valor Liquido'])
                     val_liq = val_liq.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
 
                 taxa_depreciacao = 0.00
-                if row['Taxa Depreciação'] != None:
+                if row['Taxa Depreciação'] != None and row['Taxa Depreciação'] != '':
                     taxa_depreciacao = decimal.Decimal(row['Taxa Depreciação'])
                     taxa_depreciacao = taxa_depreciacao.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
 
 
 
                 val_dif = 0.00
-                if row['Diferença'] != None:
+                if row['Diferença'] != None and row['Diferença'] != '':
                     val_dif = decimal.Decimal(row['Diferença'])
                     val_dif = val_dif.quantize(decimal.Decimal(1).scaleb(-decimal_places), context=context)
 

@@ -20,6 +20,7 @@ from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
 from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
+from apps.safety_gab_empilhadeira_app.models import Check_Empilhadeira
 from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
 from apps.safety_gso_app.models import Gabarito_GSO
@@ -42,7 +43,7 @@ class Check_Aplicado_View(View):
 
         validacao_checks_existentes = None
         if tipo_check_aplicado == '1':
-            #validacao_gab_op_existentes
+            #validacao_gso_empilhadeiras_existentes
             validacao_checks_existentes = Gabarito_Operacional_Emp.objects.all().values('cod_check_aplicado')
         elif tipo_check_aplicado == '2':
             #validao_relatos_existentes
@@ -65,6 +66,9 @@ class Check_Aplicado_View(View):
         elif tipo_check_aplicado == '8':
             #validacao_gso_existentes
             validacao_checks_existentes = Gabarito_GSO.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '9':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Check_Empilhadeira.objects.all().values('cod_check_aplicado')
 
         respostas_botao = Item_Check_Aplicados.objects.all()
         respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()

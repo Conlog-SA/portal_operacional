@@ -1,0 +1,85 @@
+{% load static %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/cores.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/safety_relatos_app/safety_relatos_app.css' %}" />
+
+{% endblock %}
+
+<div class="d-flex flex-column align-items-center justify-content-start text-white w-95" style="margin-right:0px;width:100%;height:100svh">
+   <div class="d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;width:100%;border-radius:0px;">
+       <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-fire-extinguisher" style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
+           <h1 class="titlePadraoMenu" style="margin-left:0px;">Checklist - PCI</h1>
+       </div>
+   </div>
+    <div id="div_corpo_pci" class="containerApp w-100 h-100" style="min-height:fit-content;">
+        <div class="form-group form_div_check w-100 h-100" >
+            <div class="col-md-12 w-100 h-100">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px;">
+                        <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div class="h-100" style="text-align:left;flex-direction:column;justify-content:space-between;display:flex;">
+                                    <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                        <div class="form-group">
+                                           <label for="unidade_pci"> Unidade: </label>
+                                            <select class="selectpicker form-control responsive-font" id="unidade_pci" name="unidade_pci" placeholder="Selecione a unidade" data-live-search="true">
+                                                {% autoescape off %}
+                                                    {{options_select_unidade}}
+                                                {% endautoescape %}
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                           <label for="local_pci">Qual local está sendo inspecionado?</label>
+                                           <input type="text" class="form-control responsive-font" id="local_pci" name="local_pci">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="responsive-font" for="item_pci">Qual item será inspecionado?</label>
+                                            <select class="selectpicker form-control responsive-font" id="item_pci" name="item_pci" placeholder="Selecione o item" data-live-search="true">
+                                                <option value="1">Bomba contra incêndio</option>
+                                                <option value="2">Central de alarme</option>
+                                                <option value="3">Conjunto da caixa de hidrante</option>
+                                                <option value="4">Sprinklers e Detector de fumaça</option>
+                                                <option value="5">Extintor</option>
+                                                <option value="6">Lâmpada de emergência</option>
+                                                <option value="7">Placa de saídas de emergência</option>
+                                                <option value="8">Placa de ponto de encontro</option>
+                                                <option value="9">Porta corta fogo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="w-100" style="justify-content:space-between;display:flex;padding-right:1rem;padding-left:2rem;margin-top:2rem;margin-bottom:2rem;height:3rem">
+                                        <button type="button" class="btn-voltar-menu-safety" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-arrow-left" style="color:#f46424;font-size:32px"></i>
+                                                <b style="color:white;font-size:14px">Voltar</b>
+                                            </div>
+                                        </button>
+                                        <button class="create-check-pci" type="button" style="border-style:none;background-color:rgba(0,0,0,0);height:fit-content">
+                                            <div style="display:flex;flex-direction:column">
+                                                <i class="fa-solid fa-circle-plus" style="font-size:32px; margin-left:0px;color:#f46424;"></i>
+                                                <b style="color:white;font-size:14px">Gerar check</b>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var flag_deep = null;
+    if ("{{flag_deep}}" == "False") {
+        console.log('sim');
+        flag_deep = false;
+    }
+    else if ("{{flag_deep}}" == "True") {
+        console.log('sim');
+        flag_deep = true;
+    }
+</script>

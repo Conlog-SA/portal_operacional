@@ -5,8 +5,9 @@ from django.views import View
 from django.http import QueryDict
 
 from apps.help_desk_app.views import ConexaoHelpDesk
-from apps.ti_comitec_app.models import Item_Gut, Ideia, Projeto, Atividade
+from apps.ti_comitec_app.models import Item_Gut, Ideia, Projeto, Atividade, Usuarios_Projeto
 from apps.usuario_app.models import Usuario
+from apps.estrut_org_app.models import Atividade as atv
 from datetime import datetime, timedelta
 
 from django.utils import timezone
@@ -20,8 +21,8 @@ class Frm_Cad_Ideias_View(View):
 
         lista_usu_owners = Usuario.objects.filter(status_usu='A',tipo_colab__in=['L', 'H', 'M'])
         lista_usu_heads = Usuario.objects.filter(status_usu='A', tipo_colab='H')
-        lista_usu_masters = Usuario.objects.filter(status_usu='A', tipo_colab='M')
-        lista_atividades = Atividade.objects.all()
+        lista_usu_masters = Usuario.objects.filter(status_usu='A', tipo_colab__in=['H', 'M'])
+        lista_atividades = atv.objects.all()
         lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
 
         context = {
@@ -59,7 +60,7 @@ class Frm_Cad_Ideias_View(View):
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
 
-        obj_atv = Atividade.objects.get(pk=cod_atividade_frm)
+        obj_atv = atv.objects.get(pk=cod_atividade_frm)
         obj_usu_owner = Usuario.objects.get(pk=cod_usu_owner_frm)
         obj_usu_master = None
         if cod_usu_master_frm != '':
@@ -131,28 +132,38 @@ class Frm_Lista_Projetos_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
+        data_hora_atual = datetime.now()
+        data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
+
         lista_dic_proj = []
-        lista_obj_projetos = Projeto.objects.all()
-        for obj_proj in lista_obj_projetos:
-            perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
-            status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
-            obj_proj.status_cronograma_proj = status_cronograma_proj
-            obj_proj.save()
-            proj = {
-                'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
-                'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
-                'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
-                'data_ini': obj_proj.data_ini,
-                'data_fim': obj_proj.data_fim,
-                'data_atualizacao': obj_proj.data_atualizacao,
-                'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
-                'status_cronograma_proj': obj_proj.status_cronograma_proj,
-                'perc_progresso_proj': perc_progresso_proj,
-                'cod_projeto': obj_proj.cod_projeto
-            }
-            lista_dic_proj.append(proj)
+        lista_obj_projetos = []
+        lista_obj_usuarios = []
+        lista_area = []
+        '''Chama metodo aqui'''
+
+        lista_obj_acoes_prox_ou_atradadas = self.retorna_prox_acoes_proj(obj_usuario_sessao, lista_obj_projetos)
+
+        cor_emp_hex = ''
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
+            cor_emp_hex = '#f46424 !important;'
+            cor_caixa_titulo = 'rgba(244, 100, 36, 0.7)!important'
+            borda_caixa_projetos = 'rgba(244, 100, 36, 0.2)!important'
+        elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            cor_emp_hex = '#3b8eed !important;'
+            cor_caixa_titulo = 'rgba(59, 142, 237, 0.7)!important'
+            borda_caixa_projetos = 'rgba(59, 142, 237, 0.2)!important'
+
+
+
         context = {
-            'lista_projetos': lista_dic_proj
+            'lista_projetos': lista_dic_proj,
+            'obj_usuario_sessao': obj_usuario_sessao,
+            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas,
+            'lista_obj_usuarios': lista_obj_usuarios,
+            'lista_area': lista_area,
+            'cor_emp_hex': cor_emp_hex,
+            'borda_caixa_projetos': borda_caixa_projetos,
+            'cor_caixa_titulo': cor_caixa_titulo
         }
 
         return render(request, 'ti_comitec_app/frm_lista_projetos.html', context)
@@ -180,7 +191,7 @@ class Frm_Lista_Projetos_View(View):
         if obj_ultima_acao:
             if obj_ultima_acao.data_conclusao is None and obj_ultima_acao.data_fim < datetime.now().date():
                 status = 2
-            elif obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
+            elif obj_ultima_acao.data_conclusao != None and obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
                 status = 2
         '''Verifica se o projeto está em risco'''
         lista_obj_acoes =  Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A')
@@ -188,10 +199,200 @@ class Frm_Lista_Projetos_View(View):
             if obj_ultima_acao:
                 if obj_acao.data_conclusao is None and obj_acao.data_fim < datetime.now().date():
                     status = 1
-                elif obj_acao.data_conclusao > obj_acao.data_fim:
+                elif obj_acao.data_conclusao != None and obj_acao.data_conclusao > obj_acao.data_fim:
                     status = 1
 
         return status
+
+    def retorna_prox_acoes_proj(self, obj_usuario_sessao, lista_obj_projetos):
+        data_hora_atual = datetime.now()
+        lista_obj_acoes_prox_ou_atradadas = []
+        if obj_usuario_sessao.tipo_colab in ('L', 'M'):
+            '''Ações atrasadas'''
+            lista_obj_acoes_atrasadas = Atividade.objects.filter(
+                tipo_atividade='A', data_conclusao__isnull=True, data_fim__lt=data_hora_atual,
+                cod_usu=obj_usuario_sessao
+            )
+            for acao_atrasada in lista_obj_acoes_atrasadas:
+                status_acao = Frm_Acao_View().retorna_status_acao(acao_atrasada)
+                acao = {
+                    'status': status_acao,
+                    'login_master': acao_atrasada.cod_usu.login_usu,
+                    'desc_projeto': acao_atrasada.cod_projeto.cod_ideia.resumo_ideia,
+                    'cronograma_projeto': acao_atrasada.cod_projeto.status_cronograma_proj,
+                    'desc_acao': acao_atrasada.desc_atividade,
+                    'prazo': datetime.strftime(acao_atrasada.data_fim, '%d-%m-%Y'),
+                    'cod_projeto': acao_atrasada.cod_projeto.cod_projeto,
+                    'data_ultima_atualizacao_proj': datetime.strftime(acao_atrasada.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                }
+                lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+            for proj in lista_obj_projetos:
+                if proj.status_proj == 0:
+                    '''Proximas ações'''
+                    obj_prox_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim__gt=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    ).first()
+                    if obj_prox_acoes_proj != None:
+                        status_acao = Frm_Acao_View().retorna_status_acao(obj_prox_acoes_proj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': obj_prox_acoes_proj.cod_usu.login_usu,
+                            'desc_projeto': obj_prox_acoes_proj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': obj_prox_acoes_proj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': obj_prox_acoes_proj.desc_atividade,
+                            'prazo': datetime.strftime(obj_prox_acoes_proj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': obj_prox_acoes_proj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(obj_prox_acoes_proj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+                    '''Ações no dia corrrente'''
+                    obj_dia_corrente_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    )
+                    for acao_hj in obj_dia_corrente_acoes_proj:
+                        status_acao = Frm_Acao_View().retorna_status_acao(acao_hj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': acao_hj.cod_usu.login_usu,
+                            'desc_projeto': acao_hj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': acao_hj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': acao_hj.desc_atividade,
+                            'prazo': datetime.strftime(acao_hj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': acao_hj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(
+                                acao_hj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+        else:
+            '''Ações atrasadas'''
+            lista_obj_acoes_atrasadas = Atividade.objects.filter(
+                tipo_atividade='A', data_conclusao__isnull=True, data_fim__lt=data_hora_atual
+            )
+            for acao_atrasada in lista_obj_acoes_atrasadas:
+                status_acao = Frm_Acao_View().retorna_status_acao(acao_atrasada)
+                acao = {
+                    'status': status_acao,
+                    'login_master': acao_atrasada.cod_usu.login_usu,
+                    'desc_projeto': acao_atrasada.cod_projeto.cod_ideia.resumo_ideia,
+                    'cronograma_projeto': acao_atrasada.cod_projeto.status_cronograma_proj,
+                    'desc_acao': acao_atrasada.desc_atividade,
+                    'prazo': datetime.strftime(acao_atrasada.data_fim, '%d-%m-%Y'),
+                    'cod_projeto': acao_atrasada.cod_projeto.cod_projeto,
+                    'data_ultima_atualizacao_proj': datetime.strftime(acao_atrasada.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                }
+                lista_obj_acoes_prox_ou_atradadas.append(acao)
+            for proj in lista_obj_projetos:
+                if proj.status_proj == 0:
+                    '''Proximas ações'''
+                    obj_prox_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim__gte=data_hora_atual,
+                        cod_projeto=proj
+                    ).first()
+                    if obj_prox_acoes_proj != None:
+                        status_acao = Frm_Acao_View().retorna_status_acao(obj_prox_acoes_proj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': obj_prox_acoes_proj.cod_usu.login_usu,
+                            'desc_projeto': obj_prox_acoes_proj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': obj_prox_acoes_proj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': obj_prox_acoes_proj.desc_atividade,
+                            'prazo': datetime.strftime(obj_prox_acoes_proj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': obj_prox_acoes_proj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(obj_prox_acoes_proj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+                    '''Ações no dia corrrente'''
+                    obj_dia_corrente_acoes_proj = Atividade.objects.filter(
+                        tipo_atividade='A', data_conclusao__isnull=True, data_fim=data_hora_atual,
+                        cod_projeto=proj,
+                        cod_usu=obj_usuario_sessao
+                    )
+                    for acao_hj in obj_dia_corrente_acoes_proj:
+                        status_acao = Frm_Acao_View().retorna_status_acao(acao_hj)
+                        acao = {
+                            'status': status_acao,
+                            'login_master': acao_hj.cod_usu.login_usu,
+                            'desc_projeto': acao_hj.cod_projeto.cod_ideia.resumo_ideia,
+                            'cronograma_projeto': acao_hj.cod_projeto.status_cronograma_proj,
+                            'desc_acao': acao_hj.desc_atividade,
+                            'prazo': datetime.strftime(acao_hj.data_fim, '%d-%m-%Y'),
+                            'cod_projeto': acao_hj.cod_projeto.cod_projeto,
+                            'data_ultima_atualizacao_proj': datetime.strftime(
+                                acao_hj.cod_projeto.data_atualizacao, '%d-%m-%Y %H:%M')
+                        }
+                        lista_obj_acoes_prox_ou_atradadas.append(acao)
+
+        return lista_obj_acoes_prox_ou_atradadas
+
+    def retorna_lista_projetos(self, obj_usuario_sessao):
+        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
+            lista_obj_projetos = Projeto.objects.all()
+            lista_area = list(Projeto.objects.all().values('cod_ideia__cod_atividade__cod_atividade', 'cod_ideia__cod_atividade__desc1_atividade').distinct())
+            lista_obj_usuarios = Usuarios_Projeto.objects.prefetch_related('cod_usu').distinct()
+        else:
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
+            for proj in lista_obj_usu_projetos:
+                lista_obj_projetos.append(proj.cod_projeto)
+            lista_obj_usuarios = Usuarios_Projeto.objects.filter(
+                cod_projeto__in=lista_obj_projetos).prefetch_related('cod_usu').distinct()
+
+        for obj_proj in lista_obj_projetos:
+            perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
+            status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
+            obj_proj.status_cronograma_proj = status_cronograma_proj
+            obj_proj.save()
+
+            '''Verifica prazo última ação do projeto'''
+            obj_ultima_acao = Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='A').order_by('-data_fim').first()
+            dt_prazo_proj = ''
+            if obj_ultima_acao != None:
+                dt_prazo_proj = obj_ultima_acao.data_fim
+
+            foto_owner = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_owner.caminho_foto != None:
+                foto_owner = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_owner.caminho_foto
+
+            foto_sponsor = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+            if obj_proj.cod_ideia.cod_usu_master.caminho_foto != None:
+                foto_sponsor = 'https://operacional.conlogsa.com.br/media/' + obj_proj.cod_ideia.cod_usu_master.caminho_foto
+
+            lista_dic_usu_envolvidos = []
+            lista_obj_usu_envolvidos = Usuarios_Projeto.objects.filter(cod_projeto=obj_proj)
+            for obj_usu_proj in lista_obj_usu_envolvidos:
+                foto_user = 'https://operacional.conlogsa.com.br/media/fotos/avatar.png'
+                if obj_usu_proj.cod_usu.caminho_foto != None:
+                    foto_user = 'https://operacional.conlogsa.com.br/media/' + obj_usu_proj.cod_usu.caminho_foto
+                reg_usu = {
+                    'login_usu': obj_usu_proj.cod_usu.login_usu,
+                    'foto_user': foto_user
+                }
+                lista_dic_usu_envolvidos.append(reg_usu)
+
+            proj = {
+                'resumo_ideia': obj_proj.cod_ideia.resumo_ideia,
+                'desc_area': obj_proj.cod_ideia.cod_atividade.desc1_atividade,
+                'login_owner': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'foto_owner': foto_owner,
+                'login_sponsor': obj_proj.cod_ideia.cod_usu_master.login_usu,
+                'foto_sponsor': foto_sponsor,
+                'data_ini': obj_proj.data_ini,
+                'data_prazo': dt_prazo_proj,
+                'data_fim': obj_proj.data_fim,
+                'data_atualizacao': obj_proj.data_atualizacao,
+                'status_proj': 'Concluído' if obj_proj.status_proj == 1 else 'Em andamento',
+                'status_cronograma_proj': obj_proj.status_cronograma_proj,
+                'perc_progresso_proj': perc_progresso_proj,
+                'cod_projeto': obj_proj.cod_projeto,
+                'lista_dic_usu_envolvidos': lista_dic_usu_envolvidos
+            }
+            lista_dic_proj.append(proj)
 
 
 
@@ -201,7 +402,7 @@ class Frm_Cad_Item_Gut_View(View):
         tipo_item_gut_frm = request.GET['tipo_item_gut']
         desc_head_modal_add_item_gut = ''
         icon_head_modal_add_item_gut = ''
-        c = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
+        lista_itens_gut = list(Item_Gut.objects.filter(tipo=tipo_item_gut_frm)
                                .values('cod_item_gut', 'desc', 'peso', 'ativo', 'flag', 'color_flag'))
         if tipo_item_gut_frm == 'G':
             desc_head_modal_add_item_gut = 'Gravidade - Matriz GUT'
@@ -291,51 +492,48 @@ class Frm_Edit_Ideia_View(View):
         cod_usu_master = 0
         obs_usu_master = ''
         cod_usu_head = 0
-        obs_usu_master = ''
+        obs_usu_head = ''
         nota_head = 0
         if obj_ideia.cod_usu_master != None:
             cod_usu_master =  obj_ideia.cod_usu_master.cod_usu
             obs_usu_master = obj_ideia.obs_usu_master
             obs_usu_head = ''
-            if obj_ideia.cod_usu_head != None:
-                cod_usu_head = obj_ideia.cod_usu_head.cod_usu
-                nota_head =  obj_ideia.nota_head
-                obs_usu_head =  obj_ideia.obs_usu_head
+        if obj_ideia.cod_usu_head != None:
+            cod_usu_head = obj_ideia.cod_usu_head.cod_usu
+            nota_head =  obj_ideia.nota_head
+            obs_usu_head =  obj_ideia.obs_usu_head
 
-            ideia_dic = {
-                'flag_gut_g': flag_gut_g,
-                'color_gut_g': color_gut_g,
-                'peso_gut_g': peso_gut_g,
+        ideia_dic = {
+            'flag_gut_g': flag_gut_g,
+            'color_gut_g': color_gut_g,
+            'peso_gut_g': peso_gut_g,
 
-                'flag_gut_u': flag_gut_u,
-                'color_gut_u': color_gut_u,
-                'peso_gut_u': peso_gut_u,
+            'flag_gut_u': flag_gut_u,
+            'color_gut_u': color_gut_u,
+            'peso_gut_u': peso_gut_u,
 
-                'flag_gut_t': flag_gut_t,
-                'color_gut_t': color_gut_t,
-                'peso_gut_t': peso_gut_t,
+            'flag_gut_t': flag_gut_t,
+            'color_gut_t': color_gut_t,
+            'peso_gut_t': peso_gut_t,
 
-                'nota_gut_tt': peso_gut_g * peso_gut_u * peso_gut_t,
-                'cod_ideia': obj_ideia.cod_ideia,
-                'cod_chamado': obj_ideia.cod_chamado,
-                'desc_ideia': obj_ideia.desc_ideia,
-                'resumo_ideia': obj_ideia.resumo_ideia,
-                'cod_atividade': obj_ideia.cod_atividade.cod_atividade,
-                'cod_usu_owner': obj_ideia.cod_usu_owner.cod_usu,
-                'data_lancamento_idea': obj_ideia.data_lancamento_idea,
-                'val_ganhos': obj_ideia.val_ganhos,
-                'val_despesas': obj_ideia.val_despesas,
-                'horas_ganhas': obj_ideia.horas_ganhas,
-                'obs_usu_owner': obj_ideia.obs_usu_owner,
-                'cod_usu_master': cod_usu_master,
-                'obs_usu_master': obs_usu_master,
-                'cod_usu_head': cod_usu_head,
-                'nota_head': nota_head,
-                'obs_usu_head': obs_usu_head
-            }
-
-        cod_usu_head = 0
-        nota_head = 0
+            'nota_gut_tt': peso_gut_g * peso_gut_u * peso_gut_t,
+            'cod_ideia': obj_ideia.cod_ideia,
+            'cod_chamado': obj_ideia.cod_chamado,
+            'desc_ideia': obj_ideia.desc_ideia,
+            'resumo_ideia': obj_ideia.resumo_ideia,
+            'cod_atividade': obj_ideia.cod_atividade.cod_atividade,
+            'cod_usu_owner': obj_ideia.cod_usu_owner.cod_usu,
+            'data_lancamento_idea': obj_ideia.data_lancamento_idea,
+            'val_ganhos': obj_ideia.val_ganhos,
+            'val_despesas': obj_ideia.val_despesas,
+            'horas_ganhas': obj_ideia.horas_ganhas,
+            'obs_usu_owner': obj_ideia.obs_usu_owner,
+            'cod_usu_master': cod_usu_master,
+            'obs_usu_master': obs_usu_master,
+            'cod_usu_head': cod_usu_head,
+            'nota_head': nota_head,
+            'obs_usu_head': obs_usu_head
+        }
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -578,7 +776,7 @@ class Frm_Edita_Projetos_Ideia_View(View):
         data_hora = data_hora_atual.strftime('%d-%m-%Y')
 
         lista_usuarios = list(
-            Usuario.objects.filter(status_usu='A', tipo_colab__in=['L', 'M', 'H', 'G']).values('cod_usu', 'login_usu'))
+            Usuario.objects.filter(status_usu='A', tipo_colab__in=['L', 'M', 'H', 'G']).values('cod_usu', 'login_usu', 'nome_usu'))
 
         data = dict()
         dic_projeto = None
@@ -596,25 +794,45 @@ class Frm_Edita_Projetos_Ideia_View(View):
             )
             obj_novo_projeto.save()
 
-            dic_projeto = {
-                'nome_projeto': obj_ideia.resumo_ideia,
-                'nome_sponsor': obj_ideia.cod_usu_owner.login_usu,
-                'nome_gerente': obj_ideia.cod_usu_master.login_usu,
-                'objetivos_proj': obj_ideia.obs_usu_owner,
-                'riscos': obj_ideia.obs_usu_master,
-                'desc_fase': 'Inicial',
-                'ult_atualização': data_hora_atual,
-                'data_inicio': data_hora
-            }
+
+
+            '''Vincula usuarios owner,master e head ao projeto'''
+            if obj_ideia.cod_usu_owner != None:
+                obj_usu_proj = Usuarios_Projeto(
+                    envia_email=1,
+                    cod_usu=obj_ideia.cod_usu_owner,
+                    cod_projeto=obj_novo_projeto
+                ).save()
+            if obj_ideia.cod_usu_master != None:
+                obj_usu_proj = (Usuarios_Projeto.objects
+                                .filter(cod_usu=obj_ideia.cod_usu_master, cod_projeto=obj_novo_projeto).first())
+                if obj_usu_proj == None:
+                    obj_usu_proj = Usuarios_Projeto(
+                        envia_email=1,
+                        cod_usu=obj_ideia.cod_usu_master,
+                        cod_projeto=obj_novo_projeto
+                    ).save()
+            if obj_ideia.cod_usu_head != None:
+                obj_usu_proj = (Usuarios_Projeto.objects
+                                .filter(cod_usu=obj_ideia.cod_usu_head, cod_projeto=obj_novo_projeto).first())
+                if obj_usu_proj == None:
+                    obj_usu_proj = Usuarios_Projeto(
+                        envia_email=1,
+                        cod_usu=obj_ideia.cod_usu_head,
+                        cod_projeto=obj_novo_projeto
+                    ).save()
+
 
             lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
 
             data = {
-                'dic_projeto': dic_projeto,
                 'lista_ideias_frm': lista_ideias_frm,
                 'lista_usuarios': lista_usuarios,
-                #'dic_atividade': dic_atividade
+                'msg': 'Projeto criado com sucesso!!! Agora, acesse a aba Projetos e inicie o planejamento!'
+
             }
+
+
         elif tipo_processo_frm == 'edicao':
             cod_projeto_frm = request.GET['cod_projeto']
             obj_proj = Projeto.objects.get(pk=cod_projeto_frm)
@@ -625,12 +843,12 @@ class Frm_Edita_Projetos_Ideia_View(View):
             ultima_tarefa = ' '
             obj_ultima_tarefa = (
                 Atividade.objects.filter(cod_projeto=obj_proj, tipo_atividade='T').order_by(
-                    'cod_atividade').last())
+                    '-data_fim', 'cod_atividade').first())
 
             if obj_ultima_tarefa:
                 obj_ultima_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_projeto=obj_proj)
-                    .order_by('cod_atividade').last())
+                    .order_by('-data_fim', 'cod_atividade').first())
 
                 if obj_ultima_acao != None:
                     if obj_ultima_acao.data_fim != None:
@@ -642,11 +860,12 @@ class Frm_Edita_Projetos_Ideia_View(View):
 
             lista_dic_tarefas = []
             for tarefa in lista_obj_tarefas:
+                status_tarefa = 'Em andamento'
 
                 data_ini_tarefa = '-'
                 obj_primeira_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
-                    .order_by('cod_atividade').first())
+                    .order_by('data_fim', 'cod_atividade').first())
 
                 if obj_primeira_acao != None:
                     if obj_primeira_acao.data_ini != None:
@@ -657,12 +876,20 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 data_termino_tarefa = '-'
                 obj_ultima_acao = (
                     Atividade.objects.filter(tipo_atividade='A', cod_atividade_pai=tarefa.cod_atividade)
-                    .order_by('cod_atividade').last())
+                    .order_by('-data_fim', 'cod_atividade').first())
                 if obj_ultima_acao != None:
                     if obj_ultima_acao.data_fim != None:
                         data_prazo_tarefa = datetime.strftime(obj_ultima_acao.data_fim, '%d-%m-%Y')
                     if obj_ultima_acao.data_conclusao != None:
                         data_termino_tarefa = datetime.strftime(obj_ultima_acao.data_conclusao, '%d-%m-%Y')
+
+                    '''Verifica status tarefa'''
+                    if obj_ultima_acao.data_conclusao != None and obj_ultima_acao.data_fim != None:
+                        if obj_ultima_acao.data_conclusao > obj_ultima_acao.data_fim:
+                            status_tarefa = 'Atrasada'
+                    elif obj_ultima_acao.data_conclusao == None and obj_ultima_acao.data_fim != None:
+                        if obj_ultima_acao.data_fim < data_hora_atual.date():
+                            status_tarefa = 'Atrasada'
 
 
                 '''Cálculo progresso tarefa'''
@@ -676,6 +903,14 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 except:
                     perc_progresso_tarefa = 0
 
+
+                if perc_progresso_tarefa == 100:
+                    status_tarefa = 'Concluída'
+
+                status_edicao_campos = 'ok'
+                if tarefa.cod_usu != obj_usuario_sessao and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                    status_edicao_campos = 'nok'
+
                 reg = {
                     'cod_atividade': tarefa.cod_atividade,
                     'desc_atividade': tarefa.desc_atividade,
@@ -684,13 +919,20 @@ class Frm_Edita_Projetos_Ideia_View(View):
                     'data_termino_tarefa': data_termino_tarefa,
                     'cod_usu__cod_usu': tarefa.cod_usu.cod_usu,
                     'cod_usu__login_usu': tarefa.cod_usu.login_usu,
-                    'perc_progresso_tarefa': str(perc_progresso_tarefa) + '%'
+                    'perc_progresso_tarefa': str(perc_progresso_tarefa) + '%',
+                    'status_tarefa': status_tarefa,
+                    'status_edicao_campos': status_edicao_campos
                 }
                 lista_dic_tarefas.append(reg)
+
+            lista_cod_usuarios_vinculados = list(
+                Usuarios_Projeto.objects.filter(cod_projeto=obj_proj).values('cod_usu__cod_usu')
+            )
 
             dic_projeto = {
                 'nome_projeto': obj_proj.cod_ideia.resumo_ideia,
                 'nome_sponsor': obj_proj.cod_ideia.cod_usu_owner.login_usu,
+                'cod_usu_master': obj_proj.cod_ideia.cod_usu_master.cod_usu,
                 'nome_gerente': obj_proj.cod_ideia.cod_usu_master.login_usu,
                 'objetivos_proj': obj_proj.cod_ideia.obs_usu_owner,
                 'riscos': obj_proj.cod_ideia.obs_usu_master,
@@ -700,15 +942,28 @@ class Frm_Edita_Projetos_Ideia_View(View):
                 'data_fim': ultima_tarefa,
                 'perc_progresso_acoes': str(perc_progresso_acoes) + '%',
                 'status_proj': obj_proj.status_proj,
-                'cronograma': obj_proj.status_cronograma_proj
+                'cronograma': obj_proj.status_cronograma_proj,
+                'lista_cod_usuarios_vinculados': lista_cod_usuarios_vinculados
             }
+            usu_logado_edt_proj = 'ok'
+            if obj_usuario_sessao != obj_proj.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                usu_logado_edt_proj = 'nok'
 
 
             data = {
                 'dic_projeto': dic_projeto,
                 'lista_dic_tarefas': lista_dic_tarefas,
                 'lista_usuarios': lista_usuarios,
+                'usu_logado_edt_proj': usu_logado_edt_proj
             }
+
+        cor_emp_hex = ''
+        if obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 12:
+            cor_emp_hex = '#f46424 !important;'
+        elif obj_usuario_sessao.cod_filial.cod_empresa.cod_empresa == 17:
+            cor_emp_hex = '#3b8eed !important;'
+
+        data['cor_emp_hex'] =  cor_emp_hex
 
         return JsonResponse(data, safe=False)
 
@@ -764,7 +1019,6 @@ class Frm_Tarefa_View(View):
         cod_projeto_frm = request.POST['cod_projeto']
         cod_tarefa_frm = request.POST['cod_tarefa']
         desc_tarefa_frm = request.POST['desc_tarefa']
-        atrib_para_frm = request.POST['atrib_para']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
@@ -772,10 +1026,9 @@ class Frm_Tarefa_View(View):
 
         lista_dic_acoes = list(Atividade.objects.filter(
             cod_atividade_pai=cod_tarefa_frm
-        ).values('cod_atividade', 'desc_atividade', 'data_ini', 'data_fim', 'observacao', 'data_conclusao'))
+        ).values('cod_atividade', 'desc_atividade', 'data_ini', 'data_fim', 'observacao', 'data_conclusao', 'cod_usu__cod_usu'))
 
 
-        obj_usu_atribuido_para = Usuario.objects.get(pk=atrib_para_frm)
         obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
         obj_tarefa = None
         msg = ''
@@ -785,16 +1038,15 @@ class Frm_Tarefa_View(View):
                 cod_atividade_pai = 0,
                 desc_atividade = desc_tarefa_frm,
                 cod_projeto = obj_projeto,
-                cod_usu = obj_usu_atribuido_para
+                cod_usu = obj_projeto.cod_ideia.cod_usu_master
             )
             obj_tarefa.save()
             msg = 'Tarefa adicionada ao projeto com sucesso!'
         else:
             obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
-            obj_tarefa.cod_projeto = obj_projeto
             obj_tarefa.desc_atividade = desc_tarefa_frm
-            obj_tarefa.cod_usu = obj_usu_atribuido_para
-            obj_tarefa.save
+            obj_tarefa.cod_usu = obj_usuario_sessao
+            obj_tarefa.save()
             msg = 'Tarefa editada com sucesso!'
 
         obj_projeto.data_atualizacao = data_atual
@@ -805,6 +1057,7 @@ class Frm_Tarefa_View(View):
             'lista_dic_acoes': lista_dic_acoes,
             'cod_tarefa': obj_tarefa.cod_atividade,
             'desc_tarefa': obj_tarefa.desc_atividade,
+            'cod_usu_master': obj_projeto.cod_ideia.cod_usu_master.cod_usu,
             'msg': msg
         }
 
@@ -814,6 +1067,9 @@ class Frm_Acao_View(View):
     def get(self,request):
         cod_tarefa_frm = request.GET['cod_tarefa']
 
+        data_hora_atual = datetime.now()
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         obj_tarefa = Atividade.objects.get(pk=cod_tarefa_frm)
         desc_tarefa = obj_tarefa.desc_atividade
@@ -821,9 +1077,31 @@ class Frm_Acao_View(View):
         data_ini= obj_tarefa.data_ini
         observacao = obj_tarefa.observacao
         data_conclusao = obj_tarefa.data_conclusao
-        lista_dic_acoes = list(Atividade.objects.filter(
+        lista_obj_acoes = (Atividade.objects.filter(
             cod_atividade_pai = cod_tarefa_frm
-        ).values('cod_atividade', 'desc_atividade',  'data_ini', 'data_fim',  'observacao', 'data_conclusao'))
+        ))
+        lista_dic_acoes = []
+        for acao in lista_obj_acoes:
+            status_acao =  self.retorna_status_acao(acao)
+            status_edicao_campos = 'ok'
+            if acao.cod_usu != obj_usuario_sessao and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+                status_edicao_campos = 'nok'
+            reg = {
+                'cod_atividade': acao.cod_atividade,
+                'desc_atividade': acao.desc_atividade,
+                'data_ini': acao.data_ini,
+                'data_fim': acao.data_fim,
+                'observacao': acao.observacao,
+                'data_conclusao': acao.data_conclusao,
+                'cod_usu__cod_usu': acao.cod_usu.cod_usu,
+                'status_acao': status_acao,
+                'status_edicao_campos': status_edicao_campos
+            }
+            lista_dic_acoes.append(reg)
+
+        usu_logado_edt_proj = 'ok'
+        if obj_usuario_sessao != obj_tarefa.cod_projeto.cod_ideia.cod_usu_master and obj_usuario_sessao.tipo_colab not in ('H', 'G'):
+            usu_logado_edt_proj = 'nok'
 
 
         data = dict()
@@ -831,7 +1109,8 @@ class Frm_Acao_View(View):
             'lista_dic_acoes': lista_dic_acoes,
             'desc_tarefa': desc_tarefa,
             'data_fim': data_fim,
-            'data_ini': data_ini
+            'data_ini': data_ini,
+            'usu_logado_edt_proj': usu_logado_edt_proj
         }
 
         return JsonResponse(data, safe=False)
@@ -843,9 +1122,11 @@ class Frm_Acao_View(View):
         observacao_frm = request.POST['observacao']
         desc_acao_frm = request.POST['desc_acao']
         prazo_frm = request.POST['prazo']
+        cod_usu_atribuido_frm = request.POST['cod_usu_atribuido']
 
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+        obj_usu_resp_acao = Usuario.objects.get(pk=cod_usu_atribuido_frm)
         data_atual = datetime.now()
 
         obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
@@ -860,9 +1141,9 @@ class Frm_Acao_View(View):
                 tipo_atividade='A',
                 cod_atividade_pai=cod_atividade_pai_frm,
                 desc_atividade=desc_acao_frm,
-                cod_usu=obj_usuario_sessao,
                 data_fim=prazo_frm,
                 observacao=observacao_frm,
+                cod_usu=obj_usu_resp_acao
             )
             obj_acao.save()
             msg = 'Acao adicionada ao projeto com sucesso!'
@@ -873,6 +1154,7 @@ class Frm_Acao_View(View):
             obj_acao.desc_atividade = desc_acao_frm
             obj_acao.data_fim = prazo_frm
             obj_acao.observacao = observacao_frm
+            obj_acao.cod_usu = obj_usu_resp_acao
             obj_acao.save()
             msg = 'Acao editada com sucesso!'
 
@@ -947,9 +1229,65 @@ class Frm_Acao_View(View):
 
         return JsonResponse(data, safe=False)
 
+    def retorna_status_acao(self, obj_acao):
+        data_hora_atual = datetime.now()
+        status_acao = 'Em andamento'
+        '''Verifica status da ação'''
+        if obj_acao.data_ini == None and obj_acao.data_fim < data_hora_atual.date():
+            status_acao = 'Atrasada'
+        elif obj_acao.data_ini != None and obj_acao.data_conclusao != None:
+            if obj_acao.data_conclusao > obj_acao.data_fim:
+                status_acao = 'Atrasada'
+            elif obj_acao.data_conclusao <= obj_acao.data_fim:
+                status_acao = 'Concluída'
+        elif obj_acao.data_ini != None and obj_acao.data_conclusao == None:
+            if obj_acao.data_fim < data_hora_atual.date():
+                status_acao = 'Atrasada'
+
+        return status_acao
 
 
+class Frm_Usuarios_Projeto_View(View):
+    def post(self, request):
+        cod_projeto_frm = request.POST['cod_projeto']
+        lista_cod_usuarios = request.POST['lista_cod_usuarios']
 
+        lista_obj_vinculos_usu_proj = Usuarios_Projeto.objects.filter(cod_projeto__cod_projeto=cod_projeto_frm)
+        for reg in lista_obj_vinculos_usu_proj:
+            reg.delete()
 
+        obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+        for cod_usu in lista_cod_usuarios.split(','):
+            obj_usu = Usuario.objects.get(pk=cod_usu)
+            obj_usu_proj = Usuarios_Projeto(
+                cod_usu=obj_usu,
+                cod_projeto=obj_projeto
+            ).save()
 
+        data = dict()
+        data = {
+            'msg': 'Usuário(s) vinculado(s) com sucesso!'
+        }
+        return JsonResponse(data, safe=False)
 
+class Frm_Acoes_Usuario_View(View):
+    def get(self, request):
+        cod_usuario_sessao = request.session['cod_usuario_logado']
+        obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        lista_obj_projetos = []
+        if obj_usuario_sessao.tipo_colab in ('H', 'G'):
+            lista_obj_projetos = Projeto.objects.all()
+        else:
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            for proj in lista_obj_usu_projetos:
+                lista_obj_projetos.append(proj.cod_projeto)
+
+        lista_obj_acoes_prox_ou_atradadas = Frm_Lista_Projetos_View().retorna_prox_acoes_proj(obj_usuario_sessao,
+                                                                                              lista_obj_projetos)
+        data = dict()
+        data = {
+            'msg': 'Dados atualizados',
+            'lista_obj_acoes_prox_ou_atradadas': lista_obj_acoes_prox_ou_atradadas
+        }
+        return JsonResponse(data, safe=False)
