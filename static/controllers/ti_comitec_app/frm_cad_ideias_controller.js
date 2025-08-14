@@ -1749,7 +1749,8 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                     <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${tarefa.cod_atividade}">
                         ${let_options_usu}
                     </select>`;
-            } else {
+            }
+            else {
                 let_btn_salva_tarefa = `
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}" class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;" disabled="disabled">
                         <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
