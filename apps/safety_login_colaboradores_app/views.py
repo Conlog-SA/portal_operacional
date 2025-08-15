@@ -63,7 +63,7 @@ class Login_Colaborador(View):
         data_nasc_array = data_nasc_colab.split('-')
         data_nasc_colab = datetime(int(data_nasc_array[0]), int(data_nasc_array[1]), int(data_nasc_array[2]))
 
-        colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab)
+        colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab, situacao=1)
         if colaboradores.first() != None and colaboradores.count() == 1:
             filial_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial)
             cod_empresa_colaborador = filial_colaborador.cod_empresa.cod_empresa
@@ -196,26 +196,24 @@ class Menu_Safe(View):
                                             <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
                                         </div>
                                     '''
+        if colaborador.setor_administrativo == 1:
+            if check_ativo.filter(cod_check__tipo_check=10).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-predial" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-building-circle-check icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Infra. e Predial</b>
+                                            </div>
+                                        '''
 
-        if check_ativo.filter(cod_check__tipo_check=10).first() is not None:
-            str_menu_colaborador += '''
-                                        <div class="safety-container-app safety-app-predial" style="margin-bottom:0.4rem">
-                                            <i class="fa-solid fa-building-circle-check icon-menu-safety" style="margin-bottom:5px"></i>
-                                            <b style="color:white;">Infra. e Predial</b>
-                                        </div>
-                                    '''
+            if check_ativo.filter(cod_check__tipo_check=11).first() is not None:
+                str_menu_colaborador += '''
+                                            <div class="safety-container-app safety-app-pci" style="margin-bottom:0.4rem">
+                                                <i class="fa-solid fa-fire-extinguisher icon-menu-safety" style="margin-bottom:5px"></i>
+                                                <b style="color:white;">Check - PCI</b>
+                                            </div>
+                                        '''
 
-        if check_ativo.filter(cod_check__tipo_check=11).first() is not None:
-            str_menu_colaborador += '''
-                                        <div class="safety-container-app safety-app-pci" style="margin-bottom:0.4rem">
-                                            <i class="fa-solid fa-fire-extinguisher icon-menu-safety" style="margin-bottom:5px"></i>
-                                            <b style="color:white;">Check - PCI</b>
-                                        </div>
-                                    '''
-
-
-            str_menu_colaborador +=     '''</div>
-                                    '''
+        str_menu_colaborador += '''</div>'''
 
             #   <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
             #           <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>

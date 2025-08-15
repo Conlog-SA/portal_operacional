@@ -13,6 +13,7 @@ class Colaborador(models.Model):
     perfil_usu = models.CharField(max_length=1, blank=False, null=False)
     setor = models.IntegerField(blank=True, null=True)
     situacao = models.IntegerField(blank=True, null=True)
+    setor_administrativo = models.IntegerField(blank=False, null=False, default=0)
     class Meta:
         managed = True
         db_table = 'op_safe_colaboradores'
