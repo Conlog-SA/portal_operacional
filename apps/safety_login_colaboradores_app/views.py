@@ -62,7 +62,6 @@ class Login_Colaborador(View):
         data_nasc_colab = request.POST['data_nasc_colaborador']
         data_nasc_array = data_nasc_colab.split('-')
         data_nasc_colab = datetime(int(data_nasc_array[0]), int(data_nasc_array[1]), int(data_nasc_array[2]))
-
         colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab, situacao=1)
         if colaboradores.first() != None and colaboradores.count() == 1:
             filial_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial)

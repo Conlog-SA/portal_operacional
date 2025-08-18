@@ -10,8 +10,10 @@ class Colaborador(models.Model):
     validade_cnh = models.DateField(blank=True, null=True)
     cpf = models.CharField(max_length=50, blank=True, null=True)
     data_nascimento = models.DateField(blank=True, null=True)
+    '''G(Gestor)/ U(Usuário) / V(Visitante)'''
     perfil_usu = models.CharField(max_length=1, blank=False, null=False)
     setor = models.IntegerField(blank=True, null=True)
+    '''1(Ativo)/ 0(Inativo)'''
     situacao = models.IntegerField(blank=True, null=True)
     setor_administrativo = models.IntegerField(blank=False, null=False, default=0)
     class Meta:
