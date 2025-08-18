@@ -29,3 +29,11 @@ label{
     width:100%;
     padding-inline-start: 0px;
 }
+
+.link-entrevista-desligamento{
+    cursor: pointer;
+}
+
+.abrir-relatorio-desligamento{
+    cursor: pointer;
+}
