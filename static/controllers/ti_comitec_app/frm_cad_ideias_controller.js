@@ -2179,9 +2179,6 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 =======
 >>>>>>> 26916aa85540bae301e5fe88677efd4cd4c77190
 
-
-
-
 $(document).on('change', '#cb_usuarios_projeto', function(){
     let let_lista_cod_usuarios = $("#cb_usuarios_projeto").val().toString();
     let let_cod_projeto = $("#hd_cod_projeto").val();
