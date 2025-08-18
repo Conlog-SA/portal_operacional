@@ -4,7 +4,9 @@ from apps.safety_checks_aplicados_app.models import Check_Aplicado
 
 class Relato(models.Model):
     cod_relato_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    '''1(Ato Inseguro)/2(Condição insegura)/ 3(Abordagem positiva)'''
     cod_tipo_relato = models.IntegerField(blank=False, null=False)
+    '''1(Funcionario COnlog/Deep)/ 2(Funcionario Ambev/ 3(Freteiro)/ 4(Terceiro)'''
     situacao_envolvido = models.IntegerField(blank=True, null=True)
     local_relato = models.CharField(max_length=70, blank=False, null=False)
     atividade_relato = models.IntegerField(blank=True, null=True)
