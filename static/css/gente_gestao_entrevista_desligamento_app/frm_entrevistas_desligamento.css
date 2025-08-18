@@ -1,0 +1,135 @@
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 1rem auto;
+    padding: 1rem;
+    background-color: #f8f9fa; /* Added a light background */
+}
+
+/* Responsive adjustments (simplified) */
+@media (min-width: 768px) {
+    body {
+        max-width: 800px; /* Limit width on larger screens */
+    }
+}
+
+.form-container { /* Added a general container */
+     background-color: #ffffff;
+     border-radius: 8px;
+     box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Added subtle shadow */
+}
+
+.form-header {
+    /* Assuming flag_empresa = 0 for orange like Form 1 */
+    background-color: #f46424;
+    /* {% if flag_empresa == 1 %} background-color: #3b8eed; {% endif %} */
+    color: white;
+    padding: 20px; /* Increased padding */
+    border-radius: 8px 8px 0 0;
+    font-family: serif; /* Kept serif font for header */
+}
+.form-header h4 {
+    margin-bottom: 0.5rem; /* Space below title */
+    font-weight: bold;
+}
+ .form-header span {
+    font-size: 0.9em; /* Smaller text for description */
+    font-family: Arial, sans-serif; /* Revert to sans-serif for description */
+}
+
+.form-content {
+    border: 1px solid #ddd;
+    border-top: none; /* Remove top border as header has bottom edge */
+    border-radius: 0 0 8px 8px;
+    padding: 20px; /* Consistent padding */
+}
+.form-group {
+    margin-bottom: 1.5rem; /* Increased space between groups */
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    background-color: #fff; /* Ensure white background */
+}
+.form-group label:first-child { /* Style for the main question label */
+    display: block; /* Make label take full width */
+    margin-bottom: 0.75rem; /* Space below question */
+    font-weight: bold; /* Make question text bold */
+    color: #333; /* Darker text for question */
+}
+.required {
+    color: red;
+    margin-left: 2px; /* Space before asterisk */
+}
+
+/* Styling for radio buttons using Bootstrap structure */
+.form-check {
+    margin-bottom: 0.5rem; /* Space between vertical radio options */
+}
+.form-check-inline {
+    margin-right: 1rem; /* Space between horizontal radio options */
+}
+.form-check-label {
+    font-weight: normal; /* Ensure radio labels are not bold */
+}
+
+/* Styling for text inputs and textareas */
+input[type="text"],
+select.form-control,
+textarea.form-control { /* Target styled textarea */
+    margin-top: 0.5rem; /* Space above input if label is separate */
+}
+ textarea.form-control {
+    min-height: 80px; /* Default height for textareas */
+}
+
+/* Section headings */
+.section-heading {
+    font-weight: bold;
+    font-size: 1.1em;
+    margin-top: 2rem; /* Space above section heading */
+    margin-bottom: 1rem; /* Space below section heading */
+    padding-bottom: 0.5rem; /* Space below text */
+    border-bottom: 1px solid #eee; /* Subtle separator */
+    color: #f46424; /* Use header color for emphasis */
+}
+.section-heading:first-of-type {
+     margin-top: 0; /* No top margin for the very first section heading */
+}
+
+/* Sub-text or descriptions within labels */
+label span.description {
+    font-weight: normal;
+    font-size: 0.9em;
+    color: #666;
+    display: block; /* Put description on new line */
+    margin-top: 0.25rem;
+}
+
+/* Gritter styles (copied from original) */
+.gritter-top{
+    {% if flag_empresa == 0 %} background: #f46424;
+    {% elif flag_empresa == 1 %} background: #3b8eed;
+    {% endif %}
+    border-radius: 10px 10px 0px 0px;
+}
+.gritter-item{
+     {% if flag_empresa == 0 %} background: #f46424;
+    {% elif flag_empresa == 1 %} background: #3b8eed;
+    {% endif %}
+}
+.gritter-bottom{
+    {% if flag_empresa == 0 %} background: #f46424;
+    {% elif flag_empresa == 1 %} background: #3b8eed;
+    {% endif %}
+    border-radius: 0px 0px 10px 10px;
+}
+
+/* Ensure bootstrap-select fits well */
+.bootstrap-select > .dropdown-toggle {
+    background-color: #fff;
+    border-color: #ced4da; /* Match Bootstrap default border */
+}
+
+.informacoes-container{
+    margin-bottom:1rem;
+}

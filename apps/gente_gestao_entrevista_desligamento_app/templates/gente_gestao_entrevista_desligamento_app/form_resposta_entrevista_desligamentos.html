@@ -1,283 +1,524 @@
-<div id="container-form-desligados">
-    <div id="title-form-desligados">
-        <div style="display:flex;">
-            <img src="https://placehold.co/600x400" style="margin-right:1rem;">
-            <b>Entrevista de desligamentos - CONLOG</b>
-        </div>
-        <span>Texto aqui, possivelmente sobre o preenchimento, utilidade, privacidade ou algo</span>
-    </div>
-    <div id="header-form-desligados">
-        {% for secao in lista_secoes %}
-            <option value="{{f.cod_filial}}">{{f.desc_filial}}</option>
+{% load static %}
 
-            <b></b>
-            <div class="questao-entrevista-desligamento">
-                <span>Nome</span>
-                <input type="text" id="input-nome">
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Added viewport for responsiveness -->
+    <title>Entrevista de Desligamentos | CONLOG</title> <!-- Changed Title -->
+
+    {% block link_static_css %}
+         <!-- Bootstrap CSS first -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="stylesheet"  href="{% static 'css/gente_gestao_entrevista_desligamento_app/frm_entrevistas_desligamento.css' %}">
+        <!-- Gritter CSS -->
+        <link rel="stylesheet" href="{% static 'libs/jquery_gritter_notifications_1_7_4/css/jquery_gritter.css' %}">
+        <!-- Then your custom CSS -->
+        <link rel="stylesheet" href="{% static 'css/toggle_switch.css' %}" />
+        <link rel="stylesheet" href="{% static 'css/loader.css' %}" />
+        <!-- Assuming nps_ti.css contains the styles from form 1, or add them below -->
+        <!-- <link rel="stylesheet" href="{% static 'css/nps_ti_app/nps_ti.css' %}" /> -->
+        <!-- Bootstrap-select CSS after Bootstrap CSS -->
+        <link rel="stylesheet" href="{% static 'libs/bootstrap_select_1_14_0/css/bootstrap-select.css' %}"/>
+
+        <!-- JavaScript dependencies in correct order -->
+        <!-- jQuery first -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <!-- Popper.js before Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+        <!-- Bootstrap JS before bootstrap-select -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+        <!-- Gritter after jQuery -->
+        <script src="{% static 'libs/jquery_gritter_notifications_1_7_4/js/jquery_gritter.js' %}"></script>
+        <!-- DataTables after jQuery (If needed, otherwise remove) -->
+        <!-- <script src="https://cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script> -->
+        <!-- Bootstrap-select JS last -->
+        <script src="{% static 'libs/bootstrap_select_1_14_0/js/bootstrap-select.js' %}"></script>
+        <!-- Your custom JS -->
+        <script src="{% static 'controllers/gente_gestao_entrevista_desligamento_app/frm_preencher_entrevista.js' %}" type="text/javascript"></script>
+
+    {% endblock %}
+
+</head>
+<body>
+
+<div class="container-fluid"> <!-- Use Bootstrap container for better spacing -->
+    <div class="form-container"> <!-- Added wrapper -->
+        <div class="form-header">
+            <h4>Entrevista de desligamento - CONLOG</h4>
+        </div>
+        <div class="form-content">
+            <div class="section-heading">Informações</div>
+            <div class="form-group" style="padding:0.5rem;border:none;">
+                <div class="informacoes-container">
+                    <label for="input-nome">Nome:<span class="required">*</span></label>
+                    <input type="text" id="input-nome" class="form-control" disabled value="{{nome}}">
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-whatsapp">Whatsapp:<span class="required">*</span></label>
+                    <input type="text" id="input-whatsapp" class="form-control" disabled value="{{contato_telefone}}">
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-ultimo-dia">Último dia trabalhado:<span class="required">*</span></label>
+                    <input type="date" id="input-ultimo-dia" class="form-control">
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-unidade">Unidade:<span class="required">*</span></label>
+                    <select class="form-control selectpicker" id="input-unidade" data-live-search="true" title="Selecione a unidade">
+                        {% for fil in filiais %}
+                            <option value="{{fil.cod_filial}}">{{fil.desc_filial}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-cargo">Cargo no qual ocupava:<span class="required">*</span></label>
+                    <input type="text" id="input-cargo" class="form-control">
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-gestor-imediato">Gestor imediato:<span class="required">*</span></label>
+                    <input type="text" id="input-gestor-imediato" class="form-control">
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-setor-atuacao">Qual era o setor que você atuava?<span class="required">*</span></label>
+                    <select class="form-control selectpicker" id="input-setor-atuacao" data-live-search="true" title="Selecione o setor"> <!-- Added title -->
+                        <!-- <option value="" disabled selected>Selecione o setor</option> Removed placeholder option, using title -->
+                        <option value="1">RH/DP</option>
+                        <option value="2">FROTA</option>
+                        <option value="3">OPERAÇÕES</option>
+                        <option value="4">FINANCEIRO</option>
+                        <option value="5">CONTÁBEIS</option>
+                        <option value="6">PLANEJAMENTO E CONTROLE</option>
+                        <option value="7">TI</option>
+                        <option value="8">ADMINISTRATIVO CCO AC</option>
+                        <option value="9">SEGURANÇA</option>
+                        <option value="10">ARMAZÉM</option>
+                        <!-- Add other sectors as needed -->
+                    </select>
+                </div>
+                <div class="informacoes-container">
+                    <label>Iniciativa do desligamento<span class="required">*</span></label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input iniciativa" type="radio" id="radio-empresa" name="iniciativa-deslig" value="1">
+                        <label class="form-check-label" for="radio-empresa">Empresa</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input iniciativa" type="radio" id="radio-colaborador" name="iniciativa-deslig" value="2">
+                        <label class="form-check-label" for="radio-colaborador">Colaborador</label>
+                    </div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-motivo-desligamento">Qual o motivo do desligamento?<span class="required">*</span></label>
+                    <input type="text" id="input-motivo-desligamento" class="form-control">
+                </div>
             </div>
-        {% endfor %}
 
-        <div class="questao-entrevista-desligamento">
-            <span>Qual era o setor que você atuava?</span>
-            <select class="selectpicker form-control" id="input-setor-atuacao">
-                <option value="1">RH/DP</option>
-                <option value="2">FROTA</option>
-                <option value="3">OPERAÇÕES</option>
-                <option value="4">FINANCEIRO</option>
-                <option value="5">CONTÁBEIS</option>
-                <option value="6">PLANEJAMENTO E CONTROLE</option>
-                <option value="7">TI</option>
-                <option value="8">ADMINISTRATIVO CCO AC</option>
-                <option value="9">SEGURANÇA</option>
-                <option value="10">ARMAZÉM</option>
-            </select>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Iniciativa do desligamento</span>
-            <input type="radio" id="radio-empresa" name="iniciativa-deslig" value="Empresa">
-            <label for="radio-empresa">Empresa</label><br>
-            <input type="radio" id="radio-colaborador" name="iniciativa-deslig" value="Colaborador">
-            <label for="radio-colaborador">Colaborador</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Qual o motivo do desligamento?</span>
-            <input type="text" id="input-motivo-desligamento">
-        </div>
-    </div>
-    <div id="percepcoes-gerais">
-        <b>Percepções Gerais</b>
-        <div class="questao-entrevista-desligamento">
-            <b>Comunicação visual interna</b>
-            <span>(Inteligencia Artificial Neiva, Grupo GG Comunica, Site intranet Conlog, Call de resultados e e-mail)</span>
-            <input type="radio" id="radio-comunicacao-visual-interna-nota-4" name="input-comunicacao-visual-interna" value="4">
-            <label for="radio-comunicacao-visual-interna-nota-4">Muito satisfeito</label><br>
-            <input type="radio" id="radio-comunicacao-visual-interna-nota-3" name="input-comunicacao-visual-interna" value="3">
-            <label for="radio-comunicacao-visual-interna-nota-3">Satisfeito</label><br>
-            <input type="radio" id="radio-comunicacao-visual-interna-nota-2" name="input-comunicacao-visual-interna" value="2">
-            <label for="radio-comunicacao-visual-interna-nota-2">Insatisfeito</label><br>
-            <input type="radio" id="radio-comunicacao-visual-interna-nota-1" name="input-comunicacao-visual-interna" value="1">
-            <label for="radio-comunicacao-visual-interna-nota-1">Muito insatisfeito</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <b>"Materiais e equipamentos de trabalho</b>
-            <span>A empresa disponibilizou os equipamentos necessários para realização das suas tarefas"</span>
-            <input type="radio" id="radio-materiais-equipamentos-nota-4" name="input-materiais-equipamentos" value="4">
-            <label for="radio-materiais-equipamentos-nota-4">Muito satisfeito</label><br>
-            <input type="radio" id="radio-materiais-equipamentos-nota-3" name="input-materiais-equipamentos" value="3">
-            <label for="radio-materiais-equipamentos-nota-3">Satisfeito</label><br>
-            <input type="radio" id="radio-materiais-equipamentos-nota-2" name="input-materiais-equipamentos" value="2">
-            <label for="radio-materiais-equipamentos-nota-2">Insatisfeito</label><br>
-            <input type="radio" id="radio-materiais-equipamentos-nota-1" name="input-materiais-equipamentos" value="1">
-            <label for="radio-materiais-equipamentos-nota-1">Muito insatisfeito</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <b>Oportunidades de crescimento</b>
-            <span>Quanto você se sentia atraido pelas oportunidades de crescimento na Conlog</span>
-            <input type="radio" id="radio-oportunidades-crescimento-nota-4" name="input-oportunidades-crescimento" value="4">
-            <label for="radio-oportunidades-crescimento-nota-4">Muito satisfeito</label><br>
-            <input type="radio" id="radio-oportunidades-crescimento-nota-3" name="input-oportunidades-crescimento" value="3">
-            <label for="radio-oportunidades-crescimento-nota-3">Satisfeito</label><br>
-            <input type="radio" id="radio-oportunidades-crescimento-nota-2" name="input-oportunidades-crescimento" value="2">
-            <label for="radio-oportunidades-crescimento-nota-2">Insatisfeito</label><br>
-            <input type="radio" id="radio-oportunidades-crescimento-nota-1" name="input-oportunidades-crescimento" value="1">
-            <label for="radio-oportunidades-crescimento-nota-1">Muito insatisfeito</label><br>
-        </div>
-    </div>
-    <div id="lideranca-imediata">
-        <b>Liderança imediata</b>
-        <div class="questao-entrevista-desligamento">
-            <span>Você se sentia confortável para pedir ajuda, seja ao seu líder ou outros membros da equipe?</span>
-            <input type="radio" id="radio-solicitar-ajuda-nota-4" name="input-solicitar-ajuda" value="4">
-            <label for="radio-solicitar-ajuda-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-solicitar-ajuda-nota-3" name="input-solicitar-ajuda" value="3">
-            <label for="radio-solicitar-ajuda-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-solicitar-ajuda-nota-2" name="input-solicitar-ajuda" value="2">
-            <label for="radio-solicitar-ajuda-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-solicitar-ajuda-nota-1" name="input-solicitar-ajuda" value="1">
-            <label for="radio-solicitar-ajuda-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você se sentia reconhecido pelo seu líder quando superava os seus resultados no trabalho?</span>
-            <input type="radio" id="radio-reconhecido-lider-nota-4" name="input-reconhecido-lider" value="4">
-            <label for="radio-reconhecido-lider-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-reconhecido-lider-nota-3" name="input-reconhecido-lider" value="3">
-            <label for="radio-reconhecido-lider-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-reconhecido-lider-nota-2" name="input-reconhecido-lider" value="2">
-            <label for="radio-reconhecido-lider-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-reconhecido-lider-nota-1" name="input-reconhecido-lider" value="1">
-            <label for="radio-reconhecido-lider-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Com que frequencia você recebia feedback e informação sobre o seu desempenho no trabalho</span>
-            <input type="radio" id="radio-frequencia-feedback-nota-4" name="input-frequencia-feedback" value="4">
-            <label for="radio-frequencia-feedback-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-frequencia-feedback-nota-3" name="input-frequencia-feedback" value="3">
-            <label for="radio-frequencia-feedback-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-frequencia-feedback-nota-2" name="input-frequencia-feedback" value="2">
-            <label for="radio-frequencia-feedback-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-frequencia-feedback-nota-1" name="input-frequencia-feedback" value="1">
-            <label for="radio-frequencia-feedback-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você recebia feedbacks uteis sobre o seu desempenho no trabalho</span>
-            <input type="radio" id="radio-feedback-util-nota-4" name="input-feedback-util" value="4">
-            <label for="radio-feedback-util-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-feedback-util-nota-3" name="input-feedback-util" value="3">
-            <label for="radio-feedback-util-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-feedback-util-nota-2" name="input-feedback-util" value="2">
-            <label for="radio-feedback-util-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-feedback-util-nota-1" name="input-feedback-util" value="1">
-            <label for="radio-feedback-util-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>
-                Meu líder / minha líder ouvia ideias e opiniões, independente do meu gênero, raça, religião, origem,
-                deficiência ou orientação sexual.
-            </span>
-            <input type="radio" id="radio-ideias-ouvidas-nota-4" name="input-ideias-ouvidas" value="4">
-            <label for="radio-ideias-ouvidas-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-ideias-ouvidas-nota-3" name="input-ideias-ouvidas" value="3">
-            <label for="radio-ideias-ouvidas-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-ideias-ouvidas-nota-2" name="input-ideias-ouvidas" value="2">
-            <label for="radio-ideias-ouvidas-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-ideias-ouvidas-nota-1" name="input-ideias-ouvidas" value="1">
-            <label for="radio-feedback-util-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Meu banco de horas era bem gerenciado, e as folgas comunicadas com antecedência</span>
-            <input type="radio" id="radio-banco-horas-nota-4" name="input-banco-horas" value="4">
-            <label for="radio-banco-horas-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-banco-horas-nota-3" name="input-banco-horas" value="3">
-            <label for="radio-banco-horas-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-banco-horas-nota-2" name="input-banco-horas" value="2">
-            <label for="radio-banco-horas-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-banco-horas-nota-1" name="input-banco-horas" value="1">
-            <label for="radio-banco-horas-nota-1">Nunca</label><br>
-        </div>
-    </div>
-    <div id="remuneracao-beneficios">
-        <b>Remuneração e Benefícios</b>
-        <div class="questao-entrevista-desligamento">
-            <span>Você estava satisfeito com os beneficios que recebia aqui?</span>
-            <input type="radio" id="radio-satisfacao-beneficios-nota-4" name="input-satisfacao-beneficios" value="4">
-            <label for="radio-satisfacao-beneficios-nota-4">Muito satisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-beneficios-nota-3" name="input-satisfacao-beneficios" value="3">
-            <label for="radio-satisfacao-beneficios-nota-3">Satisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-beneficios-nota-2" name="input-satisfacao-beneficios" value="2">
-            <label for="radio-satisfacao-beneficios-nota-2">Insatisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-beneficios-nota-1" name="input-satisfacao-beneficios" value="1">
-            <label for="radio-satisfacao-beneficios-nota-1">Muito insatisfeito</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você estava satisfeito com a remuneração que recebia aqui?</span>
-            <input type="radio" id="radio-satisfacao-salario-nota-4" name="input-satisfacao-salario" value="4">
-            <label for="radio-satisfacao-salario-nota-4">Muito satisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-salario-nota-3" name="input-satisfacao-salario" value="3">
-            <label for="radio-satisfacao-salario-nota-3">Satisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-salario-nota-2" name="input-satisfacao-salario" value="2">
-            <label for="radio-satisfacao-salario-nota-2">Insatisfeito</label><br>
-            <input type="radio" id="radio-satisfacao-salario-nota-1" name="input-satisfacao-salario" value="1">
-            <label for="radio-satisfacao-salario-nota-1">Muito insatisfeito</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você achava que o seu salário era justo?</span>
-            <input type="radio" id="radio-salario-justo-sim" name="input-salario-justo" value="2">
-            <label for="radio-salario-justo-sim">Sim</label><br>
-            <input type="radio" id="radio-salario-justo-nao" name="input-salario-justo" value="1">
-            <label for="radio-salario-justo-nao">Não</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>
-                Minha carga horária de trabalho e minhas responsabilidades eram coerentes com a minha remuneração
-                total (considere salário fixo + variável + benefícios)
-            </span>
-            <input type="radio" id="radio-responsabilidades-coerente-sim" name="input-responsabilidades-coerente" value="2">
-            <label for="radio-responsabilidades-coerente-sim">Sim</label><br>
-            <input type="radio" id="radio-responsabilidades-coerente-nao" name="input-responsabilidades-coerente" value="1">
-            <label for="radio-responsabilidades-coerente-nao">Não</label><br>
-        </div>
-    </div>
-    <div id="diversidade-inclusao">
-        <b>Diversidade e inclusão</b>
-        <div class="questao-entrevista-desligamento">
-            <span>
-                Você era tratado(a) igualmente e de forma justa, independente do seu gênero, raça, religião, origem,
-                deficiência ou orientação sexual?
-            </span>
-            <input type="radio" id="radio-tratamento-justo-nota-4" name="input-tratamento-justo" value="4">
-            <label for="radio-tratamento-justo-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-tratamento-justo-nota-3" name="input-tratamento-justo" value="3">
-            <label for="radio-tratamento-justo-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-tratamento-justo-nota-2" name="input-tratamento-justo" value="2">
-            <label for="radio-tratamento-justo-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-tratamento-justo-nota-1" name="input-tratamento-justo" value="1">
-            <label for="radio-tratamento-justo-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você sente que já sofreu algum tipo de discriminação nesta empresa?</span>
-            <input type="radio" id="radio-discriminacao-proprio-sim" name="input-discriminacao-proprio" value="2">
-            <label for="radio-discriminacao-proprio-sim">Sim</label><br>
-            <input type="radio" id="radio-discriminacao-proprio-nao" name="input-discriminacao-proprio" value="1">
-            <label for="radio-discriminacao-proprio-nao">Não</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você tem algum/a colega ou conhecido que já sofreu algum tipo de preconceito ou discriminação no ambiente de trabalho?</span>
-            <input type="radio" id="radio-discriminacao-colega-sim" name="input-discriminacao-colega" value="2">
-            <label for="radio-discriminacao-colega-sim">Sim</label><br>
-            <input type="radio" id="radio-discriminacao-colega-nao" name="input-discriminacao-colega" value="1">
-            <label for="radio-discriminacao-colega-nao">Não</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Esta empresa adota boas práticas de ética e conduta?</span>
-            <input type="radio" id="radio-praticas-etica-nota-4" name="input-praticas-etica" value="4">
-            <label for="radio-praticas-etica-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-praticas-etica-nota-3" name="input-praticas-etica" value="3">
-            <label for="radio-praticas-etica-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-praticas-etica-nota-2" name="input-praticas-etica" value="2">
-            <label for="radio-praticas-etica-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-praticas-etica-nota-1" name="input-praticas-etica" value="1">
-            <label for="radio-praticas-etica-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você possui confiança no Canal de Compliance/denúncias contra currupções e práticas corporativas irregulares da CONLOG?</span>
-            <input type="radio" id="radio-canal-denuncias-nota-4" name="input-canal-denuncias" value="4">
-            <label for="radio-canal-denuncias-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-canal-denuncias-nota-3" name="input-canal-denuncias" value="3">
-            <label for="radio-canal-denuncias-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-canal-denuncias-nota-2" name="input-canal-denuncias" value="2">
-            <label for="radio-canal-denuncias-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-canal-denuncias-nota-1" name="input-canal-denuncias" value="1">
-            <label for="radio-canal-denuncias-nota-1">Nunca</label><br>
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>Você se sentia à vontade para colocar a sua opinião em uma reunião, mesmo que ela seja diferente do que estão falando?</span>
-            <input type="radio" id="radio-opiniao-reunioes-nota-4" name="input-opiniao-reunioes" value="4">
-            <label for="radio-opiniao-reunioes-nota-4">Sempre</label><br>
-            <input type="radio" id="radio-opiniao-reunioes-nota-3" name="input-opiniao-reunioes" value="3">
-            <label for="radio-opiniao-reunioes-nota-3">Frequentemente</label><br>
-            <input type="radio" id="radio-opiniao-reunioes-nota-2" name="input-opiniao-reunioes" value="2">
-            <label for="radio-opiniao-reunioes-nota-2">Raramente</label><br>
-            <input type="radio" id="radio-opiniao-reunioes-nota-1" name="input-opiniao-reunioes" value="1">
-            <label for="radio-opiniao-reunioes-nota-1">Nunca</label><br>
-        </div>
-    </div>
-    <div id="perguntas-abertas">
-        <b>Perguntas abertas</b>
-        <div class="questao-entrevista-desligamento">
-            <span>Existe algo que você queira deixar registrado sobre a empresa ou sobre os motivos do desligamento?</span>
-            <input type="text" id="input-registro-livre">
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>O que você mais gostava na empresa?</span>
-            <input type="text" id="input-melhores-pontos">
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>O que você menos gostava na empresa?</span>
-            <input type="text" id="input-piores-pontos">
-        </div>
-        <div class="questao-entrevista-desligamento">
-            <span>O que lhe fez desvincular da Cia?</span>
-            <input type="text" id="input-motivo-desvinculamento">
-        </div>
-    </div>
-</div>
+            <!-- Percepções Gerais Section -->
+            <div class="section-heading">Percepções Gerais</div>
+
+            <div class="form-group">
+                <label>
+                    Comunicação visual interna<span class="required">*</span>
+                    <span class="description">(Inteligencia Artificial Neiva, Grupo GG Comunica, Site intranet Conlog, Call de resultados e e-mail)</span>
+                </label>
+                <div class="form-check">
+                    <input class="form-check-input comunicacao-visual-interna" type="radio" id="radio-comunicacao-visual-interna-nota-4" name="input-comunicacao-visual-interna" value="4">
+                    <label class="form-check-label" for="radio-comunicacao-visual-interna-nota-4">Muito satisfeito</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input comunicacao-visual-interna" type="radio" id="radio-comunicacao-visual-interna-nota-3" name="input-comunicacao-visual-interna" value="3">
+                    <label class="form-check-label" for="radio-comunicacao-visual-interna-nota-3">Satisfeito</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input comunicacao-visual-interna" type="radio" id="radio-comunicacao-visual-interna-nota-2" name="input-comunicacao-visual-interna" value="2">
+                    <label class="form-check-label" for="radio-comunicacao-visual-interna-nota-2">Insatisfeito</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input comunicacao-visual-interna" type="radio" id="radio-comunicacao-visual-interna-nota-1" name="input-comunicacao-visual-interna" value="1">
+                    <label class="form-check-label" for="radio-comunicacao-visual-interna-nota-1">Muito insatisfeito</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                 <label>
+                    Materiais e equipamentos de trabalho<span class="required">*</span>
+                    <span class="description">A empresa disponibilizou os equipamentos necessários para realização das suas tarefas?</span>
+                 </label>
+                 <div class="form-check">
+                    <input class="form-check-input materiais-equipamentos" type="radio" id="radio-materiais-equipamentos-nota-4" name="input-materiais-equipamentos" value="4">
+                    <label class="form-check-label" for="radio-materiais-equipamentos-nota-4">Muito satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input materiais-equipamentos" type="radio" id="radio-materiais-equipamentos-nota-3" name="input-materiais-equipamentos" value="3">
+                    <label class="form-check-label" for="radio-materiais-equipamentos-nota-3">Satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input materiais-equipamentos" type="radio" id="radio-materiais-equipamentos-nota-2" name="input-materiais-equipamentos" value="2">
+                    <label class="form-check-label" for="radio-materiais-equipamentos-nota-2">Insatisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input materiais-equipamentos" type="radio" id="radio-materiais-equipamentos-nota-1" name="input-materiais-equipamentos" value="1">
+                    <label class="form-check-label" for="radio-materiais-equipamentos-nota-1">Muito insatisfeito</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Oportunidades de crescimento<span class="required">*</span>
+                    <span class="description">Quanto você se sentia atraído(a) pelas oportunidades de crescimento na Conlog?</span>
+                </label>
+                 <div class="form-check">
+                    <input class="form-check-input oportunidades-crescimento" type="radio" id="radio-oportunidades-crescimento-nota-4" name="input-oportunidades-crescimento" value="4">
+                    <label class="form-check-label" for="radio-oportunidades-crescimento-nota-4">Muito satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input oportunidades-crescimento" type="radio" id="radio-oportunidades-crescimento-nota-3" name="input-oportunidades-crescimento" value="3">
+                    <label class="form-check-label" for="radio-oportunidades-crescimento-nota-3">Satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input oportunidades-crescimento" type="radio" id="radio-oportunidades-crescimento-nota-2" name="input-oportunidades-crescimento" value="2">
+                    <label class="form-check-label" for="radio-oportunidades-crescimento-nota-2">Insatisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input oportunidades-crescimento" type="radio" id="radio-oportunidades-crescimento-nota-1" name="input-oportunidades-crescimento" value="1">
+                    <label class="form-check-label" for="radio-oportunidades-crescimento-nota-1">Muito insatisfeito</label>
+                 </div>
+            </div>
+
+            <!-- Liderança imediata Section -->
+            <div class="section-heading">Liderança imediata</div>
+
+            <div class="form-group">
+                <label>Você se sentia confortável para pedir ajuda, seja ao seu líder ou outros membros da equipe?<span class="required">*</span></label>
+                <div class="form-check">
+                    <input class="form-check-input solicitar-ajuda" type="radio" id="radio-solicitar-ajuda-nota-4" name="input-solicitar-ajuda" value="4">
+                    <label class="form-check-label" for="radio-solicitar-ajuda-nota-4">Sempre</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input solicitar-ajuda" type="radio" id="radio-solicitar-ajuda-nota-3" name="input-solicitar-ajuda" value="3">
+                    <label class="form-check-label" for="radio-solicitar-ajuda-nota-3">Frequentemente</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input solicitar-ajuda" type="radio" id="radio-solicitar-ajuda-nota-2" name="input-solicitar-ajuda" value="2">
+                    <label class="form-check-label" for="radio-solicitar-ajuda-nota-2">Raramente</label>
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input solicitar-ajuda" type="radio" id="radio-solicitar-ajuda-nota-1" name="input-solicitar-ajuda" value="1">
+                    <label class="form-check-label" for="radio-solicitar-ajuda-nota-1">Nunca</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você se sentia reconhecido(a) pelo seu líder quando superava os seus resultados no trabalho?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input reconhecido-lider" type="radio" id="radio-reconhecido-lider-nota-4" name="input-reconhecido-lider" value="4">
+                    <label class="form-check-label" for="radio-reconhecido-lider-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input reconhecido-lider" type="radio" id="radio-reconhecido-lider-nota-3" name="input-reconhecido-lider" value="3">
+                    <label class="form-check-label" for="radio-reconhecido-lider-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input reconhecido-lider" type="radio" id="radio-reconhecido-lider-nota-2" name="input-reconhecido-lider" value="2">
+                    <label class="form-check-label" for="radio-reconhecido-lider-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input reconhecido-lider" type="radio" id="radio-reconhecido-lider-nota-1" name="input-reconhecido-lider" value="1">
+                    <label class="form-check-label" for="radio-reconhecido-lider-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Com que frequência você recebia feedback e informação sobre o seu desempenho no trabalho?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input frequencia-feedback" type="radio" id="radio-frequencia-feedback-nota-4" name="input-frequencia-feedback" value="4">
+                    <label class="form-check-label" for="radio-frequencia-feedback-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input frequencia-feedback" type="radio" id="radio-frequencia-feedback-nota-3" name="input-frequencia-feedback" value="3">
+                    <label class="form-check-label" for="radio-frequencia-feedback-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input frequencia-feedback" type="radio" id="radio-frequencia-feedback-nota-2" name="input-frequencia-feedback" value="2">
+                    <label class="form-check-label" for="radio-frequencia-feedback-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input frequencia-feedback" type="radio" id="radio-frequencia-feedback-nota-1" name="input-frequencia-feedback" value="1">
+                    <label class="form-check-label" for="radio-frequencia-feedback-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você recebia feedbacks úteis sobre o seu desempenho no trabalho?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input feedback-util" type="radio" id="radio-feedback-util-nota-4" name="input-feedback-util" value="4">
+                    <label class="form-check-label" for="radio-feedback-util-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input feedback-util" type="radio" id="radio-feedback-util-nota-3" name="input-feedback-util" value="3">
+                    <label class="form-check-label" for="radio-feedback-util-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input feedback-util" type="radio" id="radio-feedback-util-nota-2" name="input-feedback-util" value="2">
+                    <label class="form-check-label" for="radio-feedback-util-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input feedback-util" type="radio" id="radio-feedback-util-nota-1" name="input-feedback-util" value="1">
+                    <label class="form-check-label" for="radio-feedback-util-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+             <div class="form-group">
+                <label>Meu líder / minha líder ouvia ideias e opiniões, independente do meu gênero, raça, religião, origem, deficiência ou orientação sexual.<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input ideias-ouvidas" type="radio" id="radio-ideias-ouvidas-nota-4" name="input-ideias-ouvidas" value="4">
+                    <label class="form-check-label" for="radio-ideias-ouvidas-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input ideias-ouvidas" type="radio" id="radio-ideias-ouvidas-nota-3" name="input-ideias-ouvidas" value="3">
+                    <label class="form-check-label" for="radio-ideias-ouvidas-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input ideias-ouvidas" type="radio" id="radio-ideias-ouvidas-nota-2" name="input-ideias-ouvidas" value="2">
+                    <label class="form-check-label" for="radio-ideias-ouvidas-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input ideias-ouvidas" type="radio" id="radio-ideias-ouvidas-nota-1" name="input-ideias-ouvidas" value="1"> <!-- Corrected value from original -->
+                    <label class="form-check-label" for="radio-ideias-ouvidas-nota-1">Nunca</label> <!-- Corrected label association -->
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Meu banco de horas era bem gerenciado, e as folgas comunicadas com antecedência?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input banco-horas" type="radio" id="radio-banco-horas-nota-4" name="input-banco-horas" value="4">
+                    <label class="form-check-label" for="radio-banco-horas-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input banco-horas" type="radio" id="radio-banco-horas-nota-3" name="input-banco-horas" value="3">
+                    <label class="form-check-label" for="radio-banco-horas-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input banco-horas" type="radio" id="radio-banco-horas-nota-2" name="input-banco-horas" value="2">
+                    <label class="form-check-label" for="radio-banco-horas-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input banco-horas" type="radio" id="radio-banco-horas-nota-1" name="input-banco-horas" value="1">
+                    <label class="form-check-label" for="radio-banco-horas-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <!-- Remuneração e Benefícios Section -->
+            <div class="section-heading">Remuneração e Benefícios</div>
+
+            <div class="form-group">
+                <label>Você estava satisfeito(a) com os benefícios que recebia aqui?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-beneficios" type="radio" id="radio-satisfacao-beneficios-nota-4" name="input-satisfacao-beneficios" value="4">
+                    <label class="form-check-label" for="radio-satisfacao-beneficios-nota-4">Muito satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-beneficios" type="radio" id="radio-satisfacao-beneficios-nota-3" name="input-satisfacao-beneficios" value="3">
+                    <label class="form-check-label" for="radio-satisfacao-beneficios-nota-3">Satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-beneficios" type="radio" id="radio-satisfacao-beneficios-nota-2" name="input-satisfacao-beneficios" value="2">
+                    <label class="form-check-label" for="radio-satisfacao-beneficios-nota-2">Insatisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-beneficios" type="radio" id="radio-satisfacao-beneficios-nota-1" name="input-satisfacao-beneficios" value="1">
+                    <label class="form-check-label" for="radio-satisfacao-beneficios-nota-1">Muito insatisfeito</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você estava satisfeito(a) com a remuneração que recebia aqui?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-salario" type="radio" id="radio-satisfacao-salario-nota-4" name="input-satisfacao-salario" value="4">
+                    <label class="form-check-label" for="radio-satisfacao-salario-nota-4">Muito satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-salario" type="radio" id="radio-satisfacao-salario-nota-3" name="input-satisfacao-salario" value="3">
+                    <label class="form-check-label" for="radio-satisfacao-salario-nota-3">Satisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-salario" type="radio" id="radio-satisfacao-salario-nota-2" name="input-satisfacao-salario" value="2">
+                    <label class="form-check-label" for="radio-satisfacao-salario-nota-2">Insatisfeito</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input satisfacao-salario" type="radio" id="radio-satisfacao-salario-nota-1" name="input-satisfacao-salario" value="1">
+                    <label class="form-check-label" for="radio-satisfacao-salario-nota-1">Muito insatisfeito</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você achava que o seu salário era justo?<span class="required">*</span></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input salario-justo" type="radio" id="radio-salario-justo-sim" name="input-salario-justo" value="2">
+                    <label class="form-check-label" for="radio-salario-justo-sim">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input salario-justo" type="radio" id="radio-salario-justo-nao" name="input-salario-justo" value="1">
+                    <label class="form-check-label" for="radio-salario-justo-nao">Não</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Minha carga horária de trabalho e minhas responsabilidades eram coerentes com a minha remuneração total (considere salário fixo + variável + benefícios)?<span class="required">*</span></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input responsabilidades-coerente" type="radio" id="radio-responsabilidades-coerente-sim" name="input-responsabilidades-coerente" value="2">
+                    <label class="form-check-label" for="radio-responsabilidades-coerente-sim">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input responsabilidades-coerente" type="radio" id="radio-responsabilidades-coerente-nao" name="input-responsabilidades-coerente" value="1">
+                    <label class="form-check-label" for="radio-responsabilidades-coerente-nao">Não</label>
+                </div>
+            </div>
+
+            <!-- Diversidade e inclusão Section -->
+            <div class="section-heading">Diversidade e inclusão</div>
+
+            <div class="form-group">
+                <label>Você era tratado(a) igualmente e de forma justa, independente do seu gênero, raça, religião, origem, deficiência ou orientação sexual?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input tratamento-justo" type="radio" id="radio-tratamento-justo-nota-4" name="input-tratamento-justo" value="4">
+                    <label class="form-check-label" for="radio-tratamento-justo-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input tratamento-justo" type="radio" id="radio-tratamento-justo-nota-3" name="input-tratamento-justo" value="3">
+                    <label class="form-check-label" for="radio-tratamento-justo-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input tratamento-justo" type="radio" id="radio-tratamento-justo-nota-2" name="input-tratamento-justo" value="2">
+                    <label class="form-check-label" for="radio-tratamento-justo-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input tratamento-justo" type="radio" id="radio-tratamento-justo-nota-1" name="input-tratamento-justo" value="1">
+                    <label class="form-check-label" for="radio-tratamento-justo-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você sente que já sofreu algum tipo de discriminação nesta empresa?<span class="required">*</span></label>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input discriminacao-proprio" type="radio" id="radio-discriminacao-proprio-sim" name="input-discriminacao-proprio" value="2">
+                    <label class="form-check-label" for="radio-discriminacao-proprio-sim">Sim</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input discriminacao-proprio" type="radio" id="radio-discriminacao-proprio-nao" name="input-discriminacao-proprio" value="1">
+                    <label class="form-check-label" for="radio-discriminacao-proprio-nao">Não</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você tem algum/a colega ou conhecido que já sofreu algum tipo de preconceito ou discriminação no ambiente de trabalho?<span class="required">*</span></label>
+                 <div class="form-check form-check-inline">
+                    <input class="form-check-input discriminacao-colega" type="radio" id="radio-discriminacao-colega-sim" name="input-discriminacao-colega" value="2">
+                    <label class="form-check-label" for="radio-discriminacao-colega-sim">Sim</label>
+                 </div>
+                 <div class="form-check form-check-inline">
+                    <input class="form-check-input discriminacao-colega" type="radio" id="radio-discriminacao-colega-nao" name="input-discriminacao-colega" value="1">
+                    <label class="form-check-label" for="radio-discriminacao-colega-nao">Não</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Esta empresa adota boas práticas de ética e conduta?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input praticas-etica" type="radio" id="radio-praticas-etica-nota-4" name="input-praticas-etica" value="4">
+                    <label class="form-check-label" for="radio-praticas-etica-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input praticas-etica" type="radio" id="radio-praticas-etica-nota-3" name="input-praticas-etica" value="3">
+                    <label class="form-check-label" for="radio-praticas-etica-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input praticas-etica" type="radio" id="radio-praticas-etica-nota-2" name="input-praticas-etica" value="2">
+                    <label class="form-check-label" for="radio-praticas-etica-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input praticas-etica" type="radio" id="radio-praticas-etica-nota-1" name="input-praticas-etica" value="1">
+                    <label class="form-check-label" for="radio-praticas-etica-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você possui confiança no Canal de Compliance/denúncias contra corrupções e práticas corporativas irregulares da CONLOG?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input canal-denuncias" type="radio" id="radio-canal-denuncias-nota-4" name="input-canal-denuncias" value="4">
+                    <label class="form-check-label" for="radio-canal-denuncias-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input canal-denuncias" type="radio" id="radio-canal-denuncias-nota-3" name="input-canal-denuncias" value="3">
+                    <label class="form-check-label" for="radio-canal-denuncias-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input canal-denuncias" type="radio" id="radio-canal-denuncias-nota-2" name="input-canal-denuncias" value="2">
+                    <label class="form-check-label" for="radio-canal-denuncias-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input canal-denuncias" type="radio" id="radio-canal-denuncias-nota-1" name="input-canal-denuncias" value="1">
+                    <label class="form-check-label" for="radio-canal-denuncias-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você se sentia à vontade para colocar a sua opinião em uma reunião, mesmo que ela seja diferente do que estão falando?<span class="required">*</span></label>
+                 <div class="form-check">
+                    <input class="form-check-input opiniao-reunioes" type="radio" id="radio-opiniao-reunioes-nota-4" name="input-opiniao-reunioes" value="4">
+                    <label class="form-check-label" for="radio-opiniao-reunioes-nota-4">Sempre</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input opiniao-reunioes" type="radio" id="radio-opiniao-reunioes-nota-3" name="input-opiniao-reunioes" value="3">
+                    <label class="form-check-label" for="radio-opiniao-reunioes-nota-3">Frequentemente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input opiniao-reunioes" type="radio" id="radio-opiniao-reunioes-nota-2" name="input-opiniao-reunioes" value="2">
+                    <label class="form-check-label" for="radio-opiniao-reunioes-nota-2">Raramente</label>
+                 </div>
+                 <div class="form-check">
+                    <input class="form-check-input opiniao-reunioes" type="radio" id="radio-opiniao-reunioes-nota-1" name="input-opiniao-reunioes" value="1">
+                    <label class="form-check-label" for="radio-opiniao-reunioes-nota-1">Nunca</label>
+                 </div>
+            </div>
+
+            <!-- Perguntas abertas Section -->
+            <div class="section-heading">Perguntas abertas</div>
+
+            <div class="form-group">
+                <label for="input-registro-livre">Existe algo que você queira deixar registrado sobre a empresa ou sobre os motivos do desligamento?</label>
+                <textarea id="input-registro-livre" class="form-control" rows="3"></textarea> <!-- Changed to textarea -->
+            </div>
+
+            <div class="form-group">
+                <label for="input-melhores-pontos">O que você mais gostava na empresa?</label>
+                <textarea id="input-melhores-pontos" class="form-control" rows="3"></textarea> <!-- Changed to textarea -->
+            </div>
+
+            <div class="form-group">
+                <label for="input-piores-pontos">O que você menos gostava na empresa?</label>
+                <textarea id="input-piores-pontos" class="form-control" rows="3"></textarea> <!-- Changed to textarea -->
+            </div>
+
+            <div class="form-group">
+                <label for="input-motivo-desvinculamento">O que lhe fez desvincular da Cia?</label>
+                <textarea id="input-motivo-desvinculamento" class="form-control" rows="3"></textarea> <!-- Changed to textarea -->
+            </div>
+
+             <!-- Add Submit Button -->
+             <div class="text-center mt-4">
+                 <button type="submit" class="btn btn-primary btn-lg envio-entrevista-desligamento" name="{{token_acesso}}" id="btn_submit">Enviar Respostas</button>
+             </div>
+
+        </div> <!-- End form-content -->
+    </div> <!-- End form-container -->
+</div> <!-- End container -->
+
+<script>
+    var str_respostas = "{{preenchimento_parcial}}";
+    $(document).ready(function(){
+        $('.selectpicker').selectpicker();
+    });
+</script>
+
+</body>
+</html>

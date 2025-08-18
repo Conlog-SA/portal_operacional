@@ -47,7 +47,7 @@ class Form_Importa_Plan_Despesas_View(View):
             'cod_usu').distinct()
         usuarios_importacao = Usuario.objects.filter(cod_usu__in=lista_codigos_usuarios_importacao)
 
-        planos_saude = Plano_Saude.objects.all()
+        planos_saude = Plano_Saude.objects.all().exclude(cod_plano_saude__in=[28, 29, 30])
         lista_planos_dict = []
         for plano in planos_saude:
             if plano.especificacao != None:
