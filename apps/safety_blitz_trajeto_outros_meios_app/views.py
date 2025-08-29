@@ -18,7 +18,8 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
         nome_colaborador = colaborador.nome_colaborador
-        filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+        #filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_usuario = colaborador.cod_filial
 
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':

@@ -2549,7 +2549,8 @@ class Form_Anexos_Conta_View(View):
         else:
             cod_conta = obj_contrato.cod_conta.cod_conta
         caminho_completo = str(obj_anexo_conta.caminho_anexo).replace('/', '\\')
-        os.remove(caminho_completo)
+        if os.path.isfile(caminho_completo):
+            os.remove(caminho_completo)
         obj_anexo_conta.delete()
         data = dict()
         data = {

@@ -106,11 +106,12 @@ $(document).on('click', 'button', function(){
                         "bJQueryUI": true,
                         "destroy": true,
                         "fixedHeader": true,
-                        "scrollY": "770px",
+                        "scrollY": "50vh", //770px
                         "scrollX": true,
                         "scrollCollapse": true,
-                        "paging": true,
-                        "pageLength": 7,
+                        "paging": false,
+                        //"pageLength": 7,
+                        "searching": true,
                         "dom": 'Bfrtip',
                         "buttons": [
                             'copyHtml5'

@@ -3,9 +3,9 @@
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
-    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-calendar-check fa-2xl"style="color: #f46424;"></i>
+            <i class="fa-solid fa-calendar-check"style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Rel. Folha Pagamento</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -25,8 +25,11 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;margin-top: 0.85rem;">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-end w-100">
+                    &nbsp;
+                </div>
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-right: 0.25rem;">
                     <label for="cb_competencia_folha_pag">Competência</label>
                     <select class="selectpicker form-control" id="cb_competencia_folha_pag"
                             name="cb_competencia_folha_pag"
@@ -65,26 +68,8 @@
                     </select>
 
                 </div>
-                <!--
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.85rem;">
-                    <div class="d-flex w-100">
-                        <label for="cb_emp_folha_pag">
-                            Empresa
-                        </label>
-                    </div>
 
-                    <div class="d-flex flex-column w-100">
-                        <select class="selectpicker form-control" id="cb_emp_folha_pag"
-                                name="cb_emp_folha_pag"
-                                data-live-search="true"
-                                title="Selecione a empresa">
-                            <option value="12">Conlog</option>
-                            <option value="17">Deep</option>
-                        </select>
-                    </div>
-                </div>
-                -->
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-left: 0.25rem;">
                     <div class="d-flex w-100">
                         <label for="cb_proj_folha_pag">Projetos
                             <button type='button' id="btn_seleciona_todas_proj_folha_pag"
@@ -123,7 +108,7 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2.5rem;">
+                <div class="d-flex flex-column justify-content-end w-50" style="padding-left: 0.25rem;">
                     <button type="button" name="btnPesqDadosFolhaPag"
                               id="btnPesqDadosFolhaPag"
                               class="btn btn-primary btn-rounded botaoPrincipal" >
@@ -135,7 +120,7 @@
             </div>
 
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4" >
+            <div class="d-flex justify-content-between align-items-between w-100" >
                 <div class="d-flex align-items-end w-100 cl_div_loader_gera_pag_2art_terc">
                     <div class="loader" id="loader_folha_pagamento">
                         <div class="loader-inner">
@@ -150,10 +135,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2rem;">
+                <div class="d-flex flex-column w-100">
                     &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2rem;">
+                <div class="d-flex flex-column w-100">
                     &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column w-100">

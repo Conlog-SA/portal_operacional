@@ -88,7 +88,8 @@
 
 .cl_div_tabela_principal_pagina{
     width: 95%;
-    height: 100%;
+    /*height: 100%;*/
+    margin-bottom: .5rem;
     font-size:10px;
     background-color: var(--cor_bg_cinza_escuro) !important;
     padding-left:0.5rem;

@@ -35,7 +35,7 @@ class Form_Gerar_Gab_Emp(View):
         #lista_modelos_emp_dict = []
         #for modelo in lista_modelos_emp:
         #    lista_modelos_emp_dict.append({'cod_modelo_emp': modelo.cod_modelo_emp, 'desc_emp': modelo.desc_emp})
-        filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_colaborador = colaborador.cod_filial
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
             data_atual = datetime.now()
@@ -95,8 +95,9 @@ class Form_Gerar_Gab_Emp(View):
         if (check_ativo == None):
             return HttpResponse('Não há check de empilhadeiras ativo atualmente para essa filial', status=404)
 
+        obj_filial = Filial.objects.get(pk=filial_colaborador)
         check_aplicado = Check_Aplicado(
-            cod_filial=filial_colaborador,
+            cod_filial=obj_filial,
             cod_colaborador_aplicante=colaborador_envio,
             data_registro=data_atual,
             cod_layout_check=check_ativo.cod_check

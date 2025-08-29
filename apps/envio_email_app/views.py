@@ -9,7 +9,7 @@ class Envio_Email():
         self.host = 'smtp-mail.outlook.com'
         self.port = '587'
         self.login = 'no-reply@conlogsa.com.br'
-        self.senha = 'lLhBtApClEJ@911!@#'
+        self.senha = 'RaLsPc@965214!@#'
 
 
     def envia_email_alerta_adm(self, msg):

@@ -19,7 +19,7 @@ class Form_Gerar_Check_Gso(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
         nome_colaborador = colaborador.nome_colaborador
-        filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_usuario = colaborador.cod_filial
 
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
@@ -81,8 +81,9 @@ class Form_Gerar_Check_Gso(View):
         if (check_ativo == None):
             return HttpResponse('Não há check ativo atualmente para essa filial', status=404)
 
+        obj_filial = Filial.objects.get(pk=filial_colaborador)
         check_aplicado = Check_Aplicado(
-            cod_filial=filial_colaborador,
+            cod_filial=obj_filial,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
