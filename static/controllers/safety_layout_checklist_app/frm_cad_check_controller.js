@@ -595,22 +595,7 @@ $(document).on('change','.selectpicker',function(){
 $(document).on('click','button.busca-checks-aplicados' , function(event){
     let cod_filial =  $('#filial_check_aplicado').val();
     let tipo_check = $("#tipo_check").val();
-    /*
-    let data_ini = new Date($('#dt_periodo_check_ini').val());
-    let day = data_ini.getUTCDate();
-    let month = data_ini.getUTCMonth()+1;
-    let year = data_ini.getUTCFullYear();
-	let let_data_ini = [year, month, day].join('-')
-	*/
 	let let_data_ini  = $('#dt_periodo_check_ini').val();
-
-    /*
-    let data_fim = new Date($('#dt_periodo_check_fim').val());
-    let day_final = data_fim.getUTCDate();
-    let month_final = data_fim.getUTCMonth()+1;
-    let year_final = data_fim.getUTCFullYear();
-    let let_data_fim = [year_final, month_final, day_final].join('-')
-    */
     let let_data_fim = $('#dt_periodo_check_fim').val();
 
     let erro = ""
@@ -618,15 +603,11 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
         erro += "|Preencha o tipo do check!"
     if (cod_filial == '')
         erro += "|Preencha o código da filial!"
-        /*
-    if (isNaN(day) || isNaN(month) || isNaN(year))
-        erro += "|Preencha corretamente a data de inicio!"
-    if (isNaN(day_final) || isNaN(month_final) || isNaN(year_final))
-        erro += "|Preencha corretamente a data final!"
-        */
-    console.log(erro)
-    if (erro == "") {
 
+
+    if (erro == "") {
+        let let_loader_princ_frm_pesq_checks_aplicados = document.getElementById("loader_princ_frm_pesq_checks_aplicados");
+        let_loader_princ_frm_pesq_checks_aplicados.style.display = "flex";
         $.ajax({
         type: 'GET',
         url: '/safety_checks_aplicados_app/check_aplicado',
@@ -638,7 +619,6 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
         },
         dataType: 'json',
         success: function (dados) {
-
             let lista_checks_aplicados = [];
                 dados.forEach(reg => {
                     let let_checks_aplicados = [
@@ -657,74 +637,64 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
                     lista_checks_aplicados.push(let_checks_aplicados)
                 });
                 $('#tab_frm_checks_aplicados').DataTable({
-                "bJQueryUI": true,
-                "pageLength": 10,
-                "destroy": true,
-                "dom": 'Bfrtip',
-                "buttons": [
-                    'copyHtml5',
-                ],
-                "data":lista_checks_aplicados,
-                    "columns": [
-                            { title: "Codigo" },
-                            { title: "Descrição" },
-                            { title: "Avaliador" },
-                            { title: "Avaliado" },
-                            { title: "Data registro" },
-                            { title: "Qtd. Itens" },
-                            { title: "Qtd. OK" },
-                            { title: "Qtd. NOK" },
-                            { title: "Qtd. s/ resposta" },
-                            { title: "PDF" },
-                            { title: "Ação" },
-                        ],
-                //    "columnDefs": [
-                //    //{
-                //    //    "orderable": false, "targets": [5, 6, 7]
-                //    //},
-                //    {
-                //    "targets": 0,
-                //    "mRender": function(lista_tma_ti, type)
-                //        {
-                //        console.log(type)
-                //        if (type !== 'display')
-                //        {
-                //            return lista_tma_ti;
-                //        }
-//
-                //            return '<i class="fas fa-dot-circle" ' + lista_tma_ti + '></i>';
-                //        }
-                //    }
-                //],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
+                    "bJQueryUI": true,
+                    "destroy": true,
+                    "fixedHeader": true,
+                    "scrollY": "50vh", //770px
+                    "scrollX": true,
+                    "scrollCollapse": true,
+                    "paging": false,
+                    //"pageLength": 7,
+                    "searching": true,
+                    "dom": 'Bfrtip',
+                    "buttons": [
+                        'copyHtml5'
+                    ],
+                    "data":lista_checks_aplicados,
+                        "columns": [
+                                { title: "Codigo" },
+                                { title: "Descrição" },
+                                { title: "Avaliador" },
+                                { title: "Avaliado" },
+                                { title: "Data registro" },
+                                { title: "Qtd. Itens" },
+                                { title: "Qtd. OK" },
+                                { title: "Qtd. NOK" },
+                                { title: "Qtd. s/ resposta" },
+                                { title: "PDF" },
+                                { title: "Ação" },
+                            ],
+                        "oLanguage": {
+                            "sProcessing":   "Processando...",
+                            "sLengthMenu":   "Mostrar _MENU_ registros",
+                            "sZeroRecords":  "Não foram encontrados resultados",
+                            "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                            "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                            "sInfoFiltered": "",
+                            "sInfoPostFix":  "",
+                            "sSearch":       "Pesquisar:",
+                            "sUrl":          "",
+                            "oPaginate": {
+                                "sFirst":    "Primeiro",
+                                "sPrevious": "Anterior",
+                                "sNext":     "Proximo",
+                                "sLast":     "Último"
+                            },
+                            "buttons":{
+                                "copyTitle": 'Dados Copiados',
+                                "copySuccess": {
+                                    _: '%d linhas copiadas',
+                                    1: '1 linha copiada'
+                                }
                             }
                         }
-                    }
-	            });
+                });
+                let_loader_princ_frm_pesq_checks_aplicados.style.display = "none";
             }
         });
     }
     else {
+        let_loader_princ_frm_pesq_checks_aplicados.style.display = "none";
         let split_erro_str = erro.split('|')
         split_erro_str.forEach((str) => {
             if (str != "") {
@@ -765,7 +735,7 @@ $(document).on('click','.check-preenchido-element' , function(){
 
 $(document).on('click','.editar-check' , function(){
     let let_cod_check_aplicado = $(this).attr('name');
-
+    $('#sp_numero_check').html("Editando o Check nº <b>" + let_cod_check_aplicado + "</b>");
      $.ajax({
 	        type: 'GET',
 	        data: {

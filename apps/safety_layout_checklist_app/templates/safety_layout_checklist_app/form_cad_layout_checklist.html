@@ -6,13 +6,11 @@
 
 {% endblock %}
 
-<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-95"
-     style="margin-right: 0px; width:100%;">
-    <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo" style="padding-bottom:15px;">
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-end justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-truck-fast"
-               style="font-size:50px; margin-left:0px; margin-right:15px; color:#cf6a15;"></i>
-            <h1 class="titlePadraoMenu" style="margin-left:0px;">Safety</h1>
+            <i class="fa-solid fa-truck-fast"></i>
+            <h1 class="titlePadraoMenu">Safety</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
             <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
@@ -20,12 +18,36 @@
             <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
         {% endif %}
     </div>
-    <div class="containerApp w-95">
+    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+    <div class="containerApp">
+        <form id="frm_pesq_checks_aplicados" name="frm_pesq_checks_aplicados"  method="POST"
+            class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+
+
+        </form>
         <div class="form-group form_div_check w-100">
             <div class="col-md-12 w-100 h-100" style="padding-left:1rem;">
                 <div>
                     {% if flag_corporativo == 1 %}
                     <div style="display:flex;justify-content:right;margin-right:1rem;margin-bottom:0.5rem;margin-top:0.25rem">
+                        <div class="d-flex justify-content-start align-items-between w-100">
+                            <div class="loader" id="loader_princ_frm_pesq_checks_aplicados">
+                                <div class="d-flex justify-content-between loader-inner">
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                    <div class="loader-block"></div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div style="width:11rem;margin-right:15px">
                             <select class="selectpicker form-control" data-live-search="true" id="tipo_check"
                                     name="tipo_check" title="Selecione um tipo" required>
@@ -337,7 +359,7 @@
                                 </div>
                                 <div id="text_erro" class="row" style="margin-top:0.5rem">
                                 </div>
-                                <div class="cl_div_tabela_principal_pagina" style="margin-top:2rem">
+                                <div class="form-group cl_div_tabela_principal_pagina w-100" style="margin-top:2rem">
                                     <table id="tab_frm_checks_aplicados"  class="display wrap w-100">
                                         <thead>
                                             <tr>
@@ -368,8 +390,11 @@
                                                 <div class="row" style="margin-left: 0px;margin-right: 0px;width: 880px;margin-top: 35px;" >
                                                     <div class="col-md-6" align="left">
                                                         <p>
-                                                            <i class="fa-solid fa-truck-medical fa-2xl" style="color: #FFFFFF;"></i>
-                                                            <span style="color:#ffffff; font-size:15px">Editando o Check nº</span>
+                                                            <i class="fa-solid fa-truck-medical" style="color: #FFFFFF;"></i>
+                                                            <span style="color:#ffffff; font-size:15px" id="sp_numero_check">
+
+
+                                                            </span>
                                                         </p>
                                                     </div>
                                                     <div class="col-md-6" align="right">

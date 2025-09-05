@@ -65,17 +65,17 @@ class Login_Colaborador(View):
         cod_empresa_selecionada = request.session['cod_empresa_selecionada']
         #print(f'Empresa selecionada : {cod_empresa_selecionada}')
         colaboradores = Colaborador.objects.filter(cpf=cpf_colaborador, data_nascimento=data_nasc_colab, situacao=1,
-                                                   cod_filial__cod_empresa__cod_empresa = cod_empresa_selecionada)
+                                                   cod_empresa = cod_empresa_selecionada)
 
         if colaboradores.first() != None and colaboradores.count() == 1:
             #filial_colaborador = Filial.objects.get(pk=colaboradores.first().cod_filial)
             filial_colaborador = colaboradores.first().cod_filial
             cod_empresa_colaborador = filial_colaborador.cod_empresa.cod_empresa
             #print(f"Empresa selecionada : {request.session['cod_empresa_selecionada']}, empresa do colaborador : {cod_empresa_colaborador}")
-            if str(request.session['cod_empresa_selecionada']) == str(cod_empresa_colaborador) and filial_colaborador.cod_filial not in [34, 57, 89]:
+            if str(request.session['cod_empresa_selecionada']) == str(cod_empresa_colaborador) or filial_colaborador.cod_filial not in [34, 57, 89]:
                 request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
                 return redirect('safe_main_menu')
-            elif str(request.session['cod_empresa_selecionada']) != str(cod_empresa_colaborador) and filial_colaborador.cod_filial in [34, 57, 89]:
+            elif str(request.session['cod_empresa_selecionada']) != str(cod_empresa_colaborador) or filial_colaborador.cod_filial in [34, 57, 89]:
                 request.session['cod_colaborador'] = colaboradores.first().cod_colaborador
                 return redirect('safe_main_menu')
             else:
@@ -186,7 +186,7 @@ class Menu_Safe(View):
             str_menu_colaborador += '''
                 <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem;cursor:pointer;">
                     <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Blitz de Trajeto - Carro</b>
+                    <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Carro</b>
                 </div>
             '''
         if check_ativo.filter(cod_check__tipo_check=5).first() is not None:
@@ -207,7 +207,7 @@ class Menu_Safe(View):
             str_menu_colaborador += '''
                 <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem;cursor:pointer;">
                     <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Blitz de Trajeto - Outros Meios</b>
+                    <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Outros Meios</b>
                 </div>
             '''
         if colaborador.setor_administrativo == 1:
@@ -223,7 +223,7 @@ class Menu_Safe(View):
                 str_menu_colaborador += '''
                     <div class="safety-container-app safety-app-pci" style="margin-bottom:0.4rem;cursor:pointer;">
                         <i class="fa-solid fa-fire-extinguisher icon-menu-safety" style="margin-bottom:5px"></i>
-                        <b style="color:white;">Check - PCI</b>
+                        <b style="color:white;margin-left: .4rem;">Check - PCI</b>
                     </div>
                 '''
 

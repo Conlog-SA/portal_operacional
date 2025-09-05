@@ -433,7 +433,8 @@ class Check_Aplicado_Editar(View):
         check_aplicado = Check_Aplicado.objects.filter(cod_check_aplicado=id_check_aplicado).first()
         layout_check = Layout_Check.objects.filter(cod_check=check_aplicado.cod_layout_check.cod_check).first()
         itens_layout_check = Item_Check.objects.filter(cod_check=layout_check)
-        filial = Filial.objects.filter(cod_filial=check_aplicado.cod_filial).first()
+        #filial = Filial.objects.filter(cod_filial=check_aplicado.cod_filial).first()
+        filial = check_aplicado.cod_filial
         if check_aplicado.cod_colaborador_avaliado is not None:
             relatado = Colaborador.objects.filter(cod_colaborador=check_aplicado.cod_colaborador_avaliado.cod_colaborador).first()
         else:
@@ -450,7 +451,7 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_ato_inseguro is not None:
                     str_categoria_ato_inseguro = f'''<div id="div_ato_inseguro_categorias" class="form-group">
-                                                        <label class="responsive-font" for="ato_inseguro_categoria">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
+                                                        <label class="responsive-font" for="ato_inseguro_categoria" style="color: #000000;font-weight: 400;">Selecione o tipo de ato inseguro ocorrido, caso não identificado, selecione OUTROS</label>
                                                         <select class="selectpicker form-control" id="ato_inseguro_categoria" name="ato_inseguro_categoria" value="{categoria_ato_inseguro.cod_componente}" disabled>
                                                             <option value="{categoria_ato_inseguro.cod_componente}">{categoria_ato_inseguro.desc_componente}</option>
                                                         </select>
@@ -463,7 +464,7 @@ class Check_Aplicado_Editar(View):
 
                 if categoria_condicao_insegura is not None:
                     str_categoria_condicao_insegura = f'''<div id="div_condicao_insegura_categorias" class="form-group">
-                                                        <label class="responsive-font" for="condicao_insegura_categoria">Qual tipo de condição insegura ocorreu?</label>
+                                                        <label class="responsive-font" for="condicao_insegura_categoria" style="color: #000000;font-weight: 400;">Qual tipo de condição insegura ocorreu?</label>
                                                         <select class="selectpicker form-control responsive-font" id="condicao_insegura_categoria" name="condicao_insegura_categoria" value="{categoria_condicao_insegura.cod_componente}" disabled>
                                                             <option value="{categoria_condicao_insegura.cod_componente}">{categoria_condicao_insegura.desc_componente}</option>
                                                         </select>
@@ -471,13 +472,14 @@ class Check_Aplicado_Editar(View):
             else:
                 str_categoria_condicao_insegura = ''
 
-            empresa_colaborador_aplicante = Filial.objects.filter(cod_filial=check_aplicado.cod_colaborador_aplicante.cod_filial).first().cod_empresa.cod_empresa
+            #empresa_colaborador_aplicante = Filial.objects.filter(cod_filial=check_aplicado.cod_colaborador_aplicante.cod_filial).first().cod_empresa.cod_empresa
+            empresa_colaborador_aplicante = check_aplicado.cod_colaborador_aplicante.cod_filial.cod_empresa.cod_empresa
             if relato_aplicado.cod_tipo_relato == 3 and empresa_colaborador_aplicante == 17:
                 categoria_comportamento_seguro = Itens_Componentes.objects.filter(campo_check=5, cod_componente=relato_aplicado.categoria_condicao_insegura).first()
 
                 if categoria_comportamento_seguro is not None:
                     str_categoria_comportamento_seguro = f'''<div id="div_comportamento_seguro_categorias" class="form-group">
-                                                        <label class="responsive-font" for="comportamento_seguro_categoria">Qual tipo de condição insegura ocorreu?</label>
+                                                        <label class="responsive-font" for="comportamento_seguro_categoria" style="color: #000000;font-weight: 400;">Qual tipo de condição insegura ocorreu?</label>
                                                         <select class="selectpicker form-control responsive-font" id="comportamento_seguro_categoria" name="comportamento_seguro_categoria" value="{categoria_comportamento_seguro.cod_componente}" disabled>
                                                             <option value="{categoria_comportamento_seguro.cod_componente}">{categoria_comportamento_seguro.desc_componente}</option>
                                                         </select>
@@ -489,7 +491,7 @@ class Check_Aplicado_Editar(View):
 
             if relatado is not None:
                 str_relatado = f'''<div id="div_situacao_relatado" class="form-group">
-                                      <label class="responsive-font" for="situacao_envolvido">Quem foi que gerou esta condição?</label>
+                                      <label class="responsive-font" for="situacao_envolvido" style="color: #000000;font-weight: 400;">Quem foi que gerou esta condição?</label>
                                       <select class="selectpicker form-control responsive-font" id="situacao_envolvido" name="situacao_envolvido" value="{relato_aplicado.situacao_envolvido}" disabled>
                                           <option value="1">Funcionario Conlog/Deep</option>
                                           <option value="2">Funcionario Ambev</option>
@@ -499,14 +501,14 @@ class Check_Aplicado_Editar(View):
                                    </div>'''
                 if relato_aplicado.situacao_envolvido == 1:
                     str_relatado += f'''<div id="div_relatado" class="form-group">
-                                                <label class="responsive-font" for="nome_relatado">Nome do relatado:</label>
+                                                <label class="responsive-font" for="nome_relatado" style="color: #000000;">Nome do relatado:</label>
                                                 <select class="selectpicker form-control responsive-font" id="nome_relatado" name="nome_relatado" value="nome_operador" value="{relatado.cod_colaborador}" disabled>
                                                     <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
                                                 </select>
                                             </div>'''
                 else:
                     str_relatado += f'''<div id="div_relatado_terceiro" class="form-group">
-                                                <label class="responsive-font" for="nome_relatado_terceiro">Nome do relatado:</label>
+                                                <label class="responsive-font" for="nome_relatado_terceiro" style="color: #000000;font-weight: 400;">Nome do relatado:</label>
                                                 <input type="text" class="form-control responsive-font" id="nome_relatado_terceiro" name="nome_relatado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                             </div>'''
             else:
@@ -514,7 +516,7 @@ class Check_Aplicado_Editar(View):
 
             if processo is not None:
                 str_processo = f'''<div class="form-group">
-                                       <label for="processo_relato">O ato ocorreu durante um processo? qual processo?</label>
+                                       <label for="processo_relato" style="color: #000000;font-weight: 400;">O ato ocorreu durante um processo? qual processo?</label>
                                        <select class="form-control responsive-font selectpicker" id="processo_relato" name="processo_relato" value="{processo.cod_componente}" disabled>
                                            <option value="{processo.cod_componente}">{processo.desc_componente}</option>
                                        </select>
@@ -524,7 +526,7 @@ class Check_Aplicado_Editar(View):
 
             if atividade is not None:
                 str_atividade = f'''<div class="form-group">
-                                       <label for="atividade_relato">Que atividade estava sendo realizada?</label>
+                                       <label for="atividade_relato" style="color: #000000;font-weight: 400;">Que atividade estava sendo realizada?</label>
                                         <select class="form-control responsive-font selectpicker" id="atividade_relato" name="atividade_relato" value="{atividade.cod_componente}" disabled>
                                             <option value="{atividade.cod_componente}">{atividade.desc_componente}</option>
                                         </select>
@@ -540,13 +542,13 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                   <label for="tipo_relato">Tipo de Relato:</label>
+                                                                   <label for="tipo_relato" style="color: #000000;font-weight: 400;">Tipo de Relato:</label>
                                                                    <select class="selectpicker form-control responsive-font" id="tipo_relato" name="tipo_relato" value="{relato_aplicado.cod_tipo_relato}" disabled>
                                                                        <option value="1" selected="{'selected' if relato_aplicado.cod_tipo_relato == 1 else ''}">Ato inseguro</option>
                                                                        <option value="2" selected="{'selected' if relato_aplicado.cod_tipo_relato == 2 else ''}">Condição insegura</option>
@@ -558,7 +560,7 @@ class Check_Aplicado_Editar(View):
                                                                 {str_categoria_comportamento_seguro}
                                                                 {str_relatado}
                                                                 <div class="form-group">
-                                                                   <label for="local_relato">Local do relato:</label>
+                                                                   <label for="local_relato" style="color: #000000;font-weight: 400;">Local do relato:</label>
                                                                    <input type="text" class="form-control responsive-font" id="local_relato" name="local_relato" value="{relato_aplicado.local_relato}" disabled>
                                                                 </div>
                                                                 {str_processo}
@@ -575,14 +577,14 @@ class Check_Aplicado_Editar(View):
 
             if blitz_carro_aplicado.situacao_colaborador == 1:
                 str_colaborador = f'''<div id="div_avaliado" class="form-group">
-                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_relatado" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
                                                 <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
                                             </select>
                                         </div>'''
             else:
                 str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
-                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_avaliado_terceiro" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                         </div>'''
 
@@ -594,13 +596,13 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div id="div_situacao_colaborador" class="form-group">
-                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <label class="responsive-font" for="situacao_avaliado" style="color: #000000;font-weight: 400;">Quem está sendo descrito??</label>
                                                                    <select class="selectpicker form-control responsive-font" id="situacao_avaliado" name="situacao_avaliado" value="{blitz_carro_aplicado.situacao_colaborador}" disabled>
                                                                        <option value="1">Funcionario Conlog/Deep</option>
                                                                        <option value="2">Funcionario Ambev</option>
@@ -610,7 +612,7 @@ class Check_Aplicado_Editar(View):
                                                                 </div>
                                                                 {str_colaborador}
                                                                 <div class="form-group">
-                                                                   <label for="placa_carro">Placa:</label>
+                                                                   <label for="placa_carro" style="color: #000000;font-weight: 400;">Placa:</label>
                                                                    <input type="text" class="form-control responsive-font" id="placa_carro" name="placa_caminhao" value={blitz_carro_aplicado.placa} disabled>
                                                                 </div>
                                                             </div>
@@ -625,14 +627,14 @@ class Check_Aplicado_Editar(View):
 
             if blitz_moto_aplicado.situacao_colaborador == 1:
                 str_colaborador = f'''<div id="div_avaliado" class="form-group">
-                                            <label class="responsive-font" for="nome_relatado">Nome do relatado:</label>
+                                            <label class="responsive-font" for="nome_relatado" style="color: #000000;font-weight: 400;">Nome do relatado:</label>
                                             <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
                                                 <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
                                             </select>
                                         </div>'''
             else:
                 str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
-                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do relatado:</label>
+                                            <label class="responsive-font" for="nome_avaliado_terceiro" style="color: #000000;font-weight: 400;">Nome do relatado:</label>
                                             <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                         </div>'''
 
@@ -644,13 +646,13 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div id="div_situacao_colaborador" class="form-group">
-                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <label class="responsive-font" for="situacao_avaliado" style="color: #000000;font-weight: 400;">Quem está sendo descrito??</label>
                                                                    <select class="selectpicker form-control responsive-font" id="situacao_avaliado_moto" name="situacao_avaliado_moto" value="{blitz_moto_aplicado.situacao_colaborador}" disabled>
                                                                        <option value="1">Funcionario Conlog/Deep</option>
                                                                        <option value="2">Funcionario Ambev</option>
@@ -660,7 +662,7 @@ class Check_Aplicado_Editar(View):
                                                                 </div>
                                                                 {str_colaborador}
                                                                 <div class="form-group">
-                                                                   <label for="placa_carro">Placa:</label>
+                                                                   <label for="placa_carro" style="color: #000000;font-weight: 400;">Placa:</label>
                                                                    <input type="text" class="form-control responsive-font" id="placa_moto" name="placa_moto" value={blitz_moto_aplicado.placa} disabled>
                                                                 </div>
                                                             </div>
@@ -675,14 +677,14 @@ class Check_Aplicado_Editar(View):
 
             if blitz_bicicleta_aplicado.situacao_colaborador == 1:
                 str_colaborador = f'''<div id="div_avaliado" class="form-group">
-                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_relatado" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
                                                 <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
                                             </select>
                                         </div>'''
             else:
                 str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
-                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_avaliado_terceiro" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                         </div>'''
 
@@ -694,13 +696,13 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div id="div_situacao_colaborador" class="form-group">
-                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <label class="responsive-font" for="situacao_avaliado" style="color: #000000;font-weight: 400;">Quem está sendo descrito??</label>
                                                                    <select class="selectpicker form-control responsive-font" id="situacao_avaliado_bicicleta" name="situacao_avaliado_bicicleta" value="{blitz_bicicleta_aplicado.situacao_colaborador}" disabled>
                                                                        <option value="1">Funcionario Conlog/Deep</option>
                                                                        <option value="2">Funcionario Ambev</option>
@@ -721,14 +723,14 @@ class Check_Aplicado_Editar(View):
 
             if blitz_outros_meios_aplicado.situacao_colaborador == 1:
                 str_colaborador = f'''<div id="div_avaliado" class="form-group">
-                                            <label class="responsive-font" for="nome_relatado">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_relatado" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <select class="selectpicker form-control responsive-font" id="nome_avaliado" name="nome_avaliado" value="nome_avaliado" value="{relatado.cod_colaborador}" disabled>
                                                 <option value="{relatado.cod_colaborador}">{relatado.nome_colaborador}</option>
                                             </select>
                                         </div>'''
             else:
                 str_colaborador = f'''<div id="div_avaliado_terceiro" class="form-group">
-                                            <label class="responsive-font" for="nome_avaliado_terceiro">Nome do colaborador:</label>
+                                            <label class="responsive-font" for="nome_avaliado_terceiro" style="color: #000000;font-weight: 400;">Nome do colaborador:</label>
                                             <input type="text" class="form-control responsive-font" id="nome_avaliado_terceiro" name="nome_avaliado_terceiro" value="{relatado.nome_colaborador}" disabled>
                                         </div>'''
 
@@ -740,13 +742,13 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div id="div_situacao_colaborador" class="form-group">
-                                                                   <label class="responsive-font" for="situacao_avaliado">Quem está sendo descrito??</label>
+                                                                   <label class="responsive-font" for="situacao_avaliado" style="color: #000000;font-weight: 400;">Quem está sendo descrito??</label>
                                                                    <select class="selectpicker form-control responsive-font" id="situacao_avaliado_outros_meios" name="situacao_avaliado_outros_meios" value="{blitz_outros_meios_aplicado.situacao_colaborador}" disabled>
                                                                        <option value="1">Funcionario Conlog/Deep</option>
                                                                        <option value="2">Funcionario Ambev</option>
@@ -755,7 +757,7 @@ class Check_Aplicado_Editar(View):
                                                                    </select>
                                                                 </div>
                                                                 {str_colaborador}
-                                                                <label class="responsive-font" for="meio_transporte">Meio de transporte:</label>
+                                                                <label class="responsive-font" for="meio_transporte" style="color: #000000;font-weight: 400;">Meio de transporte:</label>
                                                                 <select class="selectpicker form-control responsive-font" id="meio_transporte" name="meio_transporte" value="{blitz_outros_meios_aplicado.meio_transporte}" disabled>
                                                                     <option value="1">Transporte Público</option>
                                                                     <option value="2">Carona</option>
@@ -779,17 +781,17 @@ class Check_Aplicado_Editar(View):
                                                             <div style="padding:15px;padding-right:30px;padding-left:30px">
                                                                 <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
                                                                 <div class="form-group">
-                                                                   <label for="unidade"> Unidade: </label>
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
                                                                     <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
                                                                         <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
                                                                     </select>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                   <label class="responsive-font" for="nome_avaliado_gso">Nome do avaliado:</label>
+                                                                   <label class="responsive-font" for="nome_avaliado_gso" style="color: #000000;font-weight: 400;">Nome do avaliado:</label>
                                                                    <input type="text" class="form-control responsive-font" id="nome_avaliado_gso" name="nome_avaliado_gso" value="{relatado.nome_colaborador}" disabled>
                                                                 </div>
                                                                 <div class="form-group">
-                                                                  <label for="placa_onibus_gso">Placa do Ônibus:</label>
+                                                                  <label for="placa_onibus_gso" style="color: #000000;font-weight: 400;">Placa do Ônibus:</label>
                                                                   <input type="text" class="form-control responsive-font" id="placa_onibus_gso" name="placa_onibus_gso" value="{gab_gso_aplicado.placa_onibus}" disabled>
                                                                 </div>
                                                             </div>

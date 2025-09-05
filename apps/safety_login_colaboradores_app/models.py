@@ -19,6 +19,7 @@ class Colaborador(models.Model):
     '''1(Ativo)/ 0(Inativo)'''
     situacao = models.IntegerField(blank=True, null=True)
     setor_administrativo = models.IntegerField(blank=False, null=False, default=0)
+    cod_empresa = models.IntegerField(blank=False, null=False)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', blank=False, null=False)
     class Meta:
         managed = True
