@@ -37,8 +37,9 @@ class Check_Aplicado_View(View):
         inicio_periodo_check_aplicado = request.GET['inicio_periodo_check_aplicado'] + ' 00:00'
         fim_periodo_check_aplicado = request.GET['fim_periodo_check_aplicado'] + ' 23:59'
 
+        obj_filial = Filial.objects.get(pk=filial_check_aplicado)
         lista_checks_aplicados = Check_Aplicado.objects.filter(cod_layout_check__tipo_check=tipo_check_aplicado,
-                                                               cod_filial=filial_check_aplicado,
+                                                               cod_filial=obj_filial,
                                                                data_registro__range=[inicio_periodo_check_aplicado, fim_periodo_check_aplicado])
 
         validacao_checks_existentes = None
@@ -72,7 +73,10 @@ class Check_Aplicado_View(View):
 
         respostas_botao = Item_Check_Aplicados.objects.all()
         respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()
-        lista_checks_aplicados_preenchidos = lista_checks_aplicados.filter(Q(cod_check_aplicado__in=validacao_checks_existentes) & (Q(cod_check_aplicado__in=respostas_botao.values('cod_check_aplicado')) | Q(cod_check_aplicado__in=respostas_texto.values('cod_check_aplicado'))))
+        lista_checks_aplicados_preenchidos = lista_checks_aplicados.filter(
+            Q(cod_check_aplicado__in=validacao_checks_existentes) &
+            (Q(cod_check_aplicado__in=respostas_botao.values('cod_check_aplicado')) |
+             Q(cod_check_aplicado__in=respostas_texto.values('cod_check_aplicado'))))
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados_preenchidos:

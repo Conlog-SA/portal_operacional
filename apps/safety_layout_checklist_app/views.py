@@ -46,9 +46,7 @@ class Form_Seguranca_Check(View):
         elif usuario.corporativo == 'N':
             filiais = [usuario.cod_filial]
 
-        '''for filial in lista_filiais:
-            lista_filiais_dict.append({filial.cod_filial, filial.desc_filial})
-        print(lista_filiais_dict)'''
+
         contexto = {
             'lista_tipos': lista_tipos,
             'lista_filiais' : filiais,

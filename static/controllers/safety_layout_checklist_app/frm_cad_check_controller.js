@@ -694,7 +694,6 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
         });
     }
     else {
-        let_loader_princ_frm_pesq_checks_aplicados.style.display = "none";
         let split_erro_str = erro.split('|')
         split_erro_str.forEach((str) => {
             if (str != "") {

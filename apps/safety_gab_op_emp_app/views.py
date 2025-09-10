@@ -84,11 +84,11 @@ class Form_Gerar_Gab_GSO_Emp(View):
 
         elif tipo_colaborador == '2':
             documento_usuario_informado = request.POST['documento_operador']
-
+            obj_filial = Filial.objects.get(pk=filial_colaborador)
             colaborador = Colaborador(
                 nome_colaborador=usuario_informado,
                 cpf=documento_usuario_informado,
-                cod_filial=filial_colaborador,
+                cod_filial=obj_filial,
                 situacao=0
             )
             colaborador.save()
