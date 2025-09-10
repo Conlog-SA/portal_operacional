@@ -102,6 +102,10 @@ $(document).on('click','button', function(){
     else if(let_nome_btn == "btn_pesq_sinistros_date"){
         atualiza_tab_pesq_sinistro('data');
     }
+    //Botão pesquisa por Projeto
+    else if(let_nome_btn == "btn_pesq_sinistros_proj"){
+        atualiza_tab_pesq_sinistro('projeto');
+    }
     //Botão excluir sinistro
     else if(let_nome_btn == "btn_excluir_sinistro"){
         let let_cod_btn_excluir_sinistro = let_val_btn;
@@ -491,7 +495,8 @@ function atualiza_tab_pesq_sinistro (tipo_pesquisa){
             placa_selecionada : placa_selecionada,
             tipo_pesquisa_sinistro : tipo_pesquisa
         }
-    } else if(tipo_pesquisa == 'data'){
+    }
+    else if(tipo_pesquisa == 'data'){
         competencia_selecionada = $("#competencia_selecionada").val()
         // Divide o valor em ano e mês
         var partes = competencia_selecionada.split("-");
@@ -509,6 +514,14 @@ function atualiza_tab_pesq_sinistro (tipo_pesquisa){
             tipo_pesquisa_sinistro : tipo_pesquisa
         }
     }
+    else if(tipo_pesquisa == 'projeto'){
+        dados_parametros = {
+            csrfmiddlewaretoken: $("[name=csrfmiddlewaretoken]").val(),
+            cod_projeto : $("#cb_filtro_pesq_projeto").val(),
+            tipo_pesquisa_sinistro : tipo_pesquisa
+        }
+    }
+
     $.ajax({
         type: "GET",
         url: "/cco_sinistro_app/pesq_reg_sinistros",
