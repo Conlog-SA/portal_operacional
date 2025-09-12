@@ -25,6 +25,8 @@ from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
 from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Item_Check
+from apps.safety_pci_app.models import Check_Pci
+from apps.safety_predial_app.models import Check_Predial
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -70,6 +72,12 @@ class Check_Aplicado_View(View):
         elif tipo_check_aplicado == '9':
             #validacao_checks_emp_existentes
             validacao_checks_existentes = Check_Empilhadeira.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '10':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Check_Predial.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '11':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Check_Pci.objects.all().values('cod_check_aplicado')
 
         respostas_botao = Item_Check_Aplicados.objects.all()
         respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()
