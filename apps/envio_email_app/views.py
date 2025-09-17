@@ -9,7 +9,7 @@ class Envio_Email():
         self.host = 'smtp-mail.outlook.com'
         self.port = '587'
         self.login = 'no-reply@conlogsa.com.br'
-        self.senha = 'lLhBtApClEJ@911!@#'
+        self.senha = 'RaLsPc@965214!@#'
 
 
     def envia_email_alerta_adm(self, msg):
@@ -46,7 +46,6 @@ class Envio_Email():
 
         server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
-
 
     def envia_email_solicitacao_acesso_adm(self, obj_usuario_solicitante):
         server_email = smtplib.SMTP(self.host, self.port)
@@ -86,3 +85,20 @@ class Envio_Email():
         server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()
 
+    def envia_email_preenchimento_entrevista_desligamento(self, obj_usuario_resposta):
+        server_email = smtplib.SMTP(self.host, self.port)
+        server_email.starttls()
+        server_email.login(self.login, self.senha)
+        email_msg = MIMEMultipart()
+        email_msg['FROM'] = self.login #'desenvolvimento@conlogsa.com.br'
+        email_msg['CCO'] = "leticia.felix@conlogsa.com.br"
+        email_msg['Subject'] = f"Entrevista de desligamento realizada! {obj_usuario_resposta['nome']}"
+
+        corpo_email = f'''
+            O ex-colaborador {obj_usuario_resposta['nome']} preencheu preencheu a entrevista de desligamento!
+        '''
+
+        email_msg.attach(MIMEText(corpo_email, 'html'))
+
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.quit()

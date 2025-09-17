@@ -1,0 +1,462 @@
+{% load static %} {# Ensure you have this if using static files, though not directly relevant for this fix #}
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Entrevista de Desligamentos | CONLOG</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10mm;
+            background-color: #ffffff;
+            color: #333333;
+            font-size: 10pt;
+            -webkit-print-color-adjust: exact !important;
+            color-adjust: exact !important;
+        }
+
+        .container-fluid {
+            width: 100%;
+        }
+
+        .form-container {
+             background-color: #ffffff;
+             border-radius: 8px;
+        }
+
+        .form-header {
+            background-color: #f46424;
+            color: white;
+            padding: 12px 15px;
+            border-radius: 8px 8px 0 0;
+            font-family: serif;
+        }
+        .form-header h4 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.4em;
+        }
+
+        .form-content {
+            border: 1px solid #dddddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 15px;
+        }
+
+        .section-heading {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #eeeeee;
+            color: #f46424;
+        }
+        .section-heading:first-of-type {
+             margin-top: 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #ffffff;
+            page-break-inside: avoid;
+        }
+
+        .form-content > .form-group:nth-child(2) { /* Targets the 'Informações' content block */
+            border: none;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .informacoes-container {
+            margin-bottom: 10px;
+        }
+        .informacoes-container:last-child {
+            margin-bottom: 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333333;
+        }
+        label span.description {
+            font-weight: normal;
+            font-size: 0.9em;
+            color: #666666;
+            display: block;
+            margin-top: 3px;
+        }
+
+        .required {
+            color: red;
+            margin-left: 2px;
+        }
+
+        /* This class will be used for DIVs that display data */
+        .form-control-display {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 6px 10px;
+            font-size: 1em; /* Should inherit from body or parent */
+            font-weight: 400; /* Normal weight for displayed text */
+            line-height: 1.5;
+            color: #495057; /* Same as input text */
+            background-color: #e9ecef; /* Light gray to look like a readonly input */
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            min-height: calc(1.5em + 12px + 2px); /* (line-height) + (padding * 2) + (border * 2) */
+            word-wrap: break-word; /* Ensure long text wraps */
+        }
+
+        /* Specific styling for divs replacing textareas if needed */
+        .form-control-display.textarea-display {
+            min-height: 120px; /* Or match your textarea.form-control min-height */
+            white-space: pre-wrap; /* To respect newlines and multiple spaces like a textarea */
+        }
+
+        /* Hide original form controls if they were accidentally left in for PDF */
+        .form-control,
+        .form-check-input {
+            /* If you are certain they are all replaced, this can be removed.
+               Otherwise, it's a safeguard. */
+            /* display: none !important; */ /* Use with caution */
+        }
+        .form-check {
+             margin-bottom: 0;
+        }
+        .form-check-label {
+            font-weight: normal;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <div class="form-container">
+        <div class="form-header">
+            <h4>Entrevista de desligamento - CONLOG</h4>
+        </div>
+        <div class="form-content">
+            <div class="section-heading">Informações</div>
+            <div class="form-group">
+                <div class="informacoes-container">
+                    <label for="input-nome">Nome:<span class="required">*</span></label>
+                    <div id="input-nome" class="form-control-display">{{ nome|default:" " }}</div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-whatsapp">Whatsapp:<span class="required">*</span></label>
+                    <div id="input-whatsapp" class="form-control-display">{{ contato_telefone|default:" " }}</div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-ultimo-dia">Último dia trabalhado:<span class="required">*</span></label>
+                    <div id="input-ultimo-dia" class="form-control-display">{{ preenchimento_parcial.ultimo_dia }}</div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="display-unidade">Unidade:<span class="required">*</span></label>
+                    <div id="display-unidade" class="form-control-display">
+                        {% for fil in filiais %}
+                            {% if fil.cod_filial|stringformat:"s" == preenchimento_parcial.unidade|stringformat:"s" %}{{ fil.desc_filial }}{% endif %}
+                        {% endfor %}
+                        {% if not preenchimento_parcial.unidade %} {% endif %} {# Handle case where no unit is selected #}
+                    </div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-cargo">Cargo no qual ocupava:<span class="required">*</span></label>
+                    <div id="input-cargo" class="form-control-display">{{ preenchimento_parcial.cargo|default:" " }}</div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-gestor-imediato">Gestor imediato:<span class="required">*</span></label>
+                    <div id="input-gestor-imediato" class="form-control-display">{{ preenchimento_parcial.gestor_imediato|default:" " }}</div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="display-setor-atuacao">Qual era o setor que você atuava?<span class="required">*</span></label>
+                    <div id="display-setor-atuacao" class="form-control-display">
+                        {% if preenchimento_parcial.setor_atuacao == "1" %}RH/DP
+                        {% elif preenchimento_parcial.setor_atuacao == "2" %}FROTA
+                        {% elif preenchimento_parcial.setor_atuacao == "3" %}OPERAÇÕES
+                        {% elif preenchimento_parcial.setor_atuacao == "4" %}FINANCEIRO
+                        {% elif preenchimento_parcial.setor_atuacao == "5" %}CONTÁBEIS
+                        {% elif preenchimento_parcial.setor_atuacao == "6" %}PLANEJAMENTO E CONTROLE
+                        {% elif preenchimento_parcial.setor_atuacao == "7" %}TI
+                        {% elif preenchimento_parcial.setor_atuacao == "8" %}ADMINISTRATIVO CCO AC
+                        {% elif preenchimento_parcial.setor_atuacao == "9" %}SEGURANÇA
+                        {% elif preenchimento_parcial.setor_atuacao == "10" %}ARMAZÉM
+                        {% else %} {% endif %}
+                    </div>
+                </div>
+                <div class="informacoes-container">
+                    <label>Iniciativa do desligamento<span class="required">*</span></label>
+                    <div class="form-control-display">
+                        {% if preenchimento_parcial.iniciativa_checked == "1" %}Empresa
+                        {% elif preenchimento_parcial.iniciativa_checked == "2" %}Colaborador
+                        {% else %} {% endif %}
+                    </div>
+                </div>
+                <div class="informacoes-container">
+                    <label for="input-motivo-desligamento">Qual o motivo do desligamento?<span class="required">*</span></label>
+                    <div id="input-motivo-desligamento" class="form-control-display">{{ preenchimento_parcial.motivo_desligamento|default:" " }}</div>
+                </div>
+            </div>
+
+            {# Percepções Gerais Section #}
+            <div class="section-heading">Percepções Gerais</div>
+
+            <div class="form-group">
+                <label>
+                    Comunicação visual interna<span class="required">*</span>
+                    <span class="description">(Inteligencia Artificial Neiva, Grupo GG Comunica, Site intranet Conlog, Call de resultados e e-mail)</span>
+                </label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.comunicacao_visual_interna_checked == "4" %}Muito satisfeito
+                    {% elif preenchimento_parcial.comunicacao_visual_interna_checked == "3" %}Satisfeito
+                    {% elif preenchimento_parcial.comunicacao_visual_interna_checked == "2" %}Insatisfeito
+                    {% elif preenchimento_parcial.comunicacao_visual_interna_checked == "1" %}Muito insatisfeito
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                 <label>
+                    Materiais e equipamentos de trabalho<span class="required">*</span>
+                    <span class="description">A empresa disponibilizou os equipamentos necessários para realização das suas tarefas?</span>
+                 </label>
+                 <div class="form-control-display">
+                    {% if preenchimento_parcial.materiais_equipamentos_checked == "4" %}Muito satisfeito
+                    {% elif preenchimento_parcial.materiais_equipamentos_checked == "3" %}Satisfeito
+                    {% elif preenchimento_parcial.materiais_equipamentos_checked == "2" %}Insatisfeito
+                    {% elif preenchimento_parcial.materiais_equipamentos_checked == "1" %}Muito insatisfeito
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>
+                    Oportunidades de crescimento<span class="required">*</span>
+                    <span class="description">Quanto você se sentia atraído(a) pelas oportunidades de crescimento na Conlog?</span>
+                </label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.oportunidades_crescimento_checked == "4" %}Muito satisfeito
+                    {% elif preenchimento_parcial.oportunidades_crescimento_checked == "3" %}Satisfeito
+                    {% elif preenchimento_parcial.oportunidades_crescimento_checked == "2" %}Insatisfeito
+                    {% elif preenchimento_parcial.oportunidades_crescimento_checked == "1" %}Muito insatisfeito
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            {# Liderança imediata Section #}
+            <div class="section-heading">Liderança imediata</div>
+
+            <div class="form-group">
+                <label>Você se sentia confortável para pedir ajuda, seja ao seu líder ou outros membros da equipe?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.solicitar_ajuda_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.solicitar_ajuda_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.solicitar_ajuda_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.solicitar_ajuda_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você se sentia reconhecido(a) pelo seu líder quando superava os seus resultados no trabalho?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.reconhecido_lider_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.reconhecido_lider_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.reconhecido_lider_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.reconhecido_lider_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Com que frequência você recebia feedback e informação sobre o seu desempenho no trabalho?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.frequencia_feedback_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.frequencia_feedback_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.frequencia_feedback_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.frequencia_feedback_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você recebia feedbacks úteis sobre o seu desempenho no trabalho?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.feedback_util_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.feedback_util_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.feedback_util_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.feedback_util_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+             <div class="form-group">
+                <label>Meu líder / minha líder ouvia ideias e opiniões, independente do meu gênero, raça, religião, origem, deficiência ou orientação sexual.<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.ideias_ouvidas_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.ideias_ouvidas_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.ideias_ouvidas_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.ideias_ouvidas_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Meu banco de horas era bem gerenciado, e as folgas comunicadas com antecedência?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.banco_horas_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.banco_horas_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.banco_horas_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.banco_horas_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            {# Remuneração e Benefícios Section #}
+            <div class="section-heading">Remuneração e Benefícios</div>
+
+            <div class="form-group">
+                <label>Você estava satisfeito(a) com os benefícios que recebia aqui?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.satisfacao_beneficios_checked == "4" %}Muito satisfeito
+                    {% elif preenchimento_parcial.satisfacao_beneficios_checked == "3" %}Satisfeito
+                    {% elif preenchimento_parcial.satisfacao_beneficios_checked == "2" %}Insatisfeito
+                    {% elif preenchimento_parcial.satisfacao_beneficios_checked == "1" %}Muito insatisfeito
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você estava satisfeito(a) com a remuneração que recebia aqui?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.satisfacao_salario_checked == "4" %}Muito satisfeito
+                    {% elif preenchimento_parcial.satisfacao_salario_checked == "3" %}Satisfeito
+                    {% elif preenchimento_parcial.satisfacao_salario_checked == "2" %}Insatisfeito
+                    {% elif preenchimento_parcial.satisfacao_salario_checked == "1" %}Muito insatisfeito
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você achava que o seu salário era justo?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.salario_justo_checked == "2" %}Sim
+                    {% elif preenchimento_parcial.salario_justo_checked == "1" %}Não
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Minha carga horária de trabalho e minhas responsabilidades eram coerentes com a minha remuneração total (considere salário fixo + variável + benefícios)?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.responsabilidades_coerente_checked == "2" %}Sim
+                    {% elif preenchimento_parcial.responsabilidades_coerente_checked == "1" %}Não
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            {# Diversidade e inclusão Section #}
+            <div class="section-heading">Diversidade e inclusão</div>
+
+            <div class="form-group">
+                <label>Você era tratado(a) igualmente e de forma justa, independente do seu gênero, raça, religião, origem, deficiência ou orientação sexual?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.tratamento_justo_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.tratamento_justo_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.tratamento_justo_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.tratamento_justo_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você sente que já sofreu algum tipo de discriminação nesta empresa?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.discriminacao_proprio_checked == "2" %}Sim
+                    {% elif preenchimento_parcial.discriminacao_proprio_checked == "1" %}Não
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você tem algum/a colega ou conhecido que já sofreu algum tipo de preconceito ou discriminação no ambiente de trabalho?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.discriminacao_colega_checked == "2" %}Sim
+                    {% elif preenchimento_parcial.discriminacao_colega_checked == "1" %}Não
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Esta empresa adota boas práticas de ética e conduta?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.praticas_etica_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.praticas_etica_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.praticas_etica_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.praticas_etica_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você possui confiança no Canal de Compliance/denúncias contra corrupções e práticas corporativas irregulares da CONLOG?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.canal_denuncias_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.canal_denuncias_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.canal_denuncias_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.canal_denuncias_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Você se sentia à vontade para colocar a sua opinião em uma reunião, mesmo que ela seja diferente do que estão falando?<span class="required">*</span></label>
+                <div class="form-control-display">
+                    {% if preenchimento_parcial.opiniao_reunioes_checked == "4" %}Sempre
+                    {% elif preenchimento_parcial.opiniao_reunioes_checked == "3" %}Frequentemente
+                    {% elif preenchimento_parcial.opiniao_reunioes_checked == "2" %}Raramente
+                    {% elif preenchimento_parcial.opiniao_reunioes_checked == "1" %}Nunca
+                    {% else %} {% endif %}
+                </div>
+            </div>
+
+            {# Perguntas abertas Section #}
+            <div class="section-heading">Perguntas abertas</div>
+
+            <div class="form-group">
+                <label for="input-registro-livre">Existe algo que você queira deixar registrado sobre a empresa ou sobre os motivos do desligamento?</label>
+                <div id="input-registro-livre" class="form-control-display textarea-display">{{ preenchimento_parcial.registro_livre|default:" " }}<b>aa</b></div>
+            </div>
+
+            <div class="form-group">
+                <label for="input-melhores-pontos">O que você mais gostava na empresa?</label>
+                <div id="input-melhores-pontos" class="form-control-display textarea-display">{{ preenchimento_parcial.melhores_pontos|default:" " }}</div>
+            </div>
+
+            <div class="form-group">
+                <label for="input-piores-pontos">O que você menos gostava na empresa?</label>
+                <div id="input-piores-pontos" class="form-control-display textarea-display">{{ preenchimento_parcial.piores_pontos|default:" " }}</div>
+            </div>
+
+            <div class="form-group">
+                <label for="input-motivo-desvinculamento">O que lhe fez desvincular da Cia?</label>
+                <div id="input-motivo-desvinculamento" class="form-control-display textarea-display">{{ preenchimento_parcial.motivo_desvinculamento|default:" " }}</div>
+            </div>
+
+        </div> {# End form-content #}
+    </div> {# End form-container #}
+</div> {# End container-fluid #}
+
+</body>
+</html>

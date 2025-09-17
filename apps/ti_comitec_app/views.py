@@ -136,7 +136,7 @@ class Frm_Lista_Projetos_View(View):
         data_hora_atual = datetime.now()
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%Y-%m-%d')
 
-        lista_dic_proj = []
+        lista_dic_proj = self.retorna_lista_projetos(obj_usuario_sessao, 0)
         lista_obj_projetos = []
         lista_obj_usuarios = []
         lista_area = []
@@ -331,19 +331,20 @@ class Frm_Lista_Projetos_View(View):
 
         return lista_obj_acoes_prox_ou_atradadas
 
-    def retorna_lista_projetos(self, obj_usuario_sessao):
+    def retorna_lista_projetos(self, obj_usuario_sessao, status_proj):
+        lista_obj_projetos = []
         if obj_usuario_sessao.tipo_colab in ('H', 'G'):
-            lista_obj_projetos = Projeto.objects.all()
+            lista_obj_projetos = Projeto.objects.filter(status_proj=status_proj)
             lista_area = list(Projeto.objects.all().values('cod_ideia__cod_atividade__cod_atividade', 'cod_ideia__cod_atividade__desc1_atividade').distinct())
             lista_obj_usuarios = Usuarios_Projeto.objects.prefetch_related('cod_usu').distinct()
         else:
-            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao)
+            lista_obj_usu_projetos = Usuarios_Projeto.objects.filter(cod_usu=obj_usuario_sessao, cod_projeto__status_proj=status_proj)
             lista_area = Usuarios_Projeto.objects.prefetch_related('cod_projeto__cod_ideia__cod_atividade').distinct()
             for proj in lista_obj_usu_projetos:
                 lista_obj_projetos.append(proj.cod_projeto)
             lista_obj_usuarios = Usuarios_Projeto.objects.filter(
                 cod_projeto__in=lista_obj_projetos).prefetch_related('cod_usu').distinct()
-
+        lista_dic_proj = []
         for obj_proj in lista_obj_projetos:
             perc_progresso_proj = self.calcula_progresso_projeto(obj_proj)
             status_cronograma_proj = self.verifica_status_cronograma_proj(obj_proj)
@@ -394,6 +395,8 @@ class Frm_Lista_Projetos_View(View):
                 'lista_dic_usu_envolvidos': lista_dic_usu_envolvidos
             }
             lista_dic_proj.append(proj)
+
+        return lista_dic_proj
 
 
 

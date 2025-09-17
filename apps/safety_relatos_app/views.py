@@ -18,7 +18,8 @@ class Form_Gerar_Relatos_Check(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
         nome_colaborador = colaborador.nome_colaborador
-        filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+        #filial_usuario = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_usuario = colaborador.cod_filial
 
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
@@ -113,6 +114,8 @@ class Form_Gerar_Relatos_Check(View):
         setor_relato = request.POST.get('setor_relato', None)
         relato_anonimo = request.POST.get('relato_anonimo', 'false')
 
+        filial = Filial.objects.get(pk=unidade_relato)
+
         if categoria_ato_inseguro == '':
             categoria_ato_inseguro = None
         if categoria_condicao_insegura == '':
@@ -131,14 +134,14 @@ class Form_Gerar_Relatos_Check(View):
 
             colaborador = Colaborador(
                 nome_colaborador=nome_relatado,
-                cod_filial=unidade_relato,
+                cod_filial=filial,
                 situacao=0
             )
             colaborador.save()
 
         cod_colaborador_envio = request.session['cod_colaborador']
         colaborador_envio_original = Colaborador.objects.filter(pk=cod_colaborador_envio).first()
-        filial_colaborador_envio_original = Filial.objects.get(pk=colaborador_envio_original.cod_filial)
+        filial_colaborador_envio_original = colaborador_envio_original.cod_filial
 
         if relato_anonimo == 'false':
             colaborador_envio = colaborador_envio_original
@@ -153,7 +156,7 @@ class Form_Gerar_Relatos_Check(View):
         elif setor_relato == None:
             return HttpResponse('Setor do relato não informado', status=404)
 
-        filial = Filial.objects.get(pk=unidade_relato)
+
 
         data_atual = datetime.now()
         check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=2, cod_filial=filial,
@@ -169,7 +172,7 @@ class Form_Gerar_Relatos_Check(View):
             return HttpResponse('Não há check de relatos ativo atualmente para essa filial', status=404)
 
         check_aplicado = Check_Aplicado(
-            cod_filial=unidade_relato,
+            cod_filial=filial,
             cod_colaborador_aplicante=colaborador_envio,
             cod_colaborador_avaliado=colaborador,
             data_registro=data_atual,
@@ -228,7 +231,8 @@ class Lista_Atividades(View):
     def get(self, request):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
-        filial_colaborador = Filial.objects.filter(cod_filial=colaborador.cod_filial).first()
+        #filial_colaborador = Filial.objects.filter(cod_filial=colaborador.cod_filial).first()
+        filial_colaborador = colaborador.cod_filial
         if filial_colaborador.cod_empresa.cod_empresa != 12:
             data = []
             return JsonResponse(data, safe=False)

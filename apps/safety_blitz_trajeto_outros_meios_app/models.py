@@ -9,6 +9,7 @@ class Blitz_Trajeto_Outros_Meios(models.Model):
     meio_transporte = models.IntegerField(blank=False, null=False)
     cod_check_aplicado = models.ForeignKey(Check_Aplicado, models.DO_NOTHING, db_column='cod_check_aplicado', blank=False,
                                          null=False)
+    '''1(Funcionario COnlog/Deep)/ 2(Funcionario Ambev/ 3(Freteiro)/ 4(Terceiro)'''
     situacao_colaborador = models.IntegerField(blank=True, null=True)
 
     class Meta:

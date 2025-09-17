@@ -5,6 +5,9 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 
+from apps.estrut_org_app.models import Filial
+
+
 class Secao_Entrevista_Desligamento(models.Model):
     cod_secao = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     descricao = models.CharField(max_length=80, blank=False, null=False)
@@ -27,9 +30,10 @@ class Pergunta_Entrevista_Desligamento(models.Model):
 
 class Respostas_Entrevista_Desligamento(models.Model):
     matricula = models.CharField(max_length=15, blank=False, null=False, primary_key=True)
-    cod_pergunta = models.ForeignKey(Pergunta_Entrevista_Desligamento, models.DO_NOTHING, db_column='cod_pergunta', blank=True,
-                                         null=True)
-    resposta = models.CharField(max_length=2000, blank=False, null=False)
+    #cod_pergunta = models.ForeignKey(Pergunta_Entrevista_Desligamento, models.DO_NOTHING, db_column='cod_pergunta', blank=True,
+    #                                     null=True)
+    resposta = models.CharField(max_length=3000, blank=False, null=False)
+    parcial = models.IntegerField(blank=False, null=False)
     class Meta:
         managed = True
         db_table = 'op_gente_gestao_desligamentos_respostas'
@@ -37,15 +41,18 @@ class Respostas_Entrevista_Desligamento(models.Model):
 class Desligamento(models.Model):
     matricula = models.CharField(max_length=15, blank=False, null=False, primary_key=True)
     nome = models.CharField(max_length=100, blank=False, null=False)
-    cod_unidade = models.IntegerField(blank=False, null=False)
+    cod_unidade = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_unidade', blank=True,
+                                         null=True)
     unidade = models.CharField(max_length=100, blank=False, null=False)
     data_admissao = models.DateTimeField(null=False, blank=False)
     data_desligamento = models.DateTimeField(null=False, blank=False)
     cargo = models.CharField(max_length=100, blank=False, null=False)
     contato_telefone = models.CharField(max_length=30, blank=False, null=False)
     contato_email = models.CharField(max_length=100, blank=True, null=True)
-    data_emissao_link = models.DateTimeField(null=False, blank=False)
-    data_preenchimento = models.DateTimeField(null=False, blank=False)
+    data_emissao_link = models.DateTimeField(null=True, blank=True)
+    data_preenchimento = models.DateTimeField(null=True, blank=True)
+    token_acesso = models.CharField(max_length=32, blank=True, null=True)
+    token_data_expiracao = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         managed = True

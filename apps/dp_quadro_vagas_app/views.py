@@ -12,7 +12,7 @@ from apps.usuario_app.models import Usuario
 
 class Frm_Importa_Plan_Quadro_View(View):
     def get(self, request):
-        return render(request, 'dp_quadro_vagas_app/frm_imp_freightech.html')
+        return render(request, 'dp_quadro_vagas_app/frm_imp_plan_freightech.html')
 
     def post(self, request):
         plan_rem_frm = request.FILES['file']
@@ -45,7 +45,7 @@ class Frm_Importa_Plan_Quadro_View(View):
 
 class Frm_Analise_Vagas_View(View):
     def get(self, request):
-        filiais = list((Filial.objects.filter(desc_filial__contains="AMBEV")))
+        filiais = list((Filial.objects.filter(desc_filial__contains="AMBEV", cod_empresa=12)))
         context = {
             'filiais': filiais
         }

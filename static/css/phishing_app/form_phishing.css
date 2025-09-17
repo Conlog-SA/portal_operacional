@@ -1,0 +1,73 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-image: url(../../img/background_phishing.jpeg);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.container_principal_phishing {
+    margin-top: 10%;
+    background-image: url('../../img/background_phishing.jpeg');
+    background-repeat: no-repeat;
+    background-size: cover;
+    font-family: "Segoe UI", "Helvetica Neue", "Lucida Grande", "Roboto", "Ebrima", "Nirmala UI", "Gadugi", "Segoe Xbox Symbol", "Segoe UI Symbol", "Meiryo UI", "Khmer UI", "Tunga", "Lao UI", "Raavi", "Iskoola Pota", "Latha", "Leelawadee", "Microsoft YaHei UI", "Microsoft JhengHei UI", "Malgun Gothic", "Estrangelo Edessa", "Microsoft Himalaya", "Microsoft New Tai Lue", "Microsoft PhagsPa", "Microsoft Tai Le", "Microsoft Yi Baiti", "Mongolian Baiti", "MV Boli", "Myanmar Text", "Cambria Math";
+}
+
+.container_secundario_phishing {
+    background-color:#FFFFFF;
+    padding: 3rem;
+}
+
+.container_secundario_phishing_frm_result {
+    background-color:#FFFFFF;
+    padding: 1rem;
+}
+
+.btn_avanca_phishing {
+    color: #fff;
+    border-color: #0067b8;
+    background-color: #0067b8;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    width: 7rem;
+    height: 2rem;
+}
+
+a{
+    color: #0067b8!important;
+    cursor: pointer;
+}
+
+input[type="text"] {
+    width: 100%;
+  border: none;                   /* remove todas as bordas */
+  border-bottom: 1px solid #828282;  /* apenas borda inferior preta */
+  background-color: #fff;         /* fundo branco */
+  padding: 5px 10px;              /* espaço interno */
+  outline: none;                  /* remove o contorno azul do focus */
+  font-size: 16px;                /* tamanho da fonte */
+  border-radius: 0;               /* garante que não tenha arredondamento */3
+
+}
+
+input[type="text"]:focus {
+  border-bottom: 1px solid #0067b8;  /* borda mais escura ao focar */
+}
+
+input[type="password"] {
+    width: 100%;
+  border: none;                   /* remove todas as bordas */
+  border-bottom: 1px solid #828282;  /* apenas borda inferior preta */
+  background-color: #fff;         /* fundo branco */
+  padding: 5px 10px;              /* espaço interno */
+  outline: none;                  /* remove o contorno azul do focus */
+  font-size: 16px;                /* tamanho da fonte */
+  border-radius: 0;               /* garante que não tenha arredondamento */3
+
+}
+
+input[type="password"]:focus {
+  border-bottom: 1px solid #0067b8;  /* borda mais escura ao focar */
+}

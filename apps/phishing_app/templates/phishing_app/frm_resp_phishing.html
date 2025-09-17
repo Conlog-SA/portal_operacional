@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Segurança
+{% endblock %}
+
+{% block icon %}
+    <link rel="icon" href="{% static 'icons/microsoft_icon.ico' %}" />
+{% endblock %}
+
+{% block link_static_css %}
+
+    <link rel="stylesheet" href="{% static 'css/phishing_app/form_phishing.css' %}"/>
+
+{% endblock %}
+
+{% block conteudo %}
+    <div class="d-flex flex-column justify-content-between align-items-center w-100 container_secundario_phishing_frm_result">
+        <div class="d-flex justify-content-between align-items-center w-100">
+            <div class="d-flex justify-content-start align-items-center w-50">
+                {% if 'conlog' in email %}
+                    <img class="" src="{% static 'img/logo_conlog_laranja.png'%}" width="128" height="24"/>
+                {% else %}
+                    <img class="" src="{% static 'img/logo-deep.png'%}" width="128" height="64"/>
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-start align-items-center w-50">
+                &nbsp;
+            </div>
+
+        </div>
+        <div class="d-flex justify-content-center align-items-center w-100"
+             style="margin-top: 1rem;font-weight: 600;font-size: 1.5rem;">
+            Alerta de Segurança
+        </div>
+        <div class="d-flex justify-content-start align-items-center w-100"
+             style="margin-top: .5rem;font-weight: 600;font-size: 1rem;">
+            <p>{{email}}, você foi submetido a um teste de phishing. Com este click, você poderia compatilhar
+                informações sigilosas como suas credenciais. Isso poderia fazer com que o invasor(pessoa má
+                intensionsada, tenha acesso a rede da companhia e todo o sistema ou um <b>malware </b>
+                fosse instalado em seu computador.</p>
+        </div>
+        <div class="d-flex justify-content-start align-items-center w-100"
+             style="margin-top: .5rem;font-weight: 600;font-size: 1rem;">
+            <p>Um malware é um software malicioso criado para danificar, roubar dados ou controlar sistemas de computador,
+            comprometendo a segurança e a privacidade das vítimas. São ameaças usadas para roubar dados, excluir arquivos, espionar atividades e até assumir o
+            controle do dispositivo da vítima.</p>
+        </div>
+        <div class="d-flex justify-content-center align-items-center w-100"
+             style="margin-top: .5rem;font-weight: 600;font-size: 1rem; color: #D20103;">
+            <p><b>Esta ação poderia colocar os dados da empresa em risco.</b></p>
+        </div>
+        <div class="d-flex justify-content-start align-items-center w-100"
+             style="margin-top: .5rem;font-weight: 600;font-size: 1rem;">
+            <p>Não clique em nenhum link sem aviso prévio da TI(área responsável pela segurança da informação).
+                Em caso de dúvidas, sempre acione a área de TI.</p>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block base_controllers_apps_js %}
+    <script src="{% static 'controllers/phishing_app/phishing_app_controller.js' %}"
+        type="text/javascript">
+    </script>
+{% endblock %}
+

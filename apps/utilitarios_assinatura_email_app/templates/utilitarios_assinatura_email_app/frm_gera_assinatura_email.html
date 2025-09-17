@@ -31,7 +31,13 @@
                        border-bottom: 2px solid #006C98;width: 30%;">
                            <span id="sp_nome_colab" style="font-size: 18px;color: #54B35D;font-weight: 800;
                            cursor: pointer;">{{ obj_usuario_logado.nome_usu }}</span><br/>
-                           <span id="sp_cargo_colab" style="font-size: 13px;color: #006C98;font-weight: 700; cursor: pointer;">{{ dados_colab.desc_cargo_colab }}</span>
+                           <span id="sp_cargo_colab" style="font-size: 13px;color: #006C98;font-weight: 700; cursor: pointer;">
+                               {% if dados_colab.desc_cargo_colab == None %}
+                                    Digite seu cargo
+                               {% else %}
+                                    {{ dados_colab.desc_cargo_colab }}
+                               {% endif %}
+                           </span>
                        </td>
                        <td style="border-bottom: 2px solid #006C98; padding-right: 2rem;width: 10%;">
                            &nbsp;&nbsp;
@@ -49,13 +55,28 @@
                        <td style="text-align: left; padding-left: 2rem;border-bottom: 2px solid #006C98;border-left: 2px solid #006C98;width: 40%;">
                            <img src="https://operacional.conlogsa.com.br/static/img/location_deep.svg" width="10px">
                            &nbsp;&nbsp;
-                           <span id="sp_filial_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">{{ dados_colab.nome_filial }}</span><br/>
+                           <span id="sp_filial_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">
+                               {% if dados_colab.nome_filial == None %}
+                                    Digite sua filial
+                               {% else %}
+                                    {{ dados_colab.nome_filial }}
+                               {% endif %}
+                           </span><br/>
                            <img src="https://operacional.conlogsa.com.br/static/img/flag_deep.svg" width="10px">
                            &nbsp;&nbsp;
-                           <span id="sp_local_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">{{ dados_colab.nome_local }}</span><br/>
+                           <span id="sp_local_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">
+                               {% if dados_colab.nome_local == None %}
+                                    Digite seu setor
+                               {% else %}
+                                    {{ dados_colab.nome_local }}
+                               {% endif %}
+                           </span><br/>
                            <img src="https://operacional.conlogsa.com.br/static/img/email_deep.svg" width="10px">
                            &nbsp;&nbsp;
-                           <span id="sp_email_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">{{ obj_usuario_logado.email_usu }}</span><br/>
+                           <span id="sp_email_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">
+
+                               {{ obj_usuario_logado.email_usu }}
+                           </span><br/>
                            <img src="https://operacional.conlogsa.com.br/static/img/phone_deep.svg" width="10px">
                            &nbsp;&nbsp;
                            <span id="sp_tel_colab" style="cursor: pointer;font-size: 13px;color: #006C98;font-weight: 600;">{{ tel_colab }}</span>

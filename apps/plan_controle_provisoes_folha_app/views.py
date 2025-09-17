@@ -71,81 +71,81 @@ class Gera_Rel_Prov_Sernior_View(View):
 
         df_dados_proeventos = pd.concat([df_dados_proeventos_conlog, df_dados_proeventos_deep]).reset_index()
 
-
-
-        df_dados_proeventos_total_item = df_dados_proeventos[['desc_prov','val_base_prov','perc_dias_prov',
-                                                              'val_anterior_prov','val_transf_prov','val_ajuste_prov',
-                                                              'val_prov','val_pag_prov','val_indenizado_prov',
-                                                              'val_saldo_prov']]\
-            .groupby('desc_prov')\
-            .sum()\
-            .sort_values('val_base_prov', ascending=True)
         dados_proeventos_itens = []
-        for index, row in df_dados_proeventos_total_item.iterrows():
-            reg_prov_item = Registro_Provisao_Folha_Analitico_Proevento(
-                #desc_prov=str(df_dados_proeventos_total_item.loc[index, 'desc_prov']),
-                desc_prov=index,
-                val_base_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_base_prov'], 2),
-                                              grouping=True, symbol=None),
-                perc_dias_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'perc_dias_prov'], 2),
-                                               grouping=True, symbol=None),
-                val_anterior_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_anterior_prov']
-                                                        , 2), grouping=True, symbol=None),
-                val_transf_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_transf_prov'], 2),
-                                                grouping=True, symbol=None),
-                val_ajuste_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_ajuste_prov'], 2),
-                                                grouping=True, symbol=None),
-                val_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_prov'], 2),
-                                         grouping=True, symbol=None),
-                val_pag_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_pag_prov'], 2),
-                                             grouping=True, symbol=None),
-                val_indenizado_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_indenizado_prov'], 2),
-                                                    grouping=True, symbol=None),
-                val_saldo_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_saldo_prov'], 2),
-                                               grouping=True, symbol=None),
-                tipo_provisao=desc_tipo_proevento_pesq
-            )
-            dados_proeventos_itens.append(reg_prov_item.__dict__)
-
         dados_proeventos_colabs = []
-        for index, row in df_dados_proeventos.iterrows():
-            if df_dados_proeventos.loc[index, 'mat_fun'] != None:
-                reg_prov = Registro_Provisao_Folha_Analitico_Colab(
-                    periodo = str(df_dados_proeventos.loc[index, 'periodo']),
-                    cod_emp = str(df_dados_proeventos.loc[index, 'cod_emp']),
-                    nome_emp = str(df_dados_proeventos.loc[index, 'nome_emp']),
-                    cod_filial = str(df_dados_proeventos.loc[index, 'cod_filial']),
-                    nome_filial = str(df_dados_proeventos.loc[index, 'nome_filial']),
-                    cod_ccu = str(df_dados_proeventos.loc[index, 'cod_ccu']),
-                    desc_ccu = str(df_dados_proeventos.loc[index, 'desc_ccu']),
-                    handle_proj = str(df_dados_proeventos.loc[index, 'handle_proj']),
-                    mat_fun = str(df_dados_proeventos.loc[index, 'mat_fun']),
-                    nome_fun=str(df_dados_proeventos.loc[index, 'nome_fun']),
-                    cod_cargo = str(df_dados_proeventos.loc[index, 'cod_cargo']),
-                    desc_cargo = str(df_dados_proeventos.loc[index, 'desc_cargo']),
-                    data_adm = str(df_dados_proeventos.loc[index, 'data_adm']),
-                    desc_prov = str(df_dados_proeventos.loc[index, 'desc_prov']),
-                    val_base_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_base_prov'],2),
-                                                    grouping=True, symbol=None),
-                    perc_dias_prov = locale.currency(round(df_dados_proeventos.loc[index, 'perc_dias_prov'],2),
-                                                     grouping=True, symbol=None),
-                    val_anterior_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_anterior_prov']
-                                                               ,2), grouping=True, symbol=None),
-                    val_transf_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_transf_prov'],2),
-                                                      grouping=True, symbol=None)                    ,
-                    val_ajuste_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_ajuste_prov'],2),
-                                                      grouping=True, symbol=None),
-                    val_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_prov'],2),
-                                               grouping=True, symbol=None),
-                    val_pag_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_pag_prov'], 2),
+        if len(df_dados_proeventos) > 0:
+            df_dados_proeventos_total_item = df_dados_proeventos[['desc_prov','val_base_prov','perc_dias_prov',
+                                                                  'val_anterior_prov','val_transf_prov','val_ajuste_prov',
+                                                                  'val_prov','val_pag_prov','val_indenizado_prov',
+                                                                  'val_saldo_prov']]\
+                .groupby('desc_prov')\
+                .sum()\
+                .sort_values('val_base_prov', ascending=True)
+
+            for index, row in df_dados_proeventos_total_item.iterrows():
+                reg_prov_item = Registro_Provisao_Folha_Analitico_Proevento(
+                    #desc_prov=str(df_dados_proeventos_total_item.loc[index, 'desc_prov']),
+                    desc_prov=index,
+                    val_base_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_base_prov'], 2),
+                                                  grouping=True, symbol=None),
+                    perc_dias_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'perc_dias_prov'], 2),
                                                    grouping=True, symbol=None),
-                    val_indenizado_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_indenizado_prov'],2),
-                                                          grouping=True, symbol=None),
-                    val_saldo_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_saldo_prov'],2),
-                                                     grouping=True, symbol=None),
-                    tipo_provisao = desc_tipo_proevento_pesq
+                    val_anterior_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_anterior_prov']
+                                                            , 2), grouping=True, symbol=None),
+                    val_transf_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_transf_prov'], 2),
+                                                    grouping=True, symbol=None),
+                    val_ajuste_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_ajuste_prov'], 2),
+                                                    grouping=True, symbol=None),
+                    val_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_prov'], 2),
+                                             grouping=True, symbol=None),
+                    val_pag_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_pag_prov'], 2),
+                                                 grouping=True, symbol=None),
+                    val_indenizado_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_indenizado_prov'], 2),
+                                                        grouping=True, symbol=None),
+                    val_saldo_prov=locale.currency(round(df_dados_proeventos_total_item.loc[index, 'val_saldo_prov'], 2),
+                                                   grouping=True, symbol=None),
+                    tipo_provisao=desc_tipo_proevento_pesq
                 )
-                dados_proeventos_colabs.append(reg_prov.__dict__)
+                dados_proeventos_itens.append(reg_prov_item.__dict__)
+
+            for index, row in df_dados_proeventos.iterrows():
+                if df_dados_proeventos.loc[index, 'mat_fun'] != None:
+                    reg_prov = Registro_Provisao_Folha_Analitico_Colab(
+                        periodo = str(df_dados_proeventos.loc[index, 'periodo']),
+                        cod_emp = str(df_dados_proeventos.loc[index, 'cod_emp']),
+                        nome_emp = str(df_dados_proeventos.loc[index, 'nome_emp']),
+                        cod_filial = str(df_dados_proeventos.loc[index, 'cod_filial']),
+                        nome_filial = str(df_dados_proeventos.loc[index, 'nome_filial']),
+                        cod_ccu = str(df_dados_proeventos.loc[index, 'cod_ccu']),
+                        desc_ccu = str(df_dados_proeventos.loc[index, 'desc_ccu']),
+                        handle_proj = str(df_dados_proeventos.loc[index, 'handle_proj']),
+                        mat_fun = str(df_dados_proeventos.loc[index, 'mat_fun']),
+                        nome_fun=str(df_dados_proeventos.loc[index, 'nome_fun']),
+                        cod_cargo = str(df_dados_proeventos.loc[index, 'cod_cargo']),
+                        desc_cargo = str(df_dados_proeventos.loc[index, 'desc_cargo']),
+                        data_adm = str(df_dados_proeventos.loc[index, 'data_adm']),
+                        desc_prov = str(df_dados_proeventos.loc[index, 'desc_prov']),
+                        val_base_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_base_prov'],2),
+                                                        grouping=True, symbol=None),
+                        perc_dias_prov = locale.currency(round(df_dados_proeventos.loc[index, 'perc_dias_prov'],2),
+                                                         grouping=True, symbol=None),
+                        val_anterior_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_anterior_prov']
+                                                                   ,2), grouping=True, symbol=None),
+                        val_transf_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_transf_prov'],2),
+                                                          grouping=True, symbol=None)                    ,
+                        val_ajuste_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_ajuste_prov'],2),
+                                                          grouping=True, symbol=None),
+                        val_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_prov'],2),
+                                                   grouping=True, symbol=None),
+                        val_pag_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_pag_prov'], 2),
+                                                       grouping=True, symbol=None),
+                        val_indenizado_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_indenizado_prov'],2),
+                                                              grouping=True, symbol=None),
+                        val_saldo_prov = locale.currency(round(df_dados_proeventos.loc[index, 'val_saldo_prov'],2),
+                                                         grouping=True, symbol=None),
+                        tipo_provisao = desc_tipo_proevento_pesq
+                    )
+                    dados_proeventos_colabs.append(reg_prov.__dict__)
         data = dict()
         data = {
             'msg': 'ok',

@@ -25,6 +25,8 @@ from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gsdpq_app.models import Gabarito_GSDPQ
 from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Item_Check
+from apps.safety_pci_app.models import Check_Pci
+from apps.safety_predial_app.models import Check_Predial
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -37,8 +39,9 @@ class Check_Aplicado_View(View):
         inicio_periodo_check_aplicado = request.GET['inicio_periodo_check_aplicado'] + ' 00:00'
         fim_periodo_check_aplicado = request.GET['fim_periodo_check_aplicado'] + ' 23:59'
 
+        obj_filial = Filial.objects.get(pk=filial_check_aplicado)
         lista_checks_aplicados = Check_Aplicado.objects.filter(cod_layout_check__tipo_check=tipo_check_aplicado,
-                                                               cod_filial=filial_check_aplicado,
+                                                               cod_filial=obj_filial,
                                                                data_registro__range=[inicio_periodo_check_aplicado, fim_periodo_check_aplicado])
 
         validacao_checks_existentes = None
@@ -69,10 +72,19 @@ class Check_Aplicado_View(View):
         elif tipo_check_aplicado == '9':
             #validacao_checks_emp_existentes
             validacao_checks_existentes = Check_Empilhadeira.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '10':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Check_Predial.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '11':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Check_Pci.objects.all().values('cod_check_aplicado')
 
         respostas_botao = Item_Check_Aplicados.objects.all()
         respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()
-        lista_checks_aplicados_preenchidos = lista_checks_aplicados.filter(Q(cod_check_aplicado__in=validacao_checks_existentes) & (Q(cod_check_aplicado__in=respostas_botao.values('cod_check_aplicado')) | Q(cod_check_aplicado__in=respostas_texto.values('cod_check_aplicado'))))
+        lista_checks_aplicados_preenchidos = lista_checks_aplicados.filter(
+            Q(cod_check_aplicado__in=validacao_checks_existentes) &
+            (Q(cod_check_aplicado__in=respostas_botao.values('cod_check_aplicado')) |
+             Q(cod_check_aplicado__in=respostas_texto.values('cod_check_aplicado'))))
 
         lista_checks_aplicados_dict = []
         for check in lista_checks_aplicados_preenchidos:
@@ -101,7 +113,7 @@ class Check_Aplicado_View(View):
             lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_check_aplicado, 'nome_colaborador_avaliado': nome_colaborador_avaliador,
                                      'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador, 'data_registro': (check.data_registro).strftime("%d/%m/%Y %H:%M"), 'cod_layout_check': check.cod_layout_check.cod_check,
                                      'desc_check': check.cod_layout_check.desc_check, 'qtd_ok': str(count_respostas_ok), 'qtd_nok': str(count_respostas_nok), 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
-                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:#f46424"></i>', 'editar': f'<i class="fa-solid fa-helmet-safety pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:#f46424"></i>'})
+                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:#f46424; cursor: pointer;"></i>', 'editar': f'<i class="fa-solid fa-helmet-safety pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:#f46424; cursor: pointer;"></i>'})
 
         return JsonResponse(lista_checks_aplicados_dict, safe=False)
 

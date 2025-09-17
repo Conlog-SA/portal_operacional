@@ -1,11 +1,12 @@
 from django.db import models
 
+from apps.estrut_org_app.models import Filial
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.safety_layout_checklist_app.models import Layout_Check, Item_Check
 
 class Check_Aplicado(models.Model):
     cod_check_aplicado = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
-    cod_filial = models.IntegerField(blank=False, null=False)
+    #cod_filial = models.IntegerField(blank=False, null=False)
     cod_colaborador_aplicante = models.ForeignKey(Colaborador, models.DO_NOTHING, db_column='cod_colaborador_aplicante', blank=True,
                                          null=True, related_name='aplicado_por')
     cod_colaborador_avaliado = models.ForeignKey(Colaborador, models.DO_NOTHING, db_column='cod_colaborador_avaliado', blank=True,
@@ -14,6 +15,7 @@ class Check_Aplicado(models.Model):
     data_registro = models.DateTimeField(blank=True, null=True)
     cod_layout_check = models.ForeignKey(Layout_Check, models.DO_NOTHING, db_column='cod_layout_check', blank=True,
                                          null=True)
+    cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', blank=False, null=False)
 
     class Meta:
         managed = True

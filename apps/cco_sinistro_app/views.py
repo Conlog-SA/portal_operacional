@@ -42,25 +42,12 @@ class Form_Pesq_Cad_Sinistros(View):
     def get(self, request):
         tipo_pesquisa_sinistro = request.GET['tipo_pesquisa_sinistro']
         linhasTabela = []
+        lista_obj_sinistro = None
         if tipo_pesquisa_sinistro == 'placa':
             placa_selecionada = request.GET['placa_selecionada']
-            querySinistrosPlaca = CCO_Sinistro.objects.filter(placa_veiculo_cavalo = placa_selecionada)
-            for registro in querySinistrosPlaca:
 
-                dadosregistro = {
-                    'cod_sinistro': registro.cod_sinistro,
-                    'nome_mot': registro.nome_mot,
-                    'cpf_mot': registro.cpf_mot,
-                    'data_nasc': registro.data_nasc,
-                    'desc_projeto': registro.cod_projeto.desc_proj if registro.cod_projeto else '',
-                    'placa_veiculo_cavalo': registro.placa_veiculo_cavalo,
-                    'data_ocorre_sinistro': registro.data_ocorre_sinistro,
-                    'desc_motivo_sinistro': registro.cod_motivo_sinistro.desc_motivo_sinistro if registro.cod_motivo_sinistro else '',
-                    'acionado_seguro': registro.acionado_seguro,
-                    'num_processo': registro.num_processo,
-                    'tipo_sinistro': registro.tipo_sinistro
-                }
-                linhasTabela.append(dadosregistro)    
+            lista_obj_sinistro = CCO_Sinistro.objects.filter(placa_veiculo_cavalo = placa_selecionada)
+
 
         elif tipo_pesquisa_sinistro == 'data':
               competencia_selecionada_inicio = request.GET["inicioCompetencia"]
@@ -68,22 +55,29 @@ class Form_Pesq_Cad_Sinistros(View):
               data_inicio = datetime.strptime(competencia_selecionada_inicio, "%Y-%m-%d")
               data_final = datetime.strptime(competencia_selecionada_final, "%Y-%m-%d")
               
-              querySinistrosCompetencia = CCO_Sinistro.objects.filter(data_ocorre_sinistro__range=[data_inicio,data_final])
-              for registro in querySinistrosCompetencia:
-                 dadosregistro = {
-                     'cod_sinistro': registro.cod_sinistro,
-                     'nome_mot': registro.nome_mot,
-                     'cpf_mot' : registro.cpf_mot,
-                     'data_nasc' : registro.data_nasc,
-                    'desc_projeto': registro.cod_projeto.desc_proj if registro.cod_projeto else None,
-                    'placa_veiculo_cavalo': registro.placa_veiculo_cavalo,
-                    'data_ocorre_sinistro': registro.data_ocorre_sinistro,
-                    'desc_motivo_sinistro': registro.cod_motivo_sinistro.desc_motivo_sinistro,
-                    'acionado_seguro': registro.acionado_seguro,
-                    'num_processo' : registro.num_processo,
-                    'tipo_sinistro' : registro.tipo_sinistro
-                 }
-                 linhasTabela.append(dadosregistro)
+              lista_obj_sinistro = CCO_Sinistro.objects.filter(data_ocorre_sinistro__range=[data_inicio,data_final])
+
+        elif tipo_pesquisa_sinistro == 'projeto':
+            cod_projeto_frm = request.GET['cod_projeto']
+            obj_projeto = Projeto.objects.get(pk=cod_projeto_frm)
+            lista_obj_sinistro = CCO_Sinistro.objects.filter(cod_projeto=obj_projeto)
+
+        for registro in lista_obj_sinistro:
+            dadosregistro = {
+                'cod_sinistro': registro.cod_sinistro,
+                'nome_mot': registro.nome_mot,
+                'cpf_mot': registro.cpf_mot,
+                'data_nasc': registro.data_nasc,
+                'desc_projeto': registro.cod_projeto.desc_proj if registro.cod_projeto else '',
+                'placa_veiculo_cavalo': registro.placa_veiculo_cavalo,
+                'data_ocorre_sinistro': registro.data_ocorre_sinistro,
+                'desc_motivo_sinistro': registro.cod_motivo_sinistro.desc_motivo_sinistro if registro.cod_motivo_sinistro else '',
+                'acionado_seguro': registro.acionado_seguro,
+                'num_processo': registro.num_processo,
+                'tipo_sinistro': registro.tipo_sinistro
+            }
+            linhasTabela.append(dadosregistro)
+
 
         data = dict()
         data = {

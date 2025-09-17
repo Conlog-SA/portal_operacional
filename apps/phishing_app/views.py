@@ -29,8 +29,9 @@ class Phishing(View):
         )
 
         objeto.save()
+        context = {'email': email}
 
-        return JsonResponse('Ok', safe=False)
+        return render(request, 'phishing_app/frm_resp_phishing.html', context)
 
 class Phishing_Enviados(View):
 

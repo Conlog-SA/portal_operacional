@@ -22,7 +22,7 @@ class Form_Gerar_Check_Predial(View):
         cod_colaborador = request.session['cod_colaborador']
         colaborador = Colaborador.objects.get(cod_colaborador=cod_colaborador)
 
-        filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_colaborador = colaborador.cod_filial
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
 
@@ -50,14 +50,14 @@ class Form_Gerar_Check_Predial(View):
         return render(request, 'safety_predial_app/predial_form_gerar_check.html', context)
 
     def post(self, request):
-        cod_filial = request.POST['filial']
+        cod_filial_frm = request.POST['filial']
         cod_area = request.POST['cod_area']
 
         cod_colaborador_envio = request.session['cod_colaborador']
         colaborador_envio = Colaborador.objects.filter(pk=cod_colaborador_envio).first()
         #cod_filial_usuario_sessao = colaborador_envio.cod_filial
 
-        #filial = Filial.objects.filter(pk=cod_filial).first()
+        cod_filial = Filial.objects.filter(pk=cod_filial_frm).first()
 
         data_atual = datetime.now()
         check_ativo = Libera_Filial_Check.objects.filter(cod_check__tipo_check=10, cod_filial=cod_filial,

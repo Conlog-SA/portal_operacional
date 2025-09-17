@@ -34,7 +34,7 @@ class Form_Gerar_Gab_GSO_Emp(View):
         #lista_modelos_emp_dict = []
         #for modelo in lista_modelos_emp:
         #    lista_modelos_emp_dict.append({'cod_modelo_emp': modelo.cod_modelo_emp, 'desc_emp': modelo.desc_emp})
-        filial_colaborador = Filial.objects.get(pk=colaborador.cod_filial)
+        filial_colaborador = colaborador.cod_filial
         str_options_select_unidade = ''
         if colaborador.perfil_usu == 'G':
 
@@ -84,11 +84,11 @@ class Form_Gerar_Gab_GSO_Emp(View):
 
         elif tipo_colaborador == '2':
             documento_usuario_informado = request.POST['documento_operador']
-
+            obj_filial = Filial.objects.get(pk=filial_colaborador)
             colaborador = Colaborador(
                 nome_colaborador=usuario_informado,
                 cpf=documento_usuario_informado,
-                cod_filial=filial_colaborador,
+                cod_filial=obj_filial,
                 situacao=0
             )
             colaborador.save()

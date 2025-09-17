@@ -3,9 +3,9 @@
 
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
-    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-filter-circle-dollar fa-2xl"style="color: #f46424;"></i>
+            <i class="fa-solid fa-filter-circle-dollar"style="color: #f46424;"></i>
             <h1 class=" titlePadraoMenu">Rel. Provisões Folha</h1>
         </div>
         {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
@@ -26,7 +26,7 @@
             </div>
 
             <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;margin-top: 1rem;">
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-right: 0.25rem;margin-top: 1rem;">
                     <label for="cb_tipo_prov_senior">
                         Tipo de Provisão
                     </label>
@@ -40,7 +40,7 @@
                     </select>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;margin-top: 1rem;">
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;margin-top: 1rem;">
                     <label for="cb_competencia_prov_senior">
                         Competência
                     </label>
@@ -80,26 +80,8 @@
                         {% endfor %}
                     </select>
                 </div>
-            <!--
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 0.85rem;">
-                    <div class="d-flex w-100">
-                        <label for="cb_emp_prov_senior">
-                            Empresa
-                        </label>
-                    </div>
 
-                    <div class="d-flex flex-column w-100">
-                        <select class="selectpicker form-control" id="cb_emp_prov_senior"
-                                name="cb_emp_prov_senior"
-                                data-live-search="true"
-                                title="Selecione a empresa">
-                            <option value="12">Conlog</option>
-                            <option value="17">Deep</option>
-                        </select>
-                    </div>
-                </div>
-        -->
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;padding-right: 0.25rem; margin-top: 0.1rem;">
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-left: 0.25rem;padding-right: 0.25rem; margin-top: 0.1rem;">
                     <div class="d-flex flex-column w-100">
                         <label for="cb_proj_prov_senior">Projetos
                             <button type='button' id="btn_seleciona_todos_proj_prov_senior"
@@ -131,9 +113,9 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;margin-top: 2.6rem;">
+                <div class="d-flex flex-column justify-content-end w-100" style="padding-left: 0.25rem;margin-top: 2.6rem;">
                     <button type="button" name="btn_gera_dados_prov_senior"
-                              id="btn_gera_dados_prov_seniorf"
+                              id="btn_gera_dados_prov_senior"
                               class="btn btn-primary btn-rounded botaoPrincipal" >
                           <i class="fa-solid fa-magnifying-glass"></i>
                         Pesquisar
@@ -167,6 +149,15 @@
 
 
         <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex mt-3 flex-column w-100 align-items-start" style="font-size: 11px;">
+                <div class="d-flex align-items-start justify-content-between">
+                    <h6 class="titlePadraoMenu">
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                        Analítico
+                    </h6>
+                </div>
+            </div>
+
             <table id="tab_dados_prov_colabs"  class="display wrap w-100 cl_tab_principal_pagina">
                 <thead>
                     <tr>
@@ -193,9 +184,20 @@
                 <tbody>
                 </tbody>
             </table>
+
+
+
         </div>
 
         <div class="form-group  cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex mt-3 flex-column w-100 align-items-start" style="font-size: 11px;">
+                <div class="d-flex align-items-start justify-content-between">
+                    <h6 class="titlePadraoMenu">
+                        <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
+                        Sintético
+                    </h6>
+                </div>
+            </div>
             <table id="tab_dados_prov_itens"  class="display wrap w-100 cl_tab_principal_pagina">
                 <thead>
                     <tr>

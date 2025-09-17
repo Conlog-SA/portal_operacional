@@ -4565,44 +4565,44 @@ function atualiza_dados_tab_conciliacao_composicao_benner_detalhado(dados){
 
     if(dados == null) {
         $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "50vh", //770px
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": false,
-                    //"pageLength": 7,
-                    "searching": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "oLanguage": {
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
-                            }
-                        }
+            "bJQueryUI": true,
+            "destroy": true,
+            "fixedHeader": true,
+            "scrollY": "50vh", //770px
+            "scrollX": true,
+            "scrollCollapse": true,
+            "paging": false,
+            //"pageLength": 7,
+            "searching": true,
+            "dom": 'Bfrtip',
+            "buttons": [
+                'copyHtml5'
+            ],
+            "oLanguage": {
+                "sProcessing":   "Processando...",
+                "sLengthMenu":   "Mostrar _MENU_ registros",
+                "sZeroRecords":  "Não foram encontrados resultados",
+                "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                "sInfoFiltered": "",
+                "sInfoPostFix":  "",
+                "sSearch":       "Pesquisar:",
+                "sUrl":          "",
+                "oPaginate": {
+                    "sFirst":    "Primeiro",
+                    "sPrevious": "Anterior",
+                    "sNext":     "Proximo",
+                    "sLast":     "Último"
+                },
+                "buttons":{
+                    "copyTitle": 'Dados Copiados',
+                    "copySuccess": {
+                        _: '%d linhas copiadas',
+                        1: '1 linha copiada'
                     }
-                    } );
+                }
+            }
+            } );
     } else {
         $("#tab_conciliacao_composicao_benner_detalhado").DataTable( {
             "bJQueryUI": true,

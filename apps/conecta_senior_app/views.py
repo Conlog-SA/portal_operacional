@@ -785,7 +785,6 @@ class Conexao_Senior_BD():
             self.__conn.close()
             return colab
 
-
     def retorna_df_ordenados_por_periodo_e_filial(self, data_ref, cod_filial):
         sql_ordenados = (
             f'''
@@ -870,3 +869,76 @@ class Conexao_Senior_BD():
         self.__conn.close()
         return df_ordenados
 
+    def retorna_qlp_operacional_quinzena(self, ano, mes, quinzena, cod_filial):
+        cursor = self.__conn.cursor()
+        cursor.execute(
+            f'''
+            SELECT  COUNT(CASE WHEN A.SITAFA=1 THEN 1 END) AS ATIVOS,
+                    COUNT(CASE WHEN A.SITAFA=2 THEN 1 END) AS FERISTAS,
+                    COUNT(CASE WHEN A.SITAFA=1 OR A.sitafa = 2 THEN 1 END) AS TOTAL,
+                    C.usu_descar AS CARGO
+            FROM R034FUN A (NOLOCK)
+            LEFT JOIN r024car B (NOLOCK)
+                    ON (A.codcar = B.codcar)
+            LEFT JOIN usu_tcarfrei C (NOLOCK)
+                    ON (B.usu_desfre = C.usu_codcar)
+            WHERE C.usu_descar IS NOT NULL
+                   AND a.sitafa != 7
+                   AND CODFIL = {cod_filial}
+            GROUP BY
+                    C.usu_descar''')
+        result = cursor.fetchall()
+        if cursor is not None and len(result) == 1:
+            filial = result[0]
+            data = {
+                'nome_fil': filial.NOMFIL
+            }
+            cursor.close()
+            self.__conn.close()
+            return data
+        else:
+            columns = [column[0] for column in cursor.description]
+            if len(cursor.fetchall()) == 0 or cursor is None:
+                data = {
+                    'erro': 'Filial não encontrada'
+                }
+                return data
+            if len(cursor.fetchall()) > 1:
+                data = {
+                    'erro': 'Filial duplicada'
+                }
+                return data
+
+    def retorna_desligamentos_periodo(self, data_inicio, data_fim):
+        cursor = self.__conn.cursor()
+        cursor.execute(f'''
+                SELECT 
+                        A.NUMCAD AS MATRICULA,
+                        A.NOMFUN AS NOME_FUN,
+                        A.CODFIL AS COD_FILIAL,
+                        C.NOMFIL AS NOME_FILIAL,
+                        A.DATADM AS DATA_ADMISSAO,
+                        A.DATAFA AS DATA_DEMISSAO,
+                        A.CODCAR AS COD_CARGO,
+                        D.TITCAR AS DESC_CARGO,
+                        B.NUMTEL AS NUMERO_TELEFONE,
+                        C.DDDTEL AS DDD_TELEFONE
+                FROM R034FUN A (NOLOCK)
+                LEFT JOIN R034CPL B (NOLOCK)
+                        ON (A.NUMCAD = B.NUMCAD
+                        AND A.NUMEMP = B.NUMEMP
+                        AND A.TIPCOL = B.TIPCOL)
+                LEFT JOIN R030FIL C (NOLOCK)
+                        ON (A.CODFIL = C.CODFIL)
+                LEFT JOIN R024CAR D (NOLOCK)
+                        ON (A.CODCAR = D.CODCAR)
+                WHERE   A.SITAFA = 7
+                        AND A.DATAFA BETWEEN '{data_inicio}' AND '{data_fim}'
+                        AND NOT EXISTS (SELECT 1 FROM r034fun E WHERE E.SITAFA = 1 AND E.NUMCPF = A.NUMCPF)
+        ''')
+        result = cursor.fetchall()
+        if cursor is not None and len(result) > 0:
+            demissoes = list(result)
+            cursor.close()
+            self.__conn.close()
+            return demissoes

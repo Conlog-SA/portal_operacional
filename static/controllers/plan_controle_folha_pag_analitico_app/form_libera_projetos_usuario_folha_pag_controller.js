@@ -120,7 +120,17 @@ $(document).on('click','button', function(){
            });
            }
 
-       }
+    } else if (nomeDoButton == 'btn_desmarcar_projetos_folha_pag_tab_usu'){
+        $("#sel_projetos_folha_pag_tab_usu").selectpicker('deselectAll');
+    }
+    else if (nomeDoButton == 'sel_marca_projetos_folha_pag_tab_usu'){
+        $("#sel_projetos_folha_pag_tab_usu").selectpicker('selectAll');
+    } else if (nomeDoButton == 'btn_desmarcar_usuarios_folha_pag_tab_proj'){
+        $("#sel_usuarios_folha_pag_tab_proj").selectpicker('deselectAll');
+    }
+    else if (nomeDoButton == 'sel_marca_usuarios_folha_pag_tab_proj'){
+        $("#sel_usuarios_folha_pag_tab_proj").selectpicker('selectAll');
+    }
 
 });
 
