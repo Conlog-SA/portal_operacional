@@ -993,7 +993,6 @@ $(document).on('click','button', function(){
         let let_cod_usu_master = $("#hd_cod_usu_master").val();
         let let_cor_empresa = $("#hd_cor_empresa_hx").val();
 
-
         $.ajax({
             type: 'POST',
             url: '/ti_comitec_app/salva_edita_tarefa',
@@ -1746,8 +1745,7 @@ $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
       }
     });
 
-
-})
+});
 
 
 
@@ -2087,7 +2085,6 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_
  }
 
 
-<<<<<<< HEAD
 function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
     if(lista_tarefas == null) {
         let let_options_usu = '';
@@ -2129,8 +2126,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                 </td>
             </tr>
         `).insertAfter("#btnAddLineTarefa");
-    }
-    else {
+    } else {
         lista_tarefas.forEach( tarefa => {
             let let_options_usu = '';
             for(let i=0; i <  let_lista_usuarios.length; i++){
@@ -2160,8 +2156,7 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                     <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${tarefa.cod_atividade}">
                         ${let_options_usu}
                     </select>`;
-            }
-            else {
+            } else {
                 let_btn_salva_tarefa = `
                     <button name='btn_salvar_tarefa' id="btn_salvar_tarefa_${tarefa.cod_atividade}" class="btn btn-rounded btn-space" value="${tarefa.cod_atividade}" style="width: 35px;" disabled="disabled">
                         <i class="fa-solid fa-pen-to-square" style="color: #fd9a49!important;"></i>
@@ -2174,12 +2169,9 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
                     <select name="sl_usu_frm_edt_tarefa" id="sl_usu_frm_edt_tarefa_${tarefa.cod_atividade}" disabled="disabled">
                         ${let_options_usu}
                     </select>`;
-
             }
-=======
->>>>>>> 26916aa85540bae301e5fe88677efd4cd4c77190
-
-
+        });
+}
 
 
 $(document).on('change', '#cb_usuarios_projeto', function(){
@@ -2210,7 +2202,6 @@ $(document).on('change', '#cb_usuarios_projeto', function(){
                 sticky: false,
                 time: '',
             });
-      }
+        },
     });
-
 });

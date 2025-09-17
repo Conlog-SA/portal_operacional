@@ -1,0 +1,145 @@
+{% load static %}
+
+{% block link_static_css %}
+  <link rel="stylesheet" href="{% static 'css/gera_consultas_app/frm_criar_consulta.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-users-gear" alt="Consulta" style="color: #f46424;"></i>
+            <h1 class="titlePadraoMenu">Consultas</h1>
+        </div>
+        <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+    </div>
+    <div class="containerApp">
+        <form id="frm_criar_consulta" name="frm_criar_consulta"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <hr class="hr_title">
+            </div>
+
+            <div name="carrega_dados" id="carrega_dados" class="d-flex justify-content-between align-items-between w-100">
+                <div name="div_cria_nova_consulta" id="div_cria_nova_consulta" class="d-flex-row justify-content-end align-items-end w-50" style="visibility: hidden;">
+                    <button type="button" name="btn_cria_nova_consulta" id="btn_cria_nova_consulta"
+                        class="btn btn-primary btn-rounded botaoPrincipal"
+                        style="right: 4rem;top: 1.25rem;height: 2rem;position: relative;width: 127px !important;">
+                       Nova consulta
+                    </button>
+                </div>
+                <div class="d-flex justify-content-center align-items-between w-100">
+                    <div class="loader" id="loader_carrega_consulta">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-start align-items-start w-100">
+                    <label>Consultas criadas</label>
+                    <select class="selectpicker form-control cl_sl_consulta" id="sl_consultas_criadas"
+                            name="sl_consultas_criadas"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            data-live-search="true" title="Selecione a consulta que deseja acessar">
+                         {% for consulta in lista_consultas %}
+                            <option value="{{consulta.cod_script}}">
+                                {{ consulta.desc }}
+                            </option>
+                         {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <br/>
+            <hr class="hr_title">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div id="div_des_consulta" class="d-flex flex-column justify-content-start align-items-start w-100">
+                    <label>Descrição</label>
+                    <input type="text" class="form-control" name="desc_criar_consulta"
+                       id="desc_criar_consulta" autocomplete="off"/>
+                </div>
+                <div class="d-flex flex-column justify-content-start align-items-start w-100" style="padding-left: 0.25rem;padding-right: 0.25rem;">
+                    <label for="txt_obs">Observação</label>
+                    <input type="text" class="form-control" name="txt_obs" id="txt_obs" autocomplete="off"/>
+                </div>
+                <div class="d-flex flex-column justify-content-start align-items-start w-100">
+                    <label>ERP</label>
+                    <select class="selectpicker form-control cl_sl_erp" id="sl_erp_consulta"
+                            name="sl_erp_consulta"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            data-live-search="true" title="Selecione o banco que vai fazer conexao">
+                         {% for conexao in lista_conexao %}
+                            <option value="{{conexao.cod_conexao}}">
+                                {{ conexao.erp }}
+                            </option>
+                         {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-start align-items-start w-100">
+                    <label for="txt_obs">Script</label>
+                    <textarea type="date" class="form-control" name="txt_script"
+                       id="txt_script" autocomplete="off" style="height: 295px;"></textarea>
+                </div>
+            </div>
+            <br/>
+            <div class="d-flex align-items-between w-100">
+                <div class="d-flex align-items-between w-100" id="add_parametros" style="visibility: hidden;" >
+                    <div class="d-flex flex-column  align-items-between w-100">
+                        <div class="d-flex align-items-center w-100 " style="background: #f46424 !important; border-radius: 5px 5px 0px 0px; padding: .25rem;">
+                            <h2 class="label_titulo_comp_table titlePadraoMenu" style="font-size: 0.95rem; color: white; font-weight: 500">Parâmetros</h2>
+                            <button type="button" name="btn_add_param" id="btn_add_param"
+                                    class="btn btn-rounded btn-space btn-add-tr" title="Adicionar parametro"
+                                    style="padding: 0.01rem 0.10rem !important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);background: #343537;margin-left: 34rem;">
+                                 <i class="fa-solid fa-plus" style="color: #f46424 !important; font-size: 15px"></i>
+                            </button>
+                        </div>
+                        <div class="d-flex align-items-between w-100 scroll" >
+                            <table id="tab_parametro" class='scroll' style="border: 1px;border-color: #000000; ">
+                                <thead id="add_tr_parametros">
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-items-start w-100" style="padding-left: 20px;" >
+                    <div class="d-flex flex-row justify-content-end align-items-end w-100">
+                        <button type="button" name="btn_adiciona_script" id="btn_adiciona_script"
+                            class="btn btn-primary btn-rounded botaoPrincipal"
+                            value="0"
+                            style="left: -1rem;top: 0.7rem;height: 2rem;position: relative;width: 127px !important;">
+                           Adicionar
+                        </button>
+                    </div>
+                    <div class="d-flex align-items-between w-100" id="slc_selec_usu" style="visibility: hidden;" >
+                         <div class="d-flex flex-column align-items-start  w-100">
+                            <label>Usuário que pode ter acesso a consulta</label>
+                            <select class="selectpicker form-control" id="sl_libera_consulta" name="sl_libera_consulta" multiple
+                                    data-selected-text-format="count > 0"
+                                    data-live-search="true" title="Selecione os usuários que podem ter acesso a consulta">
+                                    {% for usu in lista_usuarios %}
+                                     <option value="{{usu.cod_usu}}"
+                                        {% if obj_usuario_sessao.cod_usu == usu.cod_usu %}
+                                           selected
+                                         {% endif %}>
+                                         {{ usu.login_usu }}
+                                      </option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="hd_cod_script" name="hd_cod_script" value="0"/>
+            <br/>
+        </form>
+    </div>
+</div>

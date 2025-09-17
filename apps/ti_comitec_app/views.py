@@ -118,6 +118,7 @@ class Frm_Cad_Ideias_View(View):
             msg = f'Erro ao adicionar nova ideia: {e}'
 
         lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
+        lista_ideias_frm = Tabela_Ideias().carrega_tabela(obj_usuario_sessao)
         data = dict()
         data = {
             'msg': msg,
