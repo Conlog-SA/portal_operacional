@@ -20,6 +20,7 @@ class Empilhadeira(models.Model):
 
 class Gabarito_Operacional_Emp(models.Model):
     cod_item_check = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
+    '''1(Colaborador)/2(Terceiro)'''
     tipo_operador = models.IntegerField(blank=False, null=False)
     cod_empilhadeira = models.ForeignKey(Empilhadeira, models.DO_NOTHING, db_column='cod_empilhadeira', blank=True,
                                          null=True)

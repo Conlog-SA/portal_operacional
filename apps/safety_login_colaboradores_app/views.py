@@ -20,7 +20,7 @@ class Login_Colaborador(View):
             colaborador = Colaborador.objects.get(cod_colaborador=id_visitante)
             if "Visitante" in colaborador.nome_colaborador:
                 request.session['cod_colaborador'] = id_visitante
-                filial_visitante = Filial.objects.filter(pk=colaborador.cod_filial).first()
+                filial_visitante = colaborador.cod_filial
                 request.session['cod_empresa_selecionada'] = str(filial_visitante.cod_empresa.cod_empresa)
                 request.session['cod_empresa'] = str(filial_visitante.cod_empresa.cod_empresa)
                 if request.session['cod_empresa'] == '12':

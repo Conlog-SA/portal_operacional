@@ -2081,10 +2081,10 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_
                     </td>
 
                 </tr>
-             `);
-         });
-      }
- }
+            `);
+        });
+    }
+}
 
 
 $(document).on('change', '#cb_usuarios_projeto', function(){

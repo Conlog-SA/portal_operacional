@@ -16,6 +16,7 @@ class Phishing_Enviados(models.Model):
     usuario = models.CharField(max_length=50, blank=True, null=True)
     data_envio = models.DateTimeField(blank=True, null=True)
     status = models.CharField(max_length=1, blank=True, null=True)
+    desc_empresa = models.CharField(max_length=20, default='')
 
     class Meta:
         managed = True
