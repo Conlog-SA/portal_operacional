@@ -219,8 +219,6 @@ $(document).on('click','.ui-sortable-handle', function(){
             },
             dataType: 'json',
             success: function (dados) {
-                console.log(dados)
-
                 let data_desativacao = new Date(dados.item_selecionado.data_desativacao)
 
                 let day = ("0" + data_desativacao.getDate()).slice(-2);
@@ -486,7 +484,6 @@ $(document).on('change','.selectpicker',function(){
                     },
                     dataType: 'json',
                     success: function (dados) {
-                        console.log(dados);
                         $('#liberado_filiais option').remove();
                         dados[0].lista_filiais_check.forEach(filial => {
                             let string_empresa;
@@ -711,7 +708,6 @@ $(document).on('click','button.busca-checks-aplicados' , function(event){
 
 $(document).on('click','.check-preenchido-element' , function(){
     let let_cod_check_aplicado = $(this).text().split(' - ')[0]
-    console.log(let_cod_check_aplicado)
 
      $.ajax({
 	        type: 'GET',
@@ -736,62 +732,62 @@ $(document).on('click','.editar-check' , function(){
     let let_cod_check_aplicado = $(this).attr('name');
     $('#sp_numero_check').html("Editando o Check nº <b>" + let_cod_check_aplicado + "</b>");
      $.ajax({
-	        type: 'GET',
-	        data: {
-                'cod_check_aplicado'   :   let_cod_check_aplicado,
-            },
-            dataType : "html",
-	        url: '/safety_layout_checklist_app/edita_check',
-	        success: function(response) {
-                $('#modalEditarCheckAplicadoBody').html(response);
-                let tipo_check = $('#identifica_tipo_check').val();
-                if (tipo_check == 2) {
-                    $('#unidade').selectpicker('refresh');
-                    $('#tipo_relato').val($('#tipo_relato').attr('value'));
-                    $('#tipo_relato').selectpicker('refresh');
-                    $('#ato_inseguro_categoria').selectpicker('refresh');
-                    $('#condicao_insegura_categoria').selectpicker('refresh');
-                    $('#situacao_envolvido').selectpicker('refresh');
-                    $('#nome_relatado').selectpicker('refresh');
-                    $('#processo_relato').selectpicker('refresh');
-                    $('#atividade_relato').selectpicker('refresh');
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                }
-                else if (tipo_check == 4) {
-                    $('#unidade').selectpicker('refresh');
-                    //$('#tipo_relato').val($('#tipo_relato').attr('value'));
-                    $('#situacao_avaliado').selectpicker('refresh');
-                    $('#nome_avaliado').selectpicker('refresh');
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                }
-                else if (tipo_check == 5) {
-                    $('#unidade').selectpicker('refresh');
-                    //$('#tipo_relato').val($('#tipo_relato').attr('value'));
-                    $('#situacao_avaliado_moto').selectpicker('refresh');
-                    $('#nome_avaliado').selectpicker('refresh');
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                }
-                else if (tipo_check == 6) {
-                    $('#unidade').selectpicker('refresh');
-                    //$('#tipo_relato').val($('#tipo_relato').attr('value'));
-                    $('#situacao_avaliado_bicicleta').selectpicker('refresh');
-                    $('#nome_avaliado').selectpicker('refresh');
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                }
-                else if (tipo_check == 7) {
-                    $('#unidade').selectpicker('refresh');
-                    //$('#tipo_relato').val($('#tipo_relato').attr('value'));
-                    $('#situacao_avaliado_outros_meios').selectpicker('refresh');
-                    $('#meio_transporte').val($('#meio_transporte').attr('value'));
-                    $('#meio_transporte').selectpicker('refresh');
-                    $('#nome_avaliado').selectpicker('refresh');
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                }
-                else if (tipo_check == 8) {
-                    $('#modalEditarCheckAplicado').css("display", "block");
-                    $('#unidade').selectpicker('refresh');
-                }
+        type: 'GET',
+        data: {
+            'cod_check_aplicado'   :   let_cod_check_aplicado,
+        },
+        dataType : "html",
+        url: '/safety_layout_checklist_app/edita_check',
+        success: function(response) {
+            $('#modalEditarCheckAplicadoBody').html(response);
+            let tipo_check = $('#identifica_tipo_check').val();
+            if (tipo_check == 2) {
+                $('#unidade').selectpicker('refresh');
+                $('#tipo_relato').val($('#tipo_relato').attr('value'));
+                $('#tipo_relato').selectpicker('refresh');
+                $('#ato_inseguro_categoria').selectpicker('refresh');
+                $('#condicao_insegura_categoria').selectpicker('refresh');
+                $('#situacao_envolvido').selectpicker('refresh');
+                $('#nome_relatado').selectpicker('refresh');
+                $('#processo_relato').selectpicker('refresh');
+                $('#atividade_relato').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
             }
+            else if (tipo_check == 4) {
+                $('#unidade').selectpicker('refresh');
+                //$('#tipo_relato').val($('#tipo_relato').attr('value'));
+                $('#situacao_avaliado').selectpicker('refresh');
+                $('#nome_avaliado').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
+            }
+            else if (tipo_check == 5) {
+                $('#unidade').selectpicker('refresh');
+                //$('#tipo_relato').val($('#tipo_relato').attr('value'));
+                $('#situacao_avaliado_moto').selectpicker('refresh');
+                $('#nome_avaliado').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
+            }
+            else if (tipo_check == 6) {
+                $('#unidade').selectpicker('refresh');
+                //$('#tipo_relato').val($('#tipo_relato').attr('value'));
+                $('#situacao_avaliado_bicicleta').selectpicker('refresh');
+                $('#nome_avaliado').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
+            }
+            else if (tipo_check == 7) {
+                $('#unidade').selectpicker('refresh');
+                //$('#tipo_relato').val($('#tipo_relato').attr('value'));
+                $('#situacao_avaliado_outros_meios').selectpicker('refresh');
+                $('#meio_transporte').val($('#meio_transporte').attr('value'));
+                $('#meio_transporte').selectpicker('refresh');
+                $('#nome_avaliado').selectpicker('refresh');
+                $('#modalEditarCheckAplicado').css("display", "block");
+            }
+            else if (tipo_check == 8) {
+                $('#modalEditarCheckAplicado').css("display", "block");
+                $('#unidade').selectpicker('refresh');
+            }
+        }
     });
 });
 
@@ -936,7 +932,6 @@ function Popular_Itens(cod_check) {
             },
             dataType: 'json',
             success: function (dados) {
-                console.log(dados)
                 $("#sortable li").remove();
                 dados.lista_itens_check.forEach(item => {
                     if (item.tipo_item == 1) {

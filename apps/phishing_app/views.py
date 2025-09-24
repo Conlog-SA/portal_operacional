@@ -38,14 +38,22 @@ class Phishing_Enviados(View):
     @csrf_exempt
     def get(self, request):
         usuario = request.GET['email'].split('@')[0]
+        email = request.GET['email']
         status = request.GET['status']
         data_envio = datetime.now()
 
+        desc_empresa = ''
+        if 'conlog' in email:
+            desc_empresa = 'conlog'
+        elif 'deep' in email:
+            desc_empresa = 'deep'
+
         objeto = models.Phishing_Enviados(
-                    usuario=usuario,
-                    data_envio=data_envio,
-                    status=status
-                )
+            usuario=usuario,
+            data_envio=data_envio,
+            status=status,
+            desc_empresa=desc_empresa
+        )
         objeto.save()
 
         return JsonResponse('Ok', safe=False)
