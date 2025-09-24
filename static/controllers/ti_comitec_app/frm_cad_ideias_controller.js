@@ -2085,7 +2085,10 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_
 }
 
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9d18ac0cda4dddb6054fec4ce37efde4aa20000f
 $(document).on('change', '#cb_usuarios_projeto', function(){
     let let_lista_cod_usuarios = $("#cb_usuarios_projeto").val().toString();
     let let_cod_projeto = $("#hd_cod_projeto").val();
