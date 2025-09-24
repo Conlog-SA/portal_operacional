@@ -1,6 +1,5 @@
-let let_dic_usu_sessao = null;
 let let_count_tr_parametros = 9999;
-let let_lista_usuarios = [];
+let let_lista_usuarios_frm_cria_consulta = [];
 
 // using jQuery
 function getCookie(name) {
@@ -365,14 +364,14 @@ $(document).on('change', '#sl_consultas_criadas', function(){
             lista_usuarios = dados.dic_script.lista_usuarios
             lista_usu_vinc = dados.dic_script.lista_usu_vinculados
 
-            let_lista_usuarios = [];
+            let_lista_usuarios_frm_cria_consulta = [];
             $("#sl_libera_consulta option").remove();
             lista_usuarios.forEach( usu => {
                 let reg = [
                     usu.cod_usu,
                     usu.login_usu
                 ];
-                let_lista_usuarios.push(reg);
+                let_lista_usuarios_frm_cria_consulta.push(reg);
 
                 let let_item_selected = ``;
                 lista_usu_vinc.forEach( cod_usu_vinc => {

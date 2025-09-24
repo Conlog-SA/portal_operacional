@@ -2085,7 +2085,6 @@ function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_
  }
 
 
-<<<<<<< HEAD
 function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
     if(lista_tarefas == null) {
         let let_options_usu = '';
@@ -2175,8 +2174,6 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas) {
 }
 
 
-=======
->>>>>>> 0194fb6d49df580140c55ee26742261c03905ef6
 $(document).on('change', '#cb_usuarios_projeto', function(){
     let let_lista_cod_usuarios = $("#cb_usuarios_projeto").val().toString();
     let let_cod_projeto = $("#hd_cod_projeto").val();
