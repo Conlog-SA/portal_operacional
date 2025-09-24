@@ -109,6 +109,7 @@ INSTALLED_APPS = [
     'apps.safety_predial_app',
     'apps.safety_pci_app',
     'apps.freightech_remunerado_qlp_app',
+    'apps.ti_gera_consultas_app',
 ]
 
 MIDDLEWARE = [

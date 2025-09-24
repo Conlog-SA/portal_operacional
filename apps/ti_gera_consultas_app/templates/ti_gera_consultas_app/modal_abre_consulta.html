@@ -1,0 +1,80 @@
+
+{% load static %}
+
+<div id="modal_acessa_consulta" role="dialog" class="modal">
+  <div class="modal-dialog" style="border-radius: 10px;">
+    <div class="modal-content" style="top: 40px;left: 46px;">
+      <div class="modal-header"  style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+            padding-top: 10px;font-size:10px;">
+          <div class="d-flex justify-content-start align-items-center w-100" style="margin-top: 24px">
+             <i class="fa-solid fa-sliders"></i>
+             <span style="color:#ffffff;font-size: 14px;font-weight: 400;padding: .25rem;">Consulta</span>
+          </div>
+          <div class="row">
+              <div class="col-md-6" align="right" style="margin-top: 25px;">
+                  <button type="button" name="btn_fecha_modal_gera_consulta"
+                          id="btn_fecha_modal_gera_consulta" class="btn btn-sm btn-rounded btn_fecha_modal">
+                    <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                  </button>
+              </div>
+          </div>
+      </div>
+      <div class="modal-body" >
+          <form id="frm_criar_consulta" name="frm_criar_consulta"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between">
+            {% csrf_token %}
+            <div name="carrega_dados" id="carrega_dados" class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-start align-items-start w-100">
+                </div>
+                <div class="d-flex justify-content-center align-items-between w-100">
+                </div>
+                <div class="d-flex justify-content-center align-items-between w-100">
+                    <div class="loader" id="loader_carrega_consulta">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-end align-items-between w-100 "">
+                <div class="d-flex align-items-center justify-content-center w-100">
+                  <div class="d-flex align-items-between w-100 cl_frm_topo_paginas" id="add_parametros" style="background: #6f6f6f!important;border-radius: 19px;padding: 11px;">
+                      <div class="d-flex flex-column  align-items-between w-100" >
+                        <div class="d-flex align-items-center w-100 " style="background: #f46424 !important; border-radius: 5px 5px 0px 0px; padding: .25rem;">
+                            <h2 class="label_titulo_comp_table titlePadraoMenu" style="font-size: 0.95rem; color: white; font-weight: 500">Parâmetros</h2>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center w-100">
+                            <div id="div_lista_param" class="d-flex flex-column justify-content-center align-items-between w-100" ></div>
+                        </div>
+
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="d-flex justify-content-center align-items-between w-100">
+              <div class="d-flex justify-content-center align-items-between w-100">
+                  <button type="button" name="btn_gera_consulta" id="btn_gera_consulta"
+                    class="btn btn-primary btn-rounded botaoPrincipal"
+                    style="left: 1.2rem;top: 0.7rem;height: 2rem;position: relative;">
+                    Gerar dados
+                  </button>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-start align-items-start w-100">
+                </div>
+            </div>
+            <br/>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

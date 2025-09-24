@@ -10,7 +10,11 @@ class Conexao_AD:
     ip_server = '172.16.40.2'
     user_adm = 'administrador'
     senha_adm = 'RaLsPc@965214!@#'
+<<<<<<< HEAD
+    #Senha anterior : lLhBtApClEJ@911!@# / JeDmKb@365214!@#
+=======
     #Senha anterior : lLhBtApClEJ@911!@# \ JeDmKb@365214!@#
+>>>>>>> 0194fb6d49df580140c55ee26742261c03905ef6
     def __init__(self):
         server = Server(f'LDAP://{self.ip_server}', use_ssl=True)
         self.__conn = Connection(server, user=f'conlog\\{self.user_adm}', password=self.senha_adm, authentication=SIMPLE)
