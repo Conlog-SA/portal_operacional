@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="d-flex align-items-center justify-content-start text-white w-100">
-                    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+                    <div class="d-flex justify-content-between align-items-between div_sub_titulo_line">
                         <hr class="hr_title">
                     </div>
                 </div>
@@ -158,31 +158,86 @@
             <div class="col-md-12 w-100 h-100">
                 <nav>
                     <div class="nav nav-tabs" id="myTab" role="tablist">
-                        <button class="nav-link active" id="a_tab_param_plan_rem" data-bs-toggle="tab"
-                                data-bs-target="#div_tab_param_plan_rem" type="button" role="tab"
-                                aria-controls="div_tab_param_plan_rem" aria-selected="true">
-                            <i class="fa-solid fa-user-graduate" style="color: #f46424;"></i>
-                            Remunerado QLP
+                        <button class="nav-link active" id="a_tab_param_plan_rem_op" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_param_plan_rem_op" type="button" role="tab"
+                                aria-controls="div_tab_param_plan_rem_op" aria-selected="true">
+                            <i class="fa-solid fa-truck-front" style="color: #f46424;"></i>
+                            Remunerado QLP Ope
                         </button>
-                        <button class="nav-link" id="a_tab_cargos_rem_senior" data-bs-toggle="tab"
-                                data-bs-target="#div_tab_cargos_rem_senior" type="button" role="tab"
-                                aria-controls="div_tab_cargos_rem_senior" aria-selected="false">
-                            <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
-                            Cargos Remunerado x Senior
+                        <button class="nav-link" id="a_tab_param_plan_rem_adm" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_param_plan_rem_adm" type="button" role="tab"
+                                aria-controls="div_tab_param_plan_rem_adm" aria-selected="false">
+                            <i class="fa-solid fa-user-graduate" style="color: #f46424;"></i>
+                            Remunerado QLP Adm
                         </button>
                     </div>
                 </nav>
 
 
                 <div class="tab-content" style="border-radius:0 0 10px 10px;">
-                    <div class="tab-pane active" id="div_tab_param_plan_rem" name="div_tab_param_plan_rem"
+                    <!-- START QLP Operacional -->
+                    <div class="tab-pane active" id="div_tab_param_plan_rem_op" name="div_tab_param_plan_rem_op"
                          role="tabpanel"
-                         aria-labelledby="a_tab_param_plan_rem">
+                         aria-labelledby="a_tab_param_plan_rem_op">
+                        <div id="div_tab_qlp_op_freigh" class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100">
+                                <table id="tab_qlp_op_freigh"  class="display wrap w-100 cl_tab_principal_pagina">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Vigência</th>
+                                        <th scope="col">Quinzena</th>
+                                        <th scope="col">Grupo</th>
+                                        <th scope="col">Cargo</th>
+                                        <th scope="col">Turno</th>
+                                        <th scope="col">Qtd.</th>
+                                        <th scope="col">DSR</th>
+                                        <th scope="col">HE Fixas</th>
+                                        <th scope="col">% Encar. e Prov.</th>
+                                        <th scope="col">% HE</th>
+                                        <th scope="col">Premiação Plus</th>
+                                        <th scope="col" title="R$ Remuneração Fixa Contra Cheque">R$ Rem. Fixa CH</th>
+                                        <th scope="col">R$ Tt. Ordenado</th>
+                                        <th scope="col">R$ Tt. Remunerado</th>
+                                        <th scope="col" title="R$ Total Remunerado + Benefícios">R$ Tt. Rem + Ben</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- END QLP Operacional -->
+
+                    <!-- START QLP Adm -->
+                    <div class="tab-pane" id="div_tab_param_plan_rem_adm" name="div_tab_param_plan_rem_adm"
+                         role="tabpanel"
+                         aria-labelledby="a_tab_param_plan_rem_adm">
 
                         <!-- START QLP ADM -->
                         <div id="div_tab_qlp_adm_freigh" class="d-flex justify-content-between align-items-between w-100">
                             <div class="d-flex flex-column w-100">
-                                <table id="tab_qlp_adm_feigh"  class="display wrap w-100 cl_tab_principal_pagina">
+                                <table id="tab_qlp_adm_freigh"  class="display wrap w-100 cl_tab_principal_pagina">
                                 <thead>
                                     <tr>
                                         <th scope="col">Vigência</th>
@@ -235,104 +290,9 @@
                         <!-- END QLP ADM -->
 
                     </div>
-
-                    <div class="tab-pane" id="div_tab_cargos_rem_senior" role="tabpanel"
-                         aria-labelledby="a_tab_cargos_rem_senior">
-                        <div class="d-flex mt-3 flex-column w-100 align-items-start" style="font-size: 12px;">
-                            <div class="d-flex align-items-start justify-content-between">
-                                <h6 class="titlePadraoMenu">
-                                    <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
-                                    QLP por Filial
-                                </h6>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-start text-white w-100">
-                            <div class="d-flex justify-content-between align-items-between div_Titulo_line">
-                                <hr class="hr_title">
-                            </div>
-                        </div>
-
-                        <table id="tab_qlp_filial_senior_x_freigh"  class="display wrap w-100 cl_tab_principal_pagina">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Quinz.</th>
-                                        <th scope="col">Dia</th>
-                                        <th scope="col">Filial</th>
-                                        <th scope="col">Cargo Freightech</th>
-                                        <th scope="col">Qlp</th>
-                                        <th scope="col">R$ TT Ordenados</th>
-                                        <th scope="col">Qlp Rem</th>
-                                        <th scope="col">R$ TT Ordenados Rem</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-
-
-                        <div class="d-flex flex-column w-100 align-items-start" style="font-size: 12px;">
-                            <div class="d-flex align-items-start justify-content-between">
-                                <h6 class="titlePadraoMenu">
-                                    <i class="fa-solid fa-caret-right" style="color: #f46424;"></i>
-                                    QLP por Projeto
-                                </h6>
-                            </div>
-                        </div>
-
-                        <div class="d-flex align-items-center justify-content-start text-white w-100">
-                            <div class="d-flex justify-content-between align-items-between div_Titulo_line">
-                                <hr class="hr_title">
-                            </div>
-                        </div>
-
-                        <table id="tab_qlp_senior_x_freigh"  class="display wrap w-100 cl_tab_principal_pagina">
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Quinz.</th>
-                                        <th scope="col">Dia</th>
-                                        <th scope="col">Projeto</th>
-                                        <th scope="col">Cargo Freightech</th>
-                                        <th scope="col">Qlp</th>
-                                        <th scope="col">R$ TT Ordenados</th>
-                                        <th scope="col">Qlp Rem</th>
-                                        <th scope="col">R$ TT Ordenados Rem</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </tfoot>
-                            </table>
-
-
-
-
-
-                    </div>
-
-
+                    <!-- END QLP Adm -->
                 </div>
             </div>
-
-
-
         </div>
     </div>
 </div>

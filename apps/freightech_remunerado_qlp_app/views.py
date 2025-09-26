@@ -11,7 +11,7 @@ from apps.calendario_app.models import Calendario_Dias
 from apps.conecta_senior_app.views import Conexao_Senior_BD
 from apps.freightech_remunerado_qlp_app.importador_plan_freitech import Importador_Plan_Freightech
 from apps.freightech_remunerado_qlp_app.models import Plan_Remunerada_Freightech, \
-    Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm
+    Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm, Registros_Plan_Remunerado_Freightech_Rota_Qlp_Equipe_Entrega
 from apps.usuario_app.models import Usuario
 
 
@@ -31,22 +31,16 @@ class Frm_Importa_Plan_Remunerado_Freightech_View(View):
         data_atual_dd_mm_yyyy = data_hora_atual.strftime('%d/%m/%Y')
         hota_atual = data_hora_atual.strftime('%H:%M:%S')
 
-        caminho_arq_importado = 'docs/plan_rem_freightech/'  + str(plan_rem_frm.name).replace('.xlsx', '') + '_' + \
-                                obj_usu_logado.login_usu.replace('.', '_') + '_' + str(data_atual_dd_mm_yyyy).replace('/', '_') \
-                                + '_' + str(hota_atual).replace(':', '_') + '.xlsx'
+
 
         obj_arquivo = Plan_Remunerada_Freightech(
             data_arq_imp = data_hora_atual,
             desc_layout_arq = tipo_planilha_frm,
-            nome_arq_original = plan_rem_frm.name,
-            nome_arq_imp = caminho_arq_importado,
+            nome_arq_imp = plan_rem_frm,
             cod_usu = obj_usu_logado
         )
         obj_arquivo.save()
         obj_importador = Importador_Plan_Freightech(plan_rem_frm, tipo_planilha_frm, obj_arquivo)
-
-
-
 
         data = dict()
         data = {
@@ -64,12 +58,41 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
         quinz_1_frm = request.GET['quinz_1']
         data_2_frm = request.GET['data_2'] + '-01'
         quinz_2_frm = request.GET['quinz_2']
+
+
+        lista_obj_rem_adm = self.remunerado_adm(nome_unidade_freigh_frm, data_1_frm, quinz_1_frm, data_2_frm, quinz_2_frm)
+        lista_obj_rem_op = self.remunerado_op(nome_unidade_freigh_frm, data_1_frm, quinz_1_frm, data_2_frm,
+                                                quinz_2_frm)
+
+
+
+
+        if len(lista_obj_rem_adm) == 0 and len(lista_obj_rem_op) == 0:
+            msg = 'Não foram encontrados registros importados para essa vigência!'
+        else:
+            msg = 'Registros gerados'
+
+        data = dict()
+        data = {
+            'lista_obj_rem_adm': lista_obj_rem_adm,
+            'lista_obj_rem_op': lista_obj_rem_op,
+            'msg': msg
+        }
+        return JsonResponse(data, safe=False)
+
+    def compara_valores(self, x, y):
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+        campo = locale.currency(x, grouping=True, symbol=None)
+        if x != y:
+            campo = f"<span style='background:#FF0000;color:#ffffff'>{locale.currency(x, grouping=True, symbol=None)}</span>"
+        return campo
+
+    def remunerado_adm(self, nome_unidade_freigh_frm, data_1_frm, quinz_1_frm, data_2_frm, quinz_2_frm):
         lista_obj_rem = []
         obj_rem_1 = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm.objects
                      .filter(nome_unidade=nome_unidade_freigh_frm,
                              vigencia=data_1_frm,
                              quinzena=quinz_1_frm))
-
 
         if len(obj_rem_1) > 0:
             for reg1 in obj_rem_1:
@@ -77,22 +100,24 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                              .filter(nome_unidade=nome_unidade_freigh_frm,
                                      vigencia=data_2_frm,
                                      quinzena=quinz_2_frm,
-                                     cod_cargo_freightech=reg1.cod_cargo_freightech)
+                                     cod_cargo_freightech=reg1.cod_cargo_freightech,
+                                     )
                              .first())
 
                 dic_rem_1 = {
-                    'cod_qlp_rem_rota_adm': reg1.cod_qlp_rem_rota_adm ,
+                    'cod_qlp_rem_rota_adm': reg1.cod_qlp_rem_rota_adm,
                     'vigencia': datetime.strftime(reg1.vigencia, '%m-%Y'),
                     'quinzena': reg1.quinzena,
                     'desc_grupo': reg1.cod_cargo_freightech.grupo_cargo,
                     'desc_cargo': reg1.cod_cargo_freightech.desc_cargo,
-                    'qtd_qlp':  self.compara_valores(reg1.qtd_qlp_bench, obj_rem_2.qtd_qlp_bench),
+                    'qtd_qlp': self.compara_valores(reg1.qtd_qlp_bench, obj_rem_2.qtd_qlp_bench),
                     'qtd_encargos': self.compara_valores(reg1.qtd_encargos, obj_rem_2.qtd_encargos),
                     'val_unit_encargos': self.compara_valores(reg1.val_unit_encargos, obj_rem_2.val_unit_encargos),
                     'qtd_ordenados': self.compara_valores(reg1.qtd_ordenados, obj_rem_2.qtd_ordenados),
                     'val_unit_ordenados': self.compara_valores(reg1.val_unit_ordenados, obj_rem_2.val_unit_ordenados),
                     'qtd_frota_leve': self.compara_valores(reg1.qtd_frota_leve, obj_rem_2.qtd_frota_leve),
-                    'val_unit_frota_leve': self.compara_valores(reg1.val_unit_frota_leve, obj_rem_2.val_unit_frota_leve),
+                    'val_unit_frota_leve': self.compara_valores(reg1.val_unit_frota_leve,
+                                                                obj_rem_2.val_unit_frota_leve),
                     'qtd_beneficios': self.compara_valores(reg1.qtd_beneficios, obj_rem_2.qtd_beneficios),
                     'val_unit_beneficio': self.compara_valores(reg1.val_unit_beneficio, obj_rem_2.val_unit_beneficio),
                     'qtd_telefonia': self.compara_valores(reg1.qtd_telefonia, obj_rem_2.qtd_telefonia),
@@ -114,7 +139,8 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                     'qtd_ordenados': self.compara_valores(obj_rem_2.qtd_ordenados, reg1.qtd_ordenados),
                     'val_unit_ordenados': self.compara_valores(obj_rem_2.val_unit_ordenados, reg1.val_unit_ordenados),
                     'qtd_frota_leve': self.compara_valores(obj_rem_2.qtd_frota_leve, reg1.qtd_frota_leve),
-                    'val_unit_frota_leve': self.compara_valores(obj_rem_2.val_unit_frota_leve, reg1.val_unit_frota_leve) ,
+                    'val_unit_frota_leve': self.compara_valores(obj_rem_2.val_unit_frota_leve,
+                                                                reg1.val_unit_frota_leve),
                     'qtd_beneficios': self.compara_valores(obj_rem_2.qtd_beneficios, reg1.qtd_beneficios),
                     'val_unit_beneficio': self.compara_valores(obj_rem_2.val_unit_beneficio, reg1.val_unit_beneficio),
                     'qtd_telefonia': self.compara_valores(obj_rem_2.qtd_telefonia, reg1.qtd_telefonia),
@@ -124,175 +150,72 @@ class Frm_Pesq_Dados_Comparacao_Quinzenas_View(View):
                 }
                 lista_obj_rem.append(dic_rem_2)
 
+        return lista_obj_rem
 
+    def remunerado_op(self, nome_unidade_freigh_frm, data_1_frm, quinz_1_frm, data_2_frm, quinz_2_frm):
+        lista_obj_rem = []
+        obj_rem_1 = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Equipe_Entrega.objects
+                     .filter(nome_unidade=nome_unidade_freigh_frm,
+                             vigencia=data_1_frm,
+                             quinzena=quinz_1_frm))
 
-        '''QLP Senior'''
-        '''Seleciona data 1'''
-        data_1 = None
-        ano_1 = int(data_1_frm.split('-')[0])
-        mes_1 = int(data_1_frm.split('-')[1])
-        if quinz_1_frm == '1':
-            data_1 = (Calendario_Dias.objects
-                      .filter(data_dia__year=data_1_frm.split('-')[0],
-                                                    data_dia__month=data_1_frm.split('-')[1], data_dia__day__range=[1,15])
-                      .order_by('-data_dia').first())
+        if len(obj_rem_1) > 0:
+            for reg1 in obj_rem_1:
+                obj_rem_2 = (Registros_Plan_Remunerado_Freightech_Rota_Qlp_Equipe_Entrega.objects
+                             .filter(nome_unidade=nome_unidade_freigh_frm,
+                                     vigencia=data_2_frm,
+                                     quinzena=quinz_2_frm,
+                                     cod_cargo_freightech=reg1.cod_cargo_freightech,
+                                     turno= reg1.turno
+                                     )
+                             .first())
 
-        else:
-            _, ultimo_dia_mes = calendar.monthrange(ano_1, mes_1)
-            data_1 = (Calendario_Dias.objects
-                      .filter(data_dia__year=data_1_frm.split('-')[0],
-                              data_dia__month=data_1_frm.split('-')[1], data_dia__day__range=[16, ultimo_dia_mes])
-                      .order_by('-data_dia').first())
+                dic_rem_1 = {
+                    'cod_qlp_rem_rota_adm': reg1.cod_qlp_rem_rota_adm,
+                    'vigencia': datetime.strftime(reg1.vigencia, '%m-%Y'),
+                    'quinzena': reg1.quinzena,
+                    'desc_grupo': reg1.cod_cargo_freightech.grupo_cargo,
+                    'desc_cargo': reg1.cod_cargo_freightech.desc_cargo,
+                    'turno': reg1.turno,
+                    'qtd_qlp': self.compara_valores(
+                        reg1.qtd_por_caminhao * reg1.qtd_total_por_caminhao_ativo,
+                        obj_rem_2.qtd_por_caminhao * obj_rem_2.qtd_total_por_caminhao_ativo),
+                    'dsr': self.compara_valores(reg1.qtd_dsr, obj_rem_2.qtd_dsr),
+                    'hora_extra_fixa': self.compara_valores(reg1.hora_extra_fixa, obj_rem_2.hora_extra_fixa),
+                    'perc_encargo_prov': self.compara_valores(reg1.perc_encargo_prov, obj_rem_2.perc_encargo_prov),
+                    'perc_hora_extra': self.compara_valores(reg1.perc_hora_extra, obj_rem_2.perc_hora_extra),
+                    'premiacao_plus': self.compara_valores(reg1.premiacao_plus, obj_rem_2.premiacao_plus),
+                    'val_rem_fixa_contra_cheque': self.compara_valores(reg1.val_rem_fixa_contra_cheque, obj_rem_2.val_rem_fixa_contra_cheque),
+                    'val_total_ordenado': self.compara_valores(reg1.val_total_ordenado, obj_rem_2.val_total_ordenado),
+                    'val_total_remuneracao': self.compara_valores(reg1.val_total_remuneracao, obj_rem_2.val_total_remuneracao),
+                    'val_total_remuneracao_com_beneficio': self.compara_valores(reg1.val_total_remuneracao_com_beneficio,
+                                                                  obj_rem_2.val_total_remuneracao_com_beneficio)
+                }
+                lista_obj_rem.append(dic_rem_1)
 
+                dic_rem_2 = {
+                    'cod_qlp_rem_rota_adm': obj_rem_2.cod_qlp_rem_rota_adm,
+                    'vigencia': datetime.strftime(obj_rem_2.vigencia, '%m-%Y'),
+                    'quinzena': obj_rem_2.quinzena,
+                    'desc_grupo': obj_rem_2.cod_cargo_freightech.grupo_cargo,
+                    'desc_cargo': obj_rem_2.cod_cargo_freightech.desc_cargo,
+                    'turno': obj_rem_2.turno,
+                    'qtd_qlp': self.compara_valores(
+                        obj_rem_2.qtd_por_caminhao * obj_rem_2.qtd_total_por_caminhao_ativo,
+                        reg1.qtd_por_caminhao * reg1.qtd_total_por_caminhao_ativo),
+                    'dsr': self.compara_valores(obj_rem_2.qtd_dsr, reg1.qtd_dsr),
+                    'hora_extra_fixa': self.compara_valores(obj_rem_2.hora_extra_fixa, reg1.hora_extra_fixa),
+                    'perc_encargo_prov': self.compara_valores(obj_rem_2.perc_encargo_prov, reg1.perc_encargo_prov),
+                    'perc_hora_extra': self.compara_valores(obj_rem_2.perc_hora_extra, reg1.perc_hora_extra),
+                    'premiacao_plus': self.compara_valores(obj_rem_2.premiacao_plus, reg1.premiacao_plus),
+                    'val_rem_fixa_contra_cheque': self.compara_valores(obj_rem_2.val_rem_fixa_contra_cheque, reg1.val_rem_fixa_contra_cheque),
+                    'val_total_ordenado': self.compara_valores(obj_rem_2.val_total_ordenado, reg1.val_total_ordenado),
+                    'val_total_remuneracao': self.compara_valores(obj_rem_2.val_total_remuneracao, reg1.val_total_remuneracao),
+                    'val_total_remuneracao_com_beneficio': self.compara_valores(obj_rem_2.val_total_remuneracao_com_beneficio,
+                                                                                reg1.val_total_remuneracao_com_beneficio)
+                }
+                lista_obj_rem.append(dic_rem_2)
 
-        con_senior_1 = Conexao_Senior_BD(12)
-        df_qlp_senior_1 = con_senior_1.retorna_qlp_por_periodo_e_filial(data_1.data_dia, cod_unidade_senior_frm)
-        df_qlp_senior_1['quinzena'] = quinz_1_frm
-        df_qlp_senior_1['vigencia'] = data_1_frm
-        df_qtd_qlp_cargo_1 = (df_qlp_senior_1.groupby(
-            ['data_qlp', 'vigencia', 'vigencia__year', 'vigencia__month', 'quinzena', 'cod_filial', 'nome_filial', 'cod_ccu_colab',
-             'nome_ccu_colab','cod_cargo', 'nome_cargo_colab', 'cod_cargo_freightech', 'desc_cargo_freightech'])
-                              .agg({'matricula_colab': 'count', 'sal_base_colab': 'sum'}).reset_index())
-
-        df_qtd_qlp_cargo_1['vigencia__year'] = df_qtd_qlp_cargo_1['vigencia__year'].apply(lambda x: int(x))
-        df_qtd_qlp_cargo_1['vigencia__month'] = df_qtd_qlp_cargo_1['vigencia__month'].apply(lambda x: int(x))
-        df_qtd_qlp_cargo_1['quinzena'] = df_qtd_qlp_cargo_1['quinzena'].apply(lambda x: int(x))
-
-        df_rem_qlp_1 = pd.DataFrame(list(Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm
-                        .objects
-                        .filter(nome_unidade=nome_unidade_freigh_frm, vigencia__year=ano_1, vigencia__month=mes_1,
-                                quinzena=quinz_1_frm)
-                        .values('vigencia__year', 'vigencia__month', 'quinzena', 'cod_cargo_freightech', 'qtd_qlp_bench', 'qtd_ordenados',
-                                'val_unit_ordenados')))
-
-        '''df_rem_qlp_1['vigencia__year'] = df_rem_qlp_1['vigencia__year'].apply(lambda x: int(x))
-        df_rem_qlp_1['vigencia__month'] = df_rem_qlp_1['vigencia__month'].apply(lambda x: int(x))
-        df_rem_qlp_1['quinzena'] = df_rem_qlp_1['quinzena'].apply(lambda x: int(x))'''
-
-
-        df_qtd_qlp_cargo_1 = pd.merge(df_qtd_qlp_cargo_1, df_rem_qlp_1,
-                                      how='left',
-                                      on=['vigencia__year', 'vigencia__month', 'quinzena', 'cod_cargo_freightech']).reset_index()
-
-        #print(df_qtd_qlp_cargo_1)
-
-
-        '''Seleciona data 2,'''
-        data_2 = None
-        ano_2 = int(data_2_frm.split('-')[0])
-        mes_2 = int(data_2_frm.split('-')[1])
-        if quinz_2_frm == '1':
-            data_2 = (Calendario_Dias.objects
-                      .filter(data_dia__year=data_2_frm.split('-')[0],
-                              data_dia__month=data_2_frm.split('-')[1], data_dia__day__range=[1, 15])
-                      .order_by('-data_dia').first())
-
-        else:
-
-            _, ultimo_dia_mes = calendar.monthrange(ano_2, mes_2)
-            data_2 = (Calendario_Dias.objects
-                      .filter(data_dia__year=data_2_frm.split('-')[0],
-                              data_dia__month=data_2_frm.split('-')[1], data_dia__day__range=[16, ultimo_dia_mes])
-                      .order_by('-data_dia').first())
-
-        con_senior_2 = Conexao_Senior_BD(12)
-        df_qlp_senior_2 = con_senior_2.retorna_qlp_por_periodo_e_filial(data_2.data_dia, cod_unidade_senior_frm)
-        df_qlp_senior_2['quinzena'] = quinz_2_frm
-        df_qlp_senior_2['vigencia'] = data_2_frm
-        df_qtd_qlp_cargo_2 = (df_qlp_senior_2.groupby(
-            ['data_qlp', 'vigencia', 'vigencia__year', 'vigencia__month', 'quinzena','cod_filial', 'nome_filial', 'cod_ccu_colab',
-             'nome_ccu_colab','cod_cargo', 'nome_cargo_colab', 'cod_cargo_freightech', 'desc_cargo_freightech'])
-                              .agg({'matricula_colab' : 'count', 'sal_base_colab' : 'sum'}).reset_index())
-        df_qtd_qlp_cargo_2['vigencia__year'] = df_qtd_qlp_cargo_2['vigencia__year'].apply(lambda x: int(x))
-        df_qtd_qlp_cargo_2['vigencia__month'] = df_qtd_qlp_cargo_2['vigencia__month'].apply(lambda x: int(x))
-        df_qtd_qlp_cargo_2['quinzena'] = df_qtd_qlp_cargo_2['quinzena'].apply(lambda x: int(x))
-
-        df_rem_qlp_2 = pd.DataFrame(list(Registros_Plan_Remunerado_Freightech_Rota_Qlp_Adm
-                            .objects
-                            .filter(nome_unidade=nome_unidade_freigh_frm, vigencia__year=ano_2, vigencia__month=mes_2,
-                                    quinzena=quinz_2_frm)
-                            .values('vigencia__year', 'vigencia__month', 'quinzena', 'cod_cargo_freightech', 'cod_cargo_freightech',
-                                    'qtd_qlp_bench', 'qtd_ordenados', 'val_unit_ordenados')))
-        '''df_rem_qlp_2['vigencia__year'] = df_rem_qlp_2['vigencia__year'].apply(lambda x: int(x))
-        df_rem_qlp_2['vigencia__month'] = df_rem_qlp_2['vigencia__month'].apply(lambda x: int(x))
-        df_rem_qlp_2['quinzena'] = df_rem_qlp_2['quinzena'].apply(lambda x: int(x))'''
-
-        df_qtd_qlp_cargo_2 = pd.merge(df_qtd_qlp_cargo_2, df_rem_qlp_2,
-                                      how='left',
-                                      on=['vigencia__year', 'vigencia__month', 'quinzena', 'cod_cargo_freightech']).reset_index()
-
-
-        df_qlp_total = pd.concat([df_qtd_qlp_cargo_1, df_qtd_qlp_cargo_2]).reset_index()
-        df_qlp_total.fillna(0, inplace=True)
-        lista_qlp = []
-        for index, row in df_qlp_total.iterrows():
-            val_ordenado_rem = (
-                            df_qlp_total.loc[index, 'qtd_qlp_bench'] * df_qlp_total.loc[index, 'qtd_ordenados'] *
-                            df_qlp_total.loc[index, 'val_unit_ordenados'])
-            reg = {
-                'quinz': int(df_qlp_total.loc[index, 'quinzena']),
-                'periodo': df_qlp_total.loc[index, 'data_qlp'],
-                'nome_filial': df_qlp_total.loc[index, 'nome_filial'],
-                'desc_proj': df_qlp_total.loc[index, 'nome_ccu_colab'],
-                'desc_cargo_freightech': df_qlp_total.loc[index, 'desc_cargo_freightech'],
-                'qlp': int(df_qlp_total.loc[index, 'matricula_colab']),
-                'val_ordenados': locale.currency(round(float(df_qlp_total.loc[index, 'sal_base_colab']),2), grouping=True, symbol=None),
-                'qlp_rem': int(df_qlp_total.loc[index, 'qtd_qlp_bench']),
-                'val_ordenado_rem': locale.currency(round(float(val_ordenado_rem), 2), grouping=True, symbol=None)
-
-            }
-            lista_qlp.append(reg)
-
-        lista_qlp_filial = []
-        df_qlp_filial = df_qlp_total.groupby(['data_qlp', 'vigencia', 'quinzena','cod_filial', 'nome_filial',
-                                              'desc_cargo_freightech',
-                                              'qtd_qlp_bench', 'qtd_ordenados', 'val_unit_ordenados'])[
-            ['matricula_colab', 'sal_base_colab']].sum().reset_index()
-        df_qlp_filial.fillna(0, inplace=True)
-
-        for index, row in df_qlp_filial.iterrows():
-            val_ordenado_rem = (df_qlp_filial.loc[index, 'qtd_qlp_bench'] *
-                                     df_qlp_filial.loc[index, 'qtd_ordenados'] *
-                                     df_qlp_filial.loc[index, 'val_unit_ordenados'])
-            reg = {
-                'quinz': int(df_qlp_filial.loc[index, 'quinzena']),
-                'periodo': df_qlp_filial.loc[index, 'data_qlp'],
-                'nome_filial': df_qlp_filial.loc[index, 'nome_filial'],
-                'desc_cargo_freightech': df_qlp_filial.loc[index, 'desc_cargo_freightech'],
-                'qlp': int(df_qlp_filial.loc[index, 'matricula_colab']),
-                'val_ordenados': locale.currency(round(float(df_qlp_filial.loc[index, 'sal_base_colab']),2), grouping=True, symbol=None),
-                'qlp_rem': int(df_qlp_filial.loc[index, 'qtd_qlp_bench']),
-                'val_ordenado_rem': locale.currency(round(float(val_ordenado_rem), 2), grouping=True, symbol=None)
-
-            }
-            lista_qlp_filial.append(reg)
-
-
-
-
-
-
-        if len(lista_obj_rem) == 0:
-            msg = 'Não foram encontrados registros importados para essa vigência!'
-        else:
-            msg = 'Registros gerados'
-
-        data = dict()
-        data = {
-            'lista_qlp': lista_qlp,
-            'lista_qlp_filial': lista_qlp_filial,
-            'lista_obj_rem': lista_obj_rem,
-            'msg': msg
-        }
-        return JsonResponse(data, safe=False)
-
-    def compara_valores(self, x, y):
-        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
-        campo = locale.currency(x, grouping=True, symbol=None)
-        if x != y:
-            campo = f"<span style='background:#FF0000;color:#ffffff'>{locale.currency(x, grouping=True, symbol=None)}</span>"
-        return campo
-
-
+        return lista_obj_rem
 
 

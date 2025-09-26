@@ -39,11 +39,11 @@ class Importador_Plan_Freightech():
         df_qlp_adm.rename(columns=lambda x: str(x).strip(), inplace=True)
         for index, row in df_qlp_adm.iterrows():
             obj_cargo_freightech = (Cargos_Freightech.objects
-                                    .filter(grupo_cargo=row['Cargo'].split('Classificação: ')[1],
+                                    .filter(grupo_cargo=row['Cargo'].split(' | Classificação: ')[1],
                                             desc_cargo=row['Cargo'].split('|')[0].split(':')[1]).first())
             if obj_cargo_freightech == None:
                 obj_cargo_freightech = Cargos_Freightech(
-                    grupo_cargo = row['Cargo'].split('Classificação: ')[1],
+                    grupo_cargo = row['Cargo'].split(' | Classificação: ')[1],
                     desc_cargo = row['Cargo'].split('|')[0].split(':')[1]
                 )
                 obj_cargo_freightech.save()
@@ -141,6 +141,7 @@ class Importador_Plan_Freightech():
                     val_outros = row['Outros'],
                     perc_abs = row['Percentual Absenteísmo'],
                     perc_encargo_prov = row['Percentual Encargo e Provisão'],
+                    perc_hora_extra = row['Percentual Hora Extra'],
                     perc_turn_over = row['Percentual Turn Over Ano'],
                     premiacao_plus = row['Premiação Plus'],
                     qtd_total_por_caminhao_ativo = row['Quantidade Total x Caminhão Ativo'],
@@ -165,6 +166,7 @@ class Importador_Plan_Freightech():
                 obj_qlp_equipe_entrega.val_outros = row['Outros']
                 obj_qlp_equipe_entrega.perc_abs = row['Percentual Absenteísmo']
                 obj_qlp_equipe_entrega.perc_encargo_prov = row['Percentual Encargo e Provisão']
+                obj_qlp_equipe_entrega.perc_hora_extra = row['Percentual Hora Extra']
                 obj_qlp_equipe_entrega.perc_turn_over = row['Percentual Turn Over Ano']
                 obj_qlp_equipe_entrega.premiacao_plus = row['Premiação Plus']
                 obj_qlp_equipe_entrega.qtd_total_por_caminhao_ativo = row['Quantidade Total x Caminhão Ativo']

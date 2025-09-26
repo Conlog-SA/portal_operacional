@@ -1,3 +1,5 @@
+import os
+
 from django.db import models
 
 from apps.estrut_org_app.models import Projeto
@@ -32,9 +34,13 @@ class Plan_Remunerada_Freightech(models.Model):
     cod_plan_rem_freigh = models.AutoField(primary_key=True, editable=False, blank=False, auto_created=True)
     data_arq_imp = models.DateTimeField(auto_now_add=True)
     desc_layout_arq = models.CharField(max_length=30, null=True)
-    nome_arq_original = models.CharField(max_length=500, null=True)
-    nome_arq_imp = models.CharField(max_length=500, null=True)
+    nome_arq_imp = models.FileField(upload_to=lambda instance, filename: instance.caminho_upload_personalizado(filename),
+                                    blank=False, null=False)
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')
+
+    def caminho_upload_personalizado(self, filename):
+        return os.path.join('docs', 'plan_rem_freightech', self.desc_layout_arq, str(self.cod_plan_rem_freigh) + filename)
+
     class Meta:
         managed = True
         db_table = 'op_freightech_plan_remuneracao'

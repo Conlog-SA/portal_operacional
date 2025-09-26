@@ -44,6 +44,17 @@
     box-sizing: border-box;
 }
 
+.div_sub_titulo_line{
+    width: 95%;
+    height: 5px !important;
+    /*background-color:var(--cor_bg_cinza_escuro_cabecalho) !important;*/
+    padding-left:1.5rem;
+    padding-right:1.5rem;
+    padding-top: 0.25rem;
+    margin-bottom: 0px !important;
+    box-sizing: border-box;
+}
+
 .containerApp{
     width: 95%;
 
