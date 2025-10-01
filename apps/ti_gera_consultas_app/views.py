@@ -11,6 +11,11 @@ from django.views import View
 from apps.usuario_app.models import Usuario
 from apps.ti_gera_consultas_app.models import Script, Parametro, Liberacao, Conexao
 from datetime import datetime, timedelta, timezone
+from django.http import HttpResponse
+import io
+import xlsxwriter
+import json
+
 
 class Frm_Criar_Consulta_View(View):
     def get(self, request):
@@ -207,6 +212,7 @@ class Frm_Param_Consulta_View(View):
 
 
 class Frm_Executa_Consulta_View(View):
+
     def get(self, request):
         try:
             cod_script_frm = request.GET['cod_script']
@@ -227,13 +233,41 @@ class Frm_Executa_Consulta_View(View):
 
             resultados_formatados = [dict(zip(colunas, linha)) for linha in resultados]
 
+            output = io.BytesIO()
+            workbook = xlsxwriter.Workbook(output, {'in_memory': True})
+            worksheet = workbook.add_worksheet("Consulta")
+
+            if resultados_formatados:
+                fieldnames = list(resultados_formatados[0].keys())
+
+                # Escrevendo cabeçalhos
+                for col_num, fieldname in enumerate(fieldnames):
+                    worksheet.write(0, col_num, fieldname)
+
+                # Escrevendo dados
+                for row_num, linha in enumerate(resultados_formatados, start=1):
+                    for col_num, fieldname in enumerate(fieldnames):
+                        value = linha.get(fieldname, '')
+                        worksheet.write(row_num, col_num, value)
+
+            workbook.close()
+
+            response = HttpResponse(
+                output.getvalue(),
+                content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
+            response['Content-Disposition'] = 'attachment; filename="consulta_resultados.xlsx"'
+
+            return response
+
         except Exception as e:
+
             return JsonResponse({'error': str(e)}, status=400)
 
-        data = dict()
-        data = {
-            'resultados': resultados_formatados,
-            'msg': 'Consulta executada com sucesso!',
-        }
 
-        return JsonResponse(data, safe=False)
+
+
+
+
+
+

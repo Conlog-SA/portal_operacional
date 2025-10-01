@@ -248,13 +248,31 @@ $(document).on('click','button', function(){
                'cod_script': let_cod_script,
                'dados': JSON.stringify(dados),
             },
-            success: function (dados) {
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response, status, xhr) {
                 $("#modal_acessa_consulta").hide();
                 loader_princ_frm_consultas_disponiveis.style.display = "none";
-                montarTabelaResultados(dados.resultados);
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
+                var link = document.createElement('a');
+                var url = window.URL.createObjectURL(response);
+                link.href = url;
+                link.download = filename;
+                document.body.append(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
                 $.gritter.add({
                     title: 'Atenção!',
-                    text: dados.msg,
+                    text:'Arquivo gerado com sucesso!',
                     image: '/static/icons/triangle-exclamation-solid.svg',
                     sticky: false,
                     time: '',
@@ -431,49 +449,8 @@ $(document).on('change', '#sl_libera_consulta', function(){
     });
 });
 
-function montarTabelaResultados(dados) {
-    const tabela = document.getElementById('tab_visualiza_resultado_consulta');
 
-    if ($.fn.DataTable.isDataTable(tabela)) {
-        $(tabela).DataTable().destroy();
-    }
-    if (!dados || dados.length == 0) {
-        tabela.innerHTML = '<tr><td colspan="99">Nenhum resultado encontrado.</td></tr>';
-        return;
-    }
 
-    const colunas = Object.keys(dados[0]);
-
-    let thead = '<thead><tr>';
-    colunas.forEach(coluna => {
-        thead += `<th>${coluna}</th>`;
-    });
-    thead += '</tr></thead>';
-
-    let tbody = '<tbody>';
-    dados.forEach(linha => {
-        tbody += '<tr>';
-        colunas.forEach(coluna => {
-            tbody += `<td>${linha[coluna] != null ? linha[coluna] : ''}</td>`;
-        });
-        tbody += '</tr>';
-    });
-    tbody += '</tbody>';
-    tabela.innerHTML = thead + tbody;
-
-    $(tabela).DataTable({
-        dom: 'Bfrtip', // B = Botões, f = filtro (search), r = processando, t = tabela, i = info, p = paginação
-        buttons: ['copy'],
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-            search: ''
-        },
-        scrollX: true,
-        paging: true,
-        info: true,
-    });
-
-}
 
 function limpa_campos_frm_criar_consulta(){
     $("#add_tr_parametros").empty();
@@ -499,3 +476,4 @@ function limpa_campos_frm_criar_consulta(){
     $("#btn_adiciona_script").val('0');
 
 }
+
