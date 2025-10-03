@@ -100,6 +100,43 @@ $(document).on('change','input', function(){
     }
 });
 
+$(document).on('change', '#cd_pesq_filial', function(){
+    let let_cod_filial = $('#cd_pesq_filial').val();
+    if (let_cod_filial != ''){
+        $.ajax({
+        type: 'GET',
+        url:"/dp_quadro_vagas_app/carrega_proj_por_filial",
+        data: {
+            'cod_filial': let_cod_filial,
+        },
+        dataType: 'json',
+        success: function(data){
+            $("#selec_projeto option").remove();
+            data.lista_proj.forEach(proj => {
+                $("#selec_projeto").append("<option value='"+proj.cod_projeto+"'>"+proj.desc_proj+"</option>");
+            });
+            $("#selec_projeto").selectpicker('refresh');
+
+        },
+        error: function (request, status, error) {
+              alert(error);
+        }
+    });
+    }
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
 $(document).on('click','.btn-realiza-importacao' , function(){
 
 

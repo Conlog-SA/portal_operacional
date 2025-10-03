@@ -12,6 +12,7 @@ from apps.usuario_app.models import Usuario
 from apps.ti_gera_consultas_app.models import Script, Parametro, Liberacao, Conexao
 from datetime import datetime, timedelta, timezone
 from django.http import HttpResponse
+from django.http import JsonResponse, Http404, FileResponse
 import io
 import xlsxwriter
 import json
@@ -88,6 +89,13 @@ class Frm_Criar_Consulta_View(View):
         return JsonResponse(data, safe=False)
 
 class Frm_Parametro_View(View):
+
+    def get_object(self, pk):
+        try:
+            return Parametro.objects.get(pk=pk)
+        except Parametro.DoesNotExist:
+            raise Http404
+
     def post(self, request):
         cod_param_frm = request.POST['cod_param']
         cod_script_frm = request.POST['cod_script']
@@ -124,6 +132,16 @@ class Frm_Parametro_View(View):
         }
         return JsonResponse(data, safe=False)
 
+    def delete(self, request, pk):
+        parametro_selecionado = self.get_object(pk)
+        parametro_selecionado.delete()
+
+        data = dict()
+        data = {
+            'msg': 'Parâmetro excluído com sucesso!'
+
+        }
+        return JsonResponse(data, safe=False)
 
 class Frm_Acesso_Consulta_View(View):
     def get(self, request):
