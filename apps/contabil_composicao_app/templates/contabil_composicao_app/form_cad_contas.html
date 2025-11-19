@@ -65,7 +65,8 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                 </div>
 
-                <div class="d-flex justify-content-end w-100" style="margin-right: 0.25rem;margin-left: 0.25rem;margin-top: 2.5rem;">
+                <div class="d-flex justify-content-end align-items-center align-content-arround w-100"
+                     style="margin-right: 0.25rem;margin-left: 0.25rem;">
                     {% if obj_usuario_sessao.corporativo == 'S' %}
                         <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                                 name="btn_abrir_modal_atualiza_contratos_benner"
@@ -296,25 +297,13 @@
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 mb-4 mt-3">
-                                <div class="d-flex flex-column align-items-start w-100">
+                                <div class="d-flex flex-column align-items-center justify-content-center w-100">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                     <label for="chk_status_comp">Status Composição</label>
                                          <input type="checkbox" checked="checked" class="checkbox"
                                                 name="chk_status_comp"
                                                 id="chk_status_comp">
                                     {% endif %}
-                                </div>
-
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                </div>
-
-                                <div class="d-flex flex-column w-100">
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
                                 <div id="div_btn_criar_nova_conta_manual"

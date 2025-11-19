@@ -8,179 +8,231 @@
                 data-bs-toggle="collapse" data-bs-target="#collapse_{{ctr.handle_fn_doc}}"
                 aria-expanded="false" aria-controls="collapse_{{ctr.handle_fn_doc}}" style="font-size:12px;">
 
-                <div style="font-size:12px; width:80%">
-                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;padding-top: 0.5rem;padding-bottom: 0.5rem;">
-                    <div class="col-md-3">
-                        <i class="fa-solid fa-handshake" style="color: #000000 !important;"></i>
-                        <strong>Contrato:</strong> {{ctr.num_contrato}}
-                    </div>
-                    <div class="col-md-3">
-                        <strong>Empresa:</strong> {{ctr.nome_empresa}}
-                    </div>
-                    <div class="col-md-3" id="div_status_atualiza_benner">
-                        Atualiza com o Benner ? <strong>{{ctr.atualiza_benner}}</strong>
-                    </div>
-                </div>
-
-                    <div class="row" >
-                        <div class="col-md-12">
-                            <strong>Produto:</strong> {{ctr.fornecedor}}
+                <div class="d-flex flex-column align-items-start justify-content-start w-100" style="font-size:12px;">
+                    <div class="d-flex align-items-start justify-content-center w-100 p-2"
+                         style="background-color: var(--cor_empresa) !important;color:#000000;border-radius: 0.3rem 0.3rem 0rem 0rem;">
+                        <div class="d-flex flex-column align-items-start justify-content-start w-100">
+                            <div>
+                                <i class="fa-solid fa-handshake" style="color: #000000 !important;"></i>
+                                <strong>Contrato</strong>
+                            </div>
+                            <span style="font-weight: 500;">{{ctr.num_contrato}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-center w-100">
+                            <strong>Empresa</strong>
+                            <span style="font-weight: 500;">{{ctr.nome_empresa}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-center w-100">
+                            <strong>Data emissão</strong>
+                            <span style="font-weight: 500;">{{ctr.data_emissao_contrato}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-center w-100">
+                            <strong>Doc. Contábil</strong>
+                            <span style="font-weight: 500;">{{ctr.doc_contabil}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-center w-100" id="div_status_atualiza_benner">
+                            <strong>Atualiza com o Benner ?</strong>
+                            <span style="font-weight: 500;">{{ctr.atualiza_benner}}</span>
                         </div>
                     </div>
 
-                    <div class="row" >
-                        <div class="col-md-3">
-                            <strong>Data emissão:</strong> {{ctr.data_emissao_contrato}}
+                    <div class="d-flex align-items-center justify-content-start w-100 p-2" >
+                        <div class="d-flex align-items-center justify-content-start w-100">
+                            <strong>Produto:&nbsp;&nbsp;</strong>
+                            <span style="font-weight: 500;">{{ctr.fornecedor}}</span>
                         </div>
-                        <div class="col-md-3">
-                            <strong>Doc. Contábil:</strong> {{ctr.doc_contabil}}
+                        <div class="d-flex align-items-center justify-content-start w-100" style="padding-left: .5rem;">
+                            <strong>Operação:&nbsp;&nbsp;</strong>
+                            <span style="font-weight: 500;">{{ctr.nome_operacao}}</span>
                         </div>
-                        <div class="col-md-3">
 
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-start w-100 p-2" >
+                        <div class="d-flex flex-column align-items-center justify-content-start w-100 m-1"
+                             style="background-color: rgba(244, 100, 36, .3);border-radius: .5rem;">
+                            <div class="d-flex justify-content-between align-items-between mt-1 w-100"
+                                 style="padding-left: .5rem; padding-right: .5rem;">
+                                <i class="fa-solid fa-arrow-right-to-bracket" ></i>
+                                <span style="font-weight: 700;">CONTA EM CURTO PRAZO</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100" style="padding-left: .5rem; padding-right: .5rem;">
+                                <hr style="color: #000000; border-top: 1px solid black; background-color: rgba(33, 37, 41, 0.9);
+                                        width: 100%; margin-top: .25rem;margin-bottom: .25rem;">
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column align-items-start w-100 p-1">
+                                    &nbsp;
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end justify-content-center w-100 p-1"
+                                     style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <strong>Val. total líq.</strong>
+                                    <span style="font-weight: 500;">{{ctr.val_tt_liq_cp}}</span>
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end justify-content-center w-100 p-1">
+                                    <strong>Val. total</strong>
+                                    <span style="font-weight: 500;">{{ctr.val_tt_contrato_reajustado_cp}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-column align-items-center justify-content-start w-100 m-1"
+                             style="background-color: rgba(244, 100, 36, .3);border-radius: .5rem;">
+                            <div class="d-flex justify-content-between align-items-between mt-1 w-100"
+                                 style="padding-left: .5rem; padding-right: .5rem;">
+                                <i class="fa-solid fa-arrow-right-to-bracket" ></i>
+                                <span style="font-weight: 700;">CONTA EM LONGO PRAZO</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100" style="padding-left: .5rem; padding-right: .5rem;">
+                                <hr style="color: #000000; border-top: 1px solid black; background-color: rgba(33, 37, 41, 0.9);
+                                        width: 100%;margin-top: .25rem;margin-bottom: .25rem;">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column align-items-start w-100 p-1">
+                                    &nbsp;
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end justify-content-center w-100 p-1"
+                                     style="margin-left: 0.25rem; margin-right: 0.25rem;">
+                                    <strong>Val. total líq.</strong>
+                                    <span style="font-weight: 500;">{{ctr.val_tt_liq_lp}}</span>
+
+                                </div>
+
+                                <div class="d-flex flex-column align-items-end justify-content-center w-100 p-1">
+                                    <strong>Val. total</strong>
+                                    <span style="font-weight: 500;">{{ctr.val_tt_contrato_reajustado_lp}}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="row" >
-                        <div class="col-md-12">
-                            <strong>Operação:</strong> {{ctr.nome_operacao}}
-                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
-                            <strong>CONTA EM CURTO PRAZO</strong>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:&nbsp;&nbsp;</strong>{{ctr.val_tt_liq_cp}}
-                            <strong>Val. total:&nbsp;&nbsp;</strong>{{ctr.val_tt_contrato_reajustado_cp}}
-                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <i class="fa-solid fa-arrow-right-from-bracket" style="color: var(--cor_empresa) !important;"></i>
-                            <strong>CONTA EM LONGO PRAZO</strong>
-                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                            <strong>Val. total líq.:&nbsp;&nbsp;</strong>{{ctr.val_tt_liq_lp}}
-                            <strong>Val. total:&nbsp;&nbsp;</strong>{{ctr.val_tt_contrato_reajustado_lp}}
-                        </div>
-                    </div>
-
-                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;margin-top: 0.5rem;">
-                        <div class="col-md-12" style="margin-top: 0.5rem;">
+                    <div class="d-flex justify-content-between align-items-between w-100 mt-1 p-1"
+                         style="background-color: var(--cor_empresa) !important;color:#FFFFFF; padding-left: .5rem; padding-right: .5rem;">
                             <i class="fa-solid fa-circle-info" style="color: #FFFFFF !important;"></i>
                             <strong>INFO TOTAIS CONTA</strong>
-                            <hr style="margin-top: 0.25rem;margin-bottom: 0.25rem;">
-                        </div>
                     </div>
-                    <div class="row" style="background-color: var(--cor_empresa) !important; color:#FFFFFF;" >
-                        <div class="col-md-3">
-                            <strong>Valor Total Líquido:&nbsp;&nbsp;</strong> {{ctr.val_liquido}}
+                    <div class="d-flex justify-content-between align-items-between w-100"
+                         style="padding-left: .5rem; padding-right: .5rem;background-color: var(--cor_empresa) !important;">
+                        <hr style="color: #000000; border-top: 1px solid white; background-color: var(--cor_empresa);
+                                width: 100%; margin-top: .25rem;margin-bottom: .25rem;">
+                    </div>
+                    <div class="d-flex align-items-start justify-content-center w-100 p-2" style="background-color: var(--cor_empresa) !important; color:#FFFFFF;" >
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Valor Total Líquido</strong>
+                            <span style="font-weight: 500;">{{ctr.val_liquido}}</span>
                         </div>
-                        <div class="col-md-3">
-                            <strong>Valor Total Reajustado:&nbsp;&nbsp;</strong> {{ctr.val_tt_contrato_reajustado}}
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Valor Total Reajustado</strong>
+                            <span style="font-weight: 500;">{{ctr.val_tt_contrato_reajustado}}</span>
                         </div>
-                        <div class="col-md-3">
-                            <strong>Total Liquidado:&nbsp;&nbsp;</strong> {{ctr.total_pago}}
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Total Liquidado</strong>
+                            <span style="font-weight: 500;">{{ctr.total_pago}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Próxima parcela</strong>
+                            <span style="font-weight: 500;">{{ctr.proxima_parc_pendente}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Venc. próxima parcela</strong>
+                            <span style="font-weight: 500;">{{ctr.data_venc_proxima_parc_pendente}}</span>
+                        </div>
+                        <div class="d-flex flex-column align-items-end justify-content-start w-100">
+                            <strong>Valor próxima parcela</strong>
+                            <span style="font-weight: 500;">{{ctr.val_proxima_parc_pendente}}</span>
                         </div>
                     </div>
 
-                    <div class="row" style="background-color: var(--cor_empresa) !important;color:#FFFFFF;padding-bottom: 0.5rem;border-radius: 0rem 0rem 0.3rem 0.3rem;">
-                        <div class="col-md-3">
-                            <strong>Próxima parcela:&nbsp;&nbsp;</strong>{{ctr.proxima_parc_pendente}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Venc. próxima parcela:&nbsp;&nbsp;</strong>
-                            {{ctr.data_venc_proxima_parc_pendente}}
-                        </div>
-                        <div class="col-md-3">
-                            <strong>Valor próxima parcela:&nbsp;&nbsp;</strong>{{ctr.val_proxima_parc_pendente}}
-                        </div>
-                    </div>
+
                 </div>
 
             </button>
         </h2>
 
         <div id="collapse_{{ctr.handle_fn_doc}}" class="accordion-collapse collapse"
-        aria-labelledby="heading_{{ctr.handle_fn_doc}}" data-bs-parent="#acc_contratos">
-            <div class="accordion-body d-flex flex-column">
+             aria-labelledby="heading_{{ctr.handle_fn_doc}}" data-bs-parent="#acc_contratos">
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-6">
-                <div class="d-flex flex-column w-100" style="margin-top: 0.5rem;">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
+            <div class="accordion-body">
+                <div class="d-flex justify-content-between align-items-between w-100 p-1">
+                    <div class="d-flex flex-column align-items-arround justify-content-between w-100"
+                         style="padding-left: .5rem; padding-right: .5rem;">
+                        {% if obj_usuario_sessao.corporativo == 'S' %}
+                            <button type='button' id="btn_excluir_contrato_{{ctr.cod_contrato}}"
+                                    name="btn_excluir_contrato"
+                                    class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                                    value="{{ctr.cod_contrato}}">
+                                <i class="fa-solid fa-trash"></i>
+                                <span>Excluir contrato</span>
+                            </button>
+                        {% endif %}
+                        {% if obj_usuario_sessao.corporativo == 'N' %}
                         <button type='button' id="btn_excluir_contrato_{{ctr.cod_contrato}}"
-                                name="btn_excluir_contrato"
+                                name="btn_renegociar_contrato"
                                 class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}">
+                                value="{{ctr.cod_contrato}}" disabled>
                             <i class="fa-solid fa-trash"></i>
                             <span>Excluir contrato</span>
                         </button>
-                    {% endif %}
-                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                    <button type='button' id="btn_excluir_contrato_{{ctr.cod_contrato}}"
-                            name="btn_renegociar_contrato"
-                            class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                            value="{{ctr.cod_contrato}}" disabled>
-                        <i class="fa-solid fa-trash"></i>
-                        <span>Excluir contrato</span>
-                    </button>
-                    {% endif %}
-                </div>
-                <div class="d-flex flex-column w-100">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
-                                name="btn_abre_modal_renegociacao_contrato"
-                                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}" style="margin-top: 0.5rem;margin-left: 0.5rem;">
-                            <i class="fa-solid fa-handshake"></i>
-                            <span>Contrato renegociado</span>
-                        </button>
-                    {% endif %}
-                    {% if obj_usuario_sessao.corporativo == 'N' %}
-                        <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
-                                name="modal_renegociacao_contrato"
-                                class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
-                                value="{{ctr.cod_contrato}}" disabled style="margin-top: 0.5rem;margin-left: 0.5rem;">
-                            <i class="fa-solid fa-handshake"></i>
-                            <span>Contrato renegociado<</span>
-                        </button>
-                    </button>
-                    {% endif %}
-
-                </div>
-                <div class="d-flex flex-column align-items-center w-100">
-                    {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <label for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}"
-                               style="padding-top: 3px;padding-bottom: 3px;color:#000;">
-                            Atualiza com o Benner ?
-                        </label>
-                        {% if ctr.atualiza_benner == 'SIM' %}
-                        <input type="checkbox" checked="checked" class="checkbox"
-                           name="chk_atualiza_dados_benner_contrato"
-                           id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
                         {% endif %}
-                        {% if ctr.atualiza_benner == 'NÃO' %}
-                        <input type="checkbox" class="checkbox"
-                           name="chk_atualiza_dados_benner_contrato"
-                           id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
+                    </div>
+                    <div class="d-flex flex-column align-items-arround justify-content-between w-100"
+                         style="padding-left: .5rem; padding-right: .5rem;">
+                        {% if obj_usuario_sessao.corporativo == 'S' %}
+                            <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
+                                    name="btn_abre_modal_renegociacao_contrato"
+                                    class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                                    value="{{ctr.cod_contrato}}" >
+                                <i class="fa-solid fa-handshake"></i>
+                                <span>Contrato renegociado</span>
+                            </button>
                         {% endif %}
-                    {% endif %}
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-                <div class="d-flex flex-column w-100">
-                </div>
-            </div>
+                        {% if obj_usuario_sessao.corporativo == 'N' %}
+                            <button type='button' id="btn_abre_modal_renegociacao_contrato_{{ctr.cod_contrato}}"
+                                    name="modal_renegociacao_contrato"
+                                    class="mr-2 btn btn-primary btn-rounded cl_btn_excluir_contrato"
+                                    value="{{ctr.cod_contrato}}" disabled >
+                                <i class="fa-solid fa-handshake"></i>
+                                <span>Contrato renegociado<</span>
+                            </button>
+                        </button>
+                        {% endif %}
 
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
+                    </div>
+                    <div class="d-flex flex-column w-100">
+                        &nbsp;
+                    </div>
+                    <div class="d-flex flex-column align-items-center justify-content-between w-100"
+                         style="padding-left: .5rem; padding-right: .5rem;">
+                        {% if obj_usuario_sessao.corporativo == 'S' %}
+                            <label for="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}"
+                                   style="color: #000000;font-weight: 500;">
+                                Atualiza com o Benner ?
+                            </label>
+                            {% if ctr.atualiza_benner == 'SIM' %}
+                            <input type="checkbox" checked="checked" class="checkbox"
+                               name="chk_atualiza_dados_benner_contrato"
+                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
+                            {% endif %}
+                            {% if ctr.atualiza_benner == 'NÃO' %}
+                            <input type="checkbox" class="checkbox"
+                               name="chk_atualiza_dados_benner_contrato"
+                               id="chk_atualiza_dados_benner_contrato_{{ctr.cod_contrato}}">
+                            {% endif %}
+                        {% endif %}
+                    </div>
 
-            <div class="form-group cl_div_tabela_principal_pagina w-100" style="margin-top: 0.5rem;">
+                </div>
+                <div class="d-flex justify-content-between align-items-between w-100 cl_div_tabela_principal_pagina">
                 <table id="tab_parcelas_contrato"
-                       class="display wrap w-100 cl_tab_principal_pagina">
+                        class="display wrap w-100 cl_tab_principal_pagina">
                     <thead>
                         <tr>
                             <th scope="col" style="color: grey">Pagamento</th>
@@ -394,10 +446,8 @@
                 </table>
             </div>
 
+            </div>
+        </div>
     </div>
-    </div>
-
-    </div>
-
 {% endfor %}
 </div>

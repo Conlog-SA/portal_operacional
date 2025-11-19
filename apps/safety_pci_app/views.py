@@ -120,6 +120,7 @@ class Form_Gerar_Check_Pci(View):
 
         check_cabecalho = Check_Pci(
             item=cod_item,
+            local=local,
             cod_check_aplicado=check_aplicado,
         )
         check_cabecalho.save()
