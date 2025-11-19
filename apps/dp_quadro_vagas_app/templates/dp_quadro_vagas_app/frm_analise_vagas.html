@@ -1,4 +1,30 @@
 {% load static %}
+<style>
+    ::-webkit-scrollbar {
+      width: 5px !important;
+      height: 5px !important;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #ccc !important;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent !important;
+    }
+
+    div .scroll{
+        width:100%!important;
+        height:67%;
+        overflow-y: hidden;
+        scrollbar-width: initial;
+        overflow-x: scroll;
+    }
+    input{
+     font-size: 15px;
+    }
+    label {
+       font-size: 14px;
+    }
+</style>
 
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
@@ -24,11 +50,17 @@
                     <select class="selectpicker form-control" id="cd_pesq_filial"
                             name="cd_pesq_filial"
                             style="color: #999999; font-size: 20px; height: 54.65px"
-                            multiple data-selected-text-format="count > 0"
                             data-live-search="true" title="Filiais">
                         {% for filial in filiais %}
                             <option value="{{ filial.cod_filial }}">{{ filial.desc_filial }}</option>
                         {% endfor %}
+                    </select>
+                </div>
+                <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
+                    <select class="selectpicker form-control" id="selec_projeto"
+                            name="selec_projeto"
+                            style="color: #999999; font-size: 20px; height: 54.65px"
+                            data-live-search="true" title="Projetos">
                     </select>
                 </div>
                 <div class="d-flex justify-content-end align-items-center w-100" style="margin-left: .25rem;">
@@ -57,7 +89,195 @@
                 </div>
             </div>
 
+            <div class="d-flex justify-content-between align-items-between w-100" >
+                <div class="d-flex flex-column w-100 cl_div_loader">
+                    <div class="loader" id="loader_frm_analise_vagas">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex flex-column w-100">
+                    &nbsp;&nbsp;
+                </div>
+            </div>
+
         </form>
+
+        <div id="div_conteudo_plan_remunerado_importado" style="padding: 25px;" class="form-group cl_div_tabela_principal_pagina w-100">
+            <div class="d-flex align-items-center justify-content-start text-white w-100 scroll" style="padding-bottom: 25px;">
+                <!-- Bloco Cargos -->
+                <div class="d-flex flex-column align-items-start justify-content-between" style="margin-top: 29.5px;padding: 25px;border: solid #d35307;padding: 17px;border-radius: 11px;margin-left: 17px;" >
+                    <div class="d-flex flex-column align-items-start justify-content-between">
+                        <label>Cargos</label>
+                        <div class="d-flex align-items-start justify-content-between">
+                            <input/>
+                        </div>
+                </div>
+
+                </div>
+                <!-- Fim Bloco Cargos -->
+
+                <!-- Bloco Freightech -->
+                <div class="d-flex flex-column align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 4px;background: #844b4b;margin-left: 27px;border-top-right-radius: 4px;border-top-left-radius: 4px;">
+                        <label>Freightech</label>
+                    </div>
+                    <div class="d-flex align-items-start justify-content-between" style="border: solid #844b4b;padding: 17px;border-radius: 11px;margin-left: 17px;">
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Equipe Ativa</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Reserva</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Total Sem Ferista</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Ferista</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Total Com Ferista</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fim Bloco Freightech -->
+
+                <!-- Bloco Vagas Adicionais -->
+                <div class="d-flex flex-column align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 4px;background: #d35307;margin-left: 27px;border-top-right-radius: 4px;border-top-left-radius: 4px;">
+                        <label>Vagas Adicionais</label>
+                    </div>
+                    <div class="d-flex align-items-start justify-content-between" style="padding: 25px;border: solid #d35307;padding: 17px;border-radius: 11px;margin-left: 17px;">
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Adicionais Ocs</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Adicionais Conlog</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Total</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fim Bloco Vagas Adicionais -->
+
+                <!-- Bloco Senior -->
+                <div class="d-flex flex-column align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 4px;background: #844b4b;margin-left: 27px;border-top-right-radius: 4px;border-top-left-radius: 4px;">
+                        <label>Senior</label>
+                    </div>
+                    <div class="d-flex align-items-start justify-content-between" style="padding: 25px;border: solid #844b4b;padding: 17px;border-radius: 11px;margin-left: 17px;"">
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Ativos</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Férias</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Total</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Afastados</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fim Bloco Senior -->
+
+                <!-- Bloco Diferença -->
+                <div class="d-flex flex-column align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 4px;background: #d35307;margin-left: 27px;border-top-right-radius: 4px;border-top-left-radius: 4px;">
+                        <label>Diferença</label>
+                    </div>
+                    <div class="d-flex align-items-start justify-content-between" style="padding: 25px;border: solid #d35307;padding: 17px;border-radius: 11px;margin-left: 17px;">
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Ativos</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Geral</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fim Bloco Diferença -->
+
+                <!-- Bloco Gera RP -->
+                <div class="d-flex flex-column align-items-start justify-content-between">
+                    <div class="d-flex align-items-center justify-content-center" style="padding: 4px;background: #844b4b;margin-left: 27px;border-top-right-radius: 4px;border-top-left-radius: 5px;">
+                        <label>RP</label>
+                    </div>
+                    <div class="d-flex align-items-start justify-content-between" style="padding: 25px;border: solid #844b4b;padding: 17px;border-radius: 11px;margin-left: 17px;">
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Gerar RP</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column align-items-start justify-content-between">
+                            <label>Gerar RP Subs</label>
+                            <div class="d-flex align-items-start justify-content-between">
+                                <input/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Fim Bloco Gera RP -->
+            </div>
+        </div>
     </div>
 </div>
 

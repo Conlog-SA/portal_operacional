@@ -1713,7 +1713,6 @@ function limpa_campos_frm_ideia_comitec(dic_usuario){
     });
 };
 
-
 $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
     let let_cod_projeto = $("#hd_cod_projeto").val();
     let let_fase_projeto = $(this).val();
@@ -1746,8 +1745,6 @@ $(document).on('change','#sl_fase_proj_modal_edita_proj', function(){
     });
 
 });
-
-
 
 function fn_add_tr_tarefa(cod_linha, lista_tarefas, cor_empresa_hex) {
     if(lista_tarefas == null) {
@@ -1883,8 +1880,6 @@ function fn_add_tr_tarefa(cod_linha, lista_tarefas, cor_empresa_hex) {
         });
     }
 }
-
-
 
 function fn_add_nova_tr_table_acoes(cod_linha, lista_acoes, cod_usu_master, cor_empresa_hex) {
     if(lista_acoes == null) {

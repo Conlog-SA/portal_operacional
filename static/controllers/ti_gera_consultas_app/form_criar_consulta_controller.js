@@ -197,6 +197,7 @@ $(document).on('click','button', function(){
             },
             success: function (dados) {
                 $("#btn_salva_dados_parametro_"+let_id).val(dados.cod_param);
+                $("#btnExcluirParam_"+let_id).val(dados.cod_param);
                 $.gritter.add({
                     title: 'Atenção!',
                     text: dados.msg,
@@ -248,13 +249,31 @@ $(document).on('click','button', function(){
                'cod_script': let_cod_script,
                'dados': JSON.stringify(dados),
             },
-            success: function (dados) {
+            xhrFields: {
+                responseType: 'blob'
+            },
+            success: function (response, status, xhr) {
                 $("#modal_acessa_consulta").hide();
                 loader_princ_frm_consultas_disponiveis.style.display = "none";
-                montarTabelaResultados(dados.resultados);
+                var filename = "";
+                var disposition = xhr.getResponseHeader('Content-Disposition');
+                if (disposition && disposition.indexOf('attachment') !== -1) {
+                    var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                    var matches = filenameRegex.exec(disposition);
+                    if (matches != null && matches[1]) filename = matches[1].replace(/['"]/g, '');
+                }
+                var link = document.createElement('a');
+                var url = window.URL.createObjectURL(response);
+                link.href = url;
+                link.download = filename;
+                document.body.append(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
                 $.gritter.add({
                     title: 'Atenção!',
-                    text: dados.msg,
+                    text:'Arquivo gerado com sucesso!',
                     image: '/static/icons/triangle-exclamation-solid.svg',
                     sticky: false,
                     time: '',
@@ -271,6 +290,32 @@ $(document).on('click','button', function(){
             }
             });
         }
+    } else if (let_nome_btn == 'btnExcluirParam') {
+        var varCodParamConsulta = let_val_btn;
+        $.ajax({
+            type: 'DELETE',
+            url:"/ti_gera_consultas_app/exclui_parametro_consulta/" + varCodParamConsulta,
+            success: function(dados){
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+                $('#add_tr_param_' + let_val_btn).remove();
+            },
+            error: function (request, status, error) {
+                  $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
     }
 });
 
@@ -297,11 +342,14 @@ function form_add_novo_param(cod_linha, lista_parametros) {
                         <option value="3">STRING</option>
                     </select>
                </th>
-               <th class="d-flex justify-content-center align-items-start w-50">
+               <th class="d-flex justify-content-between align-items-start w-50">
                   <button type="button" name="btn_salva_dados_parametro" id="btn_salva_dados_parametro_${cod_linha}"
-                        class="btn-primary btn-rounded botaoPrincipal" style="padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
-                        value="0">
-                       Salvar
+                        class="btn-primary btn-rounded botaoPrincipal" style="border-radius: 5px;padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
+                        value="0" title='Salvar'>
+                       <i class="fa-solid fa-check" style="color: #d2660f;"></i>
+                  </button>
+                  <button title='Excluir' style="margin-top: -8px;" type="button" class="btn btn-rounded btn-space" id="btnExcluirParam_${cod_linha}" name="btnExcluirParam" value="0" title="Excluir Parametro">
+                    <i class="fa-solid fa-trash" style="color: #f46424;"></i>
                   </button>
                </th>
             </tr>
@@ -310,7 +358,7 @@ function form_add_novo_param(cod_linha, lista_parametros) {
     } else {
       lista_parametros.forEach( parametro => {
           $("#add_tr_parametros").append(`
-            <tr class="d-flex flex-row" id="add_tr_param" style="padding-top: 7px;">
+            <tr class="d-flex flex-row" id="add_tr_param_${parametro.cod_param}" name='add_tr_param' style="padding-top: 7px;">
                <th class="d-flex flex-column  justify-content-between align-items-between w-100">
                    <input placeholder="Nome do Filtro" type="text" id="input_desc_param_${parametro.cod_param}" name="input_desc_param" value="${parametro.desc}"/>
                </th>
@@ -322,11 +370,14 @@ function form_add_novo_param(cod_linha, lista_parametros) {
                         <option value="3" ${parametro.tipo === 3 ? 'selected' : ''}>STRING</option>
                     </select>
                </th>
-               <th class="d-flex justify-content-center align-items-start w-50">
-                  <button type="button" name="btn_salva_dados_parametro" id="btn_salva_dados_parametro_${parametro.cod_param}"
-                        class="btn-primary btn-rounded botaoPrincipal" style="padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
+               <th class="d-flex justify-content-between align-items-start w-50">
+                  <button type="button" name="btn_salva_dados_parametro" id="btn_salva_dados_parametro_${parametro.cod_param}" title='Salvar'
+                        class="btn-primary btn-rounded botaoPrincipal" style="border-radius: 5px;padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
                         value="${parametro.cod_param}">
-                       Salvar
+                      <i class="fa-solid fa-check" style="color: #d2660f;"></i>
+                  </button>
+                  <button title='Excluir' style="margin-top: -8px;" type="button" class="btn btn-rounded btn-space" id="btnExcluirParam_${parametro.cod_param}" name="btnExcluirParam" value="${parametro.cod_param}" title="Excluir Parametro">
+                    <i class="fa-solid fa-trash" style="color: #f46424;"></i>
                   </button>
                </th>
             </tr>
@@ -431,50 +482,6 @@ $(document).on('change', '#sl_libera_consulta', function(){
     });
 });
 
-function montarTabelaResultados(dados) {
-    const tabela = document.getElementById('tab_visualiza_resultado_consulta');
-
-    if ($.fn.DataTable.isDataTable(tabela)) {
-        $(tabela).DataTable().destroy();
-    }
-    if (!dados || dados.length == 0) {
-        tabela.innerHTML = '<tr><td colspan="99">Nenhum resultado encontrado.</td></tr>';
-        return;
-    }
-
-    const colunas = Object.keys(dados[0]);
-
-    let thead = '<thead><tr>';
-    colunas.forEach(coluna => {
-        thead += `<th>${coluna}</th>`;
-    });
-    thead += '</tr></thead>';
-
-    let tbody = '<tbody>';
-    dados.forEach(linha => {
-        tbody += '<tr>';
-        colunas.forEach(coluna => {
-            tbody += `<td>${linha[coluna] != null ? linha[coluna] : ''}</td>`;
-        });
-        tbody += '</tr>';
-    });
-    tbody += '</tbody>';
-    tabela.innerHTML = thead + tbody;
-
-    $(tabela).DataTable({
-        dom: 'Bfrtip', // B = Botões, f = filtro (search), r = processando, t = tabela, i = info, p = paginação
-        buttons: ['copy'],
-        language: {
-            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json',
-            search: ''
-        },
-        scrollX: true,
-        paging: true,
-        info: true,
-    });
-
-}
-
 function limpa_campos_frm_criar_consulta(){
     $("#add_tr_parametros").empty();
     $("#desc_criar_consulta").val('');
@@ -499,3 +506,6 @@ function limpa_campos_frm_criar_consulta(){
     $("#btn_adiciona_script").val('0');
 
 }
+
+
+

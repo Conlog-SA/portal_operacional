@@ -710,6 +710,7 @@ class Tab_Cad_Placa_2Art_Terc_View(View):
         for mapa in mapas_placa_selecionada:
             mapa.cod_cad_placa_terc = None
             mapa.save()
+
         registro_selecionado.delete()
 
         data = dict()
