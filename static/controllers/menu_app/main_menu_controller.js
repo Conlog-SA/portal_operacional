@@ -242,7 +242,8 @@ $(document).on('click', 'a', function(){
                         }
                     });
 
-                }else {
+                }
+                else {
                     $(".display").DataTable( {
                         "bJQueryUI": true,
                         "destroy": true,

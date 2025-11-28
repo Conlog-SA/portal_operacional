@@ -2867,6 +2867,7 @@ function atualiza_tab_anexos_conta(cod_conta){
                     let_num_contrato,
                     doc.data_competencia,
                     doc.desc_anexo,
+                    doc.cod_usu__login_usu,
                     var_btn_visualizar_anexo,
                     var_btn_exclui_anexo
                 ];
@@ -2892,6 +2893,7 @@ function atualiza_tab_anexos_conta(cod_conta){
                     { title: "Contrato" },
                     { title: "Competencia" },
                     { title: "Nome do arquivo" },
+                    { title: "Importado por:" },
                     { title: "Visualizar" },
                     { title: "Excluir" }
                 ],
@@ -3023,11 +3025,11 @@ function atualiza_tab_status_contrato_composicao(cod_conta){
                     "bJQueryUI": true,
                     "destroy": true,
                     "fixedHeader": true,
-                    "scrollY": true,
+                    "scrollY": "60vh",
                     "scrollX": true,
                     "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 10,
+                    "paging": false,
+                    //"pageLength": 10,
                     "dom": 'Bfrtip',
                     "buttons": [
                         'copyHtml5'

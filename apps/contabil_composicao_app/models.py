@@ -77,6 +77,7 @@ class Anexos_Contrato(models.Model):
     caminho_anexo = models.CharField(max_length=200, blank=False, null=False)
     ordem_anexo = models.IntegerField(null=False, blank=False)
     eh_anexo_principal_competencia = models.CharField(max_length=1, blank=False, null=False, default='N')
+    data_importacao = models.DateTimeField(auto_now_add=True)
     cod_contrato = models.ForeignKey(Contrato, models.DO_NOTHING, db_column='cod_contrato', null=True, blank=True)
     cod_conta = models.ForeignKey(Conta, models.DO_NOTHING, db_column='cod_conta', null=True, blank=True)
     cod_usu = models.ForeignKey(Usuario, models.DO_NOTHING, db_column='cod_usu')

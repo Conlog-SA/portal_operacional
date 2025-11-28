@@ -65,37 +65,43 @@
                 <div class="d-flex flex-column w-100" style="margin-right: 0.25rem; margin-left: 0.25rem;">
                 </div>
 
-                <div class="d-flex justify-content-end align-items-center align-content-arround w-100"
-                     style="margin-right: 0.25rem;margin-left: 0.25rem;">
+                <div class="d-flex justify-content-between align-items-between w-100 m-3"
+                     style="margin-right: 0.25rem;margin-left: 0.25rem;" >
                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                        <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
+                        <div class="d-flex flex-column justify-content-center align-items-between w-100" style="margin-right: .25rem;">
+                            <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                                 name="btn_abrir_modal_atualiza_contratos_benner"
                                 class="btn btn-primary btn-rounded botaoPrincipal" >
-                            <i class="fa-solid fa-repeat"></i>
-                            Atualiza contratos Benner
-                        </button>
-                        &nbsp;&nbsp;
-                        <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                                class="btn btn-primary btn-rounded  botaoPrincipal icon-colorb" value="{{ qtd_arquivos_postados }}"
-                                title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
-                            <i class="fa-solid fa-file-import"></i>
-                            Importar anexos
-                        </button>
+                                <i class="fa-solid fa-repeat"></i>
+                                Atualiza contratos Benner
+                            </button>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-between w-100" style="margin-left: .25rem;">
+                            <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
+                                    class="btn btn-primary btn-rounded  botaoPrincipal icon-colorb" value="{{ qtd_arquivos_postados }}"
+                                    title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}">
+                                <i class="fa-solid fa-file-import"></i>
+                                Importar anexos
+                            </button>
+                        </div>
                     {% endif %}
                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                         <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
+                        <div class="d-flex flex-column justify-content-center align-items-between w-100" style="margin-right: .25rem;">
+                            <button type='button' id="btn_abrir_modal_atualiza_contratos_benner"
                                 name="btn_abrir_modal_atualiza_contratos_benner"
                                 class="btn btn-primary btn-rounded botaoPrincipal" disabled>
-                            <i class="fa-solid fa-repeat"></i>
-                            Atualiza contratos Benner
-                        </button>
-                        &nbsp;&nbsp;
-                        <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
-                                class="btn btn-primary btn-rounded button-i" style="color: #FFFFFF !important"  value="{{ qtd_arquivos_postados }}"
-                                title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
-                            <i class="fa-solid fa-file-import" ></i>
-                            Importar anexos
-                        </button>
+                                <i class="fa-solid fa-repeat"></i>
+                                Atualiza contratos Benner
+                            </button>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-between w-100" style="margin-left: .25rem;">
+                            <button type='button' id="btn_importa_anexos" name="btn_importa_anexos"
+                                    class="btn btn-primary btn-rounded button-i" style="color: #FFFFFF !important"  value="{{ qtd_arquivos_postados }}"
+                                    title="Quantidade de arquivos para importar: {{ qtd_arquivos_postados }}" disabled>
+                                <i class="fa-solid fa-file-import" ></i>
+                                Importar anexos
+                            </button>
+                        </div>
                     {% endif %}
                 </div>
             </div>
@@ -306,12 +312,16 @@
                                     {% endif %}
                                 </div>
 
-                                <div id="div_btn_criar_nova_conta_manual"
-                                     class="d-flex flex-column justify-content-between align-items-between w-100">
+                                <div  class="d-flex flex-column justify-content-between align-items-between w-100">
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                 </div>
 
-                                <div class="d-flex flex-column justify-content-between align-items-between w-100"
+                                <div class="d-flex justify-content-between align-items-between w-100 mb-4 mt-3">
+                                    <div id="div_btn_criar_nova_conta_manual" class="d-flex flex-column justify-content-between align-items-between w-100"
+                                         style="margin-right: .25rem;">
+
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-between align-items-between w-100"
                                      style="margin-left: .25rem;">
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
                                         <button type='button' id="btn_cadastra_nova_conta"
@@ -332,6 +342,10 @@
                                         </button>
                                     {% endif %}
                                 </div>
+
+                                </div>
+
+
 
 
                             </div>
@@ -558,6 +572,7 @@
                                             <th scope="col">Contrato</th>
                                             <th scope="col">Competencia</th>
                                             <th scope="col">Nome do arquivo</th>
+                                            <th scope="col">Importado por:</th>
                                             <th scope="col">Visualizar</th>
                                             <th scope="col">Excluir</th>
                                         </tr>

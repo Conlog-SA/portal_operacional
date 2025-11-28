@@ -9,7 +9,7 @@ from apps.estrut_org_app.models import Filial, Projeto
 
 class Frm_Analise_Vagas_View(View):
     def get(self, request):
-        filiais = list((Filial.objects.filter(desc_filial__contains="AMBEV", cod_empresa=12)))
+        filiais = list((Filial.objects.filter(cod_operacao=23, cod_empresa=12)))
 
         context = {
             'filiais': filiais
@@ -52,7 +52,7 @@ class Frm_Carrega_Projeto_View(View):
 
         filial = Filial.objects.get(pk=cod_filial_frm)
 
-        lista_proj = list(Projeto.objects.filter(cod_filial=filial).values('cod_projeto', 'desc_proj' ))
+        lista_proj = list(Projeto.objects.filter(cod_filial=filial, cod_atividade__in=[1, 6, 39]).values('cod_projeto', 'desc_proj' ))
 
         data = dict()
         data = {

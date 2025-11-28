@@ -34,33 +34,16 @@ $(document).on('change','input', function(){
     let let_val_input = $(this).attr('value');
 
     if (let_nome_input == 'fl_arquivo_remunerado') {
-        if ($('#sl_arquivo_remunerado').val() == '' or $('#sl_arquivo_remunerado').val() == null) {
-            error: function (request, status, error) {
-                let_loader_frm_imp_plan_freightech.style.display = "none";
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: "Selecione um tipo de quadro!",
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-            this.value = "";
-        }
-        else if ($('input[type=file]')[0].files[0].size > 16777216) {
-            error: function (request, status, error) {
-                let_loader_frm_imp_plan_freightech.style.display = "none";
-                $.gritter.add({
-                    title: 'Atenção!',
-                    text: "Arquivo muito grande, máx: 16MB",
-                    image: '/static/icons/triangle-exclamation-solid.svg',
-                    sticky: false,
-                    time: '',
-                });
-            }
-            this.value = "";
-        }
-        else {
+        if ($('#sl_arquivo_remunerado').val() == '' || $('#sl_arquivo_remunerado').val() == null) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: "Selecione um tipo de quadro!",
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+
+        } else {
             let let_frm_data = new FormData();
             let_frm_data.append("tipo_planilha", $('#sl_arquivo_remunerado').val());
             let_frm_data.append("file", $('input[type=file]')[0].files[0]);
@@ -128,27 +111,3 @@ $(document).on('change', '#cd_pesq_filial', function(){
 
 
 
-
-
-
-
-
-
-
-
-
-$(document).on('click','.btn-realiza-importacao' , function(){
-
-
-}
-
-/*$(document).on('click','button', function(){
-	let let_nome_btn = $(this).attr('name');
-    let let_id_btn = $(this).attr('id');
-    let let_val_btn = $(this).attr('value');
-
-    if (let_nome_btn == "btn_quadro_vagas") {
-
-    }
-
-});*/

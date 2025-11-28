@@ -2517,14 +2517,14 @@ class Form_Anexos_Conta_View(View):
             lista_anexos = list(Anexos_Contrato.objects\
                 .filter(cod_conta = obj_conta,
                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)\
-                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia', 'eh_anexo_principal_competencia'))
+                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia', 'eh_anexo_principal_competencia', 'cod_usu__login_usu'))
         elif obj_conta.tipo_modelo == 3:
             lista_contratos = list(Contrato.objects.filter(cod_conta=obj_conta).values('cod_contrato', 'num_contrato'))
             lista_anexos = list(Anexos_Contrato.objects\
                 .filter(cod_contrato__cod_conta = obj_conta,
                         cod_contrato__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)\
                 .values('cod_contrato__num_contrato', 'cod_anexo_contrato', 'desc_anexo', 'caminho_anexo',
-                        'data_competencia', 'eh_anexo_principal_competencia'))
+                        'data_competencia', 'eh_anexo_principal_competencia', 'cod_usu__login_usu'))
 
         if len(lista_anexos) > 0:
             for anx in lista_anexos:
