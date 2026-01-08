@@ -36,7 +36,7 @@
                             data-live-search="true"
                             title="Selecione o projeto">
                         {% for p in lista_projetos %}
-                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }} (Serial: {{ p.cod_projeto.cod_serial_pag_terc }})</option>
+                            <option value="{{ p.cod_projeto.cod_projeto }}">{{p.cod_projeto.desc_proj }} (Cód. Promax: {{ p.cod_projeto.cod_serial_pag_terc }})</option>
                         {% endfor %}
                     </select>
                 </div>

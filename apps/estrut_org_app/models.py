@@ -40,6 +40,8 @@ class Filial(models.Model):
     regiao = models.CharField(max_length=30, null=True, blank=True)
     tem_calculo_rv = models.IntegerField(null=True, blank=True, default=0)
     handle_gn_proj_benner = models.IntegerField(null=True, blank=True, default=0)
+    usuario_freightech = models.CharField(max_length=50, null=False)
+    senha_freightech = models.CharField(max_length=50, null=False)
     class Meta:
         managed = True
         db_table = 'ger_filial'

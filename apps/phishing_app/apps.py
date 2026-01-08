@@ -1,5 +1,6 @@
-from django.apps import AppConfig
+'''from django.apps import AppConfig
 
 
 class PhishingAppConfig(AppConfig):
-    name = 'phishing_app'
+    name = 'apps/phishing_app'
+'''
