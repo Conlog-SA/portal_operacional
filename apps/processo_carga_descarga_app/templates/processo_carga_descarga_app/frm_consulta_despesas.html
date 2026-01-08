@@ -1,0 +1,193 @@
+{% load static %}
+
+{% block link_static_css %}
+
+  <link rel="stylesheet" href="{% static 'css/faturamento_terceiros_app/faturamento_terceiros.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-cart-flatbed" alt="Relatorio 2art" style="color: #f46424;"></i>
+            <h1 class=" titlePadraoMenu">Despesas Carga e Descarga</h1>
+        </div>
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
+    </div>
+	<div class="d-flex justify-content-between align-items-between div_Titulo_line">
+		<hr class="hr_title">
+	</div>
+    <div class="containerApp">
+        <form id="frm_pesq_mapas_terc" name="frm_pesq_mapas_terc"
+              method="POST"
+              class="d-flex flex-column align-items-center justify-content-between cl_frm_gera_pag_terc">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex flex-column align-items-start" style="width: 70%;">
+                    <label>Filiais</label>
+                    <select class="selectpicker form-control" id="cb_filial_pesq_mapas"
+                            name="cb_filial_pesq_mapas"
+                            data-live-search="true"
+                            title="Selecione a filial">
+                        {% for filial in lista_filiais %}
+                            <option value="{{ filial.cod_filial }}">{{ filial.desc_filial }} (Cód. Promax: {{ filial.cod_promax }})</option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+                <div class="d-flex flex-column align-items-start" style="width: 15%;margin-left: 0.25rem;">
+                    <label for="dt_pesq_mapas_clientes_ini">Data inicial *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_clientes_ini">
+                </div>
+
+                <div class="d-flex flex-column align-items-start" style="width: 15%;margin-left: 0.25rem;">
+                    <label for="dt_pesq_mapas_clientes_fim">Data final *</label>
+                    <input type="date" class="form-control " id="dt_pesq_mapas_clientes_fim">
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-between w-100 mb-3">
+                <div class="d-flex justify-content-start align-items-center" style="width: 70%;">
+                    <div class="loader" id="loader_carrega_despesa_2art">
+                        <div class="loader-inner">
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                            <div class="loader-block"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-flex flex-column align-items-start" style="width: 15%;margin-left: 0.25rem;">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex justify-content-between align-items-between" style="width:15%;">
+                    <button type='button' id="btn_adc_mapa" name="btn_adc_mapa"
+                        class="btn btn-primary btn-rounded botaoPrincipal" >
+                        <i class="fa-solid fa-plus" title="Adicionar Despesa"></i>
+                    </button>
+                    <button type='button' id="btn_pesq_mapas_clientes" name="btn_pesq_mapas_clientes"
+                        class="btn btn-primary btn-rounded botaoPrincipal" style="width: 80%" >
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Pesquisar
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="form-group cl_div_abas_paginas w-100" >
+            <nav>
+                <div class="nav nav-tabs" id="tab_mapas_clientes_rota" role="tablist">
+                    <button class="nav-link active" id="btn_tab_mapas_clientes_2art" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_mapas_clientes_2art" type="button" role="tab"
+                            aria-controls="div_tab_mapas_clientes_2art" aria-selected="true" style="font-weight: 400;">
+                        <i class="fa-regular fa-lightbulb" style="color: #f46424;"></i>
+                        AS e Rota (2art)
+                    </button>
+                    <button class="nav-link" id="tab_mapas_clientes_empurrada" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_mapas_clientes_emp" type="button" role="tab"
+                            aria-controls="div_tab_mapas_clientes_emp" aria-selected="false"
+                            style="font-weight: 400;">
+                        <i class="fa-solid fa-file-signature" style="color: #f46424;"></i>
+                        DT - Empurrada
+                    </button>
+                </div>
+            </nav>
+        </div>
+        <div class="tab-content" style="border-radius:0 0 10px 10px;">
+            <div class="tab-pane fade show active" id="div_tab_mapas_clientes_2art" name="div_tab_mapas_clientes_2art"
+                 role="tabpanel"
+                 aria-labelledby="tab_mapas_clientes_rota">
+                <!-- tabelaMapasEmp -->
+                <div class="form-group  cl_div_tabela_principal_pagina w-100">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex flex-column w-100">
+                        <table id="tab_mapas_clientes_2art"  class="display wrap w-100 cl_tab_principal_pagina" >
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Data da viagem</th>
+                                    <th scope="col">Mapa</th>
+                                    <th scope="col">Entrega</th>
+                                    <th scope="col">Placa</th>
+                                    <th scope="col">Despesa</th>
+                                    <th scope="col">Despesa Lançada</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody2Art_cliente" class="cl_tbody_tab_mapas_clientes_2art">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-content" style="border-radius:0 0 10px 10px;">
+            <div class="tab-pane" id="div_tab_mapas_clientes_emp" name="div_tab_mapas_clientes_emp"
+                 role="tabpanel"
+                 aria-labelledby="tab_mapas_clientes_empurrada">
+                <!-- tabelaMapasEmp -->
+                <div class="form-group  cl_div_tabela_principal_pagina w-100">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div id="div_btn_pesq_despesa_2art" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_mapa_emp" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_mapa_emp" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_mapa_emp" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div id="div_btn_pesq_mapa_emp" class="d-flex flex-column w-100 cl_div_btn_despesa_2art">
+                            &nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <div class="mt-3 d-flex flex-column w-100">
+                        <table id="tab_mapas_clientes_emp"  class="display wrap w-100 cl_tab_principal_pagina" >
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Data da viagem</th>
+                                    <th scope="col">DT</th>
+                                    <th scope="col">Entrega</th>
+                                    <th scope="col">Placa</th>
+                                    <th scope="col">Despesa</th>
+                                    <th scope="col">Despesa Lançada</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody2Art_cliente" class="cl_tbody_tab_mapas_clientes_2art">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include 'processo_carga_descarga_app/modal_lancamento_despesa.html' %}

@@ -1,5 +1,6 @@
-from django.apps import AppConfig
+'''from django.apps import AppConfig
 
 
 class SafetyGsoAppConfig(AppConfig):
     name = 'safety_gso_app'
+'''
