@@ -749,6 +749,21 @@ class Form_Cad_Contrato_View(View):
             dic_contrato = None
             lista_parcelas_contrato = None
             for contrato in lista_contratos_banco:
+                '''Atualiza tipo prazo parcelas contrato'''
+                num_parc = 0
+                lista_parcelas = (Parcela_Contrato.objects.filter(cod_contrato=contrato,
+                                                                  tipo_prazo__in=['CP', 'LP'])
+                                  .order_by('cod_parcela_contrato'))
+                for parc in lista_parcelas:
+                    num_parc += 1
+                    tipo_prazo = ''
+                    if num_parc <= 12:
+                        tipo_prazo = 'CP'
+                    else:
+                        tipo_prazo = 'LP'
+                    parc.tipo_prazo = tipo_prazo
+                    parc.save(update_fields=['tipo_prazo'])
+
                 lista_parcelas_contrato = []
                 lista_parcelas = Parcela_Contrato.objects.filter(cod_contrato=contrato).order_by('cod_parcela_contrato')
                 val_total_pago = 0
