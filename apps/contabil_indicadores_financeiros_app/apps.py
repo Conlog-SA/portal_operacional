@@ -1,5 +1,6 @@
-from django.apps import AppConfig
+'''from django.apps import AppConfig
 
 
 class ContabilIndicadoresFinanceirosAppConfig(AppConfig):
     name = 'contabil_indicadores_financeiros_app'
+'''

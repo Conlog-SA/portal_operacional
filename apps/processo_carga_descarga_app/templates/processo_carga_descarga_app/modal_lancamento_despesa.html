@@ -1,0 +1,195 @@
+{% load static %}
+
+
+<div id="modal_lanca_despesa" role="dialog" class="modal" style="background-color: rgb(0 0 0 / 0%);" >
+  <div class="modal-dialog" style="border-radius: 10px;max-width:1164px">
+        <div class="modal-content">
+            <div class="modal-header" style="background-color:#f26522;height: 40px;padding-right: 5px;padding-bottom: 35px;
+                padding-top: 10px;font-size:10px;">
+                <div class="row" style="margin-left: 0px;margin-right: 0px;width:1164px;margin-top: 35px;" >
+                    <div class="col-md-6" align="left">
+                        <p>
+                            <i class="fa-solid fa-caret-right" style="color: #FFFFFF;font-size: 18px;left: 2px;margin-left: -14px;"></i>
+                            <span style="color:#ffffff; font-size:15px;margin-left: 9px;">Despesa Carga Descarga</span>
+                        </p>
+                    </div>
+                    <div class="col-md-6" align="right">
+                        <button type="button" name="fecha_modal_carga_desc"
+                                id="fecha_modal_carga_desc"
+                                class="btn btn-sm btn-rounded">
+                            <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <form id="form_desp_carga_desc" name="form_desp_carga_desc"
+                      class="d-flex flex-column align-items-center justify-content-between"
+                      method="POST" enctype="multipart/form-data">
+                    <input type="hidden" id="hd_cod_unidade" name="hd_tipo_item_gup_nota">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="slc_tipo_despesa" class="label_comp_forms">
+                                Data
+                            </label>
+                            <input type="text" class="form-control" name="in_data_mapa"
+                                           id="in_data_mapa" disabled="disabled"/>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="sl_desp"  id="sl_desp_label"  class="label_comp_forms">
+                                Mapa
+                            </label>
+                            <input type="text" class="form-control" name="in_mapa"
+                                           id="in_mapa" disabled="disabled" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="sl_desp" class="label_comp_forms">
+                                Entrega
+                            </label>
+                            <input type="text" class="form-control" name="in_entrega"
+                                           id="in_entrega" disabled="disabled" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="sl_desp" class="label_comp_forms">
+                                Placa
+                            </label>
+                            <input type="text" class="form-control" name="in_placa"
+                                           id="in_placa" disabled="disabled"/>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="tipo_descarga" class="label_comp_forms">
+                                Unb de Venda
+                            </label>
+                             <input type="text" class="form-control" name="un_venda" id="un_venda"
+                                   placeholder="Multi CDD? (Se não for digite 0)" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="cod_cli_promax" class="label_comp_forms">
+                                Codigo Promax do Cliente
+                            </label>
+                            <input type="text" class="form-control" name="cod_cli_promax" id="cod_cli_promax"
+                                   placeholder="Cód. Cliente" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="qntd_carga" class="label_comp_forms">
+                                Quantidade
+                            </label>
+                            <input type="text" class="form-control" name="qntd_carga" id="qntd_carga"
+                                   placeholder="Quantidade" />
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="val_unit" class="label_comp_forms">
+                                Valor Unitário
+                            </label>
+                            <input type="text" class="form-control" name="val_unit" id="val_unit"
+                                   placeholder="Valor unit." />
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="tipo_descarga" class="label_comp_forms">
+                                Tipo de Descarga
+                            </label>
+                            <select class="selectpicker form-control" id="tipo_descarga"
+                                    name="tipo_descarga"
+                                    data-live-search="true" title="-- Tipo de descarga --">
+                                <option value="1">Por Entrega</option>
+                                <option value="2">Por Paleta</option>
+                                <option value="3">Por Caixa</option>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            <label for="slc_tipo_despesa" class="label_comp_forms">
+                                Tipo de Despesa
+                            </label>
+                            <select class="selectpicker form-control" id="slc_tipo_despesa"
+                                    name="slc_tipo_despesa"
+                                    data-live-search="true"
+                                    title="Selecione o tipo de despesa" disabled="disabled">
+                                <option value="1" selected="selected">Pontual</option>
+                            </select>
+                        </div>
+
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="sl_desp" class="label_comp_forms">
+                                Despesa
+                            </label>
+                            <select class="selectpicker form-control" id="sl_desp"
+                                    name="sl_desp"
+                                    data-live-search="true"
+                                    title="Despesa" disabled="disabled">
+                                <option value="1" selected="selected">Serviço</option>
+                            </select>
+                        </div>
+
+                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <label for="sub_categoria" class="label_comp_forms">
+                                Subcategoria
+                            </label>
+                            <select class="selectpicker form-control" id="sub_categoria"
+                                    name="sub_categoria"
+                                    data-live-search="true" disabled="disabled" >
+                                <option value="0">Taxa de descarga ROTA</option>
+                                <option value="1">Taxa de descarga AS</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                        <label for="fl_comp_pagamento" class="label_comp_forms">
+                            Comprovante
+                        </label>
+                        <div id="div_comprovante">
+                            <input type="file" name="fl_comp_pagamento" id="fl_comp_pagamento" class="containerApp"
+                            accept="image/*"/>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-between w-100 mb-3" style="margin-top: 1rem;">
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
+                            &nbsp;&nbsp;
+                        </div>
+                        <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                            <input type="hidden" name="hd_tipo_modal" id="hd_tipo_modal"/>
+                            <button type="button" name="btn_salva_desp_carg_desc"
+                                    id="btn_salva_desp_carg_desc"
+                                    class="btn btn-primary btn-rounded botaoPrincipal">
+                                <i class="fa-solid fa-check"></i>
+                                Salvar
+                            </button>
+                        </div>
+                    </div>
+                    <div id="div_tabela" class="form-group cl_div_tabela_principal_pagina w-100" style="height: 280px;overflow-x: auto!important;">
+                        <table id="tab_mapas_clientes_vinculados" class=" wrap w-100 cl_tab_principal_pagina" >
+                            <thead>
+                                <tr>
+                                    <th scope="col"></th>
+                                    <th scope="col">Cód. Cliente</th>
+                                    <th scope="col">Tipo de descarga</th>
+                                    <th scope="col">Quantidade</th>
+                                    <th scope="col">Valor Unit</th>
+                                    <th scope="col">Despesa Lançada</th>
+                                    <th scope="col">Lançamento</th>
+                                    <th scope="col">Comprovante</th>
+                                    <th scope="col">Importado</th>
+                                    <th scope="col">UN Venda</th>
+                                    <th scope="col">Excluir</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tBody2Art_cliente" class="cl_tbody_tab_mapas_clientes_2art">
+
+                            </tbody>
+                        </table>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

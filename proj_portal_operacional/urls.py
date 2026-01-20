@@ -68,6 +68,7 @@ urlpatterns = [
     path('safety_pci_app/', include('apps.safety_pci_app.urls')),
     path('freightech_remunerado_qlp_app/', include('apps.freightech_remunerado_qlp_app.urls')),
     path('ti_gera_consultas_app/', include('apps.ti_gera_consultas_app.urls')),
+    path('processo_carga_descarga_app/', include('apps.processo_carga_descarga_app.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
