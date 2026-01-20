@@ -2137,7 +2137,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
+                    #print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas
@@ -2192,11 +2192,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     val_composicao_ano += (val_parcelas_atrasadas['sum_principal_parc_atrasadas']) - val_pago_parc_atrasadas
 
 
+
                 #val_composicao = (val_composicao_ano + val_taxas) - val_pago
-                if val_pago >= (val_principal + val_taxas):
+                if val_pago > 0 and val_pago >= (val_principal + val_taxas):
                     val_composicao = 0
                 else:
                     val_composicao = val_composicao_ano - val_pago
+
 
                 val_balancete = ConexaoBancoBenner() \
                                     .retorna_balancete_conta(contrato.cod_empresa.cod_empresa,

@@ -31,7 +31,7 @@
             <input type="hidden" id="hd_perfil_usu" value={{ obj_usuario_logado.tipo_colab }}>
 
             <div class="d-flex justify-content-between align-items-between w-100">
-                    <div class="d-flex flex-column w-100 align-items-start">
+                    <div class="d-flex flex-column align-items-start" style="width: 20%;">
                         <label for="cb_resp_contas_comp_detalhado">
                             Responsáveis
                             <button type='button' id="btn_marcar_resp_contas_comp_detalhado"
@@ -61,8 +61,8 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <div class="d-flex flex-column w-100 align-items-start"
-                         style="margin-left:0.25rem;margin-right: 0.25rem;">
+                    <div class="d-flex flex-column align-items-start"
+                         style="width: 20%;margin-left:0.25rem;margin-right: 0.25rem;">
                         <label for="cb_pac_contas_comp_detalhado">
                             Pacotes
                             <button type='button' id="btn_marcar_pac_contas_comp_detalhado"
@@ -93,53 +93,55 @@
                         </select>
                     </div>
 
-                    <div class="d-flex flex-column w-100 align-items-between">
-                        <fieldset>
-                            <legend style="font-size: 1.05rem;">Modelo</legend>
-                            <div class="form-check-inline" style="font-size: 1.25rem;">
-                                <label class="form-check-label">
-                                    <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                       id="rd_modelo_conta_conc_comp_benner_1">
-                                    Modelo 1
-                                </label>
+                    <div class="d-flex flex-column align-items-start"
+                         style="width: 40%;margin-left:0.25rem;margin-right: 0.25rem;">
+                        <label class="d-flex justify-content_between align-items-around w-100">
+                            <div class="d-flex justify-content_between align-items-around w-100">
+                                <fieldset>
+                                    <!-- <legend style="font-size: 12px;">Modelo</legend> -->
+                                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                                        <label class="form-check-label">
+                                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                               id="rd_modelo_conta_conc_comp_benner_1">
+                                            Modelo 1
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                                        <label class="form-check-label">
+                                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                               id="rd_modelo_conta_conc_comp_benner_2">
+                                            Modelo 2
+                                        </label>
+                                    </div>
+
+                                    <div class="form-check-inline" style="font-size: 1.25rem;">
+                                        <label class="form-check-label">
+                                            <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
+                                               id="rd_modelo_conta_conc_comp_benner_3">
+                                            Modelo 3
+                                        </label>
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <div class="d-flex justify-content-center align-items-center w-100">
+                                Contas
+                                <button type='button' id="btn_marcar_contas_comp_benner"
+                                        name="btn_marcar_contas_comp_benner"
+                                        class="btn btn-rounded btn-space"
+                                        title="Selecionar todos os projetos"
+                                        style="width: 40px;">
+                                    <i class="fa-regular fa-square-check icon-color-e" ></i>
+                                </button>
+                                <button type='button' id="btn_desmarcar_contas_comp_benner"
+                                        name="btn_desmarcar_contas_comp_benner"
+                                        class="btn btn-rounded btn-space"
+                                        title="Limpar seleção"
+                                        style="width: 40px;">
+                                    <i class="fa-regular fa-square icon-color-e" ></i>
+                                </button>
                             </div>
 
-                            <div class="form-check-inline" style="font-size: 1.25rem;">
-                                <label class="form-check-label">
-                                    <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                       id="rd_modelo_conta_conc_comp_benner_2">
-                                    Modelo 2
-                                </label>
-                            </div>
-
-                            <div class="form-check-inline" style="font-size: 1.25rem;">
-                                <label class="form-check-label">
-                                    <input type="radio" name="rd_modelo_conta_conc_comp_benner" class="form-check-input"
-                                       id="rd_modelo_conta_conc_comp_benner_3">
-                                    Modelo 3
-                                </label>
-                            </div>
-                        </fieldset>
-                    </div>
-
-                    <div class="d-flex flex-column w-100 align-items-start"
-                         style="margin-left:0.25rem;margin-right: 0.25rem;">
-                        <label>
-                            Contas
-                            <button type='button' id="btn_marcar_contas_comp_benner"
-                                    name="btn_marcar_contas_comp_benner"
-                                    class="btn btn-rounded btn-space"
-                                    title="Selecionar todos os projetos"
-                                    style="width: 40px;">
-                                <i class="fa-regular fa-square-check icon-color-e" ></i>
-                            </button>
-                            <button type='button' id="btn_desmarcar_contas_comp_benner"
-                                    name="btn_desmarcar_contas_comp_benner"
-                                    class="btn btn-rounded btn-space"
-                                    title="Limpar seleção"
-                                    style="width: 40px;">
-                                <i class="fa-regular fa-square icon-color-e" ></i>
-                            </button>
                         </label>
                         <select class="selectpicker form-control" id="cb_contas_conciliacao_comp_benner"
                                 name="cb_contas_conciliacao_comp_benner"
@@ -152,12 +154,12 @@
 
                     </div>
 
-                    <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;margin-top: 1.2rem;">
+                    <div class="d-flex flex-column align-items-start"
+                         style="width: 15%;margin-right: 0.25rem;margin-top: 1.2rem;">
                         <label>Competência</label>
                             <input type="month" class="form-control" id="dt_conciliacao_comp_benner"
                                    name="dt_conciliacao_comp_benner_detalhes" required>
                     </div>
-
 
                 </div>
 
@@ -183,25 +185,9 @@
                 </div>
                 <div class="d-flex flex-column align-items-start w-100">
                     &nbsp;&nbsp;
-                    <!-- <label>
-                        Status composição
-                    </label>
-                    <select class="selectpicker form-control" id="cb_status_analise_conciliacao_detalhada"
-                        name="cb_status_analise_conciliacao_detalhada" style="width: 220px;">
-                    </select>
-                    -->
                 </div>
                 <div class="d-flex flex-column justify-content-between align-items-start w-100" style="padding-left: .25rem;">
-                    <!-- <label>
-                        Demais Filtros
-                    </label>
-                    <select class="selectpicker form-control" id="cb_filtros_pesq_comp_detalhada"
-                        name="cb_filtros_pesq_comp_detalhada">
-                            <option value="0" selected="selected">Todos</option>
-                            <option value="1">Somente contas sem movimentações</option>
-                            <option value="2">Somente composição e balancete > 0, dif. zerada e com anexo</option>
-                    </select>
-                    -->
+                    &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column align-items-end justify-content-center w-100">
                     <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
@@ -221,9 +207,8 @@
             <div class="d-flex justify-content-between align-items-between w-100">
                 <!-- Form status composicção -->
 
-                <div class="d-flex flex-column w-100"
-                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
-                        padding: 0.5rem; margin-left: 0.5rem;">
+                <div class="d-flex flex-column justify-content-center align-items-center w-100"
+                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);margin-left: 0.5rem;">
                     <div class="d-flex justify-content-between align-items-between w-100">
                         <div class="d-flex align-items-start w-100">
                             COMPOSIÇÃO
@@ -231,7 +216,7 @@
                         <div class="d-flex justify-content-end w-100">
                             {% if obj_usuario_logado.tipo_colab != 'C' %}
                                 <button type='button' name='btn_cad_item_status_comp'
-                                    id='btn_cad_item_status_comp'
+                                    id='btn_cad_item_status_comp' style="padding-top: 3px;padding-bottom: 3px;"
                                     class='btn btn-rounded btn-space'
                                     title='Cadastrar novo status de COMPOSIÇÃO'>
                                     <i class="fa-solid fa-circle-plus"></i>
@@ -240,15 +225,15 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
-                        <div class="d-flex flex-column w-100 align-items-start" style="padding: 0.25rem;">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column w-100 justify-content-end align-items-start" style="padding: 0.1rem;">
                             <label for="ta_obs_status_conciliacao_lote_contas" style="font-size: 10px">Justificativa</label>
                             <input type="text" class="form-control" id="ta_obs_status_conciliacao_lote_contas"
                                     style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
                                     name="ta_obs_status_conciliacao_lote_contas"
                                     autocomplete="off" placeholder="Observação" rows="3">
                         </div>
-                        <div class="d-flex flex-column w-100 align-items-end" style="padding: 0.25rem;">
+                        <div class="d-flex flex-column w-100 align-items-around" style="padding: 0.1rem;">
                             <label for="sl_status_conciliacao_lote_contas" style="font-size: 10px">Status composição</label>
                             <select class="selectpicker form-control" id="sl_status_conciliacao_lote_contas"
                                     name="sl_status_conciliacao_lote_contas">
@@ -258,8 +243,8 @@
                             </select>
                             <button type='button' id="btn_confirma_status_lote_contas"
                                     name="btn_confirma_status_lote_contas"
-                                    class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
-                                    style="font-size: 10px;margin-top: 0.7rem;">
+                                    class="mt-1 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
+                                    style="font-size: 10px;">
                                 <i class="fa-solid fa-check"></i>
                                 <span>Compor</span>
                             </button>
@@ -270,9 +255,8 @@
 
                 <!-- Form status análise -->
                 {% if obj_usuario_logado.tipo_colab == 'L' or obj_usuario_logado.tipo_colab == 'H' %}
-                <div class="d-flex flex-column w-100"
-                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
-                        padding: 0.5rem; margin-left: 0.5rem;">
+                <div class="d-flex flex-column justify-content-center align-items-center w-100"
+                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);margin-left: 0.5rem;">
                     <div class="d-flex justify-content-between align-items-between w-100">
                         <div class="d-flex align-items-start w-100">
                             ANÁLISE
@@ -280,7 +264,7 @@
                         <div class="d-flex justify-content-end w-100">
                             {% if obj_usuario_logado.tipo_colab != 'C' %}
                                 <button type='button' name='btn_cad_item_status_ana'
-                                    id='btn_cad_item_status_ana'
+                                    id='btn_cad_item_status_ana' style="padding-top: 3px;padding-bottom: 3px;"
                                     class='btn btn-rounded btn-space'
                                     title='Cadastrar novo status de ANÁLISE'>
                                     <i class="fa-solid fa-circle-plus"></i>
@@ -289,15 +273,15 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
-                        <div class="d-flex flex-column w-100 align-items-start" style="padding: 0.25rem;">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column justify-content-end align-items-start w-100 " style="padding: 0.1rem;">
                             <label for="ta_obs_status_conciliacao_lote_contas" style="font-size: 10px">Justificativa</label>
                             <input type="text" class="form-control" id="ta_obs_status_analise_lote_contas"
                                     style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
                                     name="ta_obs_status_analise_lote_contas"
                                     autocomplete="off" placeholder="Observação" rows="3">
                         </div>
-                        <div class="d-flex flex-column w-100 align-items-end" style="padding: 0.25rem;">
+                        <div class="d-flex flex-column w-100 align-items-around" style="padding: 0.1rem;">
                             <label for="sl_status_conciliacao_lote_contas" style="font-size: 10px">Status análise</label>
                             <select class="selectpicker form-control" id="sl_status_analise_lote_contas"
                                     name="sl_status_analise_lote_contas">
@@ -307,8 +291,8 @@
                             </select>
                             <button type='button' id="btn_confirma_status_analise_lote_contas"
                                     name="btn_confirma_status_analise_lote_contas"
-                                    class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
-                                    style="font-size: 10px;margin-top: 0.7rem;">
+                                    class="mt-1 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
+                                    style="font-size: 10px;">
                                 <i class="fa-solid fa-check"></i>
                                 <span>Analisar</span>
                             </button>
@@ -326,9 +310,8 @@
 
                 <!-- Form status regularização -->
                 {% if obj_usuario_logado.tipo_colab == 'H' %}
-                <div class="d-flex flex-column w-100"
-                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);
-                        padding: 0.5rem; margin-left: 0.5rem;">
+                <div class="d-flex flex-column justify-content-center align-items-center w-100"
+                     style="border-radius: 0.5rem; box-shadow: 2px 2px 2px 1px rgba(204, 204, 206, 1);margin-left: 0.5rem;">
                     <div class="d-flex justify-content-between align-items-between w-100">
                         <div class="d-flex align-items-start w-100">
                             REGULARIZAÇÃO
@@ -336,7 +319,7 @@
                         <div class="d-flex justify-content-end w-100">
                             {% if obj_usuario_logado.tipo_colab != 'C' %}
                                 <button type='button' name='btn_cad_item_status_reg'
-                                    id='btn_cad_item_status_reg'
+                                    id='btn_cad_item_status_reg' style="padding-top: 3px;padding-bottom: 3px;"
                                     class='btn btn-rounded btn-space'
                                     title='Cadastrar novo status de REGULARIZAÇÃO'>
                                     <i class="fa-solid fa-circle-plus"></i>
@@ -345,15 +328,15 @@
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-between w-100 mb-2">
-                        <div class="d-flex flex-column w-100 align-items-start" style="padding: 0.25rem;">
+                    <div class="d-flex justify-content-between align-items-between w-100">
+                        <div class="d-flex flex-column justify-content-end align-items-start w-100 " style="padding: 0.1rem;">
                             <label for="ta_obs_status_conciliacao_lote_contas" style="font-size: 10px">Justificativa</label>
                             <input type="text" class="form-control" id="ta_obs_status_regularizacao_lote_contas"
                                     style="color: #000000; font-size: 11px;text-align: left;white-space: nowrap;width: 100%; height:70px;"
                                     name="ta_obs_status_regularizacao_lote_contas"
                                     autocomplete="off" placeholder="Observação" rows="3">
                         </div>
-                        <div class="d-flex flex-column w-100 align-items-end" style="padding: 0.25rem;">
+                        <div class="d-flex flex-column w-100 align-items-around" style="padding: 0.1rem;">
                             <label for="sl_status_conciliacao_lote_contas" style="font-size: 10px">Status regularização</label>
                             <select class="selectpicker form-control" id="sl_status_regularizacao_lote_contas"
                                     name="sl_status_regularizacao_lote_contas">
@@ -363,8 +346,8 @@
                             </select>
                             <button type='button' id="btn_confirma_status_regularizacao_lote_contas"
                                     name="btn_confirma_status_regularizacao_lote_contas"
-                                    class="mr-2 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
-                                    style="font-size: 10px;margin-top: 0.7rem;">
+                                    class="mt-1 btn btn-primary btn-rounded cl_btn_conciliacao_comp_benner_detalhado"
+                                    style="font-size: 10px;margin-top: 0.2rem;">
                                 <i class="fa-solid fa-check"></i>
                                 <span>Regularizar</span>
                             </button>
