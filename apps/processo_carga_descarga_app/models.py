@@ -23,6 +23,7 @@ class Despesas_Carga_Descarga(models.Model):
     data_lancamento = models.DateField(null=False, blank=False)
     importado = models.IntegerField(null=False, blank=False) #0 - não importado 1 - importado
     un_venda = models.IntegerField(null=False, blank=False)  # 0 - Não é multi CDD
+    modal = models.CharField(max_length=50, blank=False) # Mapas2art LancEmpurrada LancRota/AS
 
     def caminho_upload_personalizado(self, filename):
         _, extensao = os.path.splitext(filename)

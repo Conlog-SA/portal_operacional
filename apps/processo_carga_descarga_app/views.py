@@ -32,11 +32,11 @@ class Frm_Despesa_View(View):
         cod_filial_form = request.GET['cod_filial']
         data_ini_form = request.GET['data_inicial']
         data_fim_form = request.GET['data_final']
-
         obj_filial = Filial.objects.get(pk=cod_filial_form)
+
         '''Rota e AS'''
-        list_mapas = ConexaoBancoConecta().retorna_dados_mapas(
-                obj_filial.cod_promax, data_ini_form, data_fim_form)
+        list_mapas = ConexaoBancoConecta().retorna_dados_mapas(obj_filial.cod_promax, data_ini_form, data_fim_form)
+
         lista_dic_mapas_despesas = []
         for mapa in list_mapas:
             info_mapa = {
@@ -47,8 +47,7 @@ class Frm_Despesa_View(View):
                 'cod_promax': mapa['cod_filial_promax'],
                 'entrega': mapa['entrega']
             }
-            lista_obj_despesas = (Despesas_Carga_Descarga
-                             .objects
+            lista_obj_despesas = (Despesas_Carga_Descarga.objects
                              .filter(mapa=mapa['mapa'], cod_filial__cod_promax=mapa['cod_filial_promax']))
 
             if lista_obj_despesas:
@@ -78,10 +77,9 @@ class Frm_Despesa_View(View):
             lista_dic_mapas_despesas.append(info_mapa)
 
         '''Empurrada'''
-        list_mapas_emp = list((Despesas_Carga_Descarga
-                          .objects
+        list_mapas_emp = list((Despesas_Carga_Descarga.objects
                           .filter(cod_filial__cod_promax=obj_filial.cod_promax, dt_mapa__range=[data_ini_form, data_fim_form],entrega='Empurrada')
-                          .values('dt_mapa','mapa','entrega','placa','cod_filial__cod_promax')
+                          .values('dt_mapa','mapa','entrega','placa','cod_filial__cod_promax','modal')
                           .distinct()).order_by('dt_mapa', 'placa'))
         lista_dic_mapas_despesas_empurrada = []
         for mapa_emp in list_mapas_emp:
@@ -90,10 +88,10 @@ class Frm_Despesa_View(View):
                 'mapa': mapa_emp['mapa'],
                 'placa': mapa_emp['placa'],
                 'cod_promax': mapa_emp['cod_filial__cod_promax'],
-                'entrega': mapa_emp['entrega']
+                'entrega': mapa_emp['entrega'],
+                'modal': mapa_emp['modal']
             }
-            lista_obj_despesas_emp = (Despesas_Carga_Descarga
-                             .objects
+            lista_obj_despesas_emp = (Despesas_Carga_Descarga.objects
                              .filter(mapa=mapa_emp['mapa'], cod_filial__cod_promax=mapa_emp['cod_filial__cod_promax'], entrega='Empurrada'))
             if lista_obj_despesas_emp:
                 info_mapa_emp['tem_despesa'] = 'S'
@@ -111,7 +109,8 @@ class Frm_Despesa_View(View):
                         'comprovante' : obj_desp_emp.comprovante.name,
                         'importado' : obj_desp_emp.importado,
                         'data_lancamento' : obj_desp_emp.data_lancamento,
-                        'un_venda': obj_desp_emp.un_venda
+                        'un_venda': obj_desp_emp.un_venda,
+                        'modal': obj_desp_emp.modal
                     }
                     lista_desp_mapa_emp.append(desp_emp)
                 info_mapa_emp['lista_desp_mapa_emp'] = lista_desp_mapa_emp
@@ -120,15 +119,63 @@ class Frm_Despesa_View(View):
                 info_mapa_emp['lista_desp_mapa_emp'] = None
 
             lista_dic_mapas_despesas_empurrada.append(info_mapa_emp)
+
+        '''ROTA/AS Lançadas'''
+        list_mapas_lancados = list((Despesas_Carga_Descarga.objects
+                               .filter(cod_filial__cod_promax=obj_filial.cod_promax,
+                                       dt_mapa__range=[data_ini_form, data_fim_form], modal='LancRota/AS')
+                               .values('dt_mapa', 'mapa', 'entrega', 'placa', 'cod_filial__cod_promax','modal')
+                               .distinct()).order_by('dt_mapa', 'placa'))
+        lista_dic_mapas_despesas_rota_lancadas = []
+        for mapa_lanc in list_mapas_lancados:
+            info_mapa_lanc = {
+                'dt_mapa': mapa_lanc['dt_mapa'].strftime('%d-%m-%Y'),
+                'mapa': mapa_lanc['mapa'],
+                'placa': mapa_lanc['placa'],
+                'cod_promax': mapa_lanc['cod_filial__cod_promax'],
+                'entrega': mapa_lanc['entrega'],
+                'modal': mapa_lanc['modal']
+            }
+            lista_obj_despesas_lanc = (Despesas_Carga_Descarga.objects
+                                      .filter(mapa=mapa_lanc['mapa'],
+                                              cod_filial__cod_promax=mapa_lanc['cod_filial__cod_promax'],
+                                              modal='LancRota/AS'))
+            if lista_obj_despesas_lanc:
+                info_mapa_lanc['tem_despesa'] = 'S'
+                lista_desp_mapa_lanc = []
+                for obj_desp_lanc in lista_obj_despesas_lanc:
+                    desp_lancada = {
+                        'id_despesa': obj_desp_lanc.id_despesa,
+                        'tipo_despesa': obj_desp_lanc.tipo_despesa,
+                        'despesa': obj_desp_lanc.despesa,
+                        'subcategoria': obj_desp_lanc.subcategoria,
+                        'cod_promax_cliente': obj_desp_lanc.cod_promax_cliente,
+                        'tipo_descarga': obj_desp_lanc.tipo_descarga,
+                        'quantidade': obj_desp_lanc.quantidade,
+                        'valor_unit': obj_desp_lanc.valor_unit,
+                        'comprovante': obj_desp_lanc.comprovante.name,
+                        'importado': obj_desp_lanc.importado,
+                        'data_lancamento': obj_desp_lanc.data_lancamento,
+                        'un_venda': obj_desp_lanc.un_venda,
+                        'modal': obj_desp_lanc.modal
+                    }
+                    lista_desp_mapa_lanc.append(desp_lancada)
+                info_mapa_lanc['lista_desp_mapa_lanc'] = lista_desp_mapa_lanc
+            else:
+                info_mapa_lanc['tem_despesa'] = 'N'
+                info_mapa_lanc['lista_desp_mapa_lanc'] = None
+
+            lista_dic_mapas_despesas_rota_lancadas.append(info_mapa_lanc)
         data = dict()
         data = {
             'lista_dic_mapas_despesas': lista_dic_mapas_despesas,
-            'lista_dic_mapas_despesas_empurrada': lista_dic_mapas_despesas_empurrada
+            'lista_dic_mapas_despesas_empurrada': lista_dic_mapas_despesas_empurrada,
+            'lista_dic_mapas_despesas_rota_lancadas': lista_dic_mapas_despesas_rota_lancadas
         }
         return JsonResponse(data, safe=False)
 
     def post(self, request):
-        tipo_modal_frm = request.POST['tipo_modal']
+        modal_frm = request.POST['modal']
         tipo_despesa_frm = request.POST['tipo_despesa']
         entrega_frm = request.POST['entrega']
         despesa_frm = request.POST['despesa']
@@ -137,7 +184,6 @@ class Frm_Despesa_View(View):
         mapa_frm = request.POST['mapa']
         placa_frm = request.POST['placa']
         cod_promax_cliente_frm = request.POST['cod_promax_cliente']
-
         tipo_descarga_frm = request.POST['tipo_descarga']
         quantidade_frm = request.POST['quantidade']
         valor_unit_frm = request.POST['valor_unit']
@@ -152,11 +198,19 @@ class Frm_Despesa_View(View):
         msg = ''
         id_despesa_frm = ''
         obj_filial = None
-        if tipo_modal_frm == 'rota_as':
+        if modal_frm == 'Mapas_2art':
             id_despesa_frm = str(request.POST['id_despesa']) + '-' + str(cod_promax_cliente_frm)
             cod_promax_frm = request.POST['cod_promax']
             obj_filial = Filial.objects.get(cod_promax=cod_promax_frm)
         else:
+            if entrega_frm == 'Empurrada':
+                modal_frm = 'LancEmpurrada'
+            else:
+                modal_frm = 'LancRota/AS'
+                if entrega_frm == 'Rota' :
+                    subcategoria_frm = 0
+                else:
+                    subcategoria_frm = 1
             cod_filial_frm = request.POST['cod_filial']
             obj_filial = Filial.objects.get(pk=cod_filial_frm)
             id_despesa_frm = mapa_frm + '-' + str(obj_filial.cod_promax) + '-' + cod_promax_cliente_frm
@@ -175,6 +229,7 @@ class Frm_Despesa_View(View):
                 obj_despesa.cod_filial = obj_filial
                 comprovante = comprovante_frm
                 obj_despesa.un_venda = un_venda_frm
+                obj_despesa.modal = modal_frm
                 obj_despesa.save()
                 msg = 'Despesa atualizados com sucesso!'
             else:
@@ -200,7 +255,8 @@ class Frm_Despesa_View(View):
                 data_lancamento=data_atual,
                 comprovante=comprovante_frm,
                 importado = 0,
-                un_venda=un_venda_frm
+                un_venda=un_venda_frm,
+                modal=modal_frm
             )
             obj_despesa.save()
             msg = 'Despesa cadastrada com sucesso!'

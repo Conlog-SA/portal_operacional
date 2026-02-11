@@ -32,12 +32,12 @@
                             <label for="slc_tipo_despesa" class="label_comp_forms">
                                 Data
                             </label>
-                            <input type="text" class="form-control" name="in_data_mapa"
+                            <input type="text" class="form-control" name="in_data_mapa" placeholder="00-00-0000"
                                            id="in_data_mapa" disabled="disabled"/>
                         </div>
                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
                             <label for="sl_desp"  id="sl_desp_label"  class="label_comp_forms">
-                                Mapa
+                                DT/Mapa
                             </label>
                             <input type="text" class="form-control" name="in_mapa"
                                            id="in_mapa" disabled="disabled" />
@@ -46,15 +46,19 @@
                             <label for="sl_desp" class="label_comp_forms">
                                 Entrega
                             </label>
-                            <input type="text" class="form-control" name="in_entrega"
-                                           id="in_entrega" disabled="disabled" />
+                            <select class="selectpicker form-control" id="in_entrega"
+                                    name="in_entrega"
+                                    data-live-search="true" title="-- Tipo de Entrega --" >
+                                <option value="Rota">Rota</option>
+                                <option value="AS">AS</option>
+                                <option value="Empurrada">Empurrada</option>
+                            </select>
                         </div>
                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
                             <label for="sl_desp" class="label_comp_forms">
                                 Placa
                             </label>
-                            <input type="text" class="form-control" name="in_placa"
-                                           id="in_placa" disabled="disabled"/>
+                            <input type="text" class="form-control" name="in_placa" id="in_placa" disabled="disabled"/>
                         </div>
                     </div>
                     <div class="d-flex justify-content-between align-items-between w-100">
@@ -87,7 +91,6 @@
                                    placeholder="Valor unit." />
                         </div>
                     </div>
-
                     <div class="d-flex justify-content-between align-items-between w-100">
                         <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                             <label for="tipo_descarga" class="label_comp_forms">
@@ -96,6 +99,7 @@
                             <select class="selectpicker form-control" id="tipo_descarga"
                                     name="tipo_descarga"
                                     data-live-search="true" title="-- Tipo de descarga --">
+                                <option value="0" selected="selected"></option>
                                 <option value="1">Por Entrega</option>
                                 <option value="2">Por Paleta</option>
                                 <option value="3">Por Caixa</option>
@@ -112,7 +116,6 @@
                                 <option value="1" selected="selected">Pontual</option>
                             </select>
                         </div>
-
                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
                             <label for="sl_desp" class="label_comp_forms">
                                 Despesa
@@ -124,14 +127,13 @@
                                 <option value="1" selected="selected">Serviço</option>
                             </select>
                         </div>
-
-                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
+                         <div class="d-none flex-column w-100" style="padding-left: 0.25rem;" >
                             <label for="sub_categoria" class="label_comp_forms">
                                 Subcategoria
                             </label>
                             <select class="selectpicker form-control" id="sub_categoria"
                                     name="sub_categoria"
-                                    data-live-search="true" disabled="disabled" >
+                                    data-live-search="true" >
                                 <option value="0">Taxa de descarga ROTA</option>
                                 <option value="1">Taxa de descarga AS</option>
                             </select>
@@ -143,11 +145,9 @@
                         </label>
                         <div id="div_comprovante">
                             <input type="file" name="fl_comp_pagamento" id="fl_comp_pagamento" class="containerApp"
-                            accept="image/*"/>
+                            accept="application/pdf"/>
                         </div>
-
                     </div>
-
                     <div class="d-flex justify-content-between align-items-between w-100 mb-3" style="margin-top: 1rem;">
                         <div class="d-flex flex-column w-100" style="padding-right: 0.25rem;">
                             &nbsp;&nbsp;
@@ -156,7 +156,7 @@
                             &nbsp;&nbsp;
                         </div>
                         <div class="d-flex flex-column w-100" style="padding-left: 0.25rem;">
-                            <input type="hidden" name="hd_tipo_modal" id="hd_tipo_modal"/>
+                            <input type="hidden" name="hd_tipo_modal" id="hd_tipo_modal" value="Mapa2art"/>
                             <button type="button" name="btn_salva_desp_carg_desc"
                                     id="btn_salva_desp_carg_desc"
                                     class="btn btn-primary btn-rounded botaoPrincipal">
@@ -183,7 +183,6 @@
                                 </tr>
                             </thead>
                             <tbody id="tBody2Art_cliente" class="cl_tbody_tab_mapas_clientes_2art">
-
                             </tbody>
                         </table>
                     </div>
