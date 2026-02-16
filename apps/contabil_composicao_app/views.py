@@ -1199,6 +1199,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
     def get(self, request):
         data_hora_atual = datetime.now()
         data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+        data_y_m = data_hora_atual.strftime('%Y-%m')
 
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
@@ -1236,7 +1237,8 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             'obj_usuario_logado': obj_usuario_logado,
             'lista_status_composicao': lista_status_composicao,
             'lista_status_analise': lista_status_analise,
-            'lista_status_reg': lista_status_reg
+            'lista_status_reg': lista_status_reg,
+            'data_y_m': data_y_m
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
@@ -2137,7 +2139,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    #print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas

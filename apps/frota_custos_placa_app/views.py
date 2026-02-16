@@ -1,3 +1,4 @@
+import locale
 from datetime import datetime
 
 from django.http import JsonResponse
@@ -5,6 +6,7 @@ from django.shortcuts import render
 from django.views import View
 
 from apps.benner_app.views import ConexaoBancoBenner
+from apps.estrut_org_app.models import Filial
 from apps.frota_custos_placa_app.models import Razao_Frota, Item_Cluster, Os_Razao_Frota
 from apps.usuario_app.models import Usuario
 
@@ -15,54 +17,56 @@ class Frm_Custos_Placa_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.filter(cod_usu=id_usu_session).first()
-        lista_projetos = []
+        lista_dic_filiais = []
         logo_empresa = ''
         cor_padrao = ''
         if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12:
             logo_empresa = 'icons/logo-branca.png'
             cor_padrao = '#f46424'
-            lista_projetos_benner = (ConexaoBancoBenner()
-                                     .retorna_projetos_by_empresa(
-                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
-            for proj in lista_projetos_benner:
-                if any(x in proj.nome_proj for x in ('ROTA', 'TERCEIROS', 'ARMAZEM', 'EQUIPAMENTO', 'AUTO SERVIÇO', 'APOIO', 'UDC'))\
-                        and '(INATIVO)' not in proj.nome_proj:
-                    lista_projetos.append(proj)
+            lista_obj_filiais = Filial.objects.filter(cod_empresa=12, ativo=1).exclude(cod_filial__in=[34,57,89])
+            for fil in lista_obj_filiais:
+                f = {
+                    'handle_filial': fil.handle_benner,
+                    'nome_filial': fil.desc_filial
+                }
+                lista_dic_filiais.append(f)
         elif obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 17:
             logo_empresa = 'icons/logo-small-deep.png'
             cor_padrao = '#3b8eed' ##3378ad
-            lista_projetos_benner_deep = (ConexaoBancoBenner().retorna_projetos_by_empresa(
-                obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
-            for proj1 in lista_projetos_benner_deep:
-                if any(x in proj1.nome_proj for x in
-                       ('OPERACIONAL', 'TRANSPORTE')) and '(INATIVO)' not in proj1.nome_proj:
-                    lista_projetos.append(proj1)
-
-            lista_projetos_benner_na_conlog = (ConexaoBancoBenner().retorna_projetos_by_empresa(12))
-            '''143 - OPERACIONAL UEL - GLD
-            1060 - OPERACIONAL RIO BRILHANTE - GLD'''
-            for proj2 in lista_projetos_benner_na_conlog:
-                if proj2.handle_proj in (143, 380, 390, 875, 1060, 912, 916):
-                    lista_projetos.append(proj2)
+            lista_obj_filiais_deep = Filial.objects.filter(cod_empresa=17, ativo=1).exclude(cod_filial__in=[34, 57, 89])
+            lista_obj_filiais_conlog = Filial.objects.filter(cod_empresa=12, ativo=1, cod_filial__in=[34, 57, 89])
+            for fil in lista_obj_filiais_deep:
+                f = {
+                    'handle_filial': fil.handle_benner,
+                    'nome_filial': fil.desc_filial
+                }
+                lista_dic_filiais.append(f)
+            for fil in lista_obj_filiais_conlog:
+                f = {
+                    'handle_filial': fil.handle_benner,
+                    'nome_filial': fil.desc_filial
+                }
+                lista_dic_filiais.append(f)
 
 
         context = {
             'cod_empresa': obj_usuario_logado.cod_filial.cod_empresa.cod_empresa,
             'logo_empresa': logo_empresa,
             'cor_padrao': cor_padrao,
-            'lista_projetos_benner': lista_projetos
+            'lista_dic_filiais': lista_dic_filiais
         }
         return render(request, 'frota_custos_placa_app/frm_custos_placa.html', context)
 
 class Frm_Custos_Placa_Proj_View(View):
     def get(self, request):
-        lista_handle_proj_frm = request.GET['lista_handle_proj']
-        lista_handle_tipo_contas_frm = request.GET['lista_handle_tipo_contas']
+        handle_filial_frm = request.GET['handle_filial']
         lista_handle_contas_frm = request.GET['lista_handle_contas']
         comp_frm = request.GET['comp']
 
+        locale.setlocale(locale.LC_MONETARY, 'pt-BR')
+
         df_custos_placas = (ConexaoBancoBenner()
-                            .retorna_df_razao_placas(lista_handle_proj_frm, lista_handle_tipo_contas_frm,
+                            .retorna_df_razao_placas(handle_filial_frm,
                                                      comp_frm.split('-')[0], comp_frm.split('-')[1], lista_handle_contas_frm))
         #df_custos_placas.to_excel('df_custos_placas.xlsx')
         df_group_placas_contas = df_custos_placas[['PLACA', 'NOME_PROJETO', 'desc_tipo_conta', 'HANDLE_CONTA',
@@ -70,10 +74,21 @@ class Frm_Custos_Placa_Proj_View(View):
                                                    'desc_tipo_doc','HISTORICO', 'VAL_LANC','desc_cluster',
                                                    'NOME_FORNECEDOR', 'handle_lan', 'HANDLE_PROJETO','COMPETENCIA',
                                                    'DATA_LANC', 'handle_fn_doc', 'codigo_os', 'desc_tipo_os',
-                                                   'cod_os_razao_frota', 'handle_lanc_cc']].reset_index()
+                                                   'cod_os_razao_frota', 'handle_lanc_cc', 'handle_filial']].reset_index()
 
         df_contas_placa_periodo = df_custos_placas[['HANDLE_CONTA', 'NOME_CONTA']].drop_duplicates().reset_index()
-        df_group_placas_contas.to_excel('df_group_placas_contas.xlsx')
+        #df_group_placas_contas.to_excel('df_group_placas_contas.xlsx')
+
+        df_resumo_filial = df_custos_placas.groupby(['handle_filial', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index()
+        df_resumo_filial['VAL_LANC'] = df_resumo_filial['VAL_LANC'].apply(lambda x : locale.currency(x, grouping=True, symbol=None))
+
+        df_resumo_projeto = df_custos_placas.groupby(['NOME_PROJETO', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index()
+        df_resumo_projeto['VAL_LANC'] = df_resumo_projeto['VAL_LANC'].apply(
+            lambda x: locale.currency(x, grouping=True, symbol=None))
+
+        df_resumo_projeto_placa = df_custos_placas.groupby(['NOME_PROJETO', 'PLACA', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index()
+        df_resumo_projeto_placa['VAL_LANC'] = df_resumo_projeto_placa['VAL_LANC'].apply(
+            lambda x: locale.currency(x, grouping=True, symbol=None))
 
         dic_dados_razao = []
         for index, row in df_group_placas_contas.iterrows():
@@ -151,7 +166,7 @@ class Frm_Custos_Placa_Proj_View(View):
                 'nome_fornec': df_group_placas_contas.loc[index, 'NOME_FORNECEDOR'],
                 'tipo_lancamento': df_group_placas_contas.loc[index, 'tipo_lancamento'],
                 #'desc_tipo_doc': df_group_placas_contas.loc[index, 'desc_tipo_doc'],
-                'val_lanc':df_group_placas_contas.loc[index, 'VAL_LANC'],
+                'val_lanc': locale.currency(df_group_placas_contas.loc[index, 'VAL_LANC'], grouping=True, symbol=None),
                 'obs': df_group_placas_contas.loc[index, 'HISTORICO'],
                 'cod_cluster': cod_cluster,
                 'desc_cluster': desc_cluster,
@@ -168,21 +183,16 @@ class Frm_Custos_Placa_Proj_View(View):
 
 
 
-        '''lista_contas = []
-        for index, row in df_contas_placa_periodo.iterrows():
-            dic_contas = {
-                'handle_conta': int(df_contas_placa_periodo.loc[index, 'HANDLE_CONTA']),
-                'desc_conta': df_contas_placa_periodo.loc[index, 'NOME_CONTA']
-            }
-            lista_contas.append(dic_contas)'''
-
         lista_cluster = list(Item_Cluster.objects.all().order_by('desc_item_cluster').values('cod_item_cluster', 'desc_item_cluster'))
 
 
         data = dict()
         data = {
             'dic_dados_razao': dic_dados_razao,
-            'lista_cluster': lista_cluster
+            'lista_cluster': lista_cluster,
+            'dic_resumo_filial': df_resumo_filial.to_dict(orient='records'),
+            'dic_resumo_projeto': df_resumo_projeto.to_dict(orient='records'),
+            'dic_projeto_placa': df_resumo_projeto_placa.to_dict(orient='records')
         }
         #return render(request, 'frota_custos_placa_app/frm_lista_placas_proj.html', context)
         return JsonResponse(data, safe=False)
@@ -209,7 +219,10 @@ class Frm_OS_Razao_Conta_View(View):
         obj_razao_conta = Razao_Frota.objects.get(pk=int(cod_razao_frota_frm))
         lista_obj_os_razao_conta = list(Os_Razao_Frota.objects.filter(cod_razao_frota = obj_razao_conta)
                                         .values('desc_tipo_os', 'cod_os', 'desc_os', 'desc_prod', 'qtd_prod',
-                                                'desc_conj', 'obs_os', 'cod_os_razao_frota', 'eh_cluster'))
+                                                'desc_conj', 'obs_os', 'cod_os_razao_frota', 'eh_cluster',
+                                                'cod_razao_frota__historico', 'desc_tipo_os', 'cod_razao_frota__nome_fornecedor',
+                                                'cod_razao_frota__doc_contabil', 'cod_razao_frota__desc_projeto',
+                                                'cod_razao_frota__desc_tipo_conta'))
         dados = dict()
         dados  = {
             'lista_obj_os_razao_conta': lista_obj_os_razao_conta
@@ -247,12 +260,12 @@ class Frm_OS_Razao_Conta_View(View):
 
 class Comp_SL_Contas_View(View):
     def get(self, request):
-        lista_handle_proj_frm = request.GET['lista_handle_proj']
-        lista_handle_tipo_contas_frm = request.GET['lista_handle_tipo_contas']
+        handle_filial_frm = request.GET['handle_filial']
+        #lista_handle_tipo_contas_frm = request.GET['lista_handle_tipo_contas']
         comp_frm = request.GET['comp']
 
         lista_contas_periodo = (ConexaoBancoBenner()
-                            .retorna_contas_razao_placas_do_periodo(lista_handle_proj_frm, lista_handle_tipo_contas_frm,
+                            .retorna_contas_razao_placas_do_periodo(handle_filial_frm,
                                                      comp_frm.split('-')[0], comp_frm.split('-')[1]))
         dados = dict()
         dados = {
