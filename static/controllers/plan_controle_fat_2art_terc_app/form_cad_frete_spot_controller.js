@@ -143,9 +143,8 @@ $(document).on('click','button', function(){
         });
     }
     else if (nomeDoButton == "btnCadFreteTerceiros") {
-        $("#hiddenCodCadFreteSpot").val("");   
+        //$("#hiddenCodCadFreteSpot").val("");
         $("#listProjetosCadFreteSpot").val($("#listProjetosPesqCadFreteTerc").val());
-        $("#listProjetosCadFreteSpot").prop("disabled", false);
         $("#listProjetosCadFreteSpot").selectpicker('refresh');
 
         $("#listTipoPessoaCadFreteSpot").val("0");
@@ -165,13 +164,13 @@ $(document).on('click','button', function(){
         $("#textFieldValPedagioMin").val("0,00");
         $("#textFieldValCPRBMin").val("0,00");
         $("#textFieldValLucroMin").val("0,00");
+
         $("#textFieldQtdMax").val("0");
         $("#textFieldValFreteCarreteiroMax").val("0,00");
         $("#textFieldValDescargaMax").val("0,00");
         $("#textFieldValPedagioMax").val("0,00");
         $("#textFieldValCPRBMax").val("0,00");
-        $("#textFieldValLucroMax").val("0,00");         
-
+        $("#textFieldValLucroMax").val("0,00");
         
         $("input[type=text][name=textFieldValFreteCarreteiroMin]").mask('###0,00', {reverse: true});	
         $("input[type=text][name=textFieldValDescargaMin]").mask('###0,00', {reverse: true});	
@@ -186,6 +185,8 @@ $(document).on('click','button', function(){
 
         
         $("#hiddenCodCadFreteSpot").val('0');
+        $("#dv_btn_habilita_edicao_reg_frete_spot").html("");
+        bloqueia_desbloqueia_campos_cad_frete(false);
         $("#modalCadFreteSpot").show();
 
     }
@@ -266,11 +267,11 @@ $(document).on('click','button', function(){
         });    
     }
     else if (nomeDoButton == "btnEditaCadFreteSpot") {
+        bloqueia_desbloqueia_campos_cad_frete(true);
         var varIndiceListaDadosCadFreteSpot =  valButton;
 
         $('#hiddenCodCadFreteSpot').val(listaDados[varIndiceListaDadosCadFreteSpot][27]);
         $("#listProjetosCadFreteSpot").val($('#listProjetosPesqCadFreteTerc').val());
-        $("#listProjetosCadFreteSpot").prop("disabled", true);
         $("#listProjetosCadFreteSpot").selectpicker('refresh');
         let let_data_ini = listaDados[varIndiceListaDadosCadFreteSpot][23].split('/')[2] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][23].split('/')[1] + '-' +
@@ -278,6 +279,7 @@ $(document).on('click','button', function(){
         let let_data_fim = listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[2] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[1] + '-' +
             listaDados[varIndiceListaDadosCadFreteSpot][24].split('/')[0];
+
         $("#textFieldIniVigenciaCadFreteSpot").val(let_data_ini);
 
         $("#textFieldFimVigenciaCadFreteSpot").val(let_data_fim);
@@ -285,10 +287,13 @@ $(document).on('click','button', function(){
 
         $("#listTipoPessoaCadFreteSpot").val(listaDados[varIndiceListaDadosCadFreteSpot][21]);
         $("#listTipoPessoaCadFreteSpot").selectpicker('refresh');
+
         $("#listTipoEntrega").val(listaDados[varIndiceListaDadosCadFreteSpot][22]);
         $("#listTipoEntrega").selectpicker('refresh');
+
         $("#listPerfilVeiculoCadFreteSpot").val(listaDados[varIndiceListaDadosCadFreteSpot][1]);
         $("#listPerfilVeiculoCadFreteSpot").selectpicker('refresh');
+
         $("#textFieldCodRegiao").val(listaDados[varIndiceListaDadosCadFreteSpot][2].split("-")[0]);
         $("#textFieldDescRegiao").val(listaDados[varIndiceListaDadosCadFreteSpot][2].split("-")[1]);
         $("#textFieldQtdMin").val(listaDados[varIndiceListaDadosCadFreteSpot][3]);
@@ -302,7 +307,7 @@ $(document).on('click','button', function(){
         $("#textFieldValDescargaMax").val(listaDados[varIndiceListaDadosCadFreteSpot][14]);
         $("#textFieldValPedagioMax").val(listaDados[varIndiceListaDadosCadFreteSpot][15]);
         $("#textFieldValCPRBMax").val(listaDados[varIndiceListaDadosCadFreteSpot][16]);
-        $("#textFieldValLucroMax").val(listaDados[varIndiceListaDadosCadFreteSpot][17])
+        $("#textFieldValLucroMax").val(listaDados[varIndiceListaDadosCadFreteSpot][17]);
 
         $("input[type=text][name=textFieldValFreteCarreteiroMin]").mask('###0,00', {reverse: true});	
         $("input[type=text][name=textFieldValDescargaMin]").mask('###0,00', {reverse: true});	
@@ -314,6 +319,18 @@ $(document).on('click','button', function(){
         $("input[type=text][name=textFieldValPedagioMax]").mask('###0,00', {reverse: true});	
         $("input[type=text][name=textFieldValCPRBMax]").mask('###0,00', {reverse: true});	
         $("input[type=text][name=textFieldValLucroMax]").mask('###0,00', {reverse: true});
+
+        let let_btn_habilita_edicao_reg = `
+            <button type="button" name="btnHabilitarEdicaoRegCadFreteSpot"
+                    id="btnHabilitarEdicaoRegCadFreteSpot"
+                    class="btn btn-primary btn-rounded botaoPrincipal"
+                    value="${listaDados[varIndiceListaDadosCadFreteSpot][27]}"
+                    title="Clique aqui para verifica se não há vinculos para poder liberar alterações">
+                <i class="fa-regular fa-pen-to-square"></i>
+                Habilitar Edição
+            </button>
+        `;
+        $("#dv_btn_habilita_edicao_reg_frete_spot").html(let_btn_habilita_edicao_reg);
 
         $("#modalCadFreteSpot").show();         
 
@@ -395,6 +412,54 @@ $(document).on('click','button', function(){
         });
 
     }
+    else if ( nomeDoButton == "btnHabilitarEdicaoRegCadFreteSpot") {
+        var varCodRegistroCadFreteSpot = valButton;
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao': 'registro',
+                'cod_cad_frete': varCodRegistroCadFreteSpot
+            },
+            url:"/plan_controle_fat_2art_terc_app/verifica_mapas_vinculado_ao_frete",
+            success: function(dados){
+                if(dados.qtd_obj_mapas > 0){
+                    let let_msg = `
+                        ${dados.qtd_obj_mapas} mapas vinculados.
+                    `;
+                    $.gritter.add({
+                        title: 'Não é possível habilitar a edição!',
+                        text: let_msg,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                } else {
+                    $.gritter.add({
+                        title: 'Atenção!',
+                        text: 'Edição liberada. Não há mapas vinculados!',
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
+                    bloqueia_desbloqueia_campos_cad_frete(false);
+                    $("#textFieldFimVigenciaCadFreteSpot").prop("readonly", dados.campo_readonly );
+                }
+
+
+
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    }
 
 
 
@@ -427,6 +492,7 @@ function povoa_tab_fretes_terc(){
     $.ajax({
         url:"/plan_controle_fat_2art_terc_app/pesquisa_registros_cad_frete_spot",
         data: {
+            'transacao': 'periodo',
             'cod_proj'    :   varCodProjeto,
             'periodo_vig'  :   varDataVigencia
 
@@ -710,3 +776,39 @@ $(document).on('change','#fl_atualiza_valores_cad_frete_por_id', function(){
     });
 
 });
+
+
+function bloqueia_desbloqueia_campos_cad_frete(status){
+    $("#listProjetosCadFreteSpot").prop("disabled", status);
+    $("#listProjetosCadFreteSpot").selectpicker('refresh');
+
+    $("#listTipoPessoaCadFreteSpot").prop('disabled', status);
+    $("#listTipoPessoaCadFreteSpot").selectpicker('refresh');
+
+    $("#textFieldIniVigenciaCadFreteSpot").prop('readonly', status);
+    $("#textFieldFimVigenciaCadFreteSpot").prop('readonly', status);
+
+    $("#listTipoEntrega").prop('disabled', status);
+    $("#listTipoEntrega").selectpicker('refresh');
+
+    $("#listPerfilVeiculoCadFreteSpot").prop('disabled', status);
+    $("#listPerfilVeiculoCadFreteSpot").selectpicker('refresh');
+
+    $("#textFieldCodRegiao").prop('readonly', status);
+
+    $("#textFieldDescRegiao").prop('readonly', status);
+
+    $("#textFieldQtdMin").prop('readonly', status);
+    $("#textFieldValFreteCarreteiroMin").prop('readonly', status);
+    $("#textFieldValDescargaMin").prop('readonly', status);
+    $("#textFieldValPedagioMin").prop('readonly', status);
+    $("#textFieldValCPRBMin").prop('readonly', status);
+    $("#textFieldValLucroMin").prop('readonly', status);
+
+    $("#textFieldQtdMax").prop('readonly', status);
+    $("#textFieldValFreteCarreteiroMax").prop('readonly', status);
+    $("#textFieldValDescargaMax").prop('readonly', status);
+    $("#textFieldValPedagioMax").prop('readonly', status);
+    $("#textFieldValCPRBMax").prop('readonly', status);
+    $("#textFieldValLucroMax").prop('readonly', status);
+}

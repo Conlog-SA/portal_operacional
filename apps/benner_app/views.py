@@ -1844,7 +1844,7 @@ class ConexaoBancoBenner():
 
         return lista_veiculos_venda
 
-    def retorna_df_razao_placas(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia, lista_handle_contas):
+    def retorna_df_razao_placas(self, handle_filial, ano_competencia, mes_competencia, lista_handle_contas):
 
         sql_razao_placas = (
             f'''
@@ -1884,7 +1884,8 @@ class ConexaoBancoBenner():
                     /* 22 - Movimentação variação de estoque */
                     LAN.ORIGEM					AS	cod_origem_lancamento,
                     COALESCE(prod_lan.PRODUTO, 0)
-        							            AS	handle_prod                    
+        							            AS	handle_prod,
+        		    LAN.FILIAL                  AS  handle_filial                 
               FROM  CT_LANCAMENTOS LAN (NOLOCK)  
               LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
                 ON 	(LAN_CC.LANCAMENTO = LAN.HANDLE)  
@@ -1910,8 +1911,8 @@ class ConexaoBancoBenner():
                AND  YEAR(LAN.COMPETENCIA) = {ano_competencia}
                AND  MONTH(LAN.COMPETENCIA) = {mes_competencia}
                AND	CT.NOME IS NOT NULL
-               AND	CT.NIVELSUPERIOR in ({lista_handle_tipo_contas})
-               AND	LAN_CC.PROJETO in ({lista_handle_proj})
+               AND	CT.NIVELSUPERIOR in (1267,2295,2442,6881,7217,11485,5444,6922,7027,7085)
+               AND	LAN.FILIAL = {handle_filial}
                AND  LAN.CONTA in ({lista_handle_contas})
                AND  LAN_CC.NATUREZA = 'D'
              ORDER  BY LAN.COMPETENCIA,  
@@ -1919,6 +1920,18 @@ class ConexaoBancoBenner():
                     LAN_CC.PROJETO;	
         '''
         )
+        '''
+            1267 - VEICULOS PRÓPRIOS CONLOG
+            2295 - EQUIPAMENTOS CONLOG
+            2442 - VEICULOS DE AGREGADOS E TERCEIROS CONLOG
+            6881 - FROTA LEVE CONLOG
+            7217 - LOCADOS/COMODATADOS CONLOG
+            11485 - VEICULOS DE AGREGADOS E TERCEIROS (NOVO) CONLOG
+            5444 - EQUIPAMENTOS DEEP
+            6922 - VEICULOS PROPRIOS DEEP
+            7027 - VEICULOS DE AGREGADOS E TERCEIROS DEEP
+            7085 - FROTA LEVE ALUGADA DEEP
+        '''
         #print(sql_razao_placas)
         df_razao_placas = pd.read_sql(sql_razao_placas, self.__conn)
         df_razao_placas['codigo_os'] = ''
@@ -2194,7 +2207,7 @@ class ConexaoBancoBenner():
 
 
 
-    def retorna_contas_razao_placas_do_periodo(self, lista_handle_proj, lista_handle_tipo_contas, ano_competencia, mes_competencia):
+    def retorna_contas_razao_placas_do_periodo(self, handle_filial_frm, ano_competencia, mes_competencia):
         lista_dic_contas = []
         cursor = self.__conn.cursor()
         sql_razao_contas = (
@@ -2227,12 +2240,25 @@ class ConexaoBancoBenner():
                AND  YEAR(LAN.COMPETENCIA) = {ano_competencia}
                AND  MONTH(LAN.COMPETENCIA) = {mes_competencia}
                AND	CT.NOME IS NOT NULL
-               AND	CT.NIVELSUPERIOR in ({lista_handle_tipo_contas})
-               AND	LAN_CC.PROJETO in ({lista_handle_proj})
+               AND	CT.NIVELSUPERIOR in (1267,2295,2442,6881,7217,11485,5444,6922,7027,7085)
+               AND	LAN.FILIAL =  {handle_filial_frm}
                AND  LAN_CC.NATUREZA = 'D'
              ORDER  BY 2;	
             '''
         )
+
+        '''
+        1267 - VEICULOS PRÓPRIOS CONLOG
+        2295 - EQUIPAMENTOS CONLOG
+        2442 - VEICULOS DE AGREGADOS E TERCEIROS CONLOG
+        6881 - FROTA LEVE CONLOG
+        7217 - LOCADOS/COMODATADOS CONLOG
+        11485 - VEICULOS DE AGREGADOS E TERCEIROS (NOVO) CONLOG
+        5444 - EQUIPAMENTOS DEEP
+        6922 - VEICULOS PROPRIOS DEEP
+        7027 - VEICULOS DE AGREGADOS E TERCEIROS DEEP
+        7085 - FROTA LEVE ALUGADA DEEP
+        '''
 
         cursor.execute(sql_razao_contas)
         registros_cursor = cursor.fetchall()

@@ -48,8 +48,7 @@ $(document).on('click', 'button', function(){
     } else if (let_nome_btn == 'btn_seleciona_todas_tipo_veic_equip_frm_custos_placa') {
         $("#sl_tipo_veic_equip_custos_placa").selectpicker('selectAll');
     } else if ( let_nome_btn == 'btn_gera_dados_custos_placas_proj' ) {
-        let let_lista_handle_proj = $("#sl_proj_custos_placa").val().toString();
-        let let_lista_handle_tipo_contas = $("#sl_tipo_veic_equip_custos_placa").val().toString();
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
         let let_lista_handle_contas = $("#sl_conta_frm_custos_placa").val().toString();
         let let_comp = $("#dt_comp_frm_custos_placa").val();
 
@@ -58,14 +57,78 @@ $(document).on('click', 'button', function(){
         $.ajax({
             type: 'GET',
             data: {
-                'lista_handle_proj'         :   let_lista_handle_proj,
-                'lista_handle_tipo_contas'  :   let_lista_handle_tipo_contas,
-                'lista_handle_contas'       :   let_lista_handle_contas,
-                'comp'                      :   let_comp
+                'handle_filial'         :   let_handle_filial,
+                'lista_handle_contas'   :   let_lista_handle_contas,
+                'comp'                  :   let_comp
             },
             url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
             success: function(dados){
                 //$("#div_placas_frm_custos_placa").html(dados);
+                let let_conteudo_div_tab_resumo_custos_fil = ``;
+                dados.dic_resumo_filial.forEach(conta => {
+                    let_conteudo_div_tab_resumo_custos_fil += `
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                ${conta.NOME_CONTA}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25">
+                                ${conta.VAL_LANC}
+                            </div>
+                        </div>
+                    `;
+                });
+                $("#div_tab_resumo_custos_fil").html(let_conteudo_div_tab_resumo_custos_fil);
+
+
+                let let_div_tab_resumo_custos_proj = ``;
+                dados.dic_resumo_projeto.forEach(proj => {
+                    let_div_tab_resumo_custos_proj += `
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                Projeto : ${proj.NOME_PROJETO}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                ${proj.NOME_CONTA}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25">
+                                R$ ${proj.VAL_LANC}
+                            </div>
+                        </div>
+                    `;
+                });
+                $("#div_tab_resumo_custos_proj").html(let_div_tab_resumo_custos_proj);
+
+
+                let let_div_tab_resumo_custos_placa = ``;
+                dados.dic_projeto_placa.forEach(placa => {
+                    let_div_tab_resumo_custos_placa += `
+                        <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                PLACA : ${placa.PLACA}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                Projeto : ${placa.NOME_PROJETO}
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex justify-content-between align-items-between w-50">
+                                ${placa.NOME_CONTA}
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-25">
+                                R$ ${placa.VAL_LANC}
+                            </div>
+                        </div>
+                    `;
+                });
+                $("#div_tab_resumo_custos_placa").html(let_div_tab_resumo_custos_placa);
 
                 lista_placas_razao = [];
                 dados.dic_dados_razao.forEach(doc => {
@@ -85,12 +148,12 @@ $(document).on('click', 'button', function(){
                     let_comp_cluster += `</select>`;
 
                     let let_tem_os = doc.tem_os;
-                    let let_btn_visualiza_oss = `
+                    let let_btn_visualiza_os = `
                         <i class="fa-regular fa-file" style="color: ${let_cor_empresa};"
                            title='Sem OS para visualizar.'></i>
                     `;
                     if (let_tem_os == 'S'){
-                        let_btn_visualiza_oss = `
+                        let_btn_visualiza_os = `
                             <button type='button' name='btn_abri_modal_lista_os_razao_conta'
                                 id='btn_abri_modal_lista_os_razao_conta_${doc.cod_razao_frota}'
                                 class='btn btn-rounded btn-space'
@@ -102,19 +165,12 @@ $(document).on('click', 'button', function(){
 
 
                     reg = [
-                        doc.placa,
+                        "<i class='fa-solid fa-caret-right'></i>&nbsp;&nbsp;"+doc.placa,
                         doc.conta,
-                        doc.val_lanc,
-                        doc.codigo_os,
-                        doc.desc_tipo_os,
-                        doc.obs,
-                        doc.nome_fornec,
-                        doc.num_doc_contabil,
                         doc.data_lancamento,
-                        doc.nome_projeto,
-                        doc.desc_tipo_conta,
+                        doc.val_lanc,
                         let_comp_cluster,
-                        let_btn_visualiza_oss
+                        let_btn_visualiza_os
                     ];
                     lista_placas_razao.push(reg);
                 });
@@ -139,50 +195,15 @@ $(document).on('click', 'button', function(){
                     "columns": [
                         { title: "Placa", class: "col_placa" },
                         { title: "Conta", class: "col_conta" },
-                        { title: "R$ Valor", class:"col_val" },
-                        { title: "OS", class: "col_os" },
-                        { title: "Tipo OS", class: "col_tip_os" },
-                        { title: "Histórico", class: "col_hist" },
-                        { title: "Fornecedor", class: "col_fornec" },
-                        { title: "Núm. Contábil", class: "col_num_cont" },
                         { title: "Dt. Lançamento", class: "col_dt_lanc" },
-                        { title: "Projeto", class: "col_proj" },
-                        { title: "Tipo Conta", class: "col_tipo_conta" },
+                        { title: "R$ Valor", class:"col_val" },
                         { title: "Cluster", class: "col_cluster" },
                         { title: "Detalhes OS", class:"col_detail_os" }
                     ],
-                    "initComplete": function () {
-                        this.api()
-                            .columns([0,1,2,3,7,10])
-                            .every(function () {
-                                let column = this;
-
-                                // Create select element
-                                let select = document.createElement('select');
-                                select.add(new Option(''));
-                                column.footer().replaceChildren(select);
-
-                                // Apply listener for user change in value
-                                select.addEventListener('change', function () {
-                                    column
-                                        .search(select.value, {exact: true})
-                                        .draw();
-                                });
-
-                                // Add list of options
-                                column
-                                    .data()
-                                    .unique()
-                                    .sort()
-                                    .each(function (d, j) {
-                                        select.add(new Option(d));
-                                    });
-                            });
-                    },
                     "columnDefs": [
-                        {"className": "dt-center", "targets": [8, 4]},
-                        {"className": "dt-left", "targets": [0,1,10]},
-                        {"className": "dt-right", "targets": [2,3,5,6,7,9,11]}
+                        {"className": "dt-center", "targets": [1,4,5]},
+                        {"className": "dt-left", "targets": [0,]},
+                        {"className": "dt-right", "targets": [2,3]}
                     ],
                     "language": {
                         "decimal": ",",
@@ -252,9 +273,9 @@ $(document).on('click', 'button', function(){
                     <i class="fa-solid fa-caret-right" style="color: ${let_cor_empresa}"></i>
                 `;
 
+                let div_os = `
 
-
-                lista_os_razao_conta = [];
+                `;
                 dados.lista_obj_os_razao_conta.forEach(os => {
                     let let_checked = '';
                     if (os.eh_cluster == 1) {
@@ -266,28 +287,106 @@ $(document).on('click', 'button', function(){
                             name="ck_os_razao_conta">
                     `;
 
-                    $("#tab_lista_os_razao_placa tbody").append(
-                        `
-                        <tr>
-                            <td style="width: 2%;padding: 0.7rem;">${let_img}</td>
-                            <td style="width: 3%;padding: 0.7rem;">${os.desc_tipo_os}</td>
-                            <td style="width: 5%;padding: 0.7rem;">${os.cod_os}</td>
-                            <td style="width: 15%;padding: 0.7rem;white-space: normal;">${os.desc_os}</td>
-                            <td style="width: 15%;padding: 0.7rem;white-space: normal;">${os.desc_prod}</td>
-                            <td style="width: 3%;padding: 0.7rem;">${os.qtd_prod}</td>
-                            <td style="width: 5%;padding: 0.7rem;white-space: normal;">${os.desc_conj}</td>
-                            <td style="width: 40%;padding: 0.7rem;white-space: normal;">${os.obs_os}</td>
-                            <td style="max-width:5%;padding: 0.7rem;">${let_input_cluster_check}</td>
-                        </tr>
-                        `
-                    );
+                    let let_obs_os = `&nbsp;&nbsp;`;
+                    if( os.obs_os != null && os.obs_os != ''){
+                        let_obs_os = os.obs_os;
+                    }
 
+                    let let_fornecedor = `&nbsp;&nbsp;`;
+                    if( os.cod_razao_frota__nome_fornecedor != null ){
+                        let_fornecedor = os.cod_razao_frota__nome_fornecedor;
+                    }
 
+                    div_os += `
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>${let_img}&nbsp;&nbsp;OS</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.cod_os}</div>
+                            </div>
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Tipo OS</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.desc_tipo_os}</div>
+                            </div>
+                            <div class="d-flex flex-column w-100 justify-content-center align-items-end" style="margin-right: 0.25rem;">
+                                ${let_input_cluster_check}
+                            </div>
+                        </div>
 
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Item</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.desc_prod}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Qtd.</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.qtd_prod}</div>
+                            </div>
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Conjunto</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.desc_conj}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Observação OS</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                      style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${let_obs_os}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div><i class="fa-solid fa-receipt"></i>&nbsp;&nbsp;Núm. Contábil</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.cod_razao_frota__doc_contabil}</div>
+                            </div>
+                            <div class="d-flex flex-column w-100 align-items-start" style="margin-right: 0.25rem;">
+                                <div>Tipo Conta</div>
+                                <div class="d-flex justify-content-end align-items-center w-100 p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.cod_razao_frota__desc_tipo_conta}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Fornecedor</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${let_fornecedor}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Histórico lançamento</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.cod_razao_frota__historico}</div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-between w-100">
+                            <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+                                <div>Projeto</div>
+                                <div class="d-flex justify-content-end align-items-center p-1"
+                                     style="background: #FFFFFF;color: #000000;font-size:12px;font-weight:400;">${os.cod_razao_frota__desc_projeto}</div>
+                            </div>
+                        </div>
+                    `;
                 });
-
+                div_os += `
+                    </div>
+                `;
 
                 let_loader_frm_custos_placa.style.display = "none";
+                $("#div_dados_os").html(div_os);
                 $("#modal_lista_os_razao_conta").show();
 
 
@@ -402,7 +501,7 @@ $(document).on('change','input', function(){
 });
 
 
-$(document).on('change','#sl_proj_custos_placa', function(){
+$(document).on('change','#sl_handle_filial_custos_placa', function(){
     atualiza_componente_sl_conta();
 });
 
@@ -415,18 +514,18 @@ $(document).on('change','#dt_comp_frm_custos_placa', function(){
 });
 
 function atualiza_componente_sl_conta(){
-    let let_lista_handle_proj = $("#sl_proj_custos_placa").val().toString();
-    let let_lista_handle_tipo_contas = $("#sl_tipo_veic_equip_custos_placa").val().toString();
+    let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+    //let let_lista_handle_tipo_contas = $("#sl_tipo_veic_equip_custos_placa").val().toString();
     let let_comp = $("#dt_comp_frm_custos_placa").val();
 
-    if( let_lista_handle_proj != '' & let_lista_handle_tipo_contas != '' & let_comp != null & let_comp != '') {
+    if( let_handle_filial != '' && let_comp != null && let_comp != '') {
         let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
         let_loader_frm_custos_placa.style.display = "flex";
         $.ajax({
             type: 'GET',
             data: {
-                'lista_handle_proj'         :   let_lista_handle_proj,
-                'lista_handle_tipo_contas'  :   let_lista_handle_tipo_contas,
+                'handle_filial'         :   let_handle_filial,
+                //'lista_handle_tipo_contas'  :   let_lista_handle_tipo_contas,
                 'comp'                      :   let_comp
             },
             url:"/frota_custos_placa_app/atualiza_comp_sl_contas",

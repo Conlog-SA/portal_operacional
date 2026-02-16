@@ -66,6 +66,8 @@ urlpatterns = [
          name='salva_registro_cad_frete_spot'),
     path('pesquisa_registros_cad_frete_spot', views.Tab_Cad_Fretes_Terc_View.as_view(),
          name='pesquisa_registros_cad_frete_spot'),
+    path('verifica_mapas_vinculado_ao_frete', views.Tab_Cad_Fretes_Terc_View.as_view(),
+         name='verifica_mapas_vinculado_ao_frete'),
     path('retorna_qtd_mapas_pagos_vinculados_cad_frete_spot', views.Tab_Cad_Fretes_Terc_View.as_view(),
          name='retorna_qtd_mapas_pagos_vinculados_cad_frete_spot'),
     path('exclui_registro_cad_frete_spot/<int:pk>/', views.Tab_Cad_Fretes_Terc_View.as_view(),
