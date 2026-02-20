@@ -35,6 +35,10 @@ $(document).on('change', '#cb_responsaveis_contas', function(){
     atualiza_tab_resp_contas();
 });
 
+$(document).on('change', '#dt_pesq_competencia_aba_contas_resp', function(){
+    atualiza_tab_resp_contas();
+});
+
 $(document).on('change','input', function(){
 	let let_nome_inp = $(this).attr('name');
     let let_id_inp = $(this).attr('id');
@@ -282,6 +286,13 @@ $(document).on('change', '#sl_pacs_vincula_resp', function(){
 });
 
 
+$(document).on('change', '#dt_pesq_competencia_aba_resp_pac_contas', function(){
+    atualiza_contas_x_resp_vinculadas();
+    atualiza_comp_sl_contas_vincula_resp();
+
+});
+
+
 function atualiza_tab_resp_contas(){
     let let_loader_frm_contas_responsaveis = document.getElementById("loader_frm_contas_responsaveis");
     let_loader_frm_contas_responsaveis.style.display = "flex";
@@ -289,7 +300,8 @@ function atualiza_tab_resp_contas(){
         type: 'GET',
         url: '/contabil_composicao_app/retorna_contas_responsaveis_selecionados',
         data: {
-            'lista_cod_usuario'   :   $("#cb_responsaveis_contas").val().toString()
+            'lista_cod_usuario'   :   $("#cb_responsaveis_contas").val().toString(),
+            'competencia'         :   $("#dt_pesq_competencia_aba_contas_resp").val()
         },
         dataType: 'json',
         success: function (dados) {
@@ -434,7 +446,8 @@ function atualiza_contas_x_resp_vinculadas(){
         url: '/contabil_composicao_app/retorna_contas_por_pac_e_regs_resp_contas',
         data: {
             'tipo_transacao'    :   'retorna_dados_contas_resp',
-            'cod_pacote'        :  $("#sl_pacs_vincula_resp").val()
+            'cod_pacote'        :  $("#sl_pacs_vincula_resp").val(),
+            'competencia'       :   $("#dt_pesq_competencia_aba_resp_pac_contas").val(),
         },
         dataType: 'json',
         success: function (dados) {
@@ -486,15 +499,18 @@ function atualiza_contas_x_resp_vinculadas(){
             });
             $("#tab_contas_x_resp_vinculadas").DataTable( {
                 "bJQueryUI": true,
-                "pageLength": 5,
                 "destroy": true,
-                "searching": true,
+                "fixedHeader": true,
+                "scrollY": true,
+                "scrollX": true,
+                "scrollCollapse": true,
                 "paging": true,
-                "data":let_lista_reg,
+                "pageLength": 6,
                 "dom": 'Bfrtip',
                 "buttons": [
                     'copyHtml5'
                 ],
+                "data":let_lista_reg,
                 "columns": [
                     { title: "" },
                     { title: "Conta" },

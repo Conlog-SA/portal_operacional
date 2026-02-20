@@ -1844,7 +1844,117 @@ class ConexaoBancoBenner():
 
         return lista_veiculos_venda
 
-    def retorna_df_razao_placas(self, handle_filial, ano_competencia, mes_competencia, lista_handle_contas):
+    def retorna_df_razao_frota(self, handle_filial, ano_competencia, mes_competencia, lista_handle_contas,
+                                    handle_projeto, placa):
+            param_proj = ''
+            if handle_projeto != None:
+                param_proj = f" AND LAN_CC.PROJETO = {handle_projeto} "
+            param_placa = ''
+            if placa != None:
+                param_placa = f" AND CT.NOME = '{placa}' "
+
+            sql_razao_placas = (
+                f'''
+                SELECT  LAN.HANDLE 					AS	handle_lan,
+    		            COALESCE(FN_DOC.HANDLE, 0)	AS	handle_fn_doc,
+                        CAST(LAN.COMPETENCIA AS DATE)             
+                                                    AS  COMPETENCIA,  
+                        CAST(LAN.DATA AS DATE)	    AS	DATA_LANC,  
+                        LAN_CC.PROJETO			    AS	HANDLE_PROJETO,  
+                        PROJ.NOME				    AS	NOME_PROJETO, 
+                        LAN.EMPRESA					AS	cod_empresa_lan,
+                        PROJ.K_NEGOCIOMAXYS			AS	COD_PROJ_PORTAL,
+                        PROJ.CODIGOREDUZIDO			as	COD_REDUZIDO_PROJETO,
+                        LAN.CONTA                   AS  HANDLE_CONTA,  
+                        CONTAS.NOME					AS	NOME_CONTA,
+                        (CASE LAN_CC.NATUREZA  
+                            WHEN 'D' THEN 'Débito' 
+                            ELSE 'Crédito'  
+                        END)                        AS  tipo_lancamento,   
+                        LAN_CC.HANDLE               AS  handle_lanc_cc,
+                        LAN_CC.VALOR                AS  VAL_LANC,   
+                        FORNECEDOR.NOME			    AS	NOME_FORNECEDOR,  
+                        FN_DOC.DOCUMENTODIGITADO	AS	NUM_DOC, 
+                        COALESCE(fn_doc.DOCUMENTOCONTABIL, LAN.DOCUMENTOCONTABIL)
+                        	                        AS	num_doc_contabil,
+                        fn_doc.TIPODOCUMENTO 		AS	handle_tipo_doc,
+                        tipo_doc.NOME				AS	desc_tipo_doc,
+                        CT.HANDLE                   AS  handle_cc, 
+                        CT.NOME						AS	PLACA,  
+                        LAN.COMPLEMENTO				AS	HISTORICO,  
+                        (CASE LAN_CC.NATUREZA  
+                            WHEN 'D' THEN 'Debito'  
+                            ELSE 'Credito'  
+                        END)                        AS  NATUREZA,
+                        CT.NIVELSUPERIOR            AS  handle_nivel_superior,
+                        tipo_conta.NOME             AS  desc_tipo_conta,
+                        /* 22 - Movimentação variação de estoque */
+                        LAN.ORIGEM					AS	cod_origem_lancamento,
+                        COALESCE(prod_lan.PRODUTO, 0)
+            							            AS	handle_prod,
+            		    LAN.FILIAL                  AS  handle_filial                 
+                  FROM  CT_LANCAMENTOS LAN (NOLOCK)  
+                  LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
+                    ON 	(LAN_CC.LANCAMENTO = LAN.HANDLE)  
+                   AND	(LAN_CC.DOCUMENTO = LAN.DOCUMENTO)  
+                  LEFT	JOIN GN_PROJETOS PROJ (NOLOCK)  
+                    ON	(PROJ.HANDLE = LAN_CC.PROJETO)  
+                   AND	(PROJ.EMPRESA = LAN.EMPRESA)  
+                  LEFT	JOIN CT_CC CT (NOLOCK)  
+                    ON	(CT.HANDLE = LAN_CC.CENTROCUSTO)  
+                  LEFT	JOIN CT_CONTAS CONTAS (NOLOCK)  
+                    ON	(CONTAS.HANDLE = LAN.CONTA)  
+                  LEFT	JOIN FN_DOCUMENTOS FN_DOC (NOLOCK)  
+                    ON	(FN_DOC.HANDLE = LAN.LANCAMENTOFINANCEIRO)  
+                  LEFT	JOIN GN_PESSOAS FORNECEDOR (NOLOCK)  
+                    ON	(FORNECEDOR.HANDLE = FN_DOC.PESSOA)
+                  LEFT 	JOIN CT_CC tipo_conta (NOLOCK)
+                    ON	(tipo_conta.HANDLE = CT.NIVELSUPERIOR)  
+                  LEFT 	JOIN FN_TIPOSDOCUMENTOS tipo_doc (NOLOCK) 
+                    ON	(fn_doc.TIPODOCUMENTO = tipo_doc.HANDLE)
+                  LEFT 	JOIN PD_TANQUECONTABILVARIACOES (NOLOCK)  prod_lan
+                    ON	(prod_lan.HANDLE = LAN.LANCAMENTOMOVVARIACAOESTOQUE)
+                 WHERE  LAN.LANCAMENTOGERADO = 'N'   		
+                   AND  YEAR(LAN.COMPETENCIA) = {ano_competencia}
+                   AND  MONTH(LAN.COMPETENCIA) = {mes_competencia}
+                   AND	CT.NOME IS NOT NULL
+                   AND	CT.NIVELSUPERIOR in (1267,2295,2442,6881,7217,11485,5444,6922,7027,7085)
+                   AND	LAN.FILIAL = {handle_filial}
+                   AND  LAN.CONTA in ({lista_handle_contas})
+                   AND  LAN_CC.NATUREZA = 'D'
+                   {param_proj}
+                   {param_placa}
+                 ORDER  BY LAN.COMPETENCIA,  
+                        LAN.DATA,  
+                        LAN_CC.PROJETO;	
+            '''
+            )
+            '''
+                1267 - VEICULOS PRÓPRIOS CONLOG
+                2295 - EQUIPAMENTOS CONLOG
+                2442 - VEICULOS DE AGREGADOS E TERCEIROS CONLOG
+                6881 - FROTA LEVE CONLOG
+                7217 - LOCADOS/COMODATADOS CONLOG
+                11485 - VEICULOS DE AGREGADOS E TERCEIROS (NOVO) CONLOG
+                5444 - EQUIPAMENTOS DEEP
+                6922 - VEICULOS PROPRIOS DEEP
+                7027 - VEICULOS DE AGREGADOS E TERCEIROS DEEP
+                7085 - FROTA LEVE ALUGADA DEEP
+            '''
+            # print(sql_razao_placas)
+            df_razao_placas = pd.read_sql(sql_razao_placas, self.__conn)
+            self.__conn.close()
+
+            return df_razao_placas
+
+
+    def retorna_df_razao_placas(self, handle_filial, ano_competencia, mes_competencia, lista_handle_contas, handle_projeto, placa):
+        param_proj = ''
+        if handle_projeto != None:
+            param_proj  = f" AND LAN_CC.PROJETO = {handle_projeto} "
+        param_placa = ''
+        if placa != None:
+            param_placa = f" AND CT.NOME = '{placa}' "
 
         sql_razao_placas = (
             f'''
@@ -1915,6 +2025,8 @@ class ConexaoBancoBenner():
                AND	LAN.FILIAL = {handle_filial}
                AND  LAN.CONTA in ({lista_handle_contas})
                AND  LAN_CC.NATUREZA = 'D'
+               {param_proj}
+               {param_placa}
              ORDER  BY LAN.COMPETENCIA,  
                     LAN.DATA,  
                     LAN_CC.PROJETO;	
@@ -2204,7 +2316,6 @@ class ConexaoBancoBenner():
         self.__conn.close()
 
         return df_razao_placas
-
 
 
     def retorna_contas_razao_placas_do_periodo(self, handle_filial_frm, ano_competencia, mes_competencia):

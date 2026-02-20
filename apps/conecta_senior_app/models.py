@@ -12,7 +12,7 @@ class Componente_Colaboradores():
 
 class Registro_Folha_Pagamento():
     def __init__(self,matricula_colab, nome_colab, desc_cargo, desc_filial, desc_projeto, desc_conta_contabil,
-                 cod_evento, desc_evento, proeventos, hora_min_ref, desc_sit_atual):
+                 cod_evento, desc_evento, proeventos, hora_min_ref, desc_sit_atual, cod_calc):
         self.matricula_colab = matricula_colab
         self.nome_colab = nome_colab
         self.desc_cargo = desc_cargo
@@ -24,6 +24,7 @@ class Registro_Folha_Pagamento():
         self.proeventos = proeventos
         self.hora_min_ref = hora_min_ref
         self.desc_sit_atual = desc_sit_atual
+        self.cod_calc = cod_calc
 
 
 class Registro_Provisao_Folha_Analitico_Colab():

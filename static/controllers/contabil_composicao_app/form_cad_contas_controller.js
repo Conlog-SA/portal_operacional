@@ -2212,7 +2212,8 @@ $(document).on('change','input', function(){
 
         }
         let let_competencia = $("#dt_conciliacao_comp_benner").val()
-        if (let_tipo_rel == 'A' && let_competencia == '') {
+        //if (let_tipo_rel == 'A' && let_competencia == '') {
+        if (let_competencia == '') {
 
             $.gritter.add({
                 title: 'Atenção!',
@@ -2232,7 +2233,7 @@ $(document).on('change','input', function(){
                 let_data = {
                     'tipo_rel': let_tipo_rel,
                     'cod_modelo_conta'  :   let_cod_modelo_conta,
-                    'data_competencia'  :   '',
+                    'data_competencia'  :   let_competencia,
                     'nome_resp'         :   $("#cb_resp_contas_comp_detalhado").val().toString(),
                     'lista_pacotes'     :   $("#cb_pac_contas_comp_detalhado").val().toString()
                 }
@@ -3803,12 +3804,23 @@ function gera_conciliacao_comp_benner_detalhado(){
 
 $(document).on('change', '#cb_resp_contas_comp_detalhado', function(){
     let let_lista_nomes_resp = $(this).val().toString();
-    if (let_lista_nomes_resp != ''){
+    let let_competencia = $("#dt_conciliacao_comp_benner").val();
+    if(let_lista_nomes_resp == '' || let_competencia == '') {
+        $.gritter.add({
+            title: 'Atenção!',
+            text: 'Informe responsável de data de competência',
+            image: '/static/icons/triangle-exclamation-solid.svg',
+            sticky: false,
+            time: '',
+        });
+
+    } else {
         $.ajax({
         type: 'GET',
         url: '/contabil_composicao_app/povoa_cb_pac_contas_comp_detalhado',
         data: {
-            'lista_nome_resp'           :  $(this).val().toString()
+            'lista_nome_resp'           :  $(this).val().toString(),
+            'competencia'           :   let_competencia
         },
         dataType: 'json',
         success: function (data) {
@@ -3840,6 +3852,10 @@ $(document).on('change', '#cb_resp_contas_comp_detalhado', function(){
 
 
 $(document).on('change', '#cb_pac_contas_comp_detalhado', function(){
+    fn_limpar_comp_contas_comp_detalhado();
+});
+
+$(document).on('change', '#dt_conciliacao_comp_benner', function(){
     fn_limpar_comp_contas_comp_detalhado();
 });
 

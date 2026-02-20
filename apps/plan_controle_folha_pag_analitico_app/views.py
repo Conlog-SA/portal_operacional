@@ -188,7 +188,8 @@ class Gera_Rel_Folha_Pagamento_View(View):
                         desc_evento = str(df_dados_folha_pag.loc[index, 'evento']),
                         proeventos = locale.currency(round(df_dados_folha_pag.loc[index, 'val_evento'], 2), grouping=True, symbol=None),
                         hora_min_ref = locale.currency(round(df_dados_folha_pag.loc[index, 'horas_ref'], 2), grouping=True, symbol=None),
-                        desc_sit_atual = str(df_dados_folha_pag.loc[index, 'desc_atual_sit'])
+                        desc_sit_atual = str(df_dados_folha_pag.loc[index, 'desc_atual_sit']),
+                        cod_calc=str(df_dados_folha_pag.loc[index, 'cod_cal']),
                     )
                     dados_folha.append(reg.__dict__)
 

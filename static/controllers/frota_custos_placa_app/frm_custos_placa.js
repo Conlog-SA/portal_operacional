@@ -57,182 +57,62 @@ $(document).on('click', 'button', function(){
         $.ajax({
             type: 'GET',
             data: {
+                'transacao'             :   'pesquisa_filial_projeto_placa',
                 'handle_filial'         :   let_handle_filial,
                 'lista_handle_contas'   :   let_lista_handle_contas,
                 'comp'                  :   let_comp
             },
             url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
             success: function(dados){
-                //$("#div_placas_frm_custos_placa").html(dados);
-                let let_conteudo_div_tab_resumo_custos_fil = ``;
-                dados.dic_resumo_filial.forEach(conta => {
-                    let_conteudo_div_tab_resumo_custos_fil += `
-                        <div class="d-flex justify-content-between align-items-between w-100">
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                ${conta.NOME_CONTA}
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25">
-                                ${conta.VAL_LANC}
-                            </div>
+
+                let let_dv_total_filial = `
+                    <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                        <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                            <span style="font-size: 16px;font-weight: 400;">&nbsp;&nbsp;</span>
                         </div>
-                    `;
-                });
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">R$ Orçado</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">R$ Remunerado</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">R$ Realizado</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">% Realizado</span>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                        <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                            <span style="font-size: 16px;font-weight: 400;">TOTAL FILIAL</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">${dados.total_orc_filial}</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">${dados.total_rem_filial}</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">${dados.total_real_filial}</span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center p-2" style="width: 15%;">
+                            <span style="font-size: 16px;font-weight: 400;">100%</span>
+                        </div>
+                    </div>
+                `;
+                $("#dv_total_filial").html(let_dv_total_filial);
+
+
+                let let_conteudo_div_tab_resumo_custos_fil = gera_estrutura_custos_filial(dados.dic_resumo_filial, dados.total_real_filial, dados.total_orc_filial, dados.total_rem_filial);
                 $("#div_tab_resumo_custos_fil").html(let_conteudo_div_tab_resumo_custos_fil);
 
 
-                let let_div_tab_resumo_custos_proj = ``;
-                dados.dic_resumo_projeto.forEach(proj => {
-                    let_div_tab_resumo_custos_proj += `
-                        <div class="d-flex justify-content-between align-items-between w-100">
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                Projeto : ${proj.NOME_PROJETO}
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-between w-100">
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                ${proj.NOME_CONTA}
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25">
-                                R$ ${proj.VAL_LANC}
-                            </div>
-                        </div>
-                    `;
-                });
-                $("#div_tab_resumo_custos_proj").html(let_div_tab_resumo_custos_proj);
+                let let_conteudo_div_tab_resumo_custos_proj = gera_estrutura_custos_projeto(dados.dic_resumo_projeto);
+                $("#div_tab_resumo_custos_proj").html(let_conteudo_div_tab_resumo_custos_proj);
 
-
-                let let_div_tab_resumo_custos_placa = ``;
-                dados.dic_projeto_placa.forEach(placa => {
-                    let_div_tab_resumo_custos_placa += `
-                        <div class="d-flex flex-column justify-content-between align-items-between w-100">
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                PLACA : ${placa.PLACA}
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                Projeto : ${placa.NOME_PROJETO}
-                            </div>
-                        </div>
-                        <div class="d-flex justify-content-between align-items-between w-100">
-                            <div class="d-flex justify-content-between align-items-between w-50">
-                                ${placa.NOME_CONTA}
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25" style="border-bottom: 2px dashed #BDB1A8;">
-                            </div>
-                            <div class="d-flex justify-content-between align-items-between w-25">
-                                R$ ${placa.VAL_LANC}
-                            </div>
-                        </div>
-                    `;
-                });
-                $("#div_tab_resumo_custos_placa").html(let_div_tab_resumo_custos_placa);
-
-                lista_placas_razao = [];
-                dados.dic_dados_razao.forEach(doc => {
-                    let let_comp_cluster = `
-                        <select id="sl_cluster_frm_custos_placa_${doc.cod_razao_frota}"
-                                name="sl_cluster_frm_custos_placa"
-                                style="width: 160px!important;font-size: 10px;"
-                                data-live-search="true">
-                    `;
-                    dados.lista_cluster.forEach(item => {
-                        let let_selected = ``;
-                        if(item.cod_item_cluster == doc.cod_cluster){
-                            let_selected = `selected=selected`;
-                        }
-                        let_comp_cluster += `<option value="${item.cod_item_cluster}" ${let_selected}>${item.desc_item_cluster}</option>`;
-                    });
-                    let_comp_cluster += `</select>`;
-
-                    let let_tem_os = doc.tem_os;
-                    let let_btn_visualiza_os = `
-                        <i class="fa-regular fa-file" style="color: ${let_cor_empresa};"
-                           title='Sem OS para visualizar.'></i>
-                    `;
-                    if (let_tem_os == 'S'){
-                        let_btn_visualiza_os = `
-                            <button type='button' name='btn_abri_modal_lista_os_razao_conta'
-                                id='btn_abri_modal_lista_os_razao_conta_${doc.cod_razao_frota}'
-                                class='btn btn-rounded btn-space'
-                                value='${doc.cod_razao_frota}' title='Visualizar dados da(s) os(s).'>
-                                <i class="fa-solid fa-file" style="color: ${let_cor_empresa};"></i>
-                            </button>
-                        `;
-                    }
-
-
-                    reg = [
-                        "<i class='fa-solid fa-caret-right'></i>&nbsp;&nbsp;"+doc.placa,
-                        doc.conta,
-                        doc.data_lancamento,
-                        doc.val_lanc,
-                        let_comp_cluster,
-                        let_btn_visualiza_os
-                    ];
-                    lista_placas_razao.push(reg);
-                });
-                $("#tab_placas_razao").DataTable({
-                    "bJQueryUI": true,
-                    "destroy": true,
-                    "fixedHeader": true,
-                    "scrollY": "770px",
-                    "scrollX": true,
-                    "scrollCollapse": true,
-                    "paging": true,
-                    "pageLength": 6,
-                    //"responsive": true,
-                    "stateSave": true,
-                    "select": true,
-                    "colReorder": true,
-                    "dom": 'Bfrtip',
-                    "buttons": [
-                        'copyHtml5'
-                    ],
-                    "data":lista_placas_razao,
-                    "columns": [
-                        { title: "Placa", class: "col_placa" },
-                        { title: "Conta", class: "col_conta" },
-                        { title: "Dt. Lançamento", class: "col_dt_lanc" },
-                        { title: "R$ Valor", class:"col_val" },
-                        { title: "Cluster", class: "col_cluster" },
-                        { title: "Detalhes OS", class:"col_detail_os" }
-                    ],
-                    "columnDefs": [
-                        {"className": "dt-center", "targets": [1,4,5]},
-                        {"className": "dt-left", "targets": [0,]},
-                        {"className": "dt-right", "targets": [2,3]}
-                    ],
-                    "language": {
-                        "decimal": ",",
-                        "thousands": ".",
-                        "sProcessing":   "Processando...",
-                        "sLengthMenu":   "Mostrar _MENU_ registros",
-                        "sZeroRecords":  "Não foram encontrados resultados",
-                        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
-                        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
-                        "sInfoFiltered": "",
-                        "sInfoPostFix":  "",
-                        "sSearch":       "Pesquisar:",
-                        "sUrl":          "",
-                        "oPaginate": {
-                            "sFirst":    "Primeiro",
-                            "sPrevious": "Anterior",
-                            "sNext":     "Proximo",
-                            "sLast":     "Último"
-                        },
-                        "buttons":{
-                            "copyTitle": 'Dados Copiados',
-                            "copySuccess": {
-                                _: '%d linhas copiadas',
-                                1: '1 linha copiada'
-                            }
-                        }
-                    }
-                });
-                $("#tab_placas_razao").DataTable().columns.adjust().draw();
+                let let_conteudo_div_tab_resumo_custos_placa = gera_estrutura_custos_placas(dados.dic_resumo_placas);
+                $("#div_tab_resumo_custos_placa").html(let_conteudo_div_tab_resumo_custos_placa);
 
                 let_loader_frm_custos_placa.style.display = "none";
 
@@ -403,8 +283,212 @@ $(document).on('click', 'button', function(){
             }
         });
 
-    } else if(let_nome_btn == 'btn_fecha_modal_lista_os_razao_conta') {
+    }
+    else if(let_nome_btn == 'btn_fecha_modal_lista_os_razao_conta') {
         $("#modal_lista_os_razao_conta").hide();
+    } else if(let_nome_btn == 'bnt_custo_frota_proj'){
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+        let let_lista_handle_contas = $("#sl_conta_frm_custos_placa").val().toString();
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+        let let_handle_proj = let_val_btn;
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_projeto_contas',
+                'handle_filial'         :   let_handle_filial,
+                'lista_handle_contas'   :   let_lista_handle_contas,
+                'comp'                  :   let_comp,
+                'handle_proj'           :   let_handle_proj
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+                let let_contleudo_custos_proj_contas = gera_estrutura_custos_projeto_contas(dados.dic_resumo_projeto_contas, let_handle_proj);
+                $("#div_dados_proj_contas_"+let_handle_proj).html(let_contleudo_custos_proj_contas);
+                let_loader_frm_custos_placa.style.display = "none";
+
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+
+    }
+    else if(let_nome_btn == 'bnt_custo_frota_fil_conta'){
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+        let let_handle_conta = let_val_btn;
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+        let let_handle_proj = let_val_btn;
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_fil_conta_projetos',
+                'handle_filial'         :   let_handle_filial,
+                'handle_conta'         :   let_handle_conta,
+                'comp'                  :   let_comp,
+                'handle_proj'           :   let_handle_proj
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+                let let_contleudo_custos_proj_contas = gera_estrutura_custos_filial_conta_projetos(dados.dic_resumo_projetos, let_handle_conta);
+                $("#div_dados_fil_contas_projetos_"+let_handle_proj).html(let_contleudo_custos_proj_contas);
+                let_loader_frm_custos_placa.style.display = "none";
+
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+
+    }
+    else if(let_nome_btn == 'bnt_custo_frota_fil_conta_proj'){
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+        let let_handle_conta = let_val_btn.split('_')[0];
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+        let let_handle_proj = let_val_btn.split('_')[1];
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_fil_conta_projeto_placas',
+                'handle_filial'         :   let_handle_filial,
+                'handle_conta'         :   let_handle_conta,
+                'comp'                  :   let_comp,
+                'handle_proj'           :   let_handle_proj
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+                let let_contleudo_custos_conta_proj_placas = gera_estrutura_custos_filial_conta_projeto_placas(dados.dic_resumo_placas);
+                $("#div_dados_fil_contas_proj_placas_"+let_handle_proj).html(let_contleudo_custos_conta_proj_placas);
+                let_loader_frm_custos_placa.style.display = "none";
+
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+
+    }
+    else if(let_nome_btn == 'bnt_custo_frota_proj_conta'){
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+        let let_handle_conta = let_val_btn.split('_')[0];
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+        let let_handle_proj = let_val_btn.split('_')[1];
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_proj_conta_placas',
+                'handle_filial'         :   let_handle_filial,
+                'handle_conta'         :   let_handle_conta,
+                'comp'                  :   let_comp,
+                'handle_proj'           :   let_handle_proj
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+                let let_contleudo_custos_proj_conta_placas = gera_estrutura_custos_proj_conta_placas(dados.dic_resumo_placas);
+                $("#div_dados_custo_proj_conta_placas_"+let_handle_conta).html(let_contleudo_custos_proj_conta_placas);
+                let_loader_frm_custos_placa.style.display = "none";
+
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+
+    }
+    else if(let_nome_btn == 'bnt_custo_frota_placa'){
+        let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
+        let let_lista_handle_contas = $("#sl_conta_frm_custos_placa").val().toString();
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+        let let_placa = let_val_btn;
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_placas_contas',
+                'handle_filial'         :   let_handle_filial,
+                'lista_handle_contas'   :   let_lista_handle_contas,
+                'comp'                  :   let_comp,
+                'placa'                 :   let_placa
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+                let let_contleudo_custos_placa_contas = gera_estrutura_custos_placa_contas(dados.dic_resumo_contas);
+                $("#div_dados_placa_contas_"+let_placa).html(let_contleudo_custos_placa_contas);
+                let_loader_frm_custos_placa.style.display = "none";
+
+
+            },
+            error: function (request, status, error) {
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
 
     }
 
@@ -557,3 +641,383 @@ function atualiza_componente_sl_conta(){
 
 
 }
+
+/* Inicio funções Aba Resumo Filial */
+function gera_estrutura_custos_filial(dic_resumo_filial, total_real_filial, total_orc_filial, total_rem_filial){
+
+    let let_conteudo_div_tab_resumo_custos_fil = `<div class="accordion" id="accordion_fil">`;
+    dic_resumo_filial.forEach(conta => {
+        let_conteudo_div_tab_resumo_custos_fil += `
+
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_fil_conta_${conta.HANDLE_CONTA}">
+                    <button id="bnt_custo_frota_fil_conta_${conta.HANDLE_CONTA}" name="bnt_custo_frota_fil_conta"
+                            value="${conta.HANDLE_CONTA}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_fil_conta_${conta.HANDLE_CONTA}" aria-expanded="false"
+                            aria-controls="collapse_fil_conta_${conta.HANDLE_CONTA}" style="font-size:12px;">
+
+
+
+                        <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                                <span style="font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-bookmark icon-color-e"></i>&nbsp;&nbsp;
+                                    ${conta.NOME_CONTA}
+                                </span>
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${conta.VAL_LANC}</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${conta.perc_realizado}%</span>
+                            </div>
+                        </div>
+                    </button>
+                </h6>
+                <div id="collapse_fil_conta_${conta.HANDLE_CONTA}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_fil_conta_${conta.HANDLE_CONTA}" data-bs-parent="#accordion_docs">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_fil_contas_projetos_${conta.HANDLE_CONTA}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    let_conteudo_div_tab_resumo_custos_fil += `</div>`;
+    return let_conteudo_div_tab_resumo_custos_fil;
+}
+
+function gera_estrutura_custos_filial_conta_projetos(dic_resumo_proj, handle_conta){
+
+    let let_conteudo_div_tab_resumo_custos_fil_conta_projetos = ``;
+    let_conteudo_div_tab_resumo_custos_fil_conta_projetos += `
+        <div class="accordion" id="accordion_fil_conta_proj">
+    `;
+    dic_resumo_proj.forEach(proj => {
+        let_conteudo_div_tab_resumo_custos_fil_conta_projetos += `
+
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_fil_conta_proj${proj.HANDLE_PROJETO}">
+                    <button id="bnt_custo_frota_fil_conta_proj_${proj.HANDLE_PROJETO}" name="bnt_custo_frota_fil_conta_proj"
+                            value="${handle_conta}_${proj.HANDLE_PROJETO}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_fil_conta_proj_${proj.HANDLE_PROJETO}" aria-expanded="false"
+                            aria-controls="collapse_fil_conta_proj_${proj.HANDLE_PROJETO}" style="font-size:12px;">
+
+
+
+                        <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                                <span style="font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-caret-right"></i>&nbsp;&nbsp;
+                                    ${proj.NOME_PROJETO}
+                                </span>
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${proj.VAL_LANC}</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${proj.perc_realizado}%</span>
+                            </div>
+                        </div>
+                    </button>
+                </h6>
+                <div id="collapse_fil_conta_proj_${proj.HANDLE_PROJETO}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_fil_conta_proj_${proj.HANDLE_PROJETO}" data-bs-parent="#accordion_docs">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_fil_contas_proj_placas_${proj.HANDLE_PROJETO}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    let_conteudo_div_tab_resumo_custos_fil_conta_projetos += `</div>`;
+    return let_conteudo_div_tab_resumo_custos_fil_conta_projetos;
+}
+
+function gera_estrutura_custos_filial_conta_projeto_placas(dic_resumo_placas){
+
+    let let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas = ``;
+
+    dic_resumo_placas.forEach(placa => {
+        let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas += `
+
+            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                    <span style="font-size: 12px; font-weight: 600;">
+                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
+                        ${placa.PLACA}
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${placa.VAL_LANC}</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${placa.perc_realizado}%</span>
+                </div>
+            </div>
+        `;
+    });
+    return let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas;
+}
+
+
+/* Fim funções Aba Resumo Filial */
+
+/* Inicio funções Aba Resumo Projeto */
+function gera_estrutura_custos_projeto(dic_resumo_projeto){
+    let let_conteudo_div_tab_resumo_custos_proj = `<div class="accordion" id="accordion_proj">`;
+
+    dic_resumo_projeto.forEach(proj => {
+        let_conteudo_div_tab_resumo_custos_proj += `
+
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_${proj.HANDLE_PROJETO}">
+                    <button id="bnt_custo_frota_proj_${proj.HANDLE_PROJETO}" name="bnt_custo_frota_proj"
+                            value="${proj.HANDLE_PROJETO}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_${proj.HANDLE_PROJETO}" aria-expanded="false"
+                            aria-controls="collapse_${proj.HANDLE_PROJETO}" style="font-size:12px;">
+                        <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                                <span style="font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-bookmark icon-color-e"></i>&nbsp;&nbsp;
+                                    ${proj.NOME_PROJETO}
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${proj.VAL_LANC}</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${proj.perc_realizado}%</span>
+                            </div>
+                        </div>
+                    </button>
+                </h6>
+                <div id="collapse_${proj.HANDLE_PROJETO}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_${proj.HANDLE_PROJETO}" data-bs-parent="#accordion_docs">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_proj_contas_${proj.HANDLE_PROJETO}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    let_conteudo_div_tab_resumo_custos_proj += `</div>`;
+    return let_conteudo_div_tab_resumo_custos_proj;
+}
+
+function gera_estrutura_custos_projeto_contas(dic_resumo_projeto_contas, handle_proj){
+    let let_conteudo_div_tab_resumo_custos_proj_conta = `
+        <div class="accordion" id="accordion_conta">
+    `;
+    dic_resumo_projeto_contas.forEach(conta => {
+        let_conteudo_div_tab_resumo_custos_proj_conta += `
+
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_conta_${conta.HANDLE_CONTA}">
+                    <button id="bnt_custo_frota_proj_conta_${conta.HANDLE_CONTA}" name="bnt_custo_frota_proj_conta"
+                            value="${conta.HANDLE_CONTA}_${handle_proj}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_conta_${conta.HANDLE_CONTA}" aria-expanded="false"
+                            aria-controls="collapse_conta_${conta.HANDLE_CONTA}" style="font-size:12px;">
+                        <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                                <span style="font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-caret-right"></i>&nbsp;&nbsp;
+                                    ${conta.NOME_CONTA}
+                                </span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${conta.VAL_LANC}</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${conta.perc_realizado}%</span>
+                            </div>
+                        </div>
+                    </button>
+                </h6>
+                <div id="collapse_conta_${conta.HANDLE_CONTA}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_conta_${conta.HANDLE_CONTA}" data-bs-parent="#accordion_docs">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_custo_proj_conta_placas_${conta.HANDLE_CONTA}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    let_conteudo_div_tab_resumo_custos_proj_conta += `</div>`;
+    return let_conteudo_div_tab_resumo_custos_proj_conta;
+}
+
+function gera_estrutura_custos_proj_conta_placas(dic_resumo_placas){
+
+    let let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas = ``;
+    dic_resumo_placas.forEach(placa => {
+        let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas += `
+
+            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                    <span style="font-size: 12px; font-weight: 600;">
+                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
+                        ${placa.PLACA}
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${placa.VAL_LANC}</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${placa.perc_realizado}%</span>
+                </div>
+            </div>
+        `;
+    });
+    return let_conteudo_div_tab_resumo_custos_fil_conta_projeto_placas;
+}
+
+/* Fim funções Aba Resumo Projeto */
+
+/* Início funções Aba Resumo Placa */
+function gera_estrutura_custos_placas(dic_resumo_placas){
+
+    let let_conteudo_div_tab_resumo_custos_placa = `<div class="accordion" id="accordion_placas">`;
+
+    dic_resumo_placas.forEach(placa => {
+        let_conteudo_div_tab_resumo_custos_placa += `
+
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_placa_${placa.PLACA}">
+                    <button id="bnt_custo_frota_placa_${placa.PLACA}" name="bnt_custo_frota_placa"
+                            value="${placa.PLACA}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_placa_${placa.PLACA}" aria-expanded="false"
+                            aria-controls="collapse_placa_${placa.PLACA}" style="font-size:12px;">
+
+
+
+                        <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                                <span style="font-size: 12px; font-weight: 600;">
+                                    <i class="fa-solid fa-bookmark icon-color-e"></i>&nbsp;&nbsp;
+                                    ${placa.PLACA}
+                                </span>
+                            </div>
+
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${placa.VAL_LANC}</span>
+                            </div>
+                            <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                                <span style="font-size: 12px;font-weight: 600;">${placa.perc_realizado}%</span>
+                            </div>
+                        </div>
+                    </button>
+                </h6>
+                <div id="collapse_placa_${placa.PLACA}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_placa_${placa.PLACA}" data-bs-parent="#accordion_docs">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_placa_contas_${placa.PLACA}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    let_conteudo_div_tab_resumo_custos_placa += `</div>`;
+    return let_conteudo_div_tab_resumo_custos_placa;
+}
+
+function gera_estrutura_custos_placa_contas(dic_resumo_contas){
+
+    let let_conteudo_div_tab_resumo_placa_contas = ``;
+
+    dic_resumo_contas.forEach(conta => {
+        let_conteudo_div_tab_resumo_placa_contas += `
+
+            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
+                    <span style="font-size: 12px; font-weight: 600;">
+                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
+                        ${conta.NOME_CONTA}
+                    </span>
+                </div>
+
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">0,00</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${conta.VAL_LANC}</span>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-end p-2" style="width: 15%;">
+                    <span style="font-size: 12px;font-weight: 600;">${conta.perc_realizado}%</span>
+                </div>
+            </div>
+        `;
+    });
+    return let_conteudo_div_tab_resumo_placa_contas;
+}
+
+/* Fim funções Aba Resumo Placa */
