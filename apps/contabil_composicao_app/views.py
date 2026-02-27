@@ -954,8 +954,10 @@ class Form_Associa_Resp_Conta_View(View):
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
         lista_dic_resp_conta = []
-        lista_responsaveis_conta = Responsaveis_Conta.objects.filter(cod_conta=cod_conta_form,
-                                                                     cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+        lista_responsaveis_conta = (Responsaveis_Conta.objects
+                                    .filter(cod_conta=cod_conta_form,
+                                            cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
+                                    .order_by('cod_resp_conta'))
         for resp in lista_responsaveis_conta:
             data_ini_atv = ''
             if resp.data_ini_atividade != None:
@@ -1178,6 +1180,10 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+        data_y_m = data_hora_atual.strftime('%Y-%m')
+
         lista_usuarios_contabil = (Usuario.objects
                                    .filter(sala='CON', status_usu='A',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
@@ -1191,7 +1197,8 @@ class Form_Conciliacao_Comp_Benner_Resumo_View(View):
             'desc_menu': 'Conciliação Composição x Benner Resumido',
             'lista_usuarios_contabil': lista_usuarios_contabil,
             'lista_pacotes': lista_pacotes,
-            'obj_usuario_logado': obj_usuario_logado
+            'obj_usuario_logado': obj_usuario_logado,
+            'data_y_m': data_y_m
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner.html', contexto)
 
@@ -1199,6 +1206,7 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
     def get(self, request):
         data_hora_atual = datetime.now()
         data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+        data_y_m = data_hora_atual.strftime('%Y-%m')
 
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
@@ -1236,7 +1244,8 @@ class Form_Conciliacao_Comp_Benner_Detalhado_View(View):
             'obj_usuario_logado': obj_usuario_logado,
             'lista_status_composicao': lista_status_composicao,
             'lista_status_analise': lista_status_analise,
-            'lista_status_reg': lista_status_reg
+            'lista_status_reg': lista_status_reg,
+            'data_y_m': data_y_m
         }
         return render(request, 'contabil_composicao_app/form_conciliacao_composicao_benner_detalhado.html', contexto)
 
@@ -1409,10 +1418,18 @@ class Comp_Cb_Contas_Conciliacao_Comp_Benner_View(View):
             elif tipo_rel in ('D', 'R'):
                 nome_resp_frm = request.GET['nome_resp']
                 lista_pacotes = request.GET['lista_pacotes']
+                data_competencia_frm = request.GET['data_competencia']
 
-                lista_resp_contas = (Responsaveis_Conta.objects
-                                     .filter(
-                    (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))),
+                dt_ini = data_competencia_frm + '-01'
+                ultimo_dia_mes_calendar = calendar.monthrange(int(data_competencia_frm.split('-')[0]),
+                                                              int(data_competencia_frm.split('-')[1]))[1]
+                dt_fim = datetime(int(data_competencia_frm.split('-')[0]), int(data_competencia_frm.split('-')[1]),
+                                  ultimo_dia_mes_calendar)
+
+                lista_resp_contas = (Responsaveis_Conta.objects.filter(
+                    (Q(resp_composicao__in=nome_resp_frm.split(',')) | Q(resp_validacao__in=nome_resp_frm.split(','))) &
+                    ((Q(data_ini_atividade__lte=dt_ini) & Q(data_fim_atividade__gte=dt_fim)) |
+                     (Q(data_ini_atividade__lte=dt_ini) & Q(data_fim_atividade__isnull=True)) ),
                     cod_conta__tipo_modelo=cod_tipo_modelo_form, cod_conta__status_comp='A',
                     cod_conta__cod_pacote_conta__cod_pacote_conta__in=lista_pacotes.split(','))
                                      .values('cod_conta__cod_conta', 'cod_conta__desc_conta',
@@ -2137,7 +2154,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    #print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
+                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas
@@ -2534,7 +2551,8 @@ class Form_Anexos_Conta_View(View):
             lista_anexos = list(Anexos_Contrato.objects\
                 .filter(cod_conta = obj_conta,
                         cod_usu__cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)\
-                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia', 'eh_anexo_principal_competencia', 'cod_usu__login_usu'))
+                .values('cod_anexo_contrato', 'desc_anexo', 'caminho_anexo', 'data_competencia',
+                        'eh_anexo_principal_competencia', 'cod_usu__login_usu').order_by('cod_anexo_contrato'))
         elif obj_conta.tipo_modelo == 3:
             lista_contratos = list(Contrato.objects.filter(cod_conta=obj_conta).values('cod_contrato', 'num_contrato'))
             lista_anexos = list(Anexos_Contrato.objects\
@@ -2632,7 +2650,8 @@ class Form_Status_Contrato_Composicao_View(View):
                                                    'cod_contrato__cod_contrato', 'cod_contrato__num_contrato',
                                                    'tipo_prazo', 'val_composicao', 'val_balancete', 'val_diferenca',
                                                    'cod_status_comp__desc_status', 'cod_status_ana__desc_status',
-                                                   'cod_status_reg__desc_status'))
+                                                   'cod_status_reg__desc_status')
+                                           .order_by('cod_auditoria_composicao'))
         for reg in lista_status_contratos_comp:
             reg['val_composicao'] = locale.currency(round(float(reg['val_composicao']), 2), grouping=True, symbol=None)
             reg['val_balancete'] = locale.currency(round(float(reg['val_balancete']), 2), grouping=True, symbol=None)
@@ -3940,6 +3959,10 @@ class Form_Vincula_Resp_Contas_View(View):
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
+        data_hora_atual = datetime.now()
+        data_hora_atual_h_m_y = data_hora_atual.strftime('%d/%m/%Y')
+        data_y_m = data_hora_atual.strftime('%Y-%m')
+
         lista_pacotes = Pacote_Conta.objects.all()
 
         lista_usuarios_contabil = (Usuario.objects
@@ -3949,7 +3972,8 @@ class Form_Vincula_Resp_Contas_View(View):
         contexto = {
             'lista_pacotes': lista_pacotes,
             'lista_usuarios_contabil': lista_usuarios_contabil,
-            'obj_usuario_logado': obj_usuario_logado
+            'obj_usuario_logado': obj_usuario_logado,
+            'data_y_m': data_y_m
         }
         return render(request, 'contabil_composicao_app/form_vincula_resp_contas.html', contexto)
 
@@ -5386,21 +5410,33 @@ class Form_Contas_Resp_View(View):
 
     def get(self, request):
         lista_cod_usuarios = request.GET['lista_cod_usuario']
+        competencia_frm = request.GET['competencia']
+
         cod_usuario_sessao = request.session['cod_usuario_logado']
         obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
+
+        dt_ini = competencia_frm + '-01'
+
+        ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_frm.split('-')[0]),
+                                                      int(competencia_frm.split('-')[1]))[1]
+        dt_fim = datetime(int(competencia_frm.split('-')[0]), int(competencia_frm.split('-')[1]),
+                          ultimo_dia_mes_calendar)
+
         dic_lista_contas_resp = []
         lista_pacotes_resp = []
-        lista_pacotes_resp = list(Responsaveis_Conta.objects
-                                  .filter((Q(resp_composicao__in=lista_cod_usuarios.split(',')) | Q(resp_validacao__in=lista_cod_usuarios.split(','))),
-                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
-                                          cod_conta__status_comp='A')
+        lista_pacotes_resp = list(Responsaveis_Conta.objects.filter(
+            (Q(resp_composicao__in=lista_cod_usuarios.split(',')) | Q(resp_validacao__in=lista_cod_usuarios.split(','))),
+            cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,cod_conta__status_comp='A')
                                   .values('cod_conta__cod_pacote_conta__cod_pacote_conta',
                                           'cod_conta__cod_pacote_conta__desc_pacote_conta').distinct())
         for nome_usu in lista_cod_usuarios.split(','):
-            lista_contas_resp = (Responsaveis_Conta.objects
-                                 .filter( (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)),
-                                          cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,
-                                          cod_conta__status_comp='A' )
+            lista_contas_resp = (Responsaveis_Conta.objects.filter(
+                (Q(resp_composicao=nome_usu) | Q(resp_validacao=nome_usu)) &
+                (
+                        (Q(data_ini_atividade__lte=dt_ini) & Q(data_fim_atividade__gte=dt_fim)) |
+                        (Q(data_ini_atividade__lte=dt_ini) & Q(data_fim_atividade__isnull=True))
+                ),
+                cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa,cod_conta__status_comp='A' )
                                  .values('cod_resp_conta', 'cod_conta__cod_pacote_conta__desc_pacote_conta',
                                          'cod_conta__desc_conta', 'cod_conta__cod_conta',
                                          'cod_conta__cod_red_conta_contabil_cp', 'cod_conta__cod_red_conta_contabil_lp',
@@ -5462,17 +5498,23 @@ class Form_Vincula_Contas_Resp_View(View):
                                     .values('tipo_modelo', 'cod_conta', 'desc_conta', 'cod_red_conta_contabil_cp',
                                             'cod_red_conta_contabil_lp'))
         elif tipo_transacao_frm == 'retorna_dados_contas_resp':
+            competencia_frm = request.GET['competencia']
+            dt_ini = competencia_frm + '-01'
+            ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_frm.split('-')[0]),
+                                                          int(competencia_frm.split('-')[1]))[1]
+            dt_fim = datetime(int(competencia_frm.split('-')[0]), int(competencia_frm.split('-')[1]),
+                              ultimo_dia_mes_calendar)
+
             cod_usuario_sessao = request.session['cod_usuario_logado']
             obj_usuario_sessao = Usuario.objects.get(pk=cod_usuario_sessao)
 
-
-            lista_resp_contas = list(Responsaveis_Conta.objects
-                                 .filter(cod_conta__cod_pacote_conta=obj_pacote, cod_conta__status_comp='A',
-                                         cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa)
-                                 .values('cod_resp_conta', 'resp_composicao', 'resp_validacao', 'data_ini_atividade',
-                                         'data_fim_atividade', 'cod_conta__cod_conta', 'cod_conta__tipo_modelo',
-                                         'cod_conta__desc_conta', 'cod_conta__cod_red_conta_contabil_cp',
-                                         'cod_conta__cod_red_conta_contabil_lp'))
+            lista_resp_contas = list(Responsaveis_Conta.objects.filter(
+                (Q(data_ini_atividade__range=[dt_ini, dt_fim]) & Q(data_fim_atividade__range=[dt_ini, dt_fim]) |
+                 Q(data_fim_atividade__isnull=True)), cod_conta__cod_pacote_conta=obj_pacote, cod_conta__status_comp='A',
+                cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa).values(
+                'cod_resp_conta', 'resp_composicao', 'resp_validacao', 'data_ini_atividade','data_fim_atividade',
+                'cod_conta__cod_conta', 'cod_conta__tipo_modelo','cod_conta__desc_conta',
+                'cod_conta__cod_red_conta_contabil_cp','cod_conta__cod_red_conta_contabil_lp'))
             for reg in lista_resp_contas:
                 if reg['data_ini_atividade'] != None:
                     reg['data_ini_atividade'] = datetime.strftime(reg['data_ini_atividade'], '%d-%m-%Y')
@@ -5488,9 +5530,18 @@ class Form_Vincula_Contas_Resp_View(View):
 class Comp_Pac_Contas_Comp_Detalhado_View(View):
     def get(self, request):
         lista_nome_resp_frm = request.GET['lista_nome_resp']
+        competencia_frm = request.GET['competencia']
+        dt_ini = competencia_frm + '-01'
+
+        ultimo_dia_mes_calendar = calendar.monthrange(int(competencia_frm.split('-')[0]),
+                                                      int(competencia_frm.split('-')[1]))[1]
+        dt_fim = datetime(int(competencia_frm.split('-')[0]), int(competencia_frm.split('-')[1]),
+                                       ultimo_dia_mes_calendar)
 
         lista_pacote = list(Responsaveis_Conta.objects.filter(
-            Q(resp_composicao__in=lista_nome_resp_frm.split(',')) | Q(resp_validacao__in=lista_nome_resp_frm.split(','))
+            (Q(resp_composicao__in=lista_nome_resp_frm.split(',')) | Q(resp_validacao__in=lista_nome_resp_frm.split(','))) &
+            (Q(data_ini_atividade__range=[dt_ini, dt_fim]) & Q(data_fim_atividade__range=[dt_ini, dt_fim]) |
+             Q(data_fim_atividade__isnull=True))
         ).values('cod_conta__cod_pacote_conta__cod_pacote_conta', 'cod_conta__cod_pacote_conta__desc_pacote_conta').distinct())
         data = dict()
         data = {

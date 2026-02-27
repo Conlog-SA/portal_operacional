@@ -62,7 +62,7 @@
                         </select>
                     </div>
                     <div class="d-flex flex-column align-items-start"
-                         style="width: 20%;margin-left:0.25rem;margin-right: 0.25rem;">
+                         style="width: 20%;margin-left:0.25rem;">
                         <label for="cb_pac_contas_comp_detalhado">
                             Pacotes
                             <button type='button' id="btn_marcar_pac_contas_comp_detalhado"
@@ -92,9 +92,14 @@
                             {% endfor %}
                         </select>
                     </div>
-
+                    <div class="d-flex flex-column justify-content-end align-items-start"
+                         style="width: 20%;margin-left: 0.25rem;">
+                        <label>Competência</label>
+                            <input type="month" class="form-control" id="dt_conciliacao_comp_benner"
+                                   name="dt_conciliacao_comp_benner_detalhes" required value="{{data_y_m}}">
+                    </div>
                     <div class="d-flex flex-column align-items-start"
-                         style="width: 40%;margin-left:0.25rem;margin-right: 0.25rem;">
+                         style="width: 40%;margin-left:0.25rem;">
                         <label class="d-flex justify-content_between align-items-around w-100">
                             <div class="d-flex justify-content_between align-items-around w-100">
                                 <fieldset>
@@ -154,13 +159,6 @@
 
                     </div>
 
-                    <div class="d-flex flex-column align-items-start"
-                         style="width: 15%;margin-right: 0.25rem;margin-top: 1.2rem;">
-                        <label>Competência</label>
-                            <input type="month" class="form-control" id="dt_conciliacao_comp_benner"
-                                   name="dt_conciliacao_comp_benner_detalhes" required>
-                    </div>
-
                 </div>
 
 
@@ -189,7 +187,7 @@
                 <div class="d-flex flex-column justify-content-between align-items-start w-100" style="padding-left: .25rem;">
                     &nbsp;&nbsp;
                 </div>
-                <div class="d-flex flex-column align-items-end justify-content-center w-100">
+                <div class="d-flex flex-column justify-content-between align-content-arround w-100">
                     <button type='button' id="btn_gera_conciliacao_comp_benner_detalhado"
                             name="btn_gera_conciliacao_comp_benner_detalhado"
                             class="btn btn-primary btn-rounded botaoPrincipal" >

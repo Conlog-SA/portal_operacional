@@ -32,8 +32,6 @@ $.ajaxSetup({
 
 $(document).ready(function(){
 
-    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
-
     /* Variáveis globais */
     let let_lista_dados_2art_terceiros = [];
     let let_lista_dados_2art_terceiros_agrupado_por_beneficiario = [];
@@ -1046,6 +1044,7 @@ function povoa_cb_beneficiarios(){
 }
 
 function povoa_tab_mapas_terceitos_2art(){
+    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
     let let_cod_projeto = $("#cb_projetos_pesq_mapas_terc").val();
     let let_cod_beneficiario = $("#cb_benef_pesq_mapas_terc").val();
 
@@ -1060,6 +1059,7 @@ function povoa_tab_mapas_terceitos_2art(){
     let let_data_inicial = $("#dt_pesq_mapas_terc_periodo_ini").val();
     let let_data_final = $("#dt_pesq_mapas_terc_periodo_fim").val();
     if ( let_data_inicial == "" || let_data_final == "" ) {
+        loader_gera_pag_terc_2art.style.display = "none";
         $.gritter.add({
             title: 'Atenção!',
             text: 'Período informado incorreto!',
@@ -1698,6 +1698,7 @@ function atualiza_tab_placas_intativas_benner(param_nome_componenete_acionado){
     let let_cod_projeto = $("#cb_projetos_pesq_mapas_terc").val();
     let let_data_ini = $("#dt_pesq_mapas_terc_periodo_ini").val();
     let let_data_fim = $("#dt_pesq_mapas_terc_periodo_fim").val();
+    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
     loader_gera_pag_terc_2art.style.display = "flex";
     $.ajax({
         type:'GET',
@@ -1828,6 +1829,7 @@ function atualiza_dados_placa_benef_sinc_benner(param_nome_componenete_acionado)
     let let_cod_projeto = $("#cb_projetos_pesq_mapas_terc").val();
     let let_data_ini = $("#dt_pesq_mapas_terc_periodo_ini").val();
     let let_data_fim = $("#dt_pesq_mapas_terc_periodo_fim").val();
+    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
     loader_gera_pag_terc_2art.style.display = "flex";
     $.ajax({
         type:'GET',
@@ -1977,6 +1979,7 @@ function povoa_tab_faturamento_agrupado_por_beneficiario(){
     let let_cod_projeto = $("#cb_projetos_pesq_mapas_terc").val();
     let let_data_ini = $("#dt_pesq_mapas_terc_periodo_ini").val();
     let let_data_fim = $("#dt_pesq_mapas_terc_periodo_fim").val();
+    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
     loader_gera_pag_terc_2art.style.display = "flex";
     $.ajax({
         type: 'GET',
@@ -2102,7 +2105,8 @@ function povoa_tab_faturamento_agrupado_por_beneficiario(){
 
 
 function povoa_tab_lanc_acres_desc_do_mapa(let_cod_reg_2art_terc_financ){
-       loader_gera_pag_terc_2art.style.display = "flex";
+    let loader_gera_pag_terc_2art = document.getElementById("loader_gera_pag_terc_2art");
+    loader_gera_pag_terc_2art.style.display = "flex";
     $.ajax({
         type: "GET",
         url:"/plan_controle_fat_2art_terc_app/retorna_registros_lanc_2art_terc_do_mapa",

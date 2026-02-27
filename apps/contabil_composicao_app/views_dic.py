@@ -3870,6 +3870,7 @@ class Form_Vincula_Resp_Contas_View(View):
                                    .filter(sala='CON',
                                            cod_filial__cod_empresa=obj_usuario_sessao.cod_filial.cod_empresa))
 
+
         contexto = {
             'lista_pacotes': lista_pacotes,
             'lista_usuarios_contabil': lista_usuarios_contabil,

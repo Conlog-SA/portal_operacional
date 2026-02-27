@@ -72,7 +72,8 @@ $(document).on('click', 'button', function(){
                                 reg.desc_evento,
                                 reg.proeventos.toLocaleString('pt-BR'),
                                 reg.hora_min_ref.toLocaleString('pt-BR'),
-                                reg.desc_sit_atual
+                                reg.desc_sit_atual,
+                                reg.cod_calc
                             ];
                             lista_dados_folha.push(reg);
                         });
@@ -105,12 +106,13 @@ $(document).on('click', 'button', function(){
                                 { title: "Evento" },
                                 { title: "Proeventos" },
                                 { title: "Horas e Min. Referência" },
-                                { title: "Situação Atual" }
+                                { title: "Situação Atual" },
+                                { title: "Cálculo" }
                             ],
                             "columnDefs": [
                                 {"className": "dt-center", "targets": [0,1,7,8]},
                                 {"className": "dt-left", "targets": [2,3,4,5,6]},
-                                {"className": "dt-right", "targets": [9,10,11]}
+                                {"className": "dt-right", "targets": [9,10,11,12]}
                             ],
                             "language": {
                                 "decimal": ",",

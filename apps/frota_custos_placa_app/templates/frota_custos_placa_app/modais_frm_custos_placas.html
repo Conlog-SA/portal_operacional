@@ -1,9 +1,9 @@
 
 <!-- Modal OS razao -->
-<div id="modal_lista_os_razao_conta" role="dialog" class="modal">
-    <div class="modal-dialog" style="max-width: 1400px; width: 1400px; height: 610px; border-radius: 10px;
+<div id="modal_lista_razao_os_conta" role="dialog" class="modal">
+    <div class="modal-dialog" style="max-width: 600px; width: 600px; border-radius: 10px;
         margin-left: 30px; margin-right: 30px; margin-top: 30px; margin-bottom: 30px;">
-        <div class="modal-content" style="height: 680px;">
+        <div class="modal-content">
             <div class="modal-header"
                  style="background-color: {{ cor_padrao }};height: 40px;padding-right: 5px;padding-bottom: 35px;
             padding-top: 10px;font-size:10px;">
@@ -15,42 +15,26 @@
                         </p>
                     </div>
                     <div class="col-md-6" align="right">
-                        <button type="button" name="btn_fecha_modal_lista_os_razao_conta"
-                                id="btn_fecha_modal_lista_os_razao_conta"
+                        <button type="button" name="btn_fecha_modal_lista_razao_os_conta"
+                                id="btn_fecha_modal_lista_razao_os_conta"
                                 class="btn btn-sm btn-rounded">
                             <i class="fa-solid fa-circle-xmark fa-2xl" style="color: #FFFFFF;"></i>
                         </button>
                     </div>
                 </div>
             </div>
-            <div class="modal-body">
+            <div class="modal-body d-flex justify-content-between align-tems-center w-100 p-1">
                 <form id="frm_lista_os_razao_conta" name="frm_lista_os_razao_conta"
-                      class="d-flex flex-column align-items-center justify-content-between"
+                      class="d-flex flex-column align-items-center justify-content-between w-100"
                       method="POST">
 
                     <div class="d-flex justify-content-between align-items-between w-100">
-                        <div class="d-flex flex-column cl_div_tabela_principal_pagina" id="div_contratos_atualizados"
+                        <div class="d-flex flex-column cl_div_tabela_principal_pagina" id="div_dados_os"
                              style="width: 98%; height: 40%; border-radius: 10px; margin: 1rem;">
 
-                            <table id="tab_lista_os_razao_placa"  class="wrap w-100 cl_tab_principal_pagina">
-                                <thead>
-                                    <tr>
-                                        <th scope="col"></th>
-                                        <th scope="col">Tipo OS</th>
-                                        <th scope="col">OS</th>
-                                        <th scope="col">Descrição</th>
-                                        <th scope="col">Item</th>
-                                        <th scope="col">Qtd.</th>
-                                        <th scope="col">Conjunto</th>
-                                        <th scope="col">Observação</th>
-                                        <th scope="col">Cluster ?</th>
-                                      </tr>
-                                </thead>
-                                <tbody>
+                            <div class="accordion" id="accordion_razao_custos_frota">
+                            </div>
 
-                                </tbody>
-
-                            </table>
 
 
                         </div>

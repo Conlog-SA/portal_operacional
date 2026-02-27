@@ -298,7 +298,8 @@ class Btn_Form_Gerar_Pag_2Art_View(View):
                         .filter(cod_projeto=reg.cod_projeto,
                                 tipo_perfil_veiculo=reg.nomespot_2art_terc_financ,
                                 cod_regiao=reg.regiaospot_2art_terc_financ,
-                                tipo_entrega=reg.entrega_2art_terc_financ,)
+                                tipo_entrega=reg.entrega_2art_terc_financ,
+                                tipo_pessoa=reg.cod_cad_placa_terc.cod_benef_terc.tipo_pessoa_benef_terc)
                         .extra(where=["'" + str(reg.data_2art_terc_financ) +
                                       "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
                     if obj_cad_frete_terc is not None:
@@ -1039,29 +1040,41 @@ class Tab_Cad_Fretes_Terc_View(View):
             raise Http404
 
     def get(self, request):
-        cod_proj = request.GET['cod_proj']
-        periodo_vigencia = request.GET['periodo_vig']
-        mes_vigencia = periodo_vigencia.split("-")[1]
-        ano_vigencia = periodo_vigencia.split("-")[0]
-
-        projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
-        registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
-            cod_projeto=projeto).extra(
-            where=[f" {mes_vigencia} BETWEEN month(data_ini_vigencia) AND month(data_fim_vigencia)"
-                   f" AND {ano_vigencia} BETWEEN year(data_ini_vigencia) AND year(data_fim_vigencia) "]).values())
-
-        for cad_frete in registros_cad_frete_terc:
-            campo_readonly = ''
-            if cad_frete['data_fim_vigencia'] < datetime.now().date():
-                campo_readonly = 'readonly'
-            cad_frete['campo_readonly'] = campo_readonly
-
-
-
+        transacao_frm = request.GET['transacao']
         data = dict()
-        data = {
-            'registros_cad_frete_terc': registros_cad_frete_terc
-        }
+        if transacao_frm == 'periodo':
+            cod_proj = request.GET['cod_proj']
+            periodo_vigencia = request.GET['periodo_vig']
+            mes_vigencia = periodo_vigencia.split("-")[1]
+            ano_vigencia = periodo_vigencia.split("-")[0]
+
+            projeto = Projeto.objects.filter(cod_projeto=cod_proj).first()
+            registros_cad_frete_terc = list(CadFreteSpot.objects.filter(
+                cod_projeto=projeto).extra(
+                where=[f" {mes_vigencia} BETWEEN month(data_ini_vigencia) AND month(data_fim_vigencia)"
+                       f" AND {ano_vigencia} BETWEEN year(data_ini_vigencia) AND year(data_fim_vigencia) "]).values())
+
+            for cad_frete in registros_cad_frete_terc:
+                campo_readonly = ''
+                if cad_frete['data_fim_vigencia'] < datetime.now().date():
+                    campo_readonly = 'readonly'
+                cad_frete['campo_readonly'] = campo_readonly
+
+            data = {
+                'registros_cad_frete_terc': registros_cad_frete_terc
+            }
+        elif transacao_frm == 'registro':
+            cod_cad_frete_frm = request.GET['cod_cad_frete']
+            obj_cad_frete = CadFreteSpot.objects.get(pk=int(cod_cad_frete_frm))
+            campo_readonly = ''
+            if obj_cad_frete.data_fim_vigencia < datetime.now().date():
+                campo_readonly = 'readonly'
+            qtd_obj_mapas = Registro2ArtTerceirosFinanceiro.objects.filter(cod_cad_frete_spot=obj_cad_frete).count()
+            data = {
+                'qtd_obj_mapas': qtd_obj_mapas,
+                'campo_readonly': campo_readonly
+            }
+
         return JsonResponse(data, safe=False)
 
     def post(self, request):

@@ -11,8 +11,8 @@
 <div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
     <div class="mt-3 d-flex align-items-start justify-content-between div_Titulo">
         <div class="d-flex align-items-center justify-content-center">
-            <i class="fa-solid fa-chart-simple fa-2xl"style="color: {{ cor_padrao }}"></i>
-            <h1 class=" titlePadraoMenu">Cluster DRE Frota</h1>
+            <i class="fa-solid fa-chart-simple" style="color: {{ cor_padrao }}"></i>
+            <h1 class="titlePadraoMenu">Custo Frota</h1>
         </div>
         <img class="logo_cabecalho" src="{% static logo_empresa %}" >
     </div>
@@ -27,11 +27,11 @@
                 <hr class="hr_title">
             </div>
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
-                <div class="d-flex flex-column w-100" style="margin-right: 0.25rem;">
+            <div class="d-flex justify-content-between align-items-between w-100">
+                <div class="d-flex flex-column justify-content-end w-100" style="margin-right: 0.25rem;">
                     <div class="d-flex w-100">
-                        <label for="sl_proj_custos_placa">Projetos
-                            <button type='button' id="btn_seleciona_todas_proj_frm_custos_placa"
+                        <label for="sl_handle_filial_custos_placa">Filial
+                            <!-- <button type='button' id="btn_seleciona_todas_proj_frm_custos_placa"
                                 name="btn_seleciona_todas_proj_frm_custos_placa"
                                 class="btn btn-rounded btn-space" title="Todos os projetos" >
                                 <i class="fa-regular fa-square-check" style="color: {{ cor_padrao }}"></i>
@@ -41,65 +41,24 @@
                                 name="btn_desmarcar_projetos_frm_custos_placa"
                                 class="btn btn-rounded btn-space" title="Limpar seleção">
                                 <i class="fa-regular fa-square" style="color: {{ cor_padrao }}"></i>
-                            </button>
+                            </button> -->
                         </label>
                     </div>
 
                     <div class="d-flex flex-column w-100">
-                        <select class="selectpicker form-control" id="sl_proj_custos_placa"
-                                name="sl_proj_custos_placa"
-                                multiple data-selected-text-format="count > 0"
+                        <select class="selectpicker form-control" id="sl_handle_filial_custos_placa"
+                                name="sl_handle_filial_custos_placa"
                                 data-live-search="true"
-                                title="Selecione o projeto">
-                            {% for proj in lista_projetos_benner %}
-                                <option value="{{ proj.handle_proj }}">{{ proj.nome_proj }} - {{ proj.desc_empresa }}</option>
+                                title="Selecione a filial">
+                            {% for fil in lista_dic_filiais %}
+                                <option value="{{ fil.handle_filial }}">{{ fil.nome_filial }}</option>
                             {% endfor %}
 
                         </select>
                     </div>
                 </div>
 
-                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
-                    <div class="d-flex w-100">
-                        <label for="sl_tipo_veic_equip_custos_placa">Tipo contas
-                            <button type='button' id="btn_seleciona_todas_tipo_veic_equip_frm_custos_placa"
-                                name="btn_seleciona_todas_tipo_veic_equip_frm_custos_placa"
-                                class="btn btn-rounded btn-space" title="Todos os projetos" >
-                                <i class="fa-regular fa-square-check" style="color: {{ cor_padrao }}"></i>
-                            </button>
-                            &nbsp;&nbsp;
-                            <button type='button' id="btn_desmarcar_tipo_veic_equip_frm_custos_placa"
-                                name="btn_desmarcar_tipo_veic_equip_frm_custos_placa"
-                                class="btn btn-rounded btn-space" title="Limpar seleção">
-                                <i class="fa-regular fa-square" style="color: {{ cor_padrao }}"></i>
-                            </button>
-                        </label>
-                    </div>
-
-                    <div class="d-flex flex-column w-100">
-                        <select class="selectpicker form-control" id="sl_tipo_veic_equip_custos_placa"
-                                name="sl_tipo_veic_equip_custos_placa"
-                                multiple data-selected-text-format="count > 0"
-                                data-live-search="true"
-                                title="Selecione o tipo de veículo/equipamento">
-
-                                <option value="1267">CONTA: VEICULOS PRÓPRIOS CONLOG</option>
-                                <option value="2295">CONTA: EQUIPAMENTOS CONLOG</option>
-                                <option value="2442">CONTA: VEICULOS DE AGREGADOS E TERCEIROS CONLOG</option>
-                                <option value="6881">CONTA: FROTA LEVE CONLOG</option>
-                                <option value="7217">CONTA: LOCADOS/COMODATADOS CONLOG</option>
-                                <option value="11485">CONTA: VEICULOS DE AGREGADOS E TERCEIROS (NOVO) CONLOG</option>
-
-                                <option value="5444">CONTA: EQUIPAMENTOS DEEP</option>
-                                <option value="6922">CONTA: VEICULOS PROPRIOS DEEP</option>
-                                <option value="7027">CONTA: VEICULOS DE AGREGADOS E TERCEIROS DEEP</option>
-                                <option value="7085">CONTA: FROTA LEVE ALUGADA DEEP</option>
-
-                        </select>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;margin-top: 0.85rem;">
+                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;margin-top: 0.85rem;">
                     <label for="dt_comp_frm_custos_placa">Período</label>
                     <input type="month" class="form-control" name="dt_comp_frm_custos_placa"
                            id="dt_comp_frm_custos_placa" autocomplete="off" />
@@ -133,11 +92,20 @@
                     </select>
 
                 </div>
+
+                <div class="d-flex flex-column w-100 justify-content-end" style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                    <button type="button" name="btn_gera_dados_custos_placas_proj"
+                            id="btn_gera_dados_custos_placas_proj"
+                            class="btn btn-primary btn-rounded botaoPrincipal">
+                        <i class="fa-solid fa-filter"></i>
+                        Gerar Dados
+                    </button>
+                </div>
             </div>
 
 
 
-            <div class="d-flex justify-content-between align-items-between w-100 mb-4">
+            <div class="d-flex justify-content-center align-items-center w-100">
                 <div class="d-flex align-items-end w-100">
                     <div class="loader" id="loader_frm_custos_placa">
                         <div class="loader-inner">
@@ -162,58 +130,83 @@
                      &nbsp;&nbsp;
                 </div>
                 <div class="d-flex flex-column w-100">
-                    <button type="button" name="btn_gera_dados_custos_placas_proj"
-                            id="btn_gera_dados_custos_placas_proj"
-                            class="btn btn-primary btn-rounded botaoPrincipal">
-                        <i class="fa-solid fa-filter"></i>
-                        Gerar Dados
-                    </button>
+                    &nbsp;
                 </div>
             </div>
 
         </form>
         <div class="form-group  cl_div_tabela_principal_pagina w-100">
-            <div id="div_placas_frm_custos_placa" class="col-md-12 w-100 h-100">
-                <table id="tab_placas_razao"  class="display wrap w-100 cl_tab_principal_pagina">
-                <thead>
-                    <tr>
-                        <th scope="col" class="col_placa">Placa</th>
-                        <th scope="col" class="col_conta">Conta</th>
-                        <th scope="col" class="col_val">R$ Valor</th>
-                        <th scope="col" class="col_os">OS</th>
-                        <th scope="col" class="col_tip_os">Tipo OS</th>
-                        <th scope="col" class="col_hist">Histórico</th>
-                        <th scope="col" class="col_fornec">Fornecedor</th>
-                        <th scope="col" class="col_num_cont">Núm. Contábil</th>
-                        <th scope="col" class="col_dt_lanc">Dt. Lançamento</th>
-                        <th scope="col" class="col_proj">Projeto</th>
-                        <th scope="col" class="col_tipo_conta">Tipo Conta</th>
-                        <th scope="col" class="col_cluster">Cluster</th>
-                        <th scope="col" class="col_detail_os">Detalhes OS</th>
-
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </tfoot>
-            </table>
+            <div id="dv_total_filial" class="d-flex flex-column justify-content-between align-items-between w-100 p-1">
 
             </div>
+            <nav>
+                <div class="nav nav-tabs" id="myTab" role="tablist">
+                    <button class="nav-link active" id="btn_tab_resumo_custos_fil" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_resumo_custos_fil" type="button" role="tab"
+                            aria-controls="div_tab_resumo_custos_fil" aria-selected="true">
+                        <i class="fa-solid fa-file-invoice-dollar"></i>
+                        <span style="font-size: 12px;font-weight: 400;">Resumo Filial</span>
+                    </button>
+                    <button class="nav-link" id="btn_tab_resumo_custos_proj" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_resumo_custos_proj" type="button" role="tab"
+                            aria-controls="div_tab_resumo_custos_proj" aria-selected="false">
+                        <i class="fa-solid fa-file-signature"></i>
+                        <span style="font-size: 12px;font-weight: 400;">Resumo Projeto</span>
+                    </button>
+                    <button class="nav-link" id="btn_tab_resumo_custos_placa" data-bs-toggle="tab"
+                            data-bs-target="#div_tab_resumo_custos_placa" type="button" role="tab"
+                            aria-controls="div_tab_resumo_custos_placa" aria-selected="false">
+                        <i class="fa-solid fa-users"></i>
+                        <span style="font-size: 12px;font-weight: 400;">Resumo Placas</span>
+                    </button>
+                    <!--
+                    <button class="nav-link" id="btn_tab_lanc_placas" data-bs-toggle="tab"
+                            data-bs-target="#div_placas_frm_custos_placa" type="button" role="tab"
+                            aria-controls="div_placas_frm_custos_placa" aria-selected="false">
+                        <i class="fa-solid fa-paperclip"></i>
+                        Lançamentos Placas
+                    </button>
+                    -->
+                </div>
+            </nav>
+
+            <div class="tab-content" style="border-radius:0 0 10px 10px;">
+                <div class="tab-pane active" id="div_tab_resumo_custos_fil" role="tabpanel" aria-labelledby="btn_tab_resumo_custos_fil">
+
+                </div>
+
+                <div class="tab-pane" id="div_tab_resumo_custos_proj" role="tabpanel" aria-labelledby="btn_tab_resumo_custos_proj">
+
+                </div>
+
+                <div class="tab-pane" id="div_tab_resumo_custos_placa" role="tabpanel" aria-labelledby="btn_tab_resumo_custos_placa">
+
+                </div>
+                <!--
+                <div class="tab-pane" id="div_placas_frm_custos_placa" name="div_placas_frm_custos_placa" aria-labelledby="btn_tab_lanc_placas"
+                     role="tabpanel">
+                    <table id="tab_placas_razao"  class="display wrap w-100 cl_tab_principal_pagina">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="col_placa">Placa</th>
+                                <th scope="col" class="col_conta">Conta</th>
+                                <th scope="col" class="col_dt_lanc">Dt. Lançamento</th>
+                                <th scope="col" class="col_val">R$ Valor</th>
+                                <th scope="col" class="col_cluster">Cluster</th>
+                                <th scope="col" class="col_detail_os">Detalhes OS</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                -->
+            </div>
+
+
         </div>
     </div>
 </div>

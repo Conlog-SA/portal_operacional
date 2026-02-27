@@ -24,7 +24,7 @@
 
     <div class="containerApp">
         <div class="form-group cl_div_cad_contas_comp w-100" >
-            <div class="col-md-12 w-100 h-100">
+            <div class="col-md-12 w-100 h-100 pt-1">
 
                 <nav>
                     <div class="nav nav-tabs" id="myTab" role="tablist">
@@ -40,6 +40,12 @@
                             <i class="fa-solid fa-file-signature icon-color-e"></i>
                             Vincular Resp. Pacotes/Contas
                         </button>
+                        <button class="nav-link" id="a_tab_contas_ativas_sem_resp" data-bs-toggle="tab"
+                                data-bs-target="#div_tab_contas_ativas_sem_resp" type="button" role="tab"
+                                aria-controls="div_tab_contas_ativas_sem_resp" aria-selected="false">
+                            <i class="fa-solid fa-file-signature icon-color-e"></i>
+                            Contas Ativas Sem Responsáveis
+                        </button>
                     </div>
                 </nav>
 
@@ -51,33 +57,9 @@
                          aria-labelledby="a_tab_contas_responsaveis">
                         <form id="frm_contas_responsaveis" name="frm_contas_responsaveis"
                               class="d-flex flex-column align-items-start">
-                            <div class="d-flex justify-content-between align-items-between w-100"
-                                 style="margin-top: 0.75rem;">
-                                <div class="d-flex flex-column w-100">
-                                    <div class="loader" id="loader_frm_contas_responsaveis">
-                                    <div class="loader-inner">
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                    </div>
-                                </div>
-                                </div>
-                                <div class="d-flex flex-column w-100">
-                                </div>
-                                <div class="d-flex flex-column w-100">
-                                </div>
-                                <div class="d-flex flex-column w-100">
 
-                                </div>
-                            </div>
                             <div class="d-flex w-100">
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-right: 0.25rem;margin-top: 1.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100">
                                     <label for="cb_responsaveis_contas">Reponsáveis</label>
                                     <select class="selectpicker form-control cl_cb_contas" id="cb_responsaveis_contas"
                                             name="cb_responsaveis_contas"
@@ -91,8 +73,8 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;margin-right: 0.25rem;margin-top: 1.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                     style="margin-left: 0.25rem;">
                                     <label for="cb_pacotes_responsaveis_contas">
                                         Pacotes
                                     </label>
@@ -103,7 +85,7 @@
                                             data-live-search="true" title="Selecione um responsável das contas">
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;">
                                     <label for="cb_contas_responsaveis_contas">
                                         Contas
                                         <button type='button' id="btn_marcar_cb_contas_responsaveis_contas"
@@ -128,8 +110,8 @@
                                             data-live-search="true" title="Selecione um responsável das contas">
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;margin-top: 1.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                     style="margin-left: 0.25rem;">
                                     <label for="dt_fim_atv_contas_responsaveis_contas">Fim atividade</label>
                                     <input type="date" id="dt_fim_atv_contas_responsaveis_contas" class="form-control"
                                            name="dt_fim_atv_contas_responsaveis_contas">
@@ -137,17 +119,28 @@
 
                             </div>
 
-                            <div class="d-flex w-100" style="margin-top: 0.5rem; margin-bottom: 0.5rem;">
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;">
-                                    &nbsp;
+                            <div class="d-flex w-100 pt-2 pb-2">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100">
+                                    <div class="loader" id="loader_frm_contas_responsaveis">
+                                        <div class="loader-inner">
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
-                                    &nbsp;
-                                </div>
-                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
                                     &nbsp;
                                 </div>
                                 <div class="d-flex flex-column w-100" style="margin-left: 0.25rem;">
+                                    &nbsp;
+                                </div>
+                                <div class="d-flex flex-column justify-content-end align-content-arround w-100" style="margin-left: 5rem;">
                                     <button type='button' id="btn_desativa_contas_responsaveis_contas"
                                             name="btn_desativa_contas_responsaveis_contas"
                                             class="btn btn-primary btn-rounded botaoPrincipal" >
@@ -160,6 +153,25 @@
                             </div>
 
                             <div class="form-group cl_div_tabela_principal_pagina w-100">
+                                <div class="d-flex w-100 pt-2 pb-2">
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                         style="margin-left: 0.25rem;">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                         style="margin-left: 5rem;">
+                                        <label for="dt_pesq_competencia_aba_contas_resp">Pesquisa por período</label>
+                                        <input type="month" id="dt_pesq_competencia_aba_contas_resp" class="form-control"
+                                               name="dt_pesq_competencia_aba_contas_resp" value="{{data_y_m}}">
+                                    </div>
+
+                                </div>
                                 <table id="tab_resp_vinculados"
                                        class="display wrap w-100 cl_tab_principal_pagina">
                                     <thead>
@@ -190,33 +202,9 @@
                          aria-labelledby="a_tab_vincular_contas_resp">
                         <form id="frm_vincular_contas_resp" name="frm_vincular_contas_resp"
                               class="d-flex flex-column">
-                            <div class="d-flex justify-content-between align-items-between w-100"
-                                 style="margin-top: 0.75rem;">
-                                <div class="d-flex flex-column w-100">
-                                    <div class="loader" id="loader_frm_vincular_contas_resp">
-                                    <div class="loader-inner">
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                        <div class="loader-block"></div>
-                                    </div>
-                                </div>
-                                </div>
-                                <div class="d-flex flex-column w-100">
-                                </div>
-                                <div class="d-flex flex-column w-100">
-                                </div>
-                                <div class="d-flex flex-column w-100">
 
-                                </div>
-                            </div>
                             <div class="d-flex w-100">
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-right: 0.25rem;margin-top: 1.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100">
                                     <label for="sl_pacs_vincula_resp">Pacotes</label>
                                     <select class="selectpicker form-control cl_cb_contas" id="sl_pacs_vincula_resp"
                                             name="sl_pacs_vincula_resp"
@@ -229,7 +217,7 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;">
                                     <label for="sl_contas_vincula_resp">
                                         Contas
                                         <button type='button' id="btn_marcar_contas_vincula_resp"
@@ -259,7 +247,7 @@
                             </div>
 
                             <div class="d-flex w-100">
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-right: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100">
                                     <label for="sl_resp_comp_contas_vincula_resp">Responsável composição</label>
                                     <select class="selectpicker form-control cl_cb_contas" id="sl_resp_comp_contas_vincula_resp"
                                             name="sl_resp_comp_contas_vincula_resp"
@@ -272,8 +260,8 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                     style="margin-left: 0.25rem;">
                                     <label for="sl_resp_val_contas_vincula_resp">Responsável validação</label>
                                     <select class="selectpicker form-control cl_cb_contas"
                                             id="sl_resp_val_contas_vincula_resp"
@@ -287,31 +275,42 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100"
-                                     style="margin-left: 0.25rem;margin-right: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                     style="margin-left: 0.25rem;">
                                     <label for="dt_ini_contas_vincula_resp">Início atividade</label>
                                     <input type="date" id="dt_ini_contas_vincula_resp" name="dt_ini_contas_vincula_resp"
                                            class="form-control">
                                 </div>
-                                <div class="d-flex flex-column align-items-start w-100" style="margin-left: 0.25rem;">
+                                <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;">
                                     <label for="dt_fim_contas_vincula_resp">Fim atividade</label>
                                     <input type="date" id="dt_fim_contas_vincula_resp" name="dt_fim_contas_vincula_resp"
                                            class="form-control">
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-between align-items-between w-100"
-                                 style="margin-bottom: 0.5rem; margin-top: 0.5rem;">
+                            <div class="d-flex justify-content-between align-items-between w-100 pt-2 pb-2">
                                 <div class="d-flex flex-column justify-content-between align-items-between w-100">
-
+                                    <div class="loader" id="loader_frm_vincular_contas_resp">
+                                        <div class="loader-inner">
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                            <div class="loader-block"></div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="d-flex flex-column justify-content-between align-items-between w-100">
-
+                                    &nbsp;&nbsp;
                                 </div>
                                 <div class="d-flex flex-column justify-content-between align-items-between w-100">
-
+                                    &nbsp;&nbsp;
                                 </div>
-                                <div class="d-flex flex-column justify-content-between align-items-between w-100">
+                                <div class="d-flex flex-column justify-content-between align-items-between w-100"
+                                     style="margin-left: 1rem;">
                                     <button type='button' id="btn_associa_contas_resp_frm_vincula_conta_resp"
                                             name="btn_associa_contas_resp_frm_vincula_conta_resp"
                                             class="btn btn-primary btn-rounded botaoPrincipal" >
@@ -323,6 +322,25 @@
                             </div>
 
                             <div class="form-group cl_div_tabela_principal_pagina w-100">
+                                <div class="d-flex w-100 pt-2 pb-2">
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                         style="margin-left: 0.25rem;">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100" style="margin-left: 0.25rem;">
+                                        &nbsp;&nbsp;
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-end align-items-start w-100"
+                                         style="margin-left: 1rem;">
+                                        <label for="dt_pesq_competencia_aba_resp_pac_contas">Pesquisa por período</label>
+                                        <input type="month" id="dt_pesq_competencia_aba_resp_pac_contas" class="form-control"
+                                               name="dt_pesq_competencia_aba_resp_pac_contas" value="{{data_y_m}}">
+                                    </div>
+
+                                </div>
                                 <table id="tab_contas_x_resp_vinculadas"
                                        class="display wrap w-100 cl_tab_principal_pagina">
                                     <thead>
