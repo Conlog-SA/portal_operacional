@@ -743,10 +743,24 @@ function povoa_tab_cliente_vincul_mapa(origem, lista_despesas){
         let let_img = `<i class="fa-solid fa-caret-right icon-color-e"></i>`;
         if(lista_despesas != null){
             lista_despesas.forEach(desp => {
-                let let_status_importacao = 'Não Importado'
+                let let_status_importacao = ``;
+                let let_btn_exclui_desp = ``;
                 if (desp.importado == 1) {
-                    let_status_importacao = 'Importado'
+                    let_status_importacao = 'Importado';
+                    let_btn_exclui_desp = `
+                        <i class="fa-solid fa-solid fa-ban" style="color: #f46424!important;" title="Bloqueado" ></i>
+                    `;
+                } else {
+                    let_status_importacao += 'Não Importado';
+                    let_btn_exclui_desp += `
+                        <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
+                            id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas'
+                            value='${desp.id_despesa}'>
+                            <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
+                        </button>
+                    `;
                 }
+
                 if (desp.despesa == 1) {
                     let_despesa = 'Serviço'
                 }
@@ -758,13 +772,7 @@ function povoa_tab_cliente_vincul_mapa(origem, lista_despesas){
                     let_tipo_descarga = 'Por Caixa'
                 }
 
-                let let_btn_exclui_desp = `
-                    <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
-                        id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas'
-                        value='${desp.id_despesa}'>
-                        <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
-                    </button>
-                `;
+
                 let let_btn_abre_comp = `
                         <button type='button' name='btn_visualiza_comprovante'
                                 id='btn_visualiza_comprovante'
