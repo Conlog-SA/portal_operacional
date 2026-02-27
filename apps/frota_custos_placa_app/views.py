@@ -136,6 +136,18 @@ class Frm_Custos_Placa_Proj_View(View):
             data = {
                 'dic_resumo_contas': dados_custos.to_dict(orient='records')
             }
+        elif transacao_frm == 'pesquisa_razao_filial_conta_proj_placa':
+            handle_proj_frm = request.GET['handle_proj']
+            handle_conta_frm = request.GET['handle_conta']
+            placa_frm = request.GET['placa']
+
+            dados_custos = self.gera_dados_custos_frota(handle_filial_frm, comp_frm.split('-')[0],
+                                                        comp_frm.split('-')[1], handle_conta_frm, transacao_frm,
+                                                        handle_proj_frm, placa_frm)
+            data = {
+                'dic_resumo_razao': dados_custos
+            }
+
 
 
         return JsonResponse(data, safe=False)
@@ -222,7 +234,7 @@ class Frm_Custos_Placa_Proj_View(View):
 
             total_real_projeto = df_group_placas_contas['VAL_LANC'].sum()
 
-            df_resumo_placas = df_group_placas_contas.groupby(['HANDLE_PROJETO', 'HANDLE_CONTA', 'PLACA'])[
+            df_resumo_placas = df_group_placas_contas.groupby(['handle_filial', 'HANDLE_PROJETO', 'HANDLE_CONTA', 'PLACA'])[
                 ['VAL_LANC']].sum().reset_index().sort_values(by='VAL_LANC', ascending=False)
             df_resumo_placas['perc_realizado'] = df_resumo_placas['VAL_LANC'].apply(
                 lambda x: locale.currency((x / total_real_projeto) * 100, grouping=True, symbol=None))
@@ -253,11 +265,11 @@ class Frm_Custos_Placa_Proj_View(View):
                                 .retorna_df_razao_frota(handle_filial, ano, mes, lista_handle_contas,
                                                         None, None))
             df_group_placas_contas = df_custos_placas[
-                ['HANDLE_CONTA', 'PLACA', 'VAL_LANC', 'COMPETENCIA', 'handle_filial']].reset_index()
+                ['HANDLE_PROJETO', 'HANDLE_CONTA', 'PLACA', 'VAL_LANC', 'COMPETENCIA', 'handle_filial']].reset_index()
 
             total_real_conta = df_group_placas_contas['VAL_LANC'].sum()
 
-            df_resumo_placas = df_group_placas_contas.groupby(['HANDLE_CONTA', 'PLACA'])[
+            df_resumo_placas = df_group_placas_contas.groupby(['handle_filial', 'HANDLE_PROJETO', 'HANDLE_CONTA', 'PLACA'])[
                 ['VAL_LANC']].sum().reset_index().sort_values(by='VAL_LANC', ascending=False)
             df_resumo_placas['perc_realizado'] = df_resumo_placas['VAL_LANC'].apply(
                 lambda x: locale.currency((x / total_real_conta) * 100, grouping=True, symbol=None))
@@ -270,12 +282,12 @@ class Frm_Custos_Placa_Proj_View(View):
             df_custos_placas = (ConexaoBancoBenner()
                                 .retorna_df_razao_frota(handle_filial, ano, mes, lista_handle_contas, projeto, placa))
 
-            df_group_placas_contas = df_custos_placas[['HANDLE_CONTA', 'NOME_CONTA', 'PLACA', 'VAL_LANC','COMPETENCIA']].reset_index()
+            df_group_placas_contas = df_custos_placas[['handle_filial', 'HANDLE_PROJETO', 'HANDLE_CONTA', 'NOME_CONTA', 'PLACA', 'VAL_LANC','COMPETENCIA']].reset_index()
 
             total_real_placa = df_group_placas_contas['VAL_LANC'].sum()
 
 
-            df_resumo_placa_contas = df_group_placas_contas.groupby(['PLACA', 'HANDLE_CONTA', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index().sort_values(by='VAL_LANC', ascending=False)
+            df_resumo_placa_contas = df_group_placas_contas.groupby(['PLACA', 'handle_filial', 'HANDLE_PROJETO', 'HANDLE_CONTA', 'NOME_CONTA'])[['VAL_LANC']].sum().reset_index().sort_values(by='VAL_LANC', ascending=False)
             df_resumo_placa_contas['perc_realizado'] = df_resumo_placa_contas['VAL_LANC'].apply(
                 lambda x: locale.currency((x / total_real_placa) * 100, grouping=True, symbol=None))
             df_resumo_placa_contas['VAL_LANC'] = df_resumo_placa_contas['VAL_LANC'].apply(
@@ -283,7 +295,111 @@ class Frm_Custos_Placa_Proj_View(View):
 
             return df_resumo_placa_contas
 
-        elif formulario == 'pesquisa_razao':
+        elif formulario == 'pesquisa_razao_filial_conta_proj_placa':
+            dic_dados_razao = (ConexaoBancoBenner()
+                                .retorna_df_razao_placas(handle_filial, ano, mes, lista_handle_contas, projeto, placa))
+
+
+            for razao in dic_dados_razao:
+                '''
+                cod_cluster = 0
+                desc_cluster = razao['desc_cluster']
+                obj_item_cluster = Item_Cluster.objects.filter(desc_item_cluster=desc_cluster).first()
+                if obj_item_cluster == None:
+                    obj_item_cluster = Item_Cluster(
+                        desc_item_cluster=desc_cluster
+                    )
+                    obj_item_cluster.save()
+                else:
+                    cod_cluster = obj_item_cluster.cod_item_cluster
+                    desc_cluster = obj_item_cluster.desc_item_cluster
+                    
+                obj_razao_cluster = (Razao_Frota.objects
+                                     .filter(handle_lanc=razao['handle_lan']).first())
+
+                if obj_razao_cluster == None:
+                    obj_razao_cluster = Razao_Frota(
+                        data_comp=razao['COMPETENCIA'],
+                        data_lancamento=razao['DATA_LANC'],
+                        handle_lanc=razao['handle_lan'],
+                        handle_lanc_cc=df_group_placas_contas.loc[index, 'handle_lanc_cc'],
+                        handle_fn_doc=df_group_placas_contas.loc[index, 'handle_fn_doc'],
+                        placa=df_group_placas_contas.loc[index, 'PLACA'],
+                        handle_projeto=df_group_placas_contas.loc[index, 'HANDLE_PROJETO'],
+                        desc_projeto=df_group_placas_contas.loc[index, 'NOME_PROJETO'],
+                        desc_conta=df_group_placas_contas.loc[index, 'NOME_CONTA'],
+                        desc_tipo_conta=df_group_placas_contas.loc[index, 'desc_tipo_conta'],
+                        doc_contabil=df_group_placas_contas.loc[index, 'num_doc_contabil'],
+                        valor=df_group_placas_contas.loc[index, 'VAL_LANC'],
+                        historico=df_group_placas_contas.loc[index, 'HISTORICO'],
+                        nome_fornecedor=df_group_placas_contas.loc[index, 'NOME_FORNECEDOR'],
+                        cod_item_cluster=obj_item_cluster
+                    )
+                    obj_razao_cluster.save()
+
+
+                else:
+                    obj_razao_cluster.handle_fn_doc = df_group_placas_contas.loc[index, 'handle_fn_doc']
+                    obj_razao_cluster.placa = df_group_placas_contas.loc[index, 'PLACA']
+                    obj_razao_cluster.handle_projeto = df_group_placas_contas.loc[index, 'HANDLE_PROJETO']
+                    obj_razao_cluster.desc_projeto = df_group_placas_contas.loc[index, 'NOME_PROJETO']
+                    obj_razao_cluster.desc_conta = df_group_placas_contas.loc[index, 'NOME_CONTA'],
+                    obj_razao_cluster.desc_tipo_conta = df_group_placas_contas.loc[index, 'desc_tipo_conta']
+                    obj_razao_cluster.doc_contabil = df_group_placas_contas.loc[index, 'num_doc_contabil']
+                    obj_razao_cluster.valor = df_group_placas_contas.loc[index, 'VAL_LANC']
+                    obj_razao_cluster.historico = df_group_placas_contas.loc[index, 'HISTORICO']
+                    obj_razao_cluster.nome_fornecedor = df_group_placas_contas.loc[index, 'NOME_FORNECEDOR']
+                    obj_razao_cluster.cod_item_cluster = obj_item_cluster
+                    obj_razao_cluster.save()
+
+                lista_obj_os_razao_frota = (Os_Razao_Frota.objects
+                                            .filter(handle_lanc_cc=df_group_placas_contas.loc[index, 'handle_lanc_cc'],
+                                                    cod_razao_frota__isnull=True))
+                for obj_os in lista_obj_os_razao_frota:
+                    obj_os.cod_razao_frota = obj_razao_cluster
+                    obj_os.save()
+                '''
+
+                '''tem_os = 'N'
+                if df_group_placas_contas.loc[index, 'cod_os_razao_frota'] > 0:
+                    obj_os_razao_frota = Os_Razao_Frota.objects.get(
+                        pk=int(df_group_placas_contas.loc[index, 'cod_os_razao_frota']))
+                    obj_os_razao_frota.eh_cluster = 1
+                    obj_os_razao_frota.save()
+                    tem_os = 'S'''
+                tem_os = 'N'
+                if len(razao['dic_os_razao']) > 0:
+                    tem_os = 'S'
+                razao['tem_os'] = tem_os
+                razao['val_lanc'] = locale.currency(razao['val_lanc'], grouping=True, symbol=None)
+
+                '''placa_razao = {
+                    'placa': df_group_placas_contas.loc[index, 'PLACA'],
+                    'nome_projeto': df_group_placas_contas.loc[index, 'NOME_PROJETO'],
+                    'conta': df_group_placas_contas.loc[index, 'NOME_CONTA'],
+                    'desc_tipo_conta': df_group_placas_contas.loc[index, 'desc_tipo_conta'],
+                    'num_doc': df_group_placas_contas.loc[index, 'NUM_DOC'],
+                    'num_doc_contabil': df_group_placas_contas.loc[index, 'num_doc_contabil'],
+                    'nome_fornec': df_group_placas_contas.loc[index, 'NOME_FORNECEDOR'],
+                    'tipo_lancamento': df_group_placas_contas.loc[index, 'tipo_lancamento'],
+                    'desc_tipo_doc': df_group_placas_contas.loc[index, 'desc_tipo_doc'],
+                    'val_lanc': locale.currency(df_group_placas_contas.loc[index, 'VAL_LANC'], grouping=True, symbol=None),
+                    'obs': df_group_placas_contas.loc[index, 'HISTORICO'],
+                    'cod_cluster': cod_cluster,
+                    'desc_cluster': desc_cluster,
+                    'handle_lanc_cc': int(df_group_placas_contas.loc[index, 'handle_lanc_cc']),
+                    'desc_tipo_os': df_group_placas_contas.loc[index, 'desc_tipo_os'],
+                    'codigo_os': df_group_placas_contas.loc[index, 'codigo_os'],
+                    'handle_fn_doc': int(df_group_placas_contas.loc[index, 'handle_fn_doc']),
+                    'data_lancamento': datetime.strptime(df_group_placas_contas.loc[index, 'DATA_LANC'],
+                                                         '%Y-%m-%d').strftime('%d-%m-%Y'),
+                    'tem_os': tem_os,
+                    'cod_razao_frota': obj_razao_cluster.cod_razao_frota,
+                    'handle_lanc_cc': int(df_group_placas_contas.loc[index, 'handle_lanc_cc']),
+                }
+                dic_dados_razao.append(placa_razao)'''
+            return dic_dados_razao
+        elif formulario == 'pesquisa_razao_placa_conta':
             df_custos_placas = (ConexaoBancoBenner()
                                 .retorna_df_razao_placas(handle_filial, ano, mes, lista_handle_contas, projeto, placa))
 
@@ -389,7 +505,6 @@ class Frm_Custos_Placa_Proj_View(View):
                 }
                 dic_dados_razao.append(placa_razao)
             return dic_dados_razao
-
 
 class Frm_OS_Razao_Conta_View(View):
     def get(self, request):

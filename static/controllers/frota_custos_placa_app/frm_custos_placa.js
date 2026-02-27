@@ -283,9 +283,6 @@ $(document).on('click', 'button', function(){
             }
         });
 
-    }
-    else if(let_nome_btn == 'btn_fecha_modal_lista_os_razao_conta') {
-        $("#modal_lista_os_razao_conta").hide();
     } else if(let_nome_btn == 'bnt_custo_frota_proj'){
         let let_handle_filial = $("#sl_handle_filial_custos_placa").val();
         let let_lista_handle_contas = $("#sl_conta_frm_custos_placa").val().toString();
@@ -489,6 +486,54 @@ $(document).on('click', 'button', function(){
             }
         });
 
+
+    } else if(let_nome_btn == 'btn_razao_filial_conta_proj_placa'){
+        let let_handle_filial = let_val_btn.split('_')[0];
+        let let_handle_conta = let_val_btn.split('_')[1];
+        let let_handle_proj = let_val_btn.split('_')[2];
+        let let_placa = let_val_btn.split('_')[3];
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_razao_filial_conta_proj_placa',
+                'handle_filial'         :   let_handle_filial,
+                'handle_proj'           :   let_handle_proj,
+                'handle_conta'          :   let_handle_conta,
+                'comp'                  :   let_comp,
+                'placa'                 :   let_placa
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+
+
+
+                let let_conteudo_razao = gera_estrutura_razao_filial_conta_proj_placa(dados.dic_resumo_razao);
+                $("#accordion_razao_custos_frota").html(let_conteudo_razao);
+                $("#modal_lista_razao_os_conta").show();
+                let_loader_frm_custos_placa.style.display = "none";
+
+                $("#modal_lista_razao_os_conta").show();
+
+            },
+            error: function (request, status, error) {
+                console.log(error);
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+
+    } else if(let_nome_btn == 'btn_fecha_modal_lista_razao_os_conta'){
+        $("#modal_lista_razao_os_conta").hide();
 
     }
 
@@ -766,8 +811,15 @@ function gera_estrutura_custos_filial_conta_projeto_placas(dic_resumo_placas){
             <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
                 <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
                     <span style="font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
-                        ${placa.PLACA}
+                        <button type='button'
+                                name="btn_razao_filial_conta_proj_placa"
+                                id="btn_razao_filial_conta_proj_placa_${placa.PLACA}"
+                                class="btn btn-rounded btn-space"
+                                value=${placa.handle_filial}_${placa.HANDLE_CONTA}_${placa.HANDLE_PROJETO}_${placa.PLACA}>
+                            <i class="fa-solid fa-eye icon-color-e"></i>
+                            ${placa.PLACA}
+                        </button>
+
                     </span>
                 </div>
 
@@ -905,8 +957,14 @@ function gera_estrutura_custos_proj_conta_placas(dic_resumo_placas){
             <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
                 <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
                     <span style="font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
-                        ${placa.PLACA}
+                        <button type='button'
+                                name="btn_detalhes_lanc_proj_conta_placa"
+                                id="btn_detalhes_lanc_proj_conta_placa_${placa.PLACA}"
+                                class="btn btn-rounded btn-space"
+                                value=${placa.handle_filial}_${placa.HANDLE_CONTA}_${placa.HANDLE_PROJETO}_${placa.PLACA}>
+                            <i class="fa-solid fa-eye icon-color-e"></i>
+                            ${placa.PLACA}
+                        </button>
                     </span>
                 </div>
 
@@ -997,8 +1055,14 @@ function gera_estrutura_custos_placa_contas(dic_resumo_contas){
             <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
                 <div class="d-flex flex-column justify-content-center align-items-start p-2" style="width: 40%;">
                     <span style="font-size: 12px; font-weight: 600;">
-                        <i class="fa-solid fa-circle-right"></i>&nbsp;&nbsp;
-                        ${conta.NOME_CONTA}
+                        <button type='button'
+                                name="btn_detalhes_lanc_placa_conta"
+                                id="btn_detalhes_lanc_placa_conta_${conta.HANDLE_CONTA}"
+                                class="btn btn-rounded btn-space"
+                                value=${conta.handle_filial}_${conta.HANDLE_CONTA}_${conta.HANDLE_PROJETO}_${conta.PLACA}>
+                            <i class="fa-solid fa-eye icon-color-e"></i>
+                            ${conta.NOME_CONTA}
+                        </button>
                     </span>
                 </div>
 
@@ -1021,3 +1085,103 @@ function gera_estrutura_custos_placa_contas(dic_resumo_contas){
 }
 
 /* Fim funções Aba Resumo Placa */
+
+function gera_estrutura_razao_filial_conta_proj_placa(dic_razao){
+    let let_conteudo_razao = ``;
+    dic_razao.forEach(razao => {
+        let_conteudo_razao += `
+            <div class="accordion-item">
+                <h6 class="accordion-header" id="heading_razao_${razao.handle_lanc_cc}">
+                    <button id="bnt_razao_os_${razao.handle_lanc_cc}" name="bnt_custo_frota_placa"
+                            value="${razao.handle_lanc_cc}"
+                            class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#collapse_razao_${razao.handle_lanc_cc}" aria-expanded="false"
+                            aria-controls="collapse_razao_${razao.handle_lanc_cc}" style="font-size:12px;">
+
+
+                        <div class="d-flex flex-column justify-content-between align-items-between w-100 p-2">
+                            <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-bookmark icon-color-e"></i>&nbsp;&nbsp;
+                                        Núm. documento
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-end w-100 p-1" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.num_doc}
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Lançamento
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-end w-100 p-1" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.data_lancamento}
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Núm. doc. contábil
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-end w-100 p-1" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.num_doc_contabil}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Tipo conta
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-end w-100 p-1" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.desc_tipo_conta}
+                                    </span>
+                                </div>
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Fornecedor
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-end w-100 p-1" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.nome_fornec}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Histórico
+                                    </span>
+                                    <span class="d-flex justify-content-start align-items-center w-100 p-1 ms-2" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.obs}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </button>
+                </h6>
+                <div id="collapse_razao_${razao.handle_lanc_cc}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_razao_${razao.handle_lanc_cc}" data-bs-parent="#accordion_razao_custos_frota">
+
+                    <div class="accordion-body d-flex flex-column"
+                         id="div_dados_os_filial_contas_proj_placa_${razao.handle_lanc_cc}">
+
+
+                    </div>
+                </div>
+            </div>
+        `;
+
+
+    });
+
+    return let_conteudo_razao;
+}

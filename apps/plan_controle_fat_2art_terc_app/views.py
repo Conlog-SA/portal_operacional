@@ -298,7 +298,8 @@ class Btn_Form_Gerar_Pag_2Art_View(View):
                         .filter(cod_projeto=reg.cod_projeto,
                                 tipo_perfil_veiculo=reg.nomespot_2art_terc_financ,
                                 cod_regiao=reg.regiaospot_2art_terc_financ,
-                                tipo_entrega=reg.entrega_2art_terc_financ,)
+                                tipo_entrega=reg.entrega_2art_terc_financ,
+                                tipo_pessoa=reg.cod_cad_placa_terc.cod_benef_terc.tipo_pessoa_benef_terc)
                         .extra(where=["'" + str(reg.data_2art_terc_financ) +
                                       "' BETWEEN data_ini_vigencia AND data_fim_vigencia"]).first())
                     if obj_cad_frete_terc is not None:
