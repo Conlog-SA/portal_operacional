@@ -263,6 +263,7 @@ class Frm_Despesa_View(View):
 
         except Exception as e:
             traceback.print_exc()
+            msg = str(e) + '. Por favor, contate o desenvolvimento.'
 
         # Retorna todas as despesas da viagem.
         num_viagem = id_despesa_frm.split('-')[0]
