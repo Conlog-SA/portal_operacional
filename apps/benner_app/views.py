@@ -1877,7 +1877,8 @@ class ConexaoBancoBenner():
                         FN_DOC.DOCUMENTODIGITADO	AS	NUM_DOC, 
                         COALESCE(fn_doc.DOCUMENTOCONTABIL, LAN.DOCUMENTOCONTABIL)
                         	                        AS	num_doc_contabil,
-                        fn_doc.TIPODOCUMENTO 		AS	handle_tipo_doc,
+                        COALESCE(fn_doc.TIPODOCUMENTO, 0)
+                         		                    AS	handle_tipo_doc,
                         tipo_doc.NOME				AS	desc_tipo_doc,
                         CT.HANDLE                   AS  handle_cc, 
                         CT.NOME						AS	PLACA,  
@@ -1958,15 +1959,15 @@ class ConexaoBancoBenner():
 
         sql_razao_placas = (
             f'''
-            SELECT  LAN.HANDLE 					AS	handle_lan,
-		            COALESCE(FN_DOC.HANDLE, 0)	AS	handle_fn_doc,
+            SELECT  /*LAN.HANDLE 					AS	handle_lan,*/
+                    COALESCE(FN_DOC.HANDLE, 0)	AS	handle_fn_doc,
                     CAST(LAN.COMPETENCIA AS DATE)             
                                                 AS  competencia,  
                     CAST(LAN.DATA AS DATE)	    AS	data_lancamento,  
                     LAN_CC.PROJETO			    AS	handle_projeto,  
                     PROJ.NOME				    AS	nome_projeto, 
                     LAN.EMPRESA					AS	cod_empresa_lan,
-                    PROJ.K_NEGOCIOMAXYS			AS	cod_proj_portal,
+                    /*PROJ.K_NEGOCIOMAXYS			AS	cod_proj_portal,*/
                     PROJ.CODIGOREDUZIDO			as	cod_red_proj,
                     LAN.CONTA                   AS  handle_conta,  
                     CONTAS.NOME					AS	conta,
@@ -1974,28 +1975,26 @@ class ConexaoBancoBenner():
                         WHEN 'D' THEN 'Débito' 
                         ELSE 'Crédito'  
                     END)                        AS  tipo_lancamento,   
-                    LAN_CC.HANDLE               AS  handle_lanc_cc,
-                    LAN_CC.VALOR                AS  val_lanc,   
-                    FORNECEDOR.NOME			    AS	nome_fornec,  
+                    /*LAN_CC.HANDLE             AS  handle_lanc_cc,*/           
+                    COALESCE(FORNECEDOR.NOME, '')
+                    			                AS	nome_fornec,  
                     FN_DOC.DOCUMENTODIGITADO	AS	num_doc, 
                     COALESCE(fn_doc.DOCUMENTOCONTABIL, LAN.DOCUMENTOCONTABIL)
-                    	                        AS	num_doc_contabil,
-                    fn_doc.TIPODOCUMENTO 		AS	handle_tipo_doc,
+                                                AS	num_doc_contabil,
+                    COALESCE(fn_doc.TIPODOCUMENTO, 0)
+                     		                    AS	handle_tipo_doc,
                     tipo_doc.NOME				AS	desc_tipo_doc,
                     CT.HANDLE                   AS  handle_cc, 
                     CT.NOME						AS	placa,  
                     LAN.COMPLEMENTO				AS	obs,  
-                    (CASE LAN_CC.NATUREZA  
-                        WHEN 'D' THEN 'Debito'  
-                        ELSE 'Credito'  
-                    END)                        AS  natureza,
                     CT.NIVELSUPERIOR            AS  handle_nivel_superior,
                     tipo_conta.NOME             AS  desc_tipo_conta,
                     /* 22 - Movimentação variação de estoque */
                     LAN.ORIGEM					AS	cod_origem_lancamento,
                     COALESCE(prod_lan.PRODUTO, 0)
-        							            AS	handle_prod,
-        		    LAN.FILIAL                  AS  handle_filial                 
+                                            AS	handle_prod,
+                    LAN.FILIAL                  AS  handle_filial,
+                    SUM(LAN_CC.VALOR)                AS  val_lanc                  
               FROM  CT_LANCAMENTOS LAN (NOLOCK)  
               LEFT	JOIN CT_LANCAMENTOCC LAN_CC (NOLOCK)  
                 ON 	(LAN_CC.LANCAMENTO = LAN.HANDLE)  
@@ -2027,6 +2026,31 @@ class ConexaoBancoBenner():
                AND  LAN_CC.NATUREZA = 'D'
                {param_proj}
                {param_placa}
+             GROUP  BY FN_DOC.HANDLE,
+                    LAN.COMPETENCIA,  
+                    LAN.DATA,  
+                    LAN_CC.PROJETO,  
+                    PROJ.NOME, 
+                    LAN.EMPRESA,
+                    PROJ.CODIGOREDUZIDO,
+                    LAN.CONTA,  
+                    CONTAS.NOME,
+                    LAN_CC.NATUREZA,            
+                    FORNECEDOR.NOME,  
+                    FN_DOC.DOCUMENTODIGITADO, 
+                    fn_doc.DOCUMENTOCONTABIL,
+                    LAN.DOCUMENTOCONTABIL,
+                    fn_doc.TIPODOCUMENTO,
+                    tipo_doc.NOME,
+                    CT.HANDLE, 
+                    CT.NOME,  
+                    LAN.COMPLEMENTO,  
+                    CT.NIVELSUPERIOR,
+                    tipo_conta.NOME,
+                    /* 22 - Movimentação variação de estoque */
+                    LAN.ORIGEM,
+                    prod_lan.PRODUTO,
+    		        LAN.FILIAL
              ORDER  BY LAN.COMPETENCIA,  
                     LAN.DATA,  
                     LAN_CC.PROJETO;	
@@ -2049,15 +2073,6 @@ class ConexaoBancoBenner():
         dic_razao_placas = df_razao_placas.to_dict(orient='records')
 
         for lanc in dic_razao_placas:
-            os = {
-                'codigo_os': '',
-                'desc_os': '',
-                'obs_os': '',
-                'desc_tipo_os': '',
-                'desc_produto':  '',
-                'desc_cluster': '',
-            }
-
             placa = lanc['placa']
             sql_os = ''
 
@@ -2066,12 +2081,16 @@ class ConexaoBancoBenner():
                 #if 'BXD ' in df_razao_placas.loc[index, 'HISTORICO']:
 
                 cod_os = lanc['obs'].split('BXD ')[1]
-                os['codigo_os'] = cod_os
+                #os['codigo_os'] = cod_os
 
                 tipo_os = cod_os.split('.')[0]
                 cod_empresa = lanc['cod_empresa_lan']
                 handle_prod = lanc['handle_prod']
                 if tipo_os in ('CORINT', 'PREINT'):
+                    if tipo_os in ('CORINT'):
+                        lanc['desc_cluster'] = 'CORRETIVA INTERNA'
+                    else:
+                        lanc['desc_cluster'] = 'PREVENTIVA INTERNA'
                     sql_os = (
                         f'''
                         SELECT	os.handle               AS  handle_os,
@@ -2107,6 +2126,7 @@ class ConexaoBancoBenner():
                     )
 
                 elif tipo_os == 'ABAINT':
+                    lanc['desc_cluster'] = 'ABASTECIMENTO INTERNO'
                     sql_os = (
                         f'''
                         SELECT	os.handle               AS  handle_os,
@@ -2141,42 +2161,44 @@ class ConexaoBancoBenner():
                     )
 
                 elif tipo_os in ('PREEXT'):
+                    lanc['desc_cluster'] = 'PREVENTIVA EXTERNA'
                     sql_os = (
                         f'''
-                            SELECT 	os.handle				AS	handle_os,
-                                    os.CODIGO		        AS	codigo_os,
-                                    os.DESCRICAO	        AS	desc_os,
-                                    os.TIPOORDEMSERVICO		AS	handle_tipo_os,
-                                    tipo_os.NOME            AS  desc_tipo_os,
-                                    os.OBSERVACOES          AS  obs_os,
-                                    os_prod.PRODUTO 		AS  handle_prod,
-                                    prod.nome		        AS	desc_produto,
-                                    conj.NOME	        	AS	desc_conjunto,         
-                                    os_prod.quantidade      AS  qtd_prod,
-                                    un.NOME	                AS  nome_un
-                              FROM	MF_ORDEMSERVICOS (NOLOCK) os  
-                              LEFT	JOIN MF_ORDEMPRODUTOINTERNOS os_prod
-                                ON	(os_prod.ORDEMSERVICO  = os.HANDLE)
-                              LEFT  JOIN MA_RECURSOS (NOLOCK) placa
-                                ON  (placa.HANDLE = os.VEICULO
-                               AND  placa.EMPRESA = os.EMPRESA)
-                              LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
-                                ON	(prod.HANDLE = os_prod.PRODUTO)
-                              LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
-                                ON	(conj.HANDLE = os_prod.CONJUNTO)  
-                              LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
-                                ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
-                              LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
-                                ON	(un.HANDLE = os_prod.UNIDADEMEDIDA) 
-                             WHERE 	os.CODIGO = '{cod_os}'
-                               AND	os.EMPRESA = {cod_empresa}
-                               AND  prod.HANDLE = {handle_prod}
-                               AND  placa.PLACANUMERO = '{placa}';
+                        SELECT 	os.handle				AS	handle_os,
+                                os.CODIGO		        AS	codigo_os,
+                                os.DESCRICAO	        AS	desc_os,
+                                os.TIPOORDEMSERVICO		AS	handle_tipo_os,
+                                tipo_os.NOME            AS  desc_tipo_os,
+                                os.OBSERVACOES          AS  obs_os,
+                                os_prod.PRODUTO 		AS  handle_prod,
+                                prod.nome		        AS	desc_produto,
+                                conj.NOME	        	AS	desc_conjunto,         
+                                os_prod.quantidade      AS  qtd_prod,
+                                un.NOME	                AS  nome_un
+                          FROM	MF_ORDEMSERVICOS (NOLOCK) os  
+                          LEFT	JOIN MF_ORDEMPRODUTOINTERNOS os_prod
+                            ON	(os_prod.ORDEMSERVICO  = os.HANDLE)
+                          LEFT  JOIN MA_RECURSOS (NOLOCK) placa
+                            ON  (placa.HANDLE = os.VEICULO
+                           AND  placa.EMPRESA = os.EMPRESA)
+                          LEFT	JOIN PD_PRODUTOS (NOLOCK) prod
+                            ON	(prod.HANDLE = os_prod.PRODUTO)
+                          LEFT 	JOIN MA_RECURSOPARTES (NOLOCK) conj
+                            ON	(conj.HANDLE = os_prod.CONJUNTO)  
+                          LEFT  JOIN MF_TIPOORDEMSERVICOS (NOLOCK) tipo_os
+                            ON  (tipo_os.HANDLE = os.TIPOORDEMSERVICO)
+                          LEFT	JOIN CM_UNIDADESMEDIDA (NOLOCK) un
+                            ON	(un.HANDLE = os_prod.UNIDADEMEDIDA) 
+                         WHERE 	os.CODIGO = '{cod_os}'
+                           AND	os.EMPRESA = {cod_empresa}
+                           AND  prod.HANDLE = {handle_prod}
+                           AND  placa.PLACANUMERO = '{placa}';
                         
                         '''
                     )
 
             elif lanc['handle_conta'] == 2556:
+                lanc['desc_cluster'] = 'COMBUSTIVEL'
                 handle_fn_doc = lanc['handle_fn_doc']
                 if handle_fn_doc > 0:
                     sql_os = (
@@ -2218,18 +2240,19 @@ class ConexaoBancoBenner():
                         '''
                     )
             elif lanc['handle_conta'] == 2542:
-                os['desc_cluster'] = 'PEDAGIOS'
+                lanc['desc_cluster'] = 'PEDAGIOS'
             elif lanc['handle_conta'] == 2592:
-                os['desc_cluster'] = 'VALE FISICO'
+                lanc['desc_cluster'] = 'VALE FISICO'
             elif lanc['handle_conta'] == 2593:
-                os['desc_cluster'] = 'VALE FINANCEIRO'
+                lanc['desc_cluster'] = 'VALE FINANCEIRO'
             elif lanc['handle_conta'] in (2796,2802,2916):
-                os['desc_cluster'] = 'MULTAS'
+                lanc['desc_cluster'] = 'MULTAS'
             elif lanc['handle_conta'] in (3849, 3894):
-                os['desc_cluster'] = 'AVARIAS'
+                lanc['desc_cluster'] = 'AVARIAS'
             elif lanc['handle_conta'] == 2562:
-                os['desc_cluster'] = 'LAVACAO'
+                lanc['desc_cluster'] = 'LAVACAO'
             elif lanc['handle_conta'] == 2558 and lanc['cod_origem_lancamento'] == 3:
+                lanc['desc_cluster'] = 'MANUTENÇÃO'
                 handle_fn_doc = lanc['handle_fn_doc']
                 sql_os = (
                     f'''
@@ -2273,15 +2296,14 @@ class ConexaoBancoBenner():
                     '''
                 )
 
-            if lanc['handle_tipo_doc'] == 34:
-                os['obs_os'] += lanc['desc_tipo_doc']
+            '''if lanc['handle_tipo_doc'] == 34:
+                lanc['obs_os'] = lanc['desc_tipo_doc']'''
 
             dic_os_razao = []
             if sql_os != '':
                 cursor = self.__conn.cursor()
                 cursor.execute(sql_os)
                 reg_os = cursor.fetchall()
-
                 for os_placa in reg_os:
                     '''obj_os = (Os_Razao_Frota.objects
                               .filter(handle_lanc_cc=lanc['handle_lanc_cc'])).first()
@@ -2306,9 +2328,14 @@ class ConexaoBancoBenner():
                         obj_os.save()
                     os['cod_os_razao_frota'] = obj_os.cod_os_razao_frota
                     '''
-                    os['desc_cluster'] = str(os_placa.desc_conjunto)
-                    os['codigo_os'] = str(os_placa.codigo_os)
-                    os['desc_tipo_os'] = str(os_placa.desc_tipo_os)
+                    os = {
+                        'codigo_os': os_placa.codigo_os,
+                        'desc_os': os_placa.desc_os,
+                        'obs_os': '' if os_placa.obs_os == None else os_placa.obs_os,
+                        'desc_tipo_os': os_placa.desc_tipo_os,
+                        'desc_produto': os_placa.desc_produto,
+                        'desc_conjunto': os_placa.desc_conjunto,
+                    }
                     dic_os_razao.append(os)
             lanc['dic_os_razao'] = dic_os_razao
 

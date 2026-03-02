@@ -2961,7 +2961,6 @@ class Form_Imp_Arq_Contas_M1_View(View):
                         data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
                     else:
                         data_lancto = row['Data Lançto']
-
                 doc = Docs_Pac_Finac_Disponib_M1(
                     num_doc = row['Nº Documento'],
                     data_lancto = data_lancto,

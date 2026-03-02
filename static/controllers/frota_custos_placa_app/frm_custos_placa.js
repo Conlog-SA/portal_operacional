@@ -487,7 +487,8 @@ $(document).on('click', 'button', function(){
         });
 
 
-    } else if(let_nome_btn == 'btn_razao_filial_conta_proj_placa'){
+    } else if(let_nome_btn == 'btn_razao_filial_conta_proj_placa' || let_nome_btn == 'btn_detalhes_lanc_proj_conta_placa'){
+        $("#accordion_razao_custos_frota").html("");
         let let_handle_filial = let_val_btn.split('_')[0];
         let let_handle_conta = let_val_btn.split('_')[1];
         let let_handle_proj = let_val_btn.split('_')[2];
@@ -508,8 +509,8 @@ $(document).on('click', 'button', function(){
             },
             url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
             success: function(dados){
-
-
+                let let_header = `Razão placa ${let_placa}. `;
+                $("#sp_header_modal_razao_placa").html(let_header);
 
                 let let_conteudo_razao = gera_estrutura_razao_filial_conta_proj_placa(dados.dic_resumo_razao);
                 $("#accordion_razao_custos_frota").html(let_conteudo_razao);
@@ -534,6 +535,50 @@ $(document).on('click', 'button', function(){
 
     } else if(let_nome_btn == 'btn_fecha_modal_lista_razao_os_conta'){
         $("#modal_lista_razao_os_conta").hide();
+
+    } else if(let_nome_btn == 'btn_detalhes_lanc_placa_conta'){
+        $("#accordion_razao_custos_frota").html("");
+        let let_handle_filial = let_val_btn.split('_')[0];
+        let let_handle_conta = let_val_btn.split('_')[1];
+        let let_placa = let_val_btn.split('_')[3];
+        let let_comp = $("#dt_comp_frm_custos_placa").val();
+
+        let let_loader_frm_custos_placa = document.getElementById("loader_frm_custos_placa");
+        let_loader_frm_custos_placa.style.display = "flex";
+        $.ajax({
+            type: 'GET',
+            data: {
+                'transacao'             :   'pesquisa_razao_filial_placa_conta',
+                'handle_filial'         :   let_handle_filial,
+                'handle_conta'          :   let_handle_conta,
+                'comp'                  :   let_comp,
+                'placa'                 :   let_placa
+            },
+            url:"/frota_custos_placa_app/gera_dados_razao_placas_proj",
+            success: function(dados){
+                let let_header = `Razão placa ${let_placa}. `;
+                $("#sp_header_modal_razao_placa").html(let_header);
+
+                let let_conteudo_razao = gera_estrutura_razao_filial_conta_proj_placa(dados.dic_resumo_razao);
+                $("#accordion_razao_custos_frota").html(let_conteudo_razao);
+                $("#modal_lista_razao_os_conta").show();
+                let_loader_frm_custos_placa.style.display = "none";
+
+                $("#modal_lista_razao_os_conta").show();
+
+            },
+            error: function (request, status, error) {
+                console.log(error);
+                let_loader_frm_custos_placa.style.display = "none";
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
 
     }
 
@@ -664,6 +709,7 @@ function atualiza_componente_sl_conta(){
                 dados.lista_contas_periodo.forEach(conta => {
                     $("#sl_conta_frm_custos_placa").append(`<option value="${conta.handle_conta}">${conta.desc_conta}</option>`);
                 });
+                $("#sl_conta_frm_custos_placa").prop('disabled', false);
                 $("#sl_conta_frm_custos_placa").selectpicker('refresh');
 
                 let_loader_frm_custos_placa.style.display = "none";
@@ -1089,14 +1135,66 @@ function gera_estrutura_custos_placa_contas(dic_resumo_contas){
 function gera_estrutura_razao_filial_conta_proj_placa(dic_razao){
     let let_conteudo_razao = ``;
     dic_razao.forEach(razao => {
+        let let_os = `
+            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="background: #363636;">
+                <div class="d-flex justify-content-between align-items-between p-2"
+                     style="width: 20%; background-color: #363636 !important;color:#ffffff;font-weight: 400;">
+                    OS
+                </div>
+                <div class="d-flex justify-content-between align-items-between p-2 ms-1"
+                     style="width: 20%;background-color: #363636 !important;color:#ffffff;font-weight: 400;">
+                    Item
+                </div>
+                <div class="d-flex justify-content-between align-items-between p-2 ms-1"
+                     style="width: 20%;background-color: #363636 !important;color:#ffffff;font-weight: 400;">
+                    Tipo
+                </div>
+                <div class="d-flex justify-content-between align-items-between p-2 ms-1"
+                     style="width: 20%;background-color: #363636 !important;color:#ffffff;font-weight: 400;">
+                    Conjunto
+                </div>
+            </div>
+        `;
+        razao.dic_os_razao.forEach( os => {
+            let_os += `
+                <div class="d-flex justify-content-between align-items-between w-100 p-2">
+                    <div class="d-flex justify-content-start align-items-center p-1"
+                         style="width: 20%;font-weight: 600;">
+                         <i class="fa-solid fa-angle-right icon-color-e"></i>
+                        ${os.codigo_os}
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center p-1 ms-1"
+                         style="width: 20%;font-weight: 400;">
+                        ${os.desc_os}
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center p-1 ms-1"
+                         style="width: 20%;font-weight: 400;">
+                        ${os.desc_produto}
+                    </div>
+                    <div class="d-flex justify-content-start align-items-center p-1 ms-1"
+                         style="width: 20%;font-weight: 400;">
+                        ${os.desc_conjunto}
+                    </div>
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2 ms-1"
+                     style="font-weight: 400;">
+                    <b>Descrição OS :</b> ${os.desc_tipo_os}
+                </div>
+                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2 ms-1"
+                     style="border-bottom: 1px dashed #BDB1A8;font-weight: 400;">
+                    <b>Observação OS :</b> ${os.obs_os}
+                </div>
+            `;
+        });
+
         let_conteudo_razao += `
-            <div class="accordion-item">
+            <div class="accordion-item mb-1">
                 <h6 class="accordion-header" id="heading_razao_${razao.handle_lanc_cc}">
-                    <button id="bnt_razao_os_${razao.handle_lanc_cc}" name="bnt_custo_frota_placa"
-                            value="${razao.handle_lanc_cc}"
+                    <button id="bnt_razao_os_${razao.num_doc_contabil}" name="bnt_razao_os"
+                            value="${razao.num_doc_contabil}"
                             class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#collapse_razao_${razao.handle_lanc_cc}" aria-expanded="false"
-                            aria-controls="collapse_razao_${razao.handle_lanc_cc}" style="font-size:12px;">
+                            data-bs-target="#collapse_razao_${razao.num_doc_contabil}" aria-expanded="false"
+                            aria-controls="collapse_razao_${razao.num_doc_contabil}" style="font-size:12px;">
 
 
                         <div class="d-flex flex-column justify-content-between align-items-between w-100 p-2">
@@ -1152,7 +1250,28 @@ function gera_estrutura_razao_filial_conta_proj_placa(dic_razao){
                             </div>
 
                             <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
-                                <div class="d-flex flex-column justify-content-center align-items-start w-100 p-2">
+                                <div class="d-flex flex-column justify-content-center align-items-start w-75 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Cluster
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-center w-100 p-1 ms-2" style="font-size: 12px; font-weight: 600;">
+                                        ${razao.desc_cluster}
+                                    </span>
+                                </div>
+
+                                <div class="d-flex flex-column justify-content-center align-items-start w-75 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Valor
+                                    </span>
+                                    <span class="d-flex justify-content-end align-items-center w-100 p-1 ms-2" style="font-size: 18px; font-weight: 800;">
+                                        R$ ${razao.val_lanc}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                                <div class="d-flex flex-column justify-content-center align-items-start w-75 p-2">
                                     <span style="font-size: 12px; font-weight: 600;">
                                         <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
                                         Histórico
@@ -1162,19 +1281,32 @@ function gera_estrutura_razao_filial_conta_proj_placa(dic_razao){
                                     </span>
                                 </div>
                             </div>
+                            <div class="d-flex justify-content-between align-items-between w-100 p-2" style="border-top: 1px dashed #BDB1A8;">
+                                <div class="d-flex justify-content-start align-items-center w-75 p-2">
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        <i class="fa-solid fa-caret-right icon-color-e"></i>&nbsp;&nbsp;
+                                        Projeto: &nbsp;&nbsp;
+                                    </span>
+                                    <span style="font-size: 12px; font-weight: 600;">
+                                        ${razao.nome_projeto}
+                                    </span>
+                                </div>
+                            </div>
 
                         </div>
 
 
                     </button>
                 </h6>
-                <div id="collapse_razao_${razao.handle_lanc_cc}" class="accordion-collapse collapse"
-                     aria-labelledby="heading_razao_${razao.handle_lanc_cc}" data-bs-parent="#accordion_razao_custos_frota">
+                <div id="collapse_razao_${razao.num_doc_contabil}" class="accordion-collapse collapse"
+                     aria-labelledby="heading_razao_${razao.num_doc_contabil}" data-bs-parent="#accordion_razao_custos_frota">
 
                     <div class="accordion-body d-flex flex-column"
-                         id="div_dados_os_filial_contas_proj_placa_${razao.handle_lanc_cc}">
+                         id="div_dados_os_filial_contas_proj_placa_${razao.num_doc_contabil}">
 
-
+                         <div class="d-flex flex-column justify-content-between align-items-between w-100 p-2">
+                            ${let_os}
+                         </div>
                     </div>
                 </div>
             </div>
