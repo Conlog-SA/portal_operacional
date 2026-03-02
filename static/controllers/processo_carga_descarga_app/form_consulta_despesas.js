@@ -441,6 +441,7 @@ function povoa_tab_mapas_despesa_2art(){
                         </button>
                     `;
 
+
                     if (mapa.tem_despesa == 'S') {
                         mapa.tem_despesa = 'Lançada'
                     } else {
@@ -462,10 +463,24 @@ function povoa_tab_mapas_despesa_2art(){
                     let let_dado_despesas = [];
                     if(mapa.lista_desp_mapa_emp != null){
                         mapa.lista_desp_mapa_emp.forEach(desp => {
+                            let let_btn_exclui_desp = `
+                                <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
+                                    id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas'
+                                    value='${desp.id_despesa}'>
+                                    <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
+                                </button>
+                            `;
                             let let_status_importacao = 'Não Importado'
                             if (desp.importado == 1) {
                                 let_status_importacao = 'Importado'
+                                let_btn_exclui_desp = `
+                                    <button type='button' name='btn_excluir_desp' id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas' style='border: none;padding-left: 38px;'
+                                        value='${desp.id_despesa}' disabled="disabled" title="Bloqueado">
+                                        <i class="fa-solid fa-ban" style="color: #f46424!important;" title="Bloqueado"></i>
+                                    </button>
+                                `;
                             }
+
 
                             if (desp.despesa == 1) {
                                 let_despesa = 'Serviço'
@@ -479,13 +494,6 @@ function povoa_tab_mapas_despesa_2art(){
                                 let_tipo_descarga = 'Por Caixa'
                             }
 
-                            let let_btn_exclui_desp = `
-                                <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
-                                    id='btn_excluir_desp_${desp.id_despesa}' class='mr-2 btn cl_btn_cad_contas'
-                                    value='${desp.id_despesa}'>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
-                                </button>
-                            `;
                             let let_btn_abre_comp = `
                                     <button type='button' name='btn_visualiza_comprovante'
                                             id='btn_visualiza_comprovante'
@@ -603,15 +611,26 @@ function povoa_tab_mapas_despesa_2art(){
                     let let_dado_despesas = [];
                     if(mapa.lista_desp_mapa_lanc != null){
                         mapa.lista_desp_mapa_lanc.forEach(desp => {
+                            let let_btn_exclui_desp = `
+                                <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
+                                    id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas'
+                                    value='${desp.id_despesa}'>
+                                    <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
+                                </button>
+                            `;
                             let let_status_importacao = 'Não Importado'
                             if (desp.importado == 1) {
                                 let_status_importacao = 'Importado'
+                                let_btn_exclui_desp = `
+                                    <button type='button' name='btn_excluir_desp' id='btn_excluir_desp' class='mr-2 btn cl_btn_cad_contas' style='border: none;padding-left: 38px;'
+                                        value='${desp.id_despesa}' disabled="disabled" title="Bloqueado">
+                                        <i class="fa-solid fa-ban" style="color: #f46424!important;" title="Bloqueado"></i>
+                                    </button>
+                                `;
                             }
-
                             if (desp.despesa == 1) {
                                 let_despesa = 'Serviço'
                             }
-
                             if (desp.tipo_descarga == 1) {
                                 let_tipo_descarga = 'Por Entrega'
                             } else if (desp.tipo_descarga == 2) {
@@ -620,13 +639,6 @@ function povoa_tab_mapas_despesa_2art(){
                                 let_tipo_descarga = 'Por Caixa'
                             }
 
-                            let let_btn_exclui_desp = `
-                                <button type='button' name='btn_excluir_desp' style='background: transparent;padding-left: 14px;padding-right: 14px;'
-                                    id='btn_excluir_desp_${desp.id_despesa}' class='mr-2 btn cl_btn_cad_contas'
-                                    value='${desp.id_despesa}'>
-                                    <i class="fa-solid fa-trash-can" style="color: #f46424!important;" title="Excluir Despesa" ></i>
-                                </button>
-                            `;
                             let let_btn_abre_comp = `
                                     <button type='button' name='btn_visualiza_comprovante'
                                             id='btn_visualiza_comprovante'
