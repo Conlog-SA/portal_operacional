@@ -1,0 +1,105 @@
+{% load static %}
+
+{% block link_static_css %}
+    <link rel="stylesheet" href="{% static 'css/contabil_composicao_app/frm_unidocs_interface.css' %}" />
+{% endblock %}
+
+<div class="d-flex flex-column h-100 align-items-center justify-content-start text-white w-100">
+    <div class="mt-3 d-flex align-items-center justify-content-between div_Titulo">
+        <div class="d-flex align-items-center justify-content-center">
+            <i class="fa-solid fa-file-pdf"></i>
+            <h1 class="titlePadraoMenu">Unidocs — Renomear e Dividir PDF</h1>
+        </div>
+        {% if obj_usuario_logado.cod_filial.cod_empresa.cod_empresa == 12 %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-branca.png' %}" >
+        {% else %}
+            <img class="logo_cabecalho" src="{% static 'icons/logo-small-deep.png' %}" >
+        {% endif %}
+    </div>
+
+    <div class="d-flex justify-content-between align-items-between div_Titulo_line">
+        <hr class="hr_title">
+    </div>
+
+    <div class="containerApp">
+        <div class="d-flex flex-column align-items-center justify-content-between cl_frm_topo_paginas">
+            <div class="d-flex flex-column align-content-around justify-content-between w-100 p-3">
+                <div id="dropZone">
+                    <p>Arraste PDFs aqui ou clique para selecionar</p>
+                    <input type="file" id="fileInput" multiple style="display:none;">
+                </div>
+            </div>
+            <div class="d-flex flex-column align-items-start justify-content-center w-100 p-2 ms-3">
+                <div id="numPartes">
+                    <label for="numeroPartes">Quantidade de partes</label>
+                    <input type="number" id="numeroPartes" min="1" value="1">
+                </div>
+            </div>
+
+            <div class="d-flex flex-column align-items-start justify-content-center w-100 p-2 ms-3">
+                <label>Configuração de nomes</label>
+
+                <div class="d-flex flex-column align-items-start justify-content-center w-100 p-2" id="camposPartes">
+
+                </div>
+            </div>
+
+
+            <div class="d-flex align-items-start justify-content-center w-100 inputs">
+                <div class="d-flex flex-column justify-content-between align-items-around w-100 p-2">
+                    <label for="nomesAtuais">Arquivos selecionados</label>
+                    <textarea class="txt-area-arq" id="nomesAtuais" readonly placeholder="Aqui aparecerão os arquivos selecionados"></textarea>
+                </div>
+                <div class="d-flex flex-column justify-content-between align-items-around w-100 p-2">
+                    <label for="novosNomes">Nomes finais</label>
+                    <textarea class="txt-area-arq" id="novosNomes" placeholder="Digite os novos nomes (um por linha, na mesma ordem)"></textarea>
+                </div>
+            </div>
+            <div class="d-flex justify-content-between align-items-around w-100 p-2">
+                <div class="d-flex align-items-start justify-content-center w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex align-items-start justify-content-center w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex align-items-start justify-content-center w-100">
+                    &nbsp;&nbsp;
+                </div>
+                <div class="d-flex justify-content-between align-items-around w-100">
+                    <input type="number" id="extrairInicio" min="1" placeholder="inicial"/>
+                </div>
+                <div class="d-flex justify-content-between align-items-around w-100">
+                    <input type="number" id="extrairFim" min="1" placeholder="final"/>
+                </div>
+                <div class="d-flex justify-content-between align-items-around w-100">
+                    <button class="btn-arq" type="button" id="btnExtrairNomes"> Extrair </button>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-center align-items-center p-2 botoes">
+                <button class="btn-arq" id="btnDividir" disabled>PROCESSAR PDF</button>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-around w-100 p-2">
+                <pre class="d-flex justify-content-between align-items-around w-100 p-2" id="resultado"></pre>
+            </div>
+
+
+
+        </div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+<script defer src="{% static 'js/contabil_composicao_app/jszip.min.js' %}"></script>
+<script defer src="{% static 'js/contabil_composicao_app/pdf-lib.min.js' %}"></script>
+<script defer src="{% static 'controllers/contabil_composicao_app/frm_unidocs_interface.js' %}"></script>
+
+
