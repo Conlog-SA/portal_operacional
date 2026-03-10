@@ -70,10 +70,10 @@ class Form_Gerar_Check_Blitz_Trajeto_Outros_Meios(View):
             colaborador = Colaborador.objects.get(pk=int(nome_avaliado))
 
         elif situacao_colaborador == '2' or situacao_colaborador == '3' or situacao_colaborador == '4':
-
+            obj_filial = Filial.objects.get(pk=int(filial_colaborador))
             colaborador = Colaborador(
                 nome_colaborador=nome_avaliado,
-                cod_filial=filial_colaborador,
+                cod_filial=obj_filial,
                 situacao=0
             )
             colaborador.save()
