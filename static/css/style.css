@@ -112,8 +112,9 @@
 }
 
 .cl_tab_principal_pagina{
-    background-color: var(--cor_bg_cinza_escuro);
-    color: white;
+    /* background-color: var(--cor_bg_cinza_escuro);*/
+    background-color: #fffff0;
+    color: #363636 !important;
     font-size: 0.77rem;
     padding:0.5rem;
     margin-right: 0rem !important;
@@ -201,7 +202,8 @@ label {
 table, tr, td, .dataTables_info, .dataTables_filter{
     white-space: nowrap;
     font-size: 0.77rem;
-    color: white;
+    color: #363636;
+    font-weight: 500;
 }
 
 

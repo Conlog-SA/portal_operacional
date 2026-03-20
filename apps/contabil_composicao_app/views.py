@@ -2149,7 +2149,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date])
-
+                print(f'Período da composição: de {data_competencia_mais_um} até {ultimo_dia_data_competencia_mais_12_meses_date}')
                 sum_principal = 0
                 sum_taxas = 0
                 sum_val_pago = 0
@@ -2170,13 +2170,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'), sum_taxas_parc_atrasadas=Sum('val_taxas'), sum_val_pago_parc_atrasadas=Sum('val_pago'))
 
 
-                '''val_parc_atrasadas = Parcela_Contrato.objects \
+                val_parc_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  # val_pago=0
                             data_vencimento__lt=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
                 print('Atrasadas, menos que : ', data_competencia_mais_um)
                 for parc_atr in val_parc_atrasadas:
-                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')'''
+                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')
 
 
 
