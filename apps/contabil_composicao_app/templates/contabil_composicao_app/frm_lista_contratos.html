@@ -302,14 +302,14 @@
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}">
+                                        <input class="input_plan_parcelas" type="date" id="dt_data_pag_parc_{{parc.handle_parc}}">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}" readonly>
+                                        <input class="input_plan_parcelas" type="date" id="dt_data_pag_parc_{{parc.handle_parc}}" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="date" id="dt_data_pag_parc_{{parc.handle_parc}}"
+                                    <input class="input_plan_parcelas" type="date" id="dt_data_pag_parc_{{parc.handle_parc}}"
                                            readonly value="{{parc.data_liquidacao}}"> <br/>
                                     <span style="color: #fffff0 !important;">{{parc.data_liquidacao}}</span>
                                 {% endif %}
@@ -330,18 +330,21 @@
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP' %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_conta_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_conta_{{parc.handle_parc}}"
                                                name="txt_val_conta" value="{{parc.valor_conta}}"
                                                style="width: 87.2px;text-align:right;">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_conta_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_conta_{{parc.handle_parc}}"
                                                name="txt_val_conta" value="{{parc.valor_conta}}"
                                                style="width: 87.2px;text-align:right;" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_conta_{{parc.handle_parc}}" readonly
+                                    <input class="input_plan_parcelas"
+                                           type="text" id="txt_val_conta_{{parc.handle_parc}}" readonly
                                            name="txt_val_conta" value="{{parc.valor_conta}}"
                                            style="width: 87.2px;text-align:right;">
                                 {% endif %}
@@ -352,18 +355,21 @@
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_principal_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_principal_{{parc.handle_parc}}"
                                                name="txt_val_principal" value="{{parc.valor_principal}}"
                                                style="width: 87.2px;text-align:right;">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_principal_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_principal_{{parc.handle_parc}}"
                                                name="txt_val_principal" value="{{parc.valor_principal}}"
                                                style="width: 87.2px;text-align:right;" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_principal_{{parc.handle_parc}}"   readonly
+                                    <input class="input_plan_parcelas"
+                                           type="text" id="txt_val_principal_{{parc.handle_parc}}"   readonly
                                            name="txt_val_principal" value="{{parc.valor_principal}}"
                                            style="width: 87.2px;text-align:right;">
 
@@ -374,18 +380,21 @@
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_taxas_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_taxas_{{parc.handle_parc}}"
                                                name="txt_val_taxas" value="{{parc.valor_taxas}}"
                                                style="width: 87.2px;text-align:right;">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_taxas_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_taxas_{{parc.handle_parc}}"
                                                name="txt_val_taxas" value="{{parc.valor_taxas}}"
                                                style="width: 87.2px;text-align:right;" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_taxas_{{parc.handle_parc}}" readonly
+                                    <input class="input_plan_parcelas"
+                                           type="text" id="txt_val_taxas_{{parc.handle_parc}}" readonly
                                            name="txt_val_taxas" value="{{parc.valor_taxas}}"
                                            style="width: 87.2px;text-align:right;">
                                 {% endif %}
@@ -395,18 +404,21 @@
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_fundo_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_fundo_{{parc.handle_parc}}"
                                                name="txt_val_fundo" value="{{parc.valor_fundo}}"
                                                style="width: 87.2px;text-align:right;">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_fundo_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_fundo_{{parc.handle_parc}}"
                                                name="txt_val_fundo" value="{{parc.valor_fundo}}"
                                                style="width: 87.2px;text-align:right;" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_fundo_{{parc.handle_parc}}" readonly
+                                    <input class="input_plan_parcelas"
+                                           type="text" id="txt_val_fundo_{{parc.handle_parc}}" readonly
                                            name="txt_val_fundo" value="{{parc.valor_fundo}}"
                                            style="width: 87.2px;text-align:right;">
                                 {% endif %}
@@ -419,18 +431,21 @@
                             <td>
                                 {% if parc.tipo_prazo == 'CP' or parc.tipo_prazo == 'LP'  %}
                                     {% if obj_usuario_sessao.corporativo == 'S' %}
-                                        <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
                                                value="{{parc.val_total_pago}}"
                                                style="width: 87.2px;text-align:right;">
                                     {% endif %}
                                     {% if obj_usuario_sessao.corporativo == 'N' %}
-                                        <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
+                                        <input class="input_plan_parcelas"
+                                               type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
                                                value="{{parc.val_total_pago}}"
                                                style="width: 87.2px;text-align:right;" readonly>
                                     {% endif %}
                                 {% endif %}
                                 {% if parc.tipo_prazo == 'RN' or parc.tipo_prazo == 'PG' %}
-                                    <input type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
+                                    <input class="input_plan_parcelas"
+                                           type="text" id="txt_val_pag_parc_{{parc.handle_parc}}"
                                            readonly value="{{parc.val_total_pago}}"
                                            style="width: 87.2px;text-align:right;">
 

@@ -275,7 +275,9 @@ input {
     font-weight: 600;
     background-color: #fffff0!important;
     color: #363636;
+    border: .5px solid #CDC5BF !important;
 }
 
-span {
+.input_plan_parcelas {
+    border: .5px solid #f46424 !important;
 }
