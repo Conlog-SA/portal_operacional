@@ -1,6 +1,7 @@
 let let_lista_dados_tab_mapas = []
 let let_lista_dados_tab_mapas_emp = []
 let let_lista_dados_tab_mapas_lanc = []
+let let_lista_clientes_filial = []
 // using jQuery
 function getCookie(name) {
     var cookieValue = null;
@@ -48,6 +49,10 @@ $(document).on('click','button', function(){
         let let_indice_dado = let_val_btn.split('_')[0];
         let let_modal = let_val_btn.split('_')[2];
         $("#fecha_modal_carga_desc").val(let_indice_dado);
+        $("#hd_tipo_modal").val(let_modal);
+
+        console.log(let_lista_clientes_filial)
+        $("#cod_promax_cliente").selectpicker('val', let_lista_clientes_filial).selectpicker('refresh');
 
         if (let_modal == 'Mapas2art') {
             let let_id_mapa = let_lista_dados_tab_mapas[let_indice_dado][7];
@@ -86,6 +91,65 @@ $(document).on('click','button', function(){
     } else if (let_nome_btn == "fecha_modal_carga_desc") {
         $("#modal_lanca_despesa").hide();
         povoa_tab_mapas_despesa_2art();
+    } else if (let_nome_btn == "fecha_modal_cad_cliente") {
+        $("#modal_cad_cliente").hide();
+    } else if (let_nome_btn == "btn_cad_clientes") {
+        let let_cod_filial = $("#cb_filial_pesq_mapas").val();
+        if (!let_cod_filial || let_cod_filial.trim() === '') {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Por favor, selecione a filial para cadastrar o fornecedor.',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            return;
+        } else {
+            $("#modal_cad_cliente").show();
+        }
+    } else if (let_nome_btn == "btn_salva_cadastro_cli") {
+        let let_cod_filial = $("#cb_filial_pesq_mapas").val();
+        let let_cod_promax_cliente = $("#cliente").val();
+        let let_nome_cliente = $("#nome_cliente").val();
+        if ((!let_cod_filial || let_cod_filial.trim() === '') || (!let_cod_promax_cliente || let_cod_promax_cliente.trim() === '') || (!let_nome_cliente || let_nome_cliente === "0")) {
+            $.gritter.add({
+                title: 'Atenção!',
+                text: 'Por favor, preencha os dois campos.',
+                image: '/static/icons/triangle-exclamation-solid.svg',
+                sticky: false,
+                time: '',
+            });
+            return;
+        } else {
+            $.ajax({
+            type: 'POST',
+            url: '/processo_carga_descarga_app/frm_cadastra_cliente',
+            data: {
+                'cod_filial': let_cod_filial,
+                'cod_promax_cliente': let_cod_promax_cliente,
+                'nome_cliente': let_nome_cliente
+              },
+            success: function (dados) {
+                limpa_campos_cadastro_cli()
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: dados.msg,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            },
+            error: function (request, status, error) {
+                $.gritter.add({
+                    title: 'Atenção!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
+            }
+        });
+      }
     } else if (let_nome_btn == "btn_salva_desp_carg_desc") {
         let let_id_despesa = $(this).val();
         let let_valor_btn = $(this).val();
@@ -97,7 +161,7 @@ $(document).on('click','button', function(){
         let let_data = $("#in_data_mapa").val();
         let let_mapa = $("#in_mapa").val();
         let let_placa = $("#in_placa").val();
-        let let_cod_promax_cliente = $("#cod_cli_promax").val();
+        let let_cod_cliente = $("#cod_promax_cliente").val();
         let let_tipo_descarga = $("#tipo_descarga").val();
         let let_quantidade = $("#qntd_carga").val();
         let let_valor_unit = $("#val_unit").val();
@@ -127,9 +191,9 @@ $(document).on('click','button', function(){
         let_frm_data.append('un_venda', let_un_venda);
         let_frm_data.append('cod_promax', let_cod_promax);
         let_frm_data.append("file", $('#fl_comp_pagamento')[0].files[0]);
-        let_frm_data.append('cod_promax_cliente', let_cod_promax_cliente);
+        let_frm_data.append('cod_cliente', let_cod_cliente);
 
-        if((let_tipo_descarga != '' && let_tipo_descarga != 0) && (let_cod_promax_cliente != 0 && let_cod_promax_cliente != '')
+        if((let_tipo_descarga != '' && let_tipo_descarga != 0) && (let_cod_cliente != 0 && let_cod_cliente != '')
             && (let_quantidade != 0 && let_quantidade != '') && (let_valor_unit != 0 && let_valor_unit != '')
             && (let_comprovante != 0 && let_comprovante != '') && (let_data != 0 && let_data != '')
             && (let_mapa != 0 && let_mapa != '') && (let_entrega != 0 && let_entrega != '')
@@ -151,10 +215,10 @@ $(document).on('click','button', function(){
                         sticky: false,
                         time: '',
                     });
-                    if (let_valor_btn != 0){
-                        limpa_campos();
-                    } else {
+                    if (let_valor_btn == 0){
                         limpa_todos_campos();
+                    } else {
+                        limpa_campos();
                     }
                     povoa_tab_cliente_vincul_mapa('sem_formatacao', dados.lista_dic_despesas);
                 },
@@ -182,6 +246,8 @@ $(document).on('click','button', function(){
         //window.open('https://operacional.conlogsa.com.br//media/'+let_caminho_comprovante, '_blank');
         window.open('http://127.0.0.1:8000/media/'+let_caminho_comprovante, '_blank');
     } else if (let_nome_btn == "btn_adc_mapa_empurrada"){
+        $("#hd_tipo_modal").val('Empurrada');
+        $("#cod_promax_cliente").selectpicker('val', let_lista_clientes_filial).selectpicker('refresh');
         limpa_campos();
         $("#in_data_mapa").prop('disabled', false);
         $("#in_mapa").prop('disabled', false);
@@ -200,6 +266,8 @@ $(document).on('click','button', function(){
         $("#modal_lanca_despesa").show();
         $("#in_entrega").val('Empurrada');
     } else if (let_nome_btn == "btn_adc_mapa_rota_lancado"){
+        $("#hd_tipo_modal").val('LancRota/AS');
+        $("#cod_promax_cliente").selectpicker('val', let_lista_clientes_filial).selectpicker('refresh');
         limpa_campos();
         $("#in_data_mapa").prop('disabled', false);
         $("#in_mapa").prop('disabled', false);
@@ -281,12 +349,31 @@ function povoa_tab_mapas_despesa_2art(){
                 let_lista_dados_tab_mapas = [];
                 let_lista_dados_tab_mapas_emp = [];
                 let_lista_dados_tab_mapas_lanc = [];
+                let_lista_clientes_filial = [];
                 let let_img = `<i class="fa-solid fa-caret-right icon-color-e"></i>`;
                 let let_count_reg = 0
                 let let_count_emp = 0
                 let let_count_lanc = 0
                 let let_cod_filial = $("#cb_filial_pesq_mapas").val();
+                /* Lista Filial */
+                dados.lista_clientes.forEach(cliente => {
+                     let let_cliente = [
+                        /*0*/cliente.cod_cliente,
+                        /*1*/cliente.cod_promax_cliente,
+                        /*2*/cliente.nome_cliente,
+                    ];
+                    let_lista_clientes_filial.push(let_cliente)
+                });
 
+                let clienteSelect = $("#cod_promax_cliente");
+                clienteSelect.empty();
+                let_lista_clientes_filial.forEach(cliente_fil => {
+                    clienteSelect.append(`
+                        <option value="${cliente_fil[0]}">
+                            ${cliente_fil[1]} - Cliente: ${cliente_fil[2]}
+                        </option>
+                    `);
+                });
                 /* Mapas do 2art */
                 dados.lista_dic_mapas_despesas.forEach(mapa => {
                     let let_btn_lanca_desp = `
@@ -358,7 +445,7 @@ function povoa_tab_mapas_despesa_2art(){
 
                             let let_desp = [
                                 /*0*/let_img,
-                                /*1*/desp.cod_promax_cliente,
+                                /*1*/desp.cod_cliente,
                                 /*2*/let_tipo_descarga,
                                 /*3*/desp.quantidade,
                                 /*4*/desp.valor_unit,
@@ -506,7 +593,7 @@ function povoa_tab_mapas_despesa_2art(){
 
                             let let_desp = [
                                 /*0*/let_img,
-                                /*1*/desp.cod_promax_cliente,
+                                /*1*/desp.cod_cliente,
                                 /*2*/let_tipo_descarga,
                                 /*3*/desp.quantidade,
                                 /*4*/desp.valor_unit,
@@ -651,7 +738,7 @@ function povoa_tab_mapas_despesa_2art(){
 
                             let let_desp = [
                                 /*0*/let_img,
-                                /*1*/desp.cod_promax_cliente,
+                                /*1*/desp.cod_cliente,
                                 /*2*/let_tipo_descarga,
                                 /*3*/desp.quantidade,
                                 /*4*/desp.valor_unit,
@@ -797,7 +884,7 @@ function povoa_tab_cliente_vincul_mapa(origem, lista_despesas){
 
                 let let_desp = [
                     /*0*/let_img,
-                    /*1*/desp.cod_promax_cliente,
+                    /*1*/desp.cod_cliente,
                     /*2*/let_tipo_descarga,
                     /*3*/desp.quantidade,
                     /*4*/desp.valor_unit,
@@ -865,15 +952,19 @@ function povoa_tab_cliente_vincul_mapa(origem, lista_despesas){
 }
 
 function limpa_campos(){
-    $("#cod_cli_promax").val('');
     $("#un_venda").val('');
+    $("#cod_promax_cliente").val('0');
+    $("#cod_promax_cliente").selectpicker('refresh');
     $("#qntd_carga").val('');
     $("#val_unit").val('');
-    $("#fl_comp_pagamento").val('');
     $("#tipo_descarga").val('0');
     $("#tipo_descarga").selectpicker('refresh');
-    $("#in_entrega").selectpicker('refresh');
-    $("#in_entrega").val('');
+    $("#fl_comp_pagamento").val('');
+}
+
+function limpa_campos_cadastro_cli(){
+    $("#cliente").val('');
+    $("#nome_cliente").val('');
 }
 
 function limpa_todos_campos(){
@@ -888,6 +979,9 @@ function limpa_todos_campos(){
     $("#tipo_descarga").val('0');
     $("#tipo_descarga").selectpicker('refresh');
     $("#in_entrega").val('');
+    $("#cliente").val('');
+    $("#nome_cliente").val('');
     $("#in_entrega").selectpicker('refresh');
-
+    $("#cod_promax_cliente").val('0');
+    $("#cod_promax_cliente").selectpicker('refresh');
 }

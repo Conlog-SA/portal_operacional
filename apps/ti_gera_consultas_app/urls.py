@@ -11,4 +11,5 @@ urlpatterns = [
     path('abre_modal_com_param_script', views.Frm_Param_Consulta_View.as_view(), name='abre_modal_com_param_script'),
     path('executa_consulta', views.Frm_Executa_Consulta_View.as_view(), name='executa_consulta'),
     path('exclui_parametro_consulta/<int:pk>/', views.Frm_Parametro_View.as_view(),name='exclui_parametro_consulta'),
+    path('exclui_parametro_consulta/<int:pk>/', views.Frm_Parametro_View.as_view(),name='exclui_parametro_consulta'),
 ]
