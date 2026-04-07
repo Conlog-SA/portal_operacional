@@ -87,6 +87,7 @@ $(document).on('click', 'button', function(){
     }
     else if( nomeDoButton == 'btn_pesq_compras_itens_aud_evolucao_precos' ){
         //var var_cod_filial = $("#cb_filial_gera_evolucao_precos").val();
+        var var_cod_empresa = $("#cb_empresas_gera_evolucao_precos").val();
         var var_cod_filial = $("#cb_itens_aud_evolucao_precos").val().split('_')[0];
         var var_comp_data_ini = $("#txt_data_ini_evolucao_precos").val();
         var var_data_ini = var_comp_data_ini.split('-')[0]+"-01-01";
@@ -99,6 +100,7 @@ $(document).on('click', 'button', function(){
             type: 'GET',
             url:"/suprimentos_evolucao_precos_app/retorna_compras_item_filial",
             data: {
+                'cod_empresa': var_cod_empresa,
                 'handle_filial': var_cod_filial,
                 'data_ini': var_data_ini,
                 'data_fim': var_data_fim,
@@ -723,6 +725,7 @@ function format(compras_item) {
 
 
 function fn_gera_evolucao_precos(nome_componente) {
+    var var_cod_empresa = $("#cb_empresas_gera_evolucao_precos").val();
     var var_handle_filial = $("#cb_filial_gera_evolucao_precos").val().toString();
     var var_data_ini = $("#txt_data_ini_evolucao_precos").val();
     var var_data_fim = $("#txt_data_fim_evolucao_precos").val();
@@ -741,13 +744,14 @@ function fn_gera_evolucao_precos(nome_componente) {
     $.ajax({
         type: 'GET',
         data: {
-            'handle_filial'     :   var_handle_filial,
-            'lista_handle_atendentes' : let_lista_handle_atendentes,
-            'data_ini'          :   var_data_ini,
-            'data_fim'          :   var_data_fim,
-            'handle_familia'    :   var_handle_familia,
-            'cod_ref_item'      :   var_cod_ref_item,
-            'numero_requisicao' :   var_num_requisicao
+            'cod_empresa'               :   var_cod_empresa,
+            'handle_filial'             :   var_handle_filial,
+            'lista_handle_atendentes'   :   let_lista_handle_atendentes,
+            'data_ini'                  :   var_data_ini,
+            'data_fim'                  :   var_data_fim,
+            'handle_familia'            :   var_handle_familia,
+            'cod_ref_item'              :   var_cod_ref_item,
+            'numero_requisicao'         :   var_num_requisicao
         },
         url:'/suprimentos_evolucao_precos_app/gera_dados_evolucao_precos',
         success: function(dados){
@@ -780,7 +784,7 @@ function fn_gera_evolucao_precos(nome_componente) {
 
                 reg_compra = [
                     "<input type='hidden' id='hd_info_pesq_compras' name='hd_info_pesq_compras' " +
-                    "value='"+reg.handle_filial_compra+"_"+reg.data_ini_form+"_"+reg.data_fim_form+"_"+reg.cod_ref_item+"'>",
+                    "value='"+reg.handle_filial_compra+"_"+reg.data_ini_form+"_"+reg.data_fim_form+"_"+reg.cod_ref_item+"_"+reg.cod_empresa+"'>",
                     reg.desc_familia,
                     reg.cod_ref_item,
                     reg.desc_item,
@@ -935,6 +939,7 @@ function fn_gera_evolucao_precos(nome_componente) {
                     'data_ini': var_info_pesq_compras.split('_')[1],
                     'data_fim': var_info_pesq_compras.split('_')[2],
                     'cod_ref_item': var_info_pesq_compras.split('_')[3],
+                    'cod_empresa': var_info_pesq_compras.split('_')[4]
                 },
                 dataType: 'json',
                 success: function(data){
