@@ -56,4 +56,24 @@ class ConexaoBancoConecta():
 
         return lista_mapas
 
+    def existe_mapa(self, cod_promax, mapa):
+        cursor = self.__conn.cursor()
+
+        sql = f"""
+            SELECT mapa,
+                   codfilial
+            FROM mapas_2art
+            WHERE codfilial = {cod_promax}
+              AND mapa = '{mapa}'
+            LIMIT 1;
+        """
+
+        cursor.execute(sql)
+        resultado = cursor.fetchone()
+
+        cursor.close()
+        self.__conn.close()
+
+        return resultado is not None
+
 
