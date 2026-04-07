@@ -2149,7 +2149,7 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date])
-
+                print(f'Período da composição: de {data_competencia_mais_um} até {ultimo_dia_data_competencia_mais_12_meses_date}')
                 sum_principal = 0
                 sum_taxas = 0
                 sum_val_pago = 0
@@ -2170,13 +2170,13 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .aggregate(sum_principal_parc_atrasadas=Sum('val_principal'), sum_taxas_parc_atrasadas=Sum('val_taxas'), sum_val_pago_parc_atrasadas=Sum('val_pago'))
 
 
-                '''val_parc_atrasadas = Parcela_Contrato.objects \
+                val_parc_atrasadas = Parcela_Contrato.objects \
                     .filter(cod_contrato=contrato,  # val_pago=0
                             data_vencimento__lt=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
                 print('Atrasadas, menos que : ', data_competencia_mais_um)
                 for parc_atr in val_parc_atrasadas:
-                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')'''
+                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')
 
 
 
@@ -2768,10 +2768,12 @@ class Form_Imp_Arq_Contas_M1_View(View):
         df_conteudo_arqv.fillna('', inplace=True)
 
         obj_arqv_pesq = (Arquivo_Docs_Pac_Contas_Modelo_1.objects
-                         .filter(
-            nome_arqv_original = str(arquivo_form.name),
-            cod_pacote_conta = obj_pac_conta,
-            data_competencia = competencia_form + '-01')).first()
+                         .filter(nome_arqv_original = str(arquivo_form.name),
+                                 cod_pacote_conta = obj_pac_conta,
+                                 data_competencia = competencia_form + '-01',
+                                 cod_usu__cod_filial__cod_empresa = obj_usu.cod_filial.cod_empresa
+                                 )
+                         ).first()
         if obj_arqv_pesq != None:
             lista_registros_arqv = None
             if obj_pac_conta.cod_pacote_conta == 3:
@@ -2961,7 +2963,6 @@ class Form_Imp_Arq_Contas_M1_View(View):
                         data_lancto = datetime.strptime(row['Data Lançto'], '%d/%m/%Y')
                     else:
                         data_lancto = row['Data Lançto']
-
                 doc = Docs_Pac_Finac_Disponib_M1(
                     num_doc = row['Nº Documento'],
                     data_lancto = data_lancto,
@@ -3134,7 +3135,6 @@ class Form_Imp_Arq_Contas_M1_View(View):
             'msg': msg
         }
         return JsonResponse(dados, safe=False)
-
 
 
 class Form_Pesq_Arq_Contas_M1_View(View):
@@ -4013,7 +4013,6 @@ class Form_Vincula_Resp_Contas_View(View):
             'cod_conta': cod_conta
         }
         return JsonResponse(data, safe=False)
-
 
 
 class Importa_Anexos_Contas_View(View):
@@ -5550,7 +5549,6 @@ class Comp_Pac_Contas_Comp_Detalhado_View(View):
         return JsonResponse(data, safe=False)
 
 
-
 class Form_Renegociacao_Contrato_View(View):
     def post(self, request):
         cod_contrato_frm = request.POST['cod_contrato']
@@ -5584,8 +5582,6 @@ class Form_Renegociacao_Contrato_View(View):
             'cod_conta': obj_contrato.cod_conta.cod_conta
         }
         return JsonResponse(data, safe=False)
-
-
 
 
 class Form_Atualiza_Parcelas_Data_Corte(View):
@@ -5792,6 +5788,16 @@ class Form_Status_Proc_Contabil_View(View):
             'msg': msg
         }
         return JsonResponse(data, safe=False)
+
+
+class Frm_Unidocs_Util(View):
+    def get(self, request):
+        id_usu_session = request.session['cod_usuario_logado']
+        obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
+        contexto = {
+            'obj_usuario_logado': obj_usuario_logado
+        }
+        return render(request, 'contabil_composicao_app/frm_unidocs_interface.html',contexto)
 
 
 '''class Comp_Status_Pesq_Comp_Detalhada_View(View):

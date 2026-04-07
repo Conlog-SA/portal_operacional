@@ -881,7 +881,7 @@ class Conexao_Senior_BD():
             LEFT JOIN r024car B (NOLOCK)
                     ON (A.codcar = B.codcar)
             LEFT JOIN usu_tcarfrei C (NOLOCK)
-                    ON (B.usu_desfre = C.usu_codcar)
+                    ON (C.usu_codcar = B.usu_desfre)
             WHERE C.usu_descar IS NOT NULL
                    AND a.sitafa != 7
                    AND CODFIL = {cod_filial}

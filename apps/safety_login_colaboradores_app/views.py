@@ -290,7 +290,8 @@ class Lista_Colaboradores(View):
         #                       | Colaborador.objects.filter(cod_filial=cod_unidade,perfil_usu='T'))
         if tipo_check == '1':
             lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='op')
-            lista_colaboradores = lista_colaboradores.filter(desc_cargo__icontains='empilhadeira')
+            lista_colaboradores = (lista_colaboradores.filter(desc_cargo__icontains='empilhadeira')
+                                   .union(lista_colaboradores.filter(desc_cargo__icontains='Operador Conferente I')))
         if tipo_check == '8':
             lista_colaboradores = (lista_colaboradores.filter(desc_cargo__icontains='Motorista de Ônibus Rodoviário')
                                    .union(lista_colaboradores.filter(desc_cargo__icontains='Motorista Instrutor'))

@@ -692,6 +692,50 @@ $(document).on('click','button', function(){
                         success: function (dados) {
                             $("#div_info_detalhes_conta").html(dados); 
                             let_loader_frm_cad_contas.style.display = "none";
+
+                            $(".display").DataTable( {
+                                "bJQueryUI": true,
+                                "destroy": true,
+                                "fixedHeader": true,
+                                "scrollY": "570px",
+                                "scrollX": true,
+                                "scrollCollapse": true,
+                                "paging": true,
+                                "pageLength": 7,
+                                "dom": 'Bfrtip',
+                                "buttons": [
+                                    'copyHtml5'
+                                ],
+                                "columnDefs": [
+                                    {"className": "dt-left", "targets": [0]}
+                                ],
+                                "language": {
+                                    "decimal": ",",
+                                    "thousands": ".",
+                                    "sProcessing":   "Processando...",
+                                    "sLengthMenu":   "",
+                                    "sZeroRecords":  "Não foram encontrados resultados",
+                                    "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                                    "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+                                    "sInfoFiltered": "",
+                                    "sInfoPostFix":  "",
+                                    "sSearch":       "Pesquisar:",
+                                    "sUrl":          "",
+                                    "oPaginate": {
+                                        "sFirst":    "Primeiro",
+                                        "sPrevious": "Anterior",
+                                        "sNext":     "Proximo",
+                                        "sLast":     "Último"
+                                    },
+                                    "buttons":{
+                                        "copyTitle": 'Dados Copiados',
+                                        "copySuccess": {
+                                            _: '%d linhas copiadas',
+                                            1: '1 linha copiada'
+                                        }
+                                    }
+                                }
+                            });
                         },
                         error: function (request, status, error) {
                             let_loader_frm_cad_contas.style.display = "none";

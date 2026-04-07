@@ -172,6 +172,7 @@ urlpatterns = [
          name='atualiza_data_fim_status_proc_contabil'),
     path('exclui_reg_resp_conta/<int:pk>', views.Form_Vincula_Resp_Contas_View.as_view(),
          name='exclui_reg_resp_conta'),
+    path('acessa_frm_unidaos_interface', views.Frm_Unidocs_Util.as_view(), name='acessa_frm_unidaos_interface'),
 
 ]
 

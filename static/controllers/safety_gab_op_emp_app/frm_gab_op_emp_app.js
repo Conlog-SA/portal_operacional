@@ -2,7 +2,7 @@ $(document).on('change','#tipo_operador',function(){
 
     let cod_resposta = $(this).val();
     let let_unidade = $('#unidade_operador').val();
-    console.log(let_unidade)
+
     if (let_unidade == "") {
         $('#tipo_operador').val('');
         $('#tipo_operador').selectpicker('refresh');

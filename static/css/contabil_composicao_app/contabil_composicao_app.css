@@ -215,9 +215,6 @@
 }
 
 
-
-
-
 .cl_div_loader_cad_comp_detalhada{
     padding-bottom: 1rem;
 }
@@ -254,9 +251,6 @@
 }
 
 
-
-
-
 .cl_div_comp_imp_arq_contas_m1{
     width: 11% !important;
     margin-left: 1rem;
@@ -274,4 +268,16 @@
 .filter-option {
     /*width: 222.38px !important; */
     width: 100% !important;
+}
+
+
+input {
+    font-weight: 600;
+    background-color: #fffff0!important;
+    color: #363636;
+    border: .5px solid #CDC5BF !important;
+}
+
+.input_plan_parcelas {
+    border: .5px solid #f46424 !important;
 }

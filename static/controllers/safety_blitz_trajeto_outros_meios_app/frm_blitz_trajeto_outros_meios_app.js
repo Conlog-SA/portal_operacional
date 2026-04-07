@@ -2,14 +2,15 @@ $(document).on('click','.create-check-blitz-trajeto-outros_meios' , function(){
     let let_unidade_avaliado_outros_meios = $('#unidade_colaborador_outros_meios').val();
     let let_situacao_avaliado_outros_meios = $('#situacao_avaliado_outros_meios').val();
     let let_meio_transporte_outros_meios = $('#meio_transporte').val();
-    let let_nome_relatado = "";
+    let let_nome_avaliado_outros_meios = "";
 
     if (let_situacao_avaliado_outros_meios == '1') {
         let_nome_avaliado_outros_meios = $('#nome_avaliado_outros_meios').val();
     }
     else if (let_situacao_avaliado_outros_meios == '2' || let_situacao_avaliado_outros_meios == '3' || let_situacao_avaliado_outros_meios == '4') {
-        let_nome_avaliado_outros_meios = $('#nome_avaliado_terceiro').val();
+        let_nome_avaliado_outros_meios = $('#nome_avaliado_terceiro_outros_meios').val();
     }
+
 
     msg_erro = '';
     if (let_unidade_avaliado_outros_meios == '') {
