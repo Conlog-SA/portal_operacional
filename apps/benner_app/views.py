@@ -746,17 +746,33 @@ class ConexaoBancoBenner():
 
     def retornaTabFiliaisBennerByEmpresa(self, cod_empresa):
         cursor = self.__conn.cursor()
-        sql_filiais = (
-            f'''
-                SELECT  HANDLE,
-                        EMPRESA,
-                        NOME,
-                        CGC
-                  FROM	FILIAIS (NOLOCK)
-                 WHERE	nome NOT LIKE '%x--%'
-                   AND  empresa = {cod_empresa};
-            '''
-        )
+        if int(cod_empresa) == 12:
+            sql_filiais = (
+                f'''
+                    SELECT  HANDLE,
+                            EMPRESA,
+                            NOME,
+                            CGC
+                      FROM	FILIAIS (NOLOCK)
+                     WHERE	nome NOT LIKE '%x--%'
+                       AND  empresa = {cod_empresa}
+                       AND  HANDLE not in (34,57,89);
+                '''
+            )
+        elif int(cod_empresa) == 17:
+            sql_filiais = (
+                f'''
+                    SELECT  HANDLE,
+                            EMPRESA,
+                            NOME,
+                            CGC
+                      FROM	FILIAIS (NOLOCK)
+                     WHERE	nome NOT LIKE '%x--%'
+                       AND  empresa = {cod_empresa}
+                        OR  HANDLE in (94, 121, 592);
+                '''
+            )
+
         cursor.execute(sql_filiais)
         lista_filiais = cursor.fetchall()
         cursor.close()
@@ -784,7 +800,7 @@ class ConexaoBancoBenner():
         self.__conn.close()
         return lista_familias
 
-    def retorna_df_ultimas_compras(self, lista_handle_filial, data_ini, data_fim, handle_familia, cod_ref_item,
+    def retorna_df_ultimas_compras(self, cod_empresa, lista_handle_atendentes, lista_handle_filial, data_ini, data_fim, handle_familia, cod_ref_item,
                                        num_requisicao):
         # param_familia = ' AND	prod_itens_compra.familia not in (12,18,23,25,28,29,34,35,36,37,39,53,66,71,75,92) '
         param_familia = ''
@@ -804,15 +820,16 @@ class ConexaoBancoBenner():
         if lista_handle_filial != '0':
             param_filial = f'AND    compra.filial in ({lista_handle_filial})'
 
-
-
-
-
-
-        '''Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), 
-        Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344),
-        Lucas.Fernandes(4128)'''
+        '''
+        Conlog
+        Titon(65), Valquiria(1484), Zerbone(1600), Rafael(1651), Spall(2529), Marcionei(2614), Fernanda(2616), 
+        Franaciele(2933), Samanta(3274), Larissa(3344), Natan(3820), Raquel(3831), Lucas.Fernandes(4128)
+        Deep
+        Leandro(3881), Samantha(4662), Gabriel(5986), Ana(6124)        
+        '''
         handle_atendentes = '65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831,4128'
+        if int(cod_empresa) == 17:
+            handle_atendentes = '3881, 4662, 5986,6124'
 
         sql_evolucao_ultimas_compras = (
             f'''
@@ -915,7 +932,7 @@ class ConexaoBancoBenner():
             LEFT    JOIN CM_UNIDADESMEDIDA un_med (NOLOCK)
               ON    (un_med.HANDLE = itens_compra.UNIDADE)
            WHERE	compra.datadaordem BETWEEN '{data_ini}' AND '{data_fim}'
-             AND	compra.usuarioincluiu in ({handle_atendentes})
+             AND	compra.usuarioincluiu in ({lista_handle_atendentes})
              AND	prod_itens_compra.tipo = 1
              AND	compra.status = 4 /* status 4 : compra encerrada */
              {param_filial}             
@@ -982,12 +999,19 @@ class ConexaoBancoBenner():
         self.__conn.close()
         return df_evolucao_preco
 
-    def retorna_compras_by_item_filial(self, handle_filial, cod_ref_item, data_ini, data_fim):
+    def retorna_compras_by_item_filial(self, cod_empresa, handle_filial, cod_ref_item, data_ini, data_fim):
         cursor = self.__conn.cursor()
-        '''Zerbone(1600), Spall(2529), Franaciele(2933), Natan(3820), Rafael(1651), Raquel(3831), 
-                Samanta(3274), Valquiria(1484), Titon(65), Marcionei(2614), Fernanda(2616), Larissa(3344),
-                Lucas.Fernandes(4128)'''
+        '''
+                Conlog
+                Titon(65), Valquiria(1484), Zerbone(1600), Rafael(1651), Spall(2529), Marcionei(2614), Fernanda(2616), 
+                Franaciele(2933), Samanta(3274), Larissa(3344), Natan(3820), Raquel(3831), Lucas.Fernandes(4128)
+                Deep
+                Leandro(3881), Samantha(4662), Gabriel(5986), Ana(6124)        
+                '''
         handle_atendentes = '65,1484,1600,1651,2529,2614,2616,2933,3274,3344,3820,3831,4128'
+        if int(cod_empresa) == 17:
+            handle_atendentes = '3881, 4662, 5986,6124'
+
         sql_compras_item = (
             f'''
             SELECT	compra.filial							AS	handle_filial_compra,

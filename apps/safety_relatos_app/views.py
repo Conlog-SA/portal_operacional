@@ -80,6 +80,10 @@ class Form_Gerar_Relatos_Check(View):
                 })
             flag_deep = False
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'cod_usuario': nome_colaborador,
             'flag_deep': flag_deep,
@@ -90,7 +94,8 @@ class Form_Gerar_Relatos_Check(View):
             'lista_categorias_ato_inseguro': lista_categorias_ato_inseguro,
             'lista_categorias_condicao_insegura': lista_categorias_condicao_insegura,
             'lista_categorias_comportamento_seguro': lista_categorias_comportamento_seguro,
-            'lista_setores_relatos': lista_setores
+            'lista_setores_relatos': lista_setores,
+            'cor_empresa': cor_empresa
         }
 
         if "Visitante" in colaborador.nome_colaborador:
@@ -220,9 +225,14 @@ class Form_Gerar_Relatos_Check(View):
 
         request.session['cod_relato'] = check_cabecalho.cod_relato_check
 
+        cor_empresa = '#f46424 !important'
+        if colaborador_envio_original.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'lista_itens' : lista_itens_dict,
-            'cod_check_aplicado': check_aplicado.cod_check_aplicado
+            'cod_check_aplicado': check_aplicado.cod_check_aplicado,
+            'cor_empresa': cor_empresa
         }
         return render(request, 'safety_checks_aplicados_app/preencher_form_check.html', context)
 

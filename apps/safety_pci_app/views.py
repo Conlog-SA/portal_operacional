@@ -44,7 +44,12 @@ class Form_Gerar_Check_Pci(View):
         elif colaborador.perfil_usu == 'U':
             str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
+            'cor_empresa': cor_empresa,
             'options_select_unidade': str_options_select_unidade,
         }
         return render(request, 'safety_pci_app/pci_form_gerar_check.html', context)
@@ -97,7 +102,6 @@ class Form_Gerar_Check_Pci(View):
             prox_categoria_item_pci = lista_itens_itens_pci[int(cod_item)]
             itens_categoria_item_pci = lista_itens_hit_db[categoria_item_pci.ordem_item-1:prox_categoria_item_pci.ordem_item-1]
 
-        print(itens_categoria_item_pci)
 
         lista_itens_dict = []
         str_itens_obrigatorios = []
@@ -125,7 +129,12 @@ class Form_Gerar_Check_Pci(View):
         )
         check_cabecalho.save()
 
+        cor_empresa = '#f46424 !important'
+        if colaborador_envio.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
+            'cor_empresa': cor_empresa,
             'lista_itens' : lista_itens_dict,
             'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }

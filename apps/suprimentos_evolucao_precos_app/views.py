@@ -21,7 +21,6 @@ class Form_Gera_Evolucao_Precos_View(View):
     def get(self, request):
         id_usu_session = request.session['cod_usuario_logado']
         obj_usuario_logado = Usuario.objects.get(pk=id_usu_session)
-
         lista_filiais = (ConexaoBancoBenner()
                          .retornaTabFiliaisBennerByEmpresa(obj_usuario_logado.cod_filial.cod_empresa.cod_empresa))
 
@@ -109,6 +108,7 @@ class Comp_Filiais_Evolucao_Precos_View(View):
 
 class Form_Compras_Item_Filial_View(View):
     def get(self, request):
+        cod_empresa_frm = request.GET['cod_empresa']
         handle_filial_form = request.GET['handle_filial']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
@@ -116,7 +116,7 @@ class Form_Compras_Item_Filial_View(View):
 
         compras_item = []
         compras_benner = ConexaoBancoBenner()\
-            .retorna_compras_by_item_filial(handle_filial_form, cod_ref_item_form, data_ini_form, data_fim_form)
+            .retorna_compras_by_item_filial(cod_empresa_frm, handle_filial_form, cod_ref_item_form, data_ini_form, data_fim_form)
         for reg in compras_benner:
             num_req= ''
             dat_req = ''
@@ -554,6 +554,7 @@ class Gera_Dash_Evolucao_Precos_View(View):
 class Gera_Evolucao_Precos_View(View):
 
     def get(self, request):
+        cod_empresa_frm = request.GET['cod_empresa']
         lista_handle_filial_form = request.GET['handle_filial']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
@@ -563,7 +564,7 @@ class Gera_Evolucao_Precos_View(View):
         numero_requisicao_form = request.GET['numero_requisicao']
         #locale.setlocale(locale.LC_MONETARY, 'pt-BR')
 
-        lista_evolucao_precos_tab = self.gera_tabela_analitica_evolucao(lista_handle_atendentes_frm,
+        lista_evolucao_precos_tab = self.gera_tabela_analitica_evolucao(cod_empresa_frm,lista_handle_atendentes_frm,
                                                                         lista_handle_filial_form, data_ini_form,
                                                                         data_fim_form, lista_handle_familia_form,
                                                                         cod_ref_item_form, numero_requisicao_form)
@@ -576,12 +577,12 @@ class Gera_Evolucao_Precos_View(View):
         return JsonResponse(data, safe=False)
 
 
-    def gera_tabela_analitica_evolucao(self, lista_handle_atendentes, lista_handle_filiais, data_ini, data_fim,
+    def gera_tabela_analitica_evolucao(self, cod_empresa, lista_handle_atendentes, lista_handle_filiais, data_ini, data_fim,
                                        lista_handle_familia, cod_ref_item, numero_requisicao):
         locale.setlocale(locale.LC_MONETARY, 'pt-BR')
         lista_evolucao_precos_tab = []
         df_evolucao_preco = ConexaoBancoBenner() \
-            .retorna_df_ultimas_compras(lista_handle_filiais, data_ini, data_fim,
+            .retorna_df_ultimas_compras(cod_empresa, lista_handle_atendentes, lista_handle_filiais, data_ini, data_fim,
                                         lista_handle_familia, cod_ref_item, numero_requisicao)
 
         df_evolucao_preco = df_evolucao_preco \
@@ -762,6 +763,7 @@ class Gera_Evolucao_Precos_View(View):
                 df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'handle_compra']
 
             row = {
+                'cod_empresa': cod_empresa,
                 'nome_filial': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_filial_compra']),
                 'cod_ref_item': str(df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'cod_ref_prod']),
                 'desc_item': df_base_evolucao_ultimas_penultima_antepenultima_compra.loc[index, 'nome_produto'],

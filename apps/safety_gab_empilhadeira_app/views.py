@@ -65,10 +65,15 @@ class Form_Gerar_Gab_Emp(View):
         elif colaborador.perfil_usu == 'U':
             str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'nome_operador': nome_colaborador,
             'cod_filial_operador': filial_colaborador.cod_filial,
             'options_select': str_options_select_unidade,
+            'cor_empresa': cor_empresa
         }
         return render(request, 'safety_gab_empilhadeira_app/gab_empilhadeira_form_gerar_check.html', context)
 
@@ -134,9 +139,14 @@ class Form_Gerar_Gab_Emp(View):
         )
         check_cabecalho.save()
 
+        cor_empresa = '#f46424 !important'
+        if colaborador_envio.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'lista_itens' : lista_itens_dict,
-            'cod_check_aplicado': check_aplicado.cod_check_aplicado
+            'cod_check_aplicado': check_aplicado.cod_check_aplicado,
+            'cor_empresa': cor_empresa
         }
         return render(request, 'safety_checks_aplicados_app/preencher_form_check.html', context)
 
