@@ -51,7 +51,6 @@ $(document).on('click','button', function(){
         $("#fecha_modal_carga_desc").val(let_indice_dado);
         $("#hd_tipo_modal").val(let_modal);
 
-        console.log(let_lista_clientes_filial)
         $("#cod_promax_cliente").selectpicker('val', let_lista_clientes_filial).selectpicker('refresh');
 
         if (let_modal == 'Mapas2art') {

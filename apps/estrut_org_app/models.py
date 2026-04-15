@@ -42,6 +42,9 @@ class Filial(models.Model):
     handle_gn_proj_benner = models.IntegerField(null=True, blank=True, default=0)
     usuario_freightech = models.CharField(max_length=50, null=False)
     senha_freightech = models.CharField(max_length=50, null=False)
+    aviso_lanc_despesa_email = models.CharField(max_length=100, null=False)
+    nome_un_freightech = models.CharField(max_length=100, null=False)
+
     class Meta:
         managed = True
         db_table = 'ger_filial'
