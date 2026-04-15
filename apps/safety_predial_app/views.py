@@ -41,10 +41,15 @@ class Form_Gerar_Check_Predial(View):
             for filial in lista_filiais:
                 str_options_select_unidade += f'<option value="{str(filial["cod_filial__cod_filial"])}">{str(filial["cod_filial__desc_filial"])}</option>'
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         elif colaborador.perfil_usu == 'U':
             str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
 
         context = {
+            'cor_empresa': cor_empresa,
             'options_select_unidade': str_options_select_unidade,
         }
         return render(request, 'safety_predial_app/predial_form_gerar_check.html', context)
@@ -96,7 +101,6 @@ class Form_Gerar_Check_Predial(View):
             prox_categoria_area = lista_itens_areas[int(cod_area)]
             itens_categoria_area = lista_itens_hit_db[categoria_area.ordem_item-1:prox_categoria_area.ordem_item-1]
 
-        print(itens_categoria_area)
 
         lista_itens_dict = []
         str_itens_obrigatorios = []
@@ -123,7 +127,12 @@ class Form_Gerar_Check_Predial(View):
         )
         check_cabecalho.save()
 
+        cor_empresa = '#f46424 !important'
+        if colaborador_envio.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
+            'cor_empresa': cor_empresa,
             'lista_itens' : lista_itens_dict,
             'cod_check_aplicado': check_aplicado.cod_check_aplicado
         }

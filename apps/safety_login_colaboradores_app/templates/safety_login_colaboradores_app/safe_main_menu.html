@@ -1,12 +1,11 @@
 <div style="height:100%;width:100%;padding:1rem;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end">
-    <div class="safety-container-menu" style="height:100%">
-        <div style="display:flex;justify-content:space-between;align-items:center;height:10%">
-            <div style="display:flex">
-                <i class="fa-solid fa-helmet-safety" style="font-size:40px;color:#f46424"></i>
-                &nbsp;
-                <h1 class="homeApp__tituloPortal">Safety</h1>
+    <div class="safety-container-menu" style="height:90%">
+        <div class="d-flex justify-content-between align-items-center" style="height:10%;">
+            <div class="d-flex flex-column justify-content-center align-items-center w-100 mb-1">
+                <i class="fa-solid fa-helmet-safety" style="font-size:30px;color:#f46424"></i>
+                <h6 class="homeApp__tituloPortal">Safety</h6>
             </div>
-            <div>
+            <div class="d-flex justify-content-center align-items-center w-100 mb-1">
                 <i>Bem vindo, </i>
                 <b>{{nome_colaborador}}</b>
             </div>
@@ -17,7 +16,7 @@
                 <i style="font-size:11px;">{{desc_filial_colaborador}}</i>
             </div>
         </div>
-        <div style="height:100%;overflow-y:scroll">
+        <div class="d-flex flex-column w-100" style="height:100%;overflow-y:scroll">
             {% autoescape off %}
                 {{str_menu_colaborador}}
             {% endautoescape %}
@@ -26,7 +25,7 @@
             <button class="btn btn-space btn-sair-safety">
                 <div style="display:flex;flex-direction:column">
                     <i class="fa-solid fa-arrow-right-from-bracket" style="color:#f46424;font-size:32px"></i>
-                    <b style="color:white;font-size:17px">Sair</b>
+                    <b style="color:white;font-size:12px">Sair</b>
                 </div>
             </button>
         </div>

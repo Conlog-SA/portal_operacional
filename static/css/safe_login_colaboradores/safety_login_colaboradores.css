@@ -92,8 +92,8 @@ label{
 .homeApp__tituloPortal{
     text-transform: uppercase;
     color:var(--cor_empresa);
-    font-weight: 700;
-    text-shadow: 0 0 2px var(--cor_empresa);
+    font-weight: 800;
+    /*text-shadow: 0 0 2px #FFFFFF;*/
 }
 
 .btn-login-safety{

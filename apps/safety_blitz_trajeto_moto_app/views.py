@@ -50,10 +50,15 @@ class Form_Gerar_Check_Blitz_Trajeto_Moto(View):
         elif colaborador.perfil_usu == 'U':
             str_options_select_unidade += f'<option value="{filial_usuario.cod_filial}">{filial_usuario.desc_filial}</option>'
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'cod_usuario': nome_colaborador,
             'cod_filial_usuario': filial_usuario.desc_filial,
-            'options_select_unidade': str_options_select_unidade
+            'options_select_unidade': str_options_select_unidade,
+            'cor_empresa': cor_empresa
         }
         return render(request, 'safety_blitz_trajeto_moto_app/blitz_trajeto_moto_form_gerar_check.html', context)
 
@@ -133,8 +138,13 @@ class Form_Gerar_Check_Blitz_Trajeto_Moto(View):
         )
         check_cabecalho.save()
 
+        cor_empresa = '#f46424 !important'
+        if colaborador.cod_empresa == 17:
+            cor_empresa = '#3b8eed !important'
+
         context = {
             'lista_itens': lista_itens_dict,
-            'cod_check_aplicado': check_aplicado.cod_check_aplicado
+            'cod_check_aplicado': check_aplicado.cod_check_aplicado,
+            'cor_empresa': cor_empresa
         }
         return render(request, 'safety_checks_aplicados_app/preencher_form_check.html', context)

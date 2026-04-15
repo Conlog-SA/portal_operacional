@@ -7,7 +7,7 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
 from apps.estrut_org_app.models import Filial
-from apps.safety_layout_checklist_app.models import Libera_Filial_Check
+from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Layout_Check
 from apps.safety_login_colaboradores_app.models import Colaborador
 from apps.usuario_app.models import Usu_Menu
 from proj_portal_operacional.settings import VERSAO_SAFETY
@@ -29,9 +29,9 @@ class Login_Colaborador(View):
                     request.session['cor_empresa'] = '#3b8eed'
                 return redirect('relatos_check')
 
-        flag_voltar = request.GET.get('flag_voltar')
+        '''flag_voltar = request.GET.get('flag_voltar')
         if flag_voltar == "1":
-            return render(request, 'safety_login_colaboradores_app/seleciona_empresa_fragment.html')
+            return render(request, 'safety_login_colaboradores_app/seleciona_empresa_fragment.html')'''
         empresa = request.GET.get('empresa')
         if empresa == 'conlog':
             cod_empresa = '12'
@@ -51,7 +51,7 @@ class Login_Colaborador(View):
             'cor_empresa': cor_empresa,
             'cod_empresa': cod_empresa
         }
-        return render(request, 'safety_login_colaboradores_app/safe_base_container.html', context)
+        return render(request, 'safety_login_colaboradores_app/frm_safe_login.html', context)
 
     @csrf_exempt
     def post(self, request):
@@ -88,7 +88,7 @@ class Login_Colaborador(View):
 class Login_Colaborador_Deep(View):
     @csrf_exempt
     def get(self, request):
-        return render(request, 'safety_login_colaboradores_app/safe_base_container_deep.html')
+        return render(request, 'safety_login_colaboradores_app/frm_safe_login_deep.html')
 
 class Menu_Safe(View):
     @csrf_exempt
@@ -102,6 +102,8 @@ class Menu_Safe(View):
         desc_filial_colaborador = filial_colaborador.desc_filial
         empresa_colaborador = filial_colaborador.cod_empresa
 
+        data_atual = datetime.now()
+
         if colaborador.perfil_usu == 'V':
             context = {
                 'nome_colaborador': primeiro_nome_colaborador,
@@ -111,132 +113,144 @@ class Menu_Safe(View):
             }
 
             return render(request, 'safety_login_colaboradores_app/safe_visitante_submit.html', context)
+        else:
+            check_ativo = None
+            if colaborador.perfil_usu == 'U':
+                check_ativo = (Libera_Filial_Check
+                               .objects
+                               .filter(cod_check__data_desativacao__gte=date(data_atual.year,
+                                                                             data_atual.month,
+                                                                             data_atual.day),
+                                       cod_check__data_inicio__lte=date(data_atual.year,
+                                                                        data_atual.month,
+                                                                        data_atual.day),
+                                       cod_filial=filial_colaborador)
+                               .order_by('-cod_check__data_desativacao'))
+            else:
+                check_ativo = (Libera_Filial_Check
+                               .objects
+                               .filter(cod_check__data_desativacao__gte=date(data_atual.year,
+                                                                             data_atual.month,
+                                                                             data_atual.day),
+                                       cod_check__data_inicio__lte=date(data_atual.year,
+                                                                        data_atual.month,
+                                                                        data_atual.day))
+                               .order_by('-cod_check__data_desativacao'))
 
-        data_atual = datetime.now()
-        str_menu_colaborador = ''
-        check_ativo = Libera_Filial_Check.objects.filter(cod_check__data_desativacao__gte=date(data_atual.year,
-                                                                                               data_atual.month,
-                                                                                               data_atual.day),
-                                                         cod_check__data_inicio__lte=date(data_atual.year,
-                                                                                          data_atual.month,
-                                                                                          data_atual.day)).order_by(
-                                                                                    '-cod_check__data_desativacao')
+
+            str_menu_colaborador = ''
 
 
-        filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
-        filiais = Filial.objects.filter(cod_empresa=filial_colaborador.cod_empresa,
-                                        cod_filial__in=check_ativo.values('cod_filial').distinct())
+            filiais_transporte_pessoas = Filial.objects.filter(cod_empresa=12, cod_filial__in=[34, 57, 89])
+            filiais = Filial.objects.filter(cod_empresa=filial_colaborador.cod_empresa,
+                                            cod_filial__in=check_ativo.values('cod_filial').distinct())
 
 
-        if filial_colaborador.cod_empresa.cod_empresa == 12 and filial_colaborador.cod_filial not in [34, 57, 89]:
-            filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
-        elif filial_colaborador.cod_empresa.cod_empresa == 12 and filial_colaborador.cod_filial in [34, 57, 89]:
-            filiais_transporte_pessoas = filiais_transporte_pessoas.exclude(cod_filial=filial_colaborador.cod_filial)
-            for fil in filiais_transporte_pessoas:
-                print(f'Filial transporte : {fil.cod_filial} - {fil.desc_filial}')
-            filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
-            print('Entrou aqui')
-            for f in filiais:
-                print(f'Filial : {f.cod_filial} - {f.desc_filial}')
-        elif filial_colaborador.cod_empresa.cod_empresa == 17:
-            filiais = filiais.union(filiais_transporte_pessoas)
+            if filial_colaborador.cod_empresa.cod_empresa == 12 and filial_colaborador.cod_filial not in [34, 57, 89]:
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
+            elif filial_colaborador.cod_empresa.cod_empresa == 12 and filial_colaborador.cod_filial in [34, 57, 89]:
+                filiais_transporte_pessoas = filiais_transporte_pessoas.exclude(cod_filial=filial_colaborador.cod_filial)
+                filiais = filiais.exclude(cod_filial__in=filiais_transporte_pessoas.values('cod_filial'))
 
-        check_ativo = check_ativo.filter(cod_filial__in=filiais.values('cod_filial'))
+            elif filial_colaborador.cod_empresa.cod_empresa == 17:
+                filiais = filiais.union(filiais_transporte_pessoas)
 
-        if colaborador.perfil_usu == 'U':
-            check_ativo = check_ativo.filter(cod_filial=filial_colaborador)
+            check_ativo = check_ativo.filter(cod_filial__in=filiais.values('cod_filial'))
+            for c in check_ativo:
+                print(f'Check ativo: {c.cod_check.tipo_check} - {c.cod_check.desc_check}')
 
-        if check_ativo.filter(cod_check__tipo_check=1).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-empilhadeiras-gso" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">GSO - Empilhadeiras</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=8).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">GSO - Ônibus</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=9).first() is not None:
-            print(check_ativo.filter(cod_check__tipo_check=9).first())
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-warehouse icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Empilhadeiras</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=2).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Relatos</b>
-                </div>
-            '''
-        ##if check_ativo.filter(cod_check__tipo_check=3).first() is not None:
-        #    str_menu_colaborador += '''
-        #                                <div class="safety-container-app safety-app-gsdpq" style="margin-bottom:0.4rem">
-        #                                    <i class="fa-solid fa-truck icon-menu-safety" style="margin-bottom:5px"></i>
-        #                                    <b style="color:white;">GSDPQ</b>
-        #                                </div>
-        #                            '''
-        if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Carro</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=5).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Blitz de Trajeto - Moto</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=6).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
-                </div>
-            '''
-        if check_ativo.filter(cod_check__tipo_check=7).first() is not None:
-            str_menu_colaborador += '''
-                <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem;cursor:pointer;">
-                    <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
-                    <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Outros Meios</b>
-                </div>
-            '''
-        if colaborador.setor_administrativo == 1:
-            if check_ativo.filter(cod_check__tipo_check=10).first() is not None:
+
+            if check_ativo.filter(cod_check__tipo_check=1).first() is not None:
                 str_menu_colaborador += '''
-                    <div class="safety-container-app safety-app-predial" style="margin-bottom:0.4rem;cursor:pointer;">
-                        <i class="fa-solid fa-building-circle-check icon-menu-safety" style="margin-bottom:5px"></i>
-                        <b style="color:white;">Infra. e Predial</b>
+                    <div class="safety-container-app safety-app-empilhadeiras-gso" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-dolly icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">GSO - Empilhadeiras</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=8).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-gso" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-bus icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">GSO - Ônibus</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=9).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-empilhadeiras" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-warehouse icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">Empilhadeiras</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=2).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-relatos" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-file-signature icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">Relatos</b>
                     </div>
                 '''
 
-            if check_ativo.filter(cod_check__tipo_check=11).first() is not None:
+            if check_ativo.filter(cod_check__tipo_check=4).first() is not None:
                 str_menu_colaborador += '''
-                    <div class="safety-container-app safety-app-pci" style="margin-bottom:0.4rem;cursor:pointer;">
-                        <i class="fa-solid fa-fire-extinguisher icon-menu-safety" style="margin-bottom:5px"></i>
-                        <b style="color:white;margin-left: .4rem;">Check - PCI</b>
+                    <div class="safety-container-app safety-app-blitz-trajeto-carro" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-car icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Carro</b>
                     </div>
                 '''
+            if check_ativo.filter(cod_check__tipo_check=5).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-blitz-trajeto-moto" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-motorcycle icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">Blitz de Trajeto - Moto</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=6).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-blitz-trajeto-bicicleta" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-bicycle icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;">Blitz de Trajeto - Bicicleta</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=7).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-blitz-trajeto-outros-meios" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-road icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;margin-left: .4rem;">Blitz de Trajeto - Outros Meios</b>
+                    </div>
+                '''
+            if check_ativo.filter(cod_check__tipo_check=12).first() is not None:
+                str_menu_colaborador += '''
+                    <div class="safety-container-app safety-app-registro_ocorrencias" style="margin-bottom:0.4rem;cursor:pointer;">
+                        <i class="fa-solid fa-file-circle-exclamation icon-menu-safety" style="margin-bottom:5px"></i>
+                        <b style="color:white;margin-left: .4rem;">Registro de Ocorrências</b>
+                    </div>
+                '''
+            if colaborador.setor_administrativo == 1:
+                if check_ativo.filter(cod_check__tipo_check=10).first() is not None:
+                    str_menu_colaborador += '''
+                        <div class="safety-container-app safety-app-predial" style="margin-bottom:0.4rem;cursor:pointer;">
+                            <i class="fa-solid fa-building-circle-check icon-menu-safety" style="margin-bottom:5px"></i>
+                            <b style="color:white;">Infra. e Predial</b>
+                        </div>
+                    '''
 
-        str_menu_colaborador += '''</div>'''
+                if check_ativo.filter(cod_check__tipo_check=11).first() is not None:
+                    str_menu_colaborador += '''
+                        <div class="safety-container-app safety-app-pci" style="margin-bottom:0.4rem;cursor:pointer;">
+                            <i class="fa-solid fa-fire-extinguisher icon-menu-safety" style="margin-bottom:5px"></i>
+                            <b style="color:white;margin-left: .4rem;">Check - PCI</b>
+                        </div>
+                    '''
+
+            str_menu_colaborador += '''</div>'''
 
 
 
-        context = {
-            'nome_colaborador': primeiro_nome_colaborador,
-            'desc_filial_colaborador': desc_filial_colaborador,
-            'str_menu_colaborador': str_menu_colaborador,
-        }
-        return render(request, 'safety_login_colaboradores_app/safe_main_menu.html', context)
+            context = {
+                'nome_colaborador': primeiro_nome_colaborador,
+                'desc_filial_colaborador': desc_filial_colaborador,
+                'str_menu_colaborador': str_menu_colaborador,
+            }
+            return render(request, 'safety_login_colaboradores_app/safe_main_menu.html', context)
 
     @csrf_exempt
     def post(self, request):
@@ -254,7 +268,7 @@ class Menu_Safe(View):
                 "cod_empresa": request.session['cod_empresa']
             }
 
-            return render(request, 'safety_login_colaboradores_app/form_safe_login.html', context)
+            return render(request, 'safety_login_colaboradores_app/frm_safe_login.html', context)
         elif tipo_check == '0':
             url = 'empilhadeira_gso_check'
         elif tipo_check == '1':
@@ -277,6 +291,8 @@ class Menu_Safe(View):
             url = 'predial_check'
         elif tipo_check == '10':
             url = 'pci_check'
+        elif tipo_check == '12':
+            url = 'registro_de_ocorrencia_check'
         return redirect(url)
 
 class Lista_Colaboradores(View):
