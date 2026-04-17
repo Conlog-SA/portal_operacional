@@ -156,8 +156,7 @@ class Menu_Safe(View):
                 filiais = filiais.union(filiais_transporte_pessoas)
 
             check_ativo = check_ativo.filter(cod_filial__in=filiais.values('cod_filial'))
-            for c in check_ativo:
-                print(f'Check ativo: {c.cod_check.tipo_check} - {c.cod_check.desc_check}')
+
 
 
             if check_ativo.filter(cod_check__tipo_check=1).first() is not None:
@@ -219,7 +218,7 @@ class Menu_Safe(View):
                 '''
             if check_ativo.filter(cod_check__tipo_check=12).first() is not None:
                 str_menu_colaborador += '''
-                    <div class="safety-container-app safety-app-registro_ocorrencias" style="margin-bottom:0.4rem;cursor:pointer;">
+                    <div class="safety-container-app safety-app-registro-ocorrencias" style="margin-bottom:0.4rem;cursor:pointer;">
                         <i class="fa-solid fa-file-circle-exclamation icon-menu-safety" style="margin-bottom:5px"></i>
                         <b style="color:white;margin-left: .4rem;">Registro de Ocorrências</b>
                     </div>

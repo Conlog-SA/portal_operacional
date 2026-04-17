@@ -365,3 +365,8 @@ table.dataTable tbody tr > .dtfc-fixed-start, table.dataTable tbody tr > .dtfc-f
 table.dataTable thead tr th > .dt-column-title {
     font-weight: 600 !important;
 }
+
+.gritter-item {
+    max-height: 150px;   /* altura máxima */
+    overflow-y: auto;    /* ativa rolagem vertical */
+}

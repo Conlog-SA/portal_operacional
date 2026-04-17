@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'apps.freightech_remunerado_qlp_app',
     'apps.ti_gera_consultas_app',
     'apps.processo_carga_descarga_app',
+    'apps.safety_registro_ocorrencias_app',
 ]
 
 MIDDLEWARE = [

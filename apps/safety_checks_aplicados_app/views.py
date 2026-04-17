@@ -27,6 +27,7 @@ from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Item_Check
 from apps.safety_pci_app.models import Check_Pci
 from apps.safety_predial_app.models import Check_Predial
+from apps.safety_registro_ocorrencias_app.models import Registro_Ocorrencia
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
 from proj_portal_operacional.settings import BASE_DIR
@@ -221,8 +222,8 @@ class Item_Check_Aplicado(View):
                     cod_item_check=cod_item_check,cod_check_aplicado=cod_check_aplicado).first()
             if item_existente == None:
                 resposta_item = Item_Check_Aplicados(
-                    cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
-                    cod_check_aplicado=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first(),
+                    cod_item_check=Item_Check.objects.get(pk=cod_item_check),
+                    cod_check_aplicado=Check_Aplicado.objects.get(pk=cod_check_aplicado),
                     resp_item=resposta
                 )
                 resposta_item.save()
@@ -231,7 +232,7 @@ class Item_Check_Aplicado(View):
                 item_existente.save()
             msg = 'Resposta salva com sucesso!'
 
-        if tipo_resposta == 'text':
+        elif tipo_resposta == 'text':
             resposta = request.POST['resposta']
 
             item_existente = Item_Fotos_Texto_Check_Aplicado.objects.filter(
@@ -240,8 +241,8 @@ class Item_Check_Aplicado(View):
             if item_existente == None:
                 resposta_item = Item_Fotos_Texto_Check_Aplicado(
                     comentario=resposta,
-                    cod_item_check=Item_Check.objects.filter(pk=cod_item_check).first(),
-                    cod_check_aplicado=Check_Aplicado.objects.filter(pk=cod_check_aplicado).first()
+                    cod_item_check=Item_Check.objects.get(pk=cod_item_check),
+                    cod_check_aplicado=Check_Aplicado.objects.get(pk=cod_check_aplicado)
                 )
                 resposta_item.save()
             else:
@@ -249,14 +250,22 @@ class Item_Check_Aplicado(View):
                 item_existente.save()
             msg = 'Resposta salva com sucesso!'
 
-        if tipo_resposta == 'image':
+        elif tipo_resposta == 'image':
             file_form = request.FILES['file']
             if tipo_check == 1:
                 path_app = 'safety_gab_op_emp_app'
             elif tipo_check == 2:
                 path_app = 'safety_relatos_app'
+            elif tipo_check == 12:
+                path_app = 'safety_registro_ocorrencias_app'
 
             msg = self.salva_imagem_anexo(file_form, file_form.name, cod_item_check, cod_check_aplicado, path_app)
+
+        if tipo_check == 12:
+            obj_check_aplicado = Check_Aplicado.objects.get(pk=cod_check_aplicado)
+            obj_registro_ocorrencia = Registro_Ocorrencia.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
+            obj_registro_ocorrencia.status = 'C'
+            obj_registro_ocorrencia.save()
 
         return HttpResponse(msg)
 
