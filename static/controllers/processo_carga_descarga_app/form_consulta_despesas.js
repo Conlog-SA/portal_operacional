@@ -89,7 +89,7 @@ $(document).on('click','button', function(){
         $("#modal_lanca_despesa").show();
     } else if (let_nome_btn == "fecha_modal_carga_desc") {
         $("#modal_lanca_despesa").hide();
-        povoa_tab_mapas_despesa_2art();
+        //povoa_tab_mapas_despesa_2art();
     } else if (let_nome_btn == "fecha_modal_cad_cliente") {
         $("#modal_cad_cliente").hide();
     } else if (let_nome_btn == "btn_cad_clientes") {

@@ -6,7 +6,8 @@ body {
 margin: 0;
 padding: 0;
 /* imagem tela de login */
-background-image: url('../../img/background-misto.jpg');
+/* background-image: url('../../img/background-misto.jpg');*/
+background-image: url('../../img/bg_mix_conlog_deep.png');
 background-repeat: no-repeat;
 background-size: cover;
 display: flex;
@@ -184,7 +185,7 @@ align-items: center;
 
 .btn_conlog {
     padding: 2rem;
-    width: 465.78px;
+    width: 452.71px;
     height: 233.5px;
     border: 0px !important;
     box-shadow: 0 0 0.8rem 0.3rem rgba(245, 255, 250, 0.411);
@@ -194,13 +195,10 @@ align-items: center;
 }
 
 .btn_conlog:hover{
-    background-color: #262a2fe8;
+    background-color: rgba(24, 27, 30, 0.50);;
     box-shadow: 0 0 5rem 2rem  rgba(235, 248, 241, 0.532);
     transform: scale(1.1);
 }
-
-
-
 
 
 .btn_deep {
@@ -211,7 +209,7 @@ align-items: center;
 }
 
 .btn_deep:hover{
-    background-color: #262a2fe8;
+    background-color: rgba(24, 27, 30, 0.50);;
     box-shadow: 0 0 5rem 2rem rgba(235, 248, 241, 0.532);
     transform: scale(1.1)
 
