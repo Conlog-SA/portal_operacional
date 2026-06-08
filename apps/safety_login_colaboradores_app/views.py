@@ -1,3 +1,5 @@
+import ast
+import traceback
 from datetime import datetime, date
 
 from django.db.models import Q
@@ -6,9 +8,16 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
+from apps.envio_email_app.views import Envio_Email
 from apps.estrut_org_app.models import Filial
-from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Layout_Check
+from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
+    Item_Fotos_Texto_Check_Aplicado
+from apps.safety_gab_empilhadeira_app.models import Check_Empilhadeira
+from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
+from apps.safety_gso_app.models import Gabarito_GSO
+from apps.safety_layout_checklist_app.models import Libera_Filial_Check, Layout_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
+from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usu_Menu
 from proj_portal_operacional.settings import VERSAO_SAFETY
 
@@ -57,6 +66,9 @@ class Login_Colaborador(View):
     def post(self, request):
         flag_voltar = request.POST.get('flag_voltar', '0')
         if '1' in flag_voltar:
+            cod_check_aplicado_frm = request.POST.get('cod_check_aplicado', '0')
+            if cod_check_aplicado_frm != '':
+                self.envia_email_check_aplicado(cod_check_aplicado_frm)
             return redirect('safe_main_menu')
         cpf_colaborador = request.POST['cpf_colaborador']
         data_nasc_colab = request.POST['data_nasc_colaborador']
@@ -84,6 +96,416 @@ class Login_Colaborador(View):
             msg_erro = 'Colaborador não existente/cadastrado.'
 
         return HttpResponse(msg_erro, status=401)
+
+
+    def envia_email_check_aplicado(self, cod_check_aplicado_frm):
+        obj_check_aplicado = Check_Aplicado.objects.get(pk=int(cod_check_aplicado_frm))
+        lista_email_cco = ast.literal_eval(obj_check_aplicado.cod_filial.emails_envio_checks_safety)
+        lista_obj_itens_lay = Item_Check.objects.filter(cod_check=obj_check_aplicado.cod_layout_check.cod_check)
+        corpo_email = ''
+        assunto_email = ''
+        try:
+            #GSO Empilhadeira
+            if obj_check_aplicado.cod_layout_check.cod_check == 3:
+                obj_check_emp = Gabarito_Operacional_Emp.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
+                desc_tipo_operador = 'Colaborador' if obj_check_emp.tipo_operador == 1 else 'Terceiro'
+                items_check = ''
+                qtd_itens_check = 0
+                qtd_itens_ok = 0
+                qtd_itens_nok = 0
+                qtd_itens_sem_resp = 0
+                for item_lay in lista_obj_itens_lay:
+                    qtd_itens_check += 1
+                    obj_item_aplicado = Item_Check_Aplicados.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=item_lay).first()
+                    desc_resp = ''
+                    campo_obs_img = ''
+                    if obj_item_aplicado != None:
+                        if obj_item_aplicado.resp_item == 1:
+                            desc_resp = '<span style="color: #FB2C36;">NOK</span>'
+                            qtd_itens_nok += 1
+                        else:
+                            desc_resp = '<span style="color: #05DF72;">OK</span>'
+                            qtd_itens_ok += 1
+                        if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
+                            obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
+                            list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                            caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                            campo_obs_img += f'''
+                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                <img src="{caminho_imagem_server}" width="500" heigth="600">
+                            '''
+                    else:
+                        desc_resp = '<span style="color: #FFDF20;">Não respondido</span>'
+                        qtd_itens_sem_resp += 1
+
+                    items_check += f'''
+                        <p>
+                            - {item_lay.desc_check} : <b>{desc_resp}</b></br>
+                            {campo_obs_img}
+                        </p>
+                    '''
+
+                corpo_email = f'''
+                    <h3>CHECK EMPILHADEIRA #{obj_check_aplicado.cod_check_aplicado}</h3>
+                    <div style="font-size: 15px;">
+                        <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
+                        <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
+                        <b>Tipo operador: </b>{desc_tipo_operador}<br>
+                        <b>Empilhadeira: </b> {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa})
+                        <br/>
+                        <br/>
+                        <table style="width: 100%; margin: .5rem; border-collapse: collapse;background: #B8E6FE;color: #000000;">
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total itens check
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total OK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total NOK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">Não respondidos</td>
+                            </tr>                
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_check}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_ok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_nok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_sem_resp}
+                                </td>
+                            </tr>
+                        </table>     
+                        <h4>#ITENS AVALIADOS</h4>
+                         {items_check}
+                        <span style="font-size: 12px;">Para mais detalhes, acesso o 
+                        <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
+                    </div>
+                '''
+                assunto_email += f'Safety - Check empilhadeira #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Empilhadeira:  {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa}).'
+
+            #GSO onibus
+            elif obj_check_aplicado.cod_layout_check.cod_check in (11, 12):
+                obj_check_onibus = Gabarito_GSO.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
+                items_check = ''
+                qtd_itens_check = 0
+                qtd_itens_ok = 0
+                qtd_itens_nok = 0
+                qtd_itens_na = 0
+                qtd_itens_sem_resp = 0
+                for item_lay in lista_obj_itens_lay:
+                    qtd_itens_check += 1
+                    obj_item_aplicado = Item_Check_Aplicados.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=item_lay).first()
+                    desc_resp = ''
+                    campo_obs_img = ''
+                    if obj_item_aplicado != None:
+                        if item_lay.tipo_resposta == 5:
+                            if obj_item_aplicado.resp_item == 0:
+                                desc_resp = '<span style="color: #05DF72;">OK</span>'
+                                qtd_itens_ok += 1
+                            elif obj_item_aplicado.resp_item == 1:
+                                desc_resp = '<span style="color: #FB2C36;">NOK</span>'
+                                qtd_itens_nok += 1
+                            elif obj_item_aplicado.resp_item == 2:
+                                desc_resp = '<span style="color: #53EAFD;">NA</span>'
+                                qtd_itens_na += 1
+                        elif item_lay.tipo_resposta == 6:
+                            if obj_item_aplicado.resp_item == 0:
+                                desc_resp = '<span style="color: #05DF72;">ÓTIMO</span>'
+                            elif obj_item_aplicado.resp_item == 3:
+                                desc_resp = '<span style="color: #FFDF20;">BOM</span>'
+                            elif obj_item_aplicado.resp_item == 4:
+                                desc_resp = '<span style="color: #FE9A37;">REGULAR</span>'
+                            elif obj_item_aplicado.resp_item == 1:
+                                desc_resp = '<span style="color: #FB2C36;">DANIFICADO</span>'
+
+
+                        if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
+                            obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
+                            comp_img = ''
+                            if obj_obs_img.caminho_imagem != None:
+                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
+                            campo_obs_img += f'''
+                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                {comp_img}
+                            '''
+                    else:
+                        desc_resp = '<span style="color: #AD46FF;">Não respondido</span>'
+                        qtd_itens_sem_resp += 1
+
+                    items_check += f'''
+                        <p>
+                            - {item_lay.desc_check} : <b>{desc_resp}</b></br>
+                            {campo_obs_img}
+                        </p>
+                    '''
+
+                corpo_email = f'''
+                    <h3>CHECK GSO ÔNIBUS #{obj_check_aplicado.cod_check_aplicado}</h3>
+                    <div style="font-size: 15px;">
+                        <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
+                        <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
+                        <b>Placa: </b> {obj_check_onibus.placa_onibus}
+                        <br/>
+                        <br/>
+                        <table style="width: 100%; margin: .5rem; border-collapse: collapse;background: #B8E6FE;color: #000000;">
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total itens check
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total OK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total NOK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total NA
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Não respondidos
+                                </td>
+                            </tr>                
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_check}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_ok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_nok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_na}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_sem_resp}
+                                </td>
+                            </tr>
+                        </table>     
+                        <h4>#ITENS AVALIADOS</h4>
+                         {items_check}
+                        <span style="font-size: 12px;">Para mais detalhes, acesso o 
+                        <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
+                    </div>
+                '''
+                assunto_email += f'Safety - Check GSO Ônibus #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Placa ônibus:  {obj_check_onibus.placa_onibus}.'
+
+            #Check Empilhadeira
+            elif obj_check_aplicado.cod_layout_check.cod_check == 13:
+                obj_check_emp = Check_Empilhadeira.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
+                items_check = ''
+                qtd_itens_check = 0
+                qtd_itens_ok = 0
+                qtd_itens_nok = 0
+                qtd_itens_na = 0
+                qtd_itens_sem_resp = 0
+                for item_lay in lista_obj_itens_lay:
+                    qtd_itens_check += 1
+                    obj_item_aplicado = Item_Check_Aplicados.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=item_lay).first()
+                    desc_resp = ''
+                    campo_obs_img = ''
+                    if obj_item_aplicado != None:
+                        if item_lay.tipo_resposta == 5:
+                            if obj_item_aplicado.resp_item == 0:
+                                desc_resp = '<span style="color: #05DF72;">OK</span>'
+                                qtd_itens_ok += 1
+                            elif obj_item_aplicado.resp_item == 1:
+                                desc_resp = '<span style="color: #FB2C36;">NOK</span>'
+                                qtd_itens_nok += 1
+                            elif obj_item_aplicado.resp_item == 2:
+                                desc_resp = '<span style="color: #53EAFD;">NA</span>'
+                                qtd_itens_na += 1
+
+
+                        if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
+                            obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
+                            comp_img = ''
+                            if obj_obs_img.caminho_imagem != None:
+                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
+                            campo_obs_img += f'''
+                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                {comp_img}
+                            '''
+                    else:
+                        desc_resp = '<span style="color: #AD46FF;">Não respondido</span>'
+                        qtd_itens_sem_resp += 1
+
+                    items_check += f'''
+                        <p>
+                            - {item_lay.desc_check} : <b>{desc_resp}</b></br>
+                            {campo_obs_img}
+                        </p>
+                    '''
+
+                corpo_email = f'''
+                    <h3>CHECK EMPILHADEIRA #{obj_check_aplicado.cod_check_aplicado}</h3>
+                    <div style="font-size: 15px;">
+                        <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
+                        <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
+                        <b>Placa: </b> {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa})
+                        <br/>
+                        <br/>
+                        <table style="width: 100%; margin: .5rem; border-collapse: collapse;background: #B8E6FE;color: #000000;">
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total itens check
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total OK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total NOK
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Total NA
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 20px;">
+                                    Não respondidos
+                                </td>
+                            </tr>                
+                            <tr>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_check}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_ok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_nok}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_na}
+                                </td>
+                                <td style="padding: .5rem;font-weight: bold; text-align: center;vertical-align: middle; font-size: 18px;">
+                                    {qtd_itens_sem_resp}
+                                </td>
+                            </tr>
+                        </table>     
+                        <h4>#ITENS AVALIADOS</h4>
+                         {items_check}
+                        <span style="font-size: 12px;">Para mais detalhes, acesso o 
+                        <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
+                    </div>
+                '''
+                assunto_email += f'Safety - Check Empilhadeira #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Placa:  {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa}).'
+
+            #Relatos
+            elif obj_check_aplicado.cod_layout_check.cod_check == 5:
+                obj_check_relato = Relato.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
+                items_check = ''
+                info_tipo_relato = ''
+                if obj_check_relato.cod_tipo_relato == 1:
+                    desc_situacao_envolvido = 'Não informado'
+                    if obj_check_relato.situacao_envolvido == 1:
+                        desc_situacao_envolvido = 'Funcionario Conlog/Deep'
+                    elif obj_check_relato.situacao_envolvido == 2:
+                        desc_situacao_envolvido = 'Funcionario Ambev'
+                    elif obj_check_relato.situacao_envolvido == 3:
+                        desc_situacao_envolvido = 'Freteiro'
+                    elif obj_check_relato.situacao_envolvido == 4:
+                        desc_situacao_envolvido = 'Terceiro'
+
+                    info_tipo_relato += f'''
+                        <b>Tipo Relato: </b> Ato Inseguro - {Itens_Componentes.objects.filter(campo_check=3, cod_empresa=17, cod_componente=obj_check_relato.categoria_ato_inseguro).first().desc_componente}<br/>
+                        <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
+                        <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                    
+                    '''
+                elif obj_check_relato.cod_tipo_relato == 2:
+                    info_tipo_relato += f'''
+                        <b>Tipo Relato: </b> Condição Insegura - {Itens_Componentes.objects.filter(campo_check=4, cod_empresa=17, cod_componente=obj_check_relato.categoria_condicao_insegura).first().desc_componente}<br/>                   
+                    '''
+                elif obj_check_relato.cod_tipo_relato == 3:
+                    desc_situacao_envolvido = 'Não informado'
+                    if obj_check_relato.situacao_envolvido == 1:
+                        desc_situacao_envolvido = 'Funcionario Conlog/Deep'
+                    elif obj_check_relato.situacao_envolvido == 2:
+                        desc_situacao_envolvido = 'Funcionario Ambev'
+                    elif obj_check_relato.situacao_envolvido == 3:
+                        desc_situacao_envolvido = 'Freteiro'
+                    elif obj_check_relato.situacao_envolvido == 4:
+                        desc_situacao_envolvido = 'Terceiro'
+
+                    info_tipo_relato += f'''
+                        <b>Tipo Relato: </b> Abordagem Positiva - {Itens_Componentes.objects.filter(campo_check=5, cod_empresa=17, cod_componente=obj_check_relato.categoria_comportamento_seguro).first().desc_componente}<br/>
+                        <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
+                        <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                 
+                    '''
+
+
+                for item_lay in lista_obj_itens_lay:
+                    obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+                        cod_check_aplicado=obj_check_aplicado,
+                        cod_item_check=item_lay.cod_item_check).first()
+                    campo_obs_img = ''
+                    comp_img = ''
+
+                    items_check += f'''
+                        <p>
+                        - {item_lay.desc_check} : <br/>
+                    '''
+                    if obj_obs_img != None:
+                        if obj_obs_img.caminho_imagem != None:
+                            list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                            caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(
+                                list_caminho_imagem[4:])
+                            comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
+
+
+                        items_check += f'''
+                            <p>
+                                <b>{obj_obs_img.comentario}</b></br>
+                                {comp_img}
+                            </p>
+                        '''
+                    else:
+                        items_check += f'''
+                            <p>
+                                <b>Nenhuma ação tomada no momento</b></br>
+                            </p>
+                        '''
+
+
+                corpo_email = f'''
+                                <h3>CHECK RELATO #{obj_check_aplicado.cod_check_aplicado}</h3>
+                                <div style="font-size: 15px;">
+                                    <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
+                                    <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
+                                    {info_tipo_relato}
+                                    <b>Local: </b>{obj_check_relato.local_relato}<br/>
+                                    <b>Processo: </b>{Itens_Componentes.objects.filter(campo_check=1, tipo_check=2, cod_empresa=17, cod_componente = obj_check_relato.processo_relato).first().desc_componente}
+                                    <br/>
+                                    <br/>                                    
+                                    <h4>#DETALHES DO RELATO</h4>
+                                     {items_check}
+                                    <span style="font-size: 12px;">Para mais detalhes, acesso o 
+                                    <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
+                                </div>
+                            '''
+                assunto_email += f'Safety - Relato #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Relatado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
+
+            Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
+        except Exception as e:
+            lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
+            assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
+            corpo_email = f'''
+                <p>{traceback.print_exc()}</p>
+            '''
+            Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
+
+
+
 
 class Login_Colaborador_Deep(View):
     @csrf_exempt

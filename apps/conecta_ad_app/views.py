@@ -32,11 +32,11 @@ class Conexao_AD:
                 nome_completo_usu = self.__conn.entries[0].cn
                 status_conta_usu = self.__conn.entries[0].userAccountControl
                 email_usu = self.__conn.entries[0].mail
-
                 if self.__conn.rebind(user=f'conlog\\{usuario}', password=senha):
                     result_validacao = True
 
                     ''' 66048 = Ativo / 66050 = Inativo'''
+
                     status_usu_ad = 'A'
                     if str(status_conta_usu) == '66050':
                         status_usu_ad = 'I'

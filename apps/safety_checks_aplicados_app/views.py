@@ -256,6 +256,8 @@ class Item_Check_Aplicado(View):
                 path_app = 'safety_gab_op_emp_app'
             elif tipo_check == 2:
                 path_app = 'safety_relatos_app'
+            elif tipo_check == 9:
+                path_app = 'safety_gab_empilhadeira_app'
             elif tipo_check == 12:
                 path_app = 'safety_registro_ocorrencias_app'
 

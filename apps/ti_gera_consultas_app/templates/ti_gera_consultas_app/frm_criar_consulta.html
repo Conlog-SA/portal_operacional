@@ -22,11 +22,12 @@
             </div>
 
             <div name="carrega_dados" id="carrega_dados" class="d-flex justify-content-between align-items-between w-100">
-                <div name="div_cria_nova_consulta" id="div_cria_nova_consulta" class="d-flex-row justify-content-end align-items-end w-50" style="visibility: hidden;">
+                <div name="div_cria_nova_consulta" id="div_cria_nova_consulta"
+                     class="d-flex justify-content-start align-items-end w-100" style="visibility: hidden;">
                     <button type="button" name="btn_cria_nova_consulta" id="btn_cria_nova_consulta"
-                        class="btn btn-primary btn-rounded botaoPrincipal"
-                        style="right: 4rem;top: 1.25rem;height: 2rem;position: relative;width: 127px !important;">
-                       Nova consulta
+                        class="btn btn-primary btn-rounded botaoPrincipal">
+                       <i class="fa-solid fa-file"></i>
+                        Nova consulta
                     </button>
                 </div>
                 <div class="d-flex justify-content-center align-items-between w-100">
@@ -90,17 +91,43 @@
                        id="txt_script" autocomplete="off" style="height: 295px;"></textarea>
                 </div>
             </div>
-            <br/>
-            <div class="d-flex align-items-between w-100">
+            <div class="d-flex justify-content-end align-items-center w-100 mt-3 mb-3">
+                <div class="d-flex flex-column justify-content-end align-items-center w-100">
+                    &nbsp;
+                </div>
+                <div class="d-flex flex-column justify-content-end align-items-center w-100">
+                    &nbsp;
+                </div>
+                <div class="d-flex flex-column justify-content-end align-content-between w-100">
+                    <button type="button" name="btn_adiciona_script" id="btn_adiciona_script"
+                        class="btn btn-primary btn-rounded botaoPrincipal"
+                        value="0">
+                       <i class="fa-solid fa-check"></i>
+                        Adicionar
+                    </button>
+                </div>
+            </div>
+
+            <hr class="hr_title">
+            <div class="d-flex align-items-between w-100 m-3">
                 <div class="d-flex align-items-between w-100" id="add_parametros" style="visibility: hidden;" >
                     <div class="d-flex flex-column  align-items-between w-100">
-                        <div class="d-flex align-items-center w-100 " style="background: #f46424 !important; border-radius: 5px 5px 0px 0px; padding: .25rem;">
-                            <h2 class="label_titulo_comp_table titlePadraoMenu" style="font-size: 0.95rem; color: white; font-weight: 500">Parâmetros</h2>
+                        <div class="d-flex justify-content-between align-items-center w-100 p-2"
+                             style="background: #f46424 !important; border-radius: 5px 5px 0px 0px;">
+                            <h2 class="label_titulo_comp_table titlePadraoMenu" style="font-size: 0.95rem; color: white; font-weight: 500">
+                                <i class="fa-solid fa-filter" style="color: #FFFFFF !important; font-size: 15px"></i>
+                                Parâmetros
+                            </h2>
                             <button type="button" name="btn_add_param" id="btn_add_param"
-                                    class="btn btn-rounded btn-space btn-add-tr" title="Adicionar parametro"
-                                    style="padding: 0.01rem 0.10rem !important;box-shadow: 1px 1px 1px .5px rgba(192, 192, 192, .5);background: #343537;margin-left: 34rem;">
-                                 <i class="fa-solid fa-plus" style="color: #f46424 !important; font-size: 15px"></i>
+                                    class="btn btn-rounded btn-space btn-add-tr" title="Adicionar parâmetro">
+                                 <i class="fa-solid fa-plus" style="color: #FFFFFF !important; font-size: 15px"></i>
                             </button>
+                        </div>
+                        <div class="d-flex justify-content-start align-content-center w-100">
+                            <label class="d-flex justify-content-start align-items-center w-100">
+                                <input type="checkbox" class="form-check-input" id="ch_utiliza_union_duplica_param" name="ch_utiliza_union_duplica_param" />
+                                <span>(UNION ALL)Duplicar parâmetros</span>
+                            </label>
                         </div>
                         <div class="d-flex align-items-between w-100 scroll" >
                             <table id="tab_parametro" class='scroll' style="border: 1px;border-color: #000000; ">
@@ -111,14 +138,6 @@
                     </div>
                 </div>
                 <div class="d-flex flex-column align-items-start w-100" style="padding-left: 20px;" >
-                    <div class="d-flex flex-row justify-content-end align-items-end w-100">
-                        <button type="button" name="btn_adiciona_script" id="btn_adiciona_script"
-                            class="btn btn-primary btn-rounded botaoPrincipal"
-                            value="0"
-                            style="left: -1rem;top: 0.7rem;height: 2rem;position: relative;width: 127px !important;">
-                           Adicionar
-                        </button>
-                    </div>
                     <div class="d-flex align-items-between w-100" id="slc_selec_usu" style="visibility: hidden;" >
                          <div class="d-flex flex-column align-items-start  w-100">
                             <label>Usuário que pode ter acesso a consulta</label>

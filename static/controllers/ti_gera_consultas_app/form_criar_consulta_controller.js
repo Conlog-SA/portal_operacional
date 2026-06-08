@@ -332,23 +332,24 @@ function form_add_novo_param(cod_linha, lista_parametros) {
             </br>
             <tr class="d-flex flex-row" id="add_tr_param" style="padding-top: 7px;">
                <th class="d-flex flex-column  justify-content-between align-items-between w-100">
-                   <input placeholder="Nome do Filtro" type="text" id="input_desc_param_${cod_linha}" name="input_desc_param"/>
+                   <input placeholder="Nome do Filtro" type="text" class="form-control" id="input_desc_param_${cod_linha}" name="input_desc_param"/>
                </th>
                <th class="d-flex flex-column  justify-content-between align-items-between w-100" style="margin-left:0.25rem;margin-right:0.25rem">
-                    <select name="sl_input_tipo_dado" id="sl_input_tipo_dado_${cod_linha}" >
+                    <select name="sl_input_tipo_dado" id="sl_input_tipo_dado_${cod_linha}" class="form-control">
                         <option value="0" selected>Selecione o tipo de dado...&nbsp;</option>
                         <option value="1">DATE</option>
                         <option value="2">INT</option>
                         <option value="3">STRING</option>
                     </select>
                </th>
-               <th class="d-flex justify-content-between align-items-start w-50">
+               <th class="d-flex justify-content-center align-content-between w-50">
                   <button type="button" name="btn_salva_dados_parametro" id="btn_salva_dados_parametro_${cod_linha}"
-                        class="btn-primary btn-rounded botaoPrincipal" style="border-radius: 5px;padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
+                        class="btn btn-rounded btn-space"
                         value="0" title='Salvar'>
                        <i class="fa-solid fa-check" style="color: #d2660f;"></i>
                   </button>
-                  <button title='Excluir' style="margin-top: -8px;" type="button" class="btn btn-rounded btn-space" id="btnExcluirParam_${cod_linha}" name="btnExcluirParam" value="0" title="Excluir Parametro">
+                  <button title='Excluir' style="margin-top: -8px;" type="button" class="btn btn-rounded btn-space"
+                          id="btnExcluirParam_${cod_linha}" name="btnExcluirParam" value="0" title="Excluir Parametro">
                     <i class="fa-solid fa-trash" style="color: #f46424;"></i>
                   </button>
                </th>
@@ -360,24 +361,30 @@ function form_add_novo_param(cod_linha, lista_parametros) {
           $("#add_tr_parametros").append(`
             <tr class="d-flex flex-row" id="add_tr_param_${parametro.cod_param}" name='add_tr_param' style="padding-top: 7px;">
                <th class="d-flex flex-column  justify-content-between align-items-between w-100">
-                   <input placeholder="Nome do Filtro" type="text" id="input_desc_param_${parametro.cod_param}" name="input_desc_param" value="${parametro.desc}"/>
+                   <input placeholder="Nome do Filtro" class="form-control"
+                          type="text" id="input_desc_param_${parametro.cod_param}" name="input_desc_param"
+                          value="${parametro.desc}"/>
                </th>
                <th class="d-flex flex-column  justify-content-between align-items-between w-100" style="margin-left:0.25rem;margin-right:0.25rem">
-                    <select name="sl_input_tipo_dado" id="sl_input_tipo_dado_${parametro.cod_param}" >
+                    <select name="sl_input_tipo_dado" id="sl_input_tipo_dado_${parametro.cod_param}" class="form-control">
                         <option value="0" ${parametro.tipo === 0 ? 'selected' : ''}>Selecione o tipo de dado...&nbsp;</option>
                         <option value="1" ${parametro.tipo === 1 ? 'selected' : ''}>DATE</option>
                         <option value="2" ${parametro.tipo === 2 ? 'selected' : ''}>INT</option>
                         <option value="3" ${parametro.tipo === 3 ? 'selected' : ''}>STRING</option>
                     </select>
                </th>
-               <th class="d-flex justify-content-between align-items-start w-50">
-                  <button type="button" name="btn_salva_dados_parametro" id="btn_salva_dados_parametro_${parametro.cod_param}" title='Salvar'
-                        class="btn-primary btn-rounded botaoPrincipal" style="border-radius: 5px;padding-left: 1rem;padding-right: 1rem;color: white;font-weight: bolder;"
+               <th class="d-flex justify-content-center align-content-between w-50">
+                  <button type="button" name="btn_salva_dados_parametro"
+                          id="btn_salva_dados_parametro_${parametro.cod_param}" title='Salvar'
+                          style="background: #f46424;margin-right: .3rem;"
+                        class="btn btn-rounded"
                         value="${parametro.cod_param}">
                       <i class="fa-solid fa-check" style="color: #d2660f;"></i>
                   </button>
-                  <button title='Excluir' style="margin-top: -8px;" type="button" class="btn btn-rounded btn-space" id="btnExcluirParam_${parametro.cod_param}" name="btnExcluirParam" value="${parametro.cod_param}" title="Excluir Parametro">
-                    <i class="fa-solid fa-trash" style="color: #f46424;"></i>
+                  <button title='Excluir' type="button" class="btn btn-rounded"
+                          id="btnExcluirParam_${parametro.cod_param}" name="btnExcluirParam"
+                          value="${parametro.cod_param}" title="Excluir Parametro" style="background: #f46424;">
+                    <i class="fa-solid fa-trash""></i>
                   </button>
                </th>
             </tr>
@@ -409,7 +416,7 @@ $(document).on('change', '#sl_consultas_criadas', function(){
             $("#add_parametros").css("visibility", "visible");
             $("#slc_selec_usu").css("visibility", "visible");
             $("#div_cria_nova_consulta").css("visibility", "visible");
-            $("#btn_adiciona_script").html(`Atualizar`);
+            $("#btn_adiciona_script").html(`<i class="fa-solid fa-arrows-rotate"></i>Atualizar`);
 
 
             lista_usuarios = dados.dic_script.lista_usuarios
