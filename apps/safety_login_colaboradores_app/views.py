@@ -418,13 +418,13 @@ class Login_Colaborador(View):
                         desc_situacao_envolvido = 'Terceiro'
 
                     info_tipo_relato += f'''
-                        <b>Tipo Relato: </b> Ato Inseguro - {Itens_Componentes.objects.filter(campo_check=3, cod_empresa=17, cod_componente=obj_check_relato.categoria_ato_inseguro).first().desc_componente}<br/>
+                        <b>Tipo Relato: </b> Ato Inseguro - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_ato_inseguro).desc_componente}<br/>
                         <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
                         <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                    
                     '''
                 elif obj_check_relato.cod_tipo_relato == 2:
                     info_tipo_relato += f'''
-                        <b>Tipo Relato: </b> Condição Insegura - {Itens_Componentes.objects.filter(campo_check=4, cod_empresa=17, cod_componente=obj_check_relato.categoria_condicao_insegura).first().desc_componente}<br/>                   
+                        <b>Tipo Relato: </b> Condição Insegura - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_condicao_insegura).desc_componente}<br/>                   
                     '''
                 elif obj_check_relato.cod_tipo_relato == 3:
                     desc_situacao_envolvido = 'Não informado'
@@ -438,7 +438,7 @@ class Login_Colaborador(View):
                         desc_situacao_envolvido = 'Terceiro'
 
                     info_tipo_relato += f'''
-                        <b>Tipo Relato: </b> Abordagem Positiva - {Itens_Componentes.objects.filter(campo_check=5, cod_empresa=17, cod_componente=obj_check_relato.categoria_comportamento_seguro).first().desc_componente}<br/>
+                        <b>Tipo Relato: </b> Abordagem Positiva - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_comportamento_seguro).desc_componente}<br/>
                         <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
                         <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                 
                     '''
@@ -484,7 +484,7 @@ class Login_Colaborador(View):
                                     <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
                                     {info_tipo_relato}
                                     <b>Local: </b>{obj_check_relato.local_relato}<br/>
-                                    <b>Processo: </b>{Itens_Componentes.objects.filter(campo_check=1, tipo_check=2, cod_empresa=17, cod_componente = obj_check_relato.processo_relato).first().desc_componente}
+                                    <b>Processo: </b>{Itens_Componentes.objects.get(pk = obj_check_relato.processo_relato).desc_componente}
                                     <br/>
                                     <br/>                                    
                                     <h4>#DETALHES DO RELATO</h4>
@@ -494,13 +494,13 @@ class Login_Colaborador(View):
                                 </div>
                             '''
                 assunto_email += f'Safety - Relato #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Relatado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
-
+            lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
         except Exception as e:
             lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
             corpo_email = f'''
-                <p>{traceback.print_exc()}</p>
+                <p>Exception: {e}. {traceback.print_exc()}</p>
             '''
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
 
