@@ -67,7 +67,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Bicicleta(View):
         filial_colaborador = request.POST['unidade_avaliado']
         nome_avaliado = request.POST['nome_avaliado']
         situacao_colaborador = request.POST['situacao_avaliado']
-
+        obj_filial = Filial.objects.get(pk=filial_colaborador)
         colaborador = None
         if situacao_colaborador == '1':
             colaborador = Colaborador.objects.get(pk=int(nome_avaliado))
@@ -76,7 +76,7 @@ class Form_Gerar_Check_Blitz_Trajeto_Bicicleta(View):
 
             colaborador = Colaborador(
                 nome_colaborador=nome_avaliado,
-                cod_filial=filial_colaborador,
+                cod_filial=obj_filial,
                 situacao=0
             )
             colaborador.save()

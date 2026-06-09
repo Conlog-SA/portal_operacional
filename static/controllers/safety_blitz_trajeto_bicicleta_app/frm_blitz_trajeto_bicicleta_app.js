@@ -7,7 +7,7 @@ $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
         let_nome_avaliado_bicicleta = $('#nome_avaliado_bicicleta').val();
     }
     else if (let_situacao_avaliado_bicicleta == '2' || let_situacao_avaliado_bicicleta == '3' || let_situacao_avaliado_bicicleta == '4') {
-        let_nome_avaliado_bicicleta = $('#nome_avaliado_terceiro').val();
+        let_nome_avaliado_bicicleta = $('#nome_avaliado_terceiro_bicicleta').val();
     }
 
     msg_erro = '';
