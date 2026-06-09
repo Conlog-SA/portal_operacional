@@ -1,3 +1,15 @@
+$(document).on('change','#unidade_colaborador_moto',function(){
+
+    $('#nome_avaliado_moto option').remove();
+
+    $('#nome_avaliado_moto').prop('disabled',true);
+    $('#nome_avaliado_moto').selectpicker('refresh');
+    $('#situacao_avaliado_moto').prop('disabled',false);
+    $('#situacao_avaliado_moto').val('');
+    $('#situacao_avaliado_moto').selectpicker('refresh');
+
+});
+
 $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
     let let_unidade_avaliado_moto = $('#unidade_colaborador_moto').val();
     let let_situacao_avaliado_moto = $('#situacao_avaliado_moto').val();

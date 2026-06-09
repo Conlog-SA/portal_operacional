@@ -1,3 +1,15 @@
+$(document).on('change','#unidade_colaborador_bicicleta',function(){
+
+    $('#nome_avaliado_bicicleta option').remove();
+
+    $('#nome_avaliado_bicicleta').prop('disabled',true);
+    $('#nome_avaliado_bicicleta').selectpicker('refresh');
+    $('#situacao_avaliado_bicicleta').prop('disabled',false);
+    $('#situacao_avaliado_bicicleta').val('');
+    $('#situacao_avaliado_bicicleta').selectpicker('refresh');
+
+});
+
 $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
     let let_unidade_avaliado_bicicleta = $('#unidade_colaborador_bicicleta').val();
     let let_situacao_avaliado_bicicleta = $('#situacao_avaliado_bicicleta').val();

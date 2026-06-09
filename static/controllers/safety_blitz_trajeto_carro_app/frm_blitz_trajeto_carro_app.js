@@ -124,3 +124,15 @@ $(document).on('change','#situacao_avaliado',function(){
 
 
 });
+
+$(document).on('change','#unidade_colaborador',function(){
+
+    $('#nome_avaliado option').remove();
+
+    $('#nome_avaliado').prop('disabled',true);
+    $('#nome_avaliado').selectpicker('refresh');
+    $('#situacao_avaliado').prop('disabled',false);
+    $('#situacao_avaliado').val('');
+    $('#situacao_avaliado').selectpicker('refresh');
+
+});
