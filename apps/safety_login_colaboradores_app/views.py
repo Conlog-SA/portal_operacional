@@ -132,12 +132,13 @@ class Login_Colaborador(View):
                             qtd_itens_ok += 1
                         if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
                             obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
-                            list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
-                            caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
-                            campo_obs_img += f'''
-                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
-                                <img src="{caminho_imagem_server}" width="500" heigth="600">
-                            '''
+                            if obj_obs_img != None:
+                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                campo_obs_img += f'''
+                                    <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                    <img src="{caminho_imagem_server}" width="500" heigth="600">
+                                '''
                     else:
                         desc_resp = '<span style="color: #FFDF20;">Não respondido</span>'
                         qtd_itens_sem_resp += 1
@@ -232,14 +233,15 @@ class Login_Colaborador(View):
                         if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
                             obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
                             comp_img = ''
-                            if obj_obs_img.caminho_imagem != None:
-                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
-                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
-                                comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
-                            campo_obs_img += f'''
-                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
-                                {comp_img}
-                            '''
+                            if obj_obs_img != None:
+                                if obj_obs_img.caminho_imagem != None:
+                                    list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                    caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                    comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
+                                campo_obs_img += f'''
+                                    <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                    {comp_img}
+                                '''
                     else:
                         desc_resp = '<span style="color: #AD46FF;">Não respondido</span>'
                         qtd_itens_sem_resp += 1
@@ -332,14 +334,15 @@ class Login_Colaborador(View):
                         if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
                             obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
                             comp_img = ''
-                            if obj_obs_img.caminho_imagem != None:
-                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
-                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
-                                comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
-                            campo_obs_img += f'''
-                                <b>Observação:</b>{obj_obs_img.comentario}<br/>
-                                {comp_img}
-                            '''
+                            if obj_obs_img != None:
+                                if obj_obs_img.caminho_imagem != None:
+                                    list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                    caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                    comp_img = f'<img src="{caminho_imagem_server}" width="500" heigth="600">'
+                                campo_obs_img += f'''
+                                    <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                    {comp_img}
+                                '''
                     else:
                         desc_resp = '<span style="color: #AD46FF;">Não respondido</span>'
                         qtd_itens_sem_resp += 1
@@ -479,21 +482,21 @@ class Login_Colaborador(View):
 
 
                 corpo_email = f'''
-                                <h3>CHECK RELATO #{obj_check_aplicado.cod_check_aplicado}</h3>
-                                <div style="font-size: 15px;">
-                                    <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
-                                    <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
-                                    {info_tipo_relato}
-                                    <b>Local: </b>{obj_check_relato.local_relato}<br/>
-                                    <b>Processo: </b>{Itens_Componentes.objects.get(pk = obj_check_relato.processo_relato).desc_componente}
-                                    <br/>
-                                    <br/>                                    
-                                    <h4>#DETALHES DO RELATO</h4>
-                                     {items_check}
-                                    <span style="font-size: 12px;">Para mais detalhes, acesso o 
-                                    <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
-                                </div>
-                            '''
+                    <h3>CHECK RELATO #{obj_check_aplicado.cod_check_aplicado}</h3>
+                    <div style="font-size: 15px;">
+                        <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
+                        <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
+                        {info_tipo_relato}
+                        <b>Local: </b>{obj_check_relato.local_relato}<br/>
+                        <b>Processo: </b>{Itens_Componentes.objects.get(pk = obj_check_relato.processo_relato).desc_componente}
+                        <br/>
+                        <br/>                                    
+                        <h4>#DETALHES DO RELATO</h4>
+                         {items_check}
+                        <span style="font-size: 12px;">Para mais detalhes, acesso o 
+                        <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
+                    </div>
+                '''
                 assunto_email += f'Safety - Relato #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Relatado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
 
             # Blitz Trajeto/Carro/Moto/Bicicleta/Outros Meios
