@@ -1,3 +1,15 @@
+$(document).on('change','#unidade_colaborador_bicicleta',function(){
+
+    $('#nome_avaliado_bicicleta option').remove();
+
+    $('#nome_avaliado_bicicleta').prop('disabled',true);
+    $('#nome_avaliado_bicicleta').selectpicker('refresh');
+    $('#situacao_avaliado_bicicleta').prop('disabled',false);
+    $('#situacao_avaliado_bicicleta').val('');
+    $('#situacao_avaliado_bicicleta').selectpicker('refresh');
+
+});
+
 $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
     let let_unidade_avaliado_bicicleta = $('#unidade_colaborador_bicicleta').val();
     let let_situacao_avaliado_bicicleta = $('#situacao_avaliado_bicicleta').val();
@@ -7,7 +19,7 @@ $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
         let_nome_avaliado_bicicleta = $('#nome_avaliado_bicicleta').val();
     }
     else if (let_situacao_avaliado_bicicleta == '2' || let_situacao_avaliado_bicicleta == '3' || let_situacao_avaliado_bicicleta == '4') {
-        let_nome_avaliado_bicicleta = $('#nome_avaliado_terceiro').val();
+        let_nome_avaliado_bicicleta = $('#nome_avaliado_terceiro_bicicleta').val();
     }
 
     msg_erro = '';

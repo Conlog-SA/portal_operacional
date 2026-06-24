@@ -198,6 +198,7 @@ $(document).on('change','#situacao_envolvido',function(){
 
 });
 
+/*
 $(document).on('change','#processo_relato',function(){
     let cod_processo = $(this).val();
     $.ajax({
@@ -220,6 +221,7 @@ $(document).on('change','#processo_relato',function(){
     });
 
 });
+*/
 
 $(document).on('change','#tipo_relato',function(){
 

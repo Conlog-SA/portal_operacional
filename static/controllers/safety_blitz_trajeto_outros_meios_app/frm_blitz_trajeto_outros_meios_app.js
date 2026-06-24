@@ -1,3 +1,15 @@
+$(document).on('change','#unidade_colaborador_outros_meios',function(){
+
+    $('#nome_avaliado_outros_meios option').remove();
+
+    $('#nome_avaliado_outros_meios').prop('disabled',true);
+    $('#nome_avaliado_outros_meios').selectpicker('refresh');
+    $('#situacao_avaliado_outros_meios').prop('disabled',false);
+    $('#situacao_avaliado_outros_meios').val('');
+    $('#situacao_avaliado_outros_meios').selectpicker('refresh');
+
+});
+
 $(document).on('click','.create-check-blitz-trajeto-outros_meios' , function(){
     let let_unidade_avaliado_outros_meios = $('#unidade_colaborador_outros_meios').val();
     let let_situacao_avaliado_outros_meios = $('#situacao_avaliado_outros_meios').val();

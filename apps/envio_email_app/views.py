@@ -5,11 +5,15 @@ from email.mime.text import MIMEText
 
 
 class Envio_Email():
-    def __init__(self):
+    def __init__(self, cod_empresa=12):
         self.host = 'smtp-mail.outlook.com'
         self.port = '587'
-        self.login = 'no-reply@conlogsa.com.br'
-        self.senha = 'RaLsPc@965214!@#'
+        if cod_empresa == 12:
+            self.login = 'no-reply@conlogsa.com.br'
+            self.senha = 'RaLsPc@965214!@#'
+        elif cod_empresa == 17:
+            self.login = 'no-reply@deeplogistica.com.br'
+            self.senha = 'RaLsPc@965214!@#'
 
 
     def envia_email_alerta_adm(self, msg):
@@ -101,4 +105,46 @@ class Envio_Email():
         email_msg.attach(MIMEText(corpo_email, 'html'))
 
         server_email.sendmail(email_msg['FROM'], email_msg['CCO'], email_msg.as_string())
+        server_email.quit()
+
+    def envia_email_layout_generico_safety_deep(self, lista_email_cco, assunto_email, msg_email):
+        server_email = smtplib.SMTP(self.host, self.port)
+        server_email.starttls()
+        server_email.login(self.login, self.senha)
+        email_msg = MIMEMultipart()
+        email_msg['FROM'] = self.login
+        email_msg['CCO'] = '; '.join(lista_email_cco)
+        email_msg['Subject'] = assunto_email
+
+        corpo_email = f'''
+                <div style="background-color: rgba(33, 37, 41, 0.8);
+                    position: absolute;
+                    padding: 2rem;
+                    border-radius: 0.5rem;
+                    font-size: 1.25rem;
+                    color: white;
+                    text-align: lef;
+                    width:80%;
+                    margin-top: 2%;
+                    margin-left: 2%;
+                    text-decoration: none;
+                    ">
+                        <div style="text-align: center;">
+                            <h1 style="fot-size:2rem;text-transform:uppercase;color: #3b8eed; font-weight: 800;">
+                                Safety
+                            </h1>
+                        </div>
+                        {msg_email}
+                        <br>  
+                        <div style="text-align: center;">
+                            <img src="https://operacional.conlogsa.com.br/static/img/logo-deep-small.png" 
+                            style="width: 120px;">
+                        </div>         
+
+                </div>
+
+            '''
+
+        email_msg.attach(MIMEText(corpo_email, 'html'))
+        server_email.sendmail(email_msg['FROM'], email_msg['CCO'].split(';'), email_msg.as_string())
         server_email.quit()

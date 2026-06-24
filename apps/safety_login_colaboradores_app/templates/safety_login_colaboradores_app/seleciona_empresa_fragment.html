@@ -1,6 +1,6 @@
 {% load static %}
 <main id="main_container_safety" class="text-white justify-content-center align-items-center d-flex flex-column homeApp_loginContainer safety-container-screen">
-<div class="d-flex flex-column justify-content-start align-items-center w-100 h-100 mb-1" style="margin-top: 50%;">
+<div class="d-flex flex-column justify-content-start align-items-center w-100 h-100 mb-1" style="margin-top: 35%;">
     <div class="d-flex flex-column justify-content-center align-items-center w-100 mb-1">
       <i class="fa-solid fa-helmet-safety" style="font-size:50px;color:#696969 !important;"></i>
       <h1 class="homeApp__tituloPortal" style="color:#696969!important;">Safety</h1>
@@ -11,15 +11,16 @@
 
     <!-- <label class="pag-lista-empresa-size" style="font-size:18px;width:70%;">Selecione a empresa:</label> -->
 
-    <div class="d-flex w-100 align-items-center mb-3"
-       style="padding-left: 1.5rem;padding-right: 2rem;margin-top: 20%;">
+    <div class="d-flex flex-column justify-content-center w-100 align-items-center mb-3"
+       style="margin-top: 20%;">
 
       <form id="frm_selecione_empresa_conlog" name="frm_selecione_empresa_conlog"  method="GET"
-            style="border-right: 2px solid #525252;padding-right: 1rem;"
-            class="d-flex flex-column justify-content-center align-items-center w-100 h-100"
-            action="{% url 'safe_pag_empresa' %}">
+            class="d-flex flex-column justify-content-center align-items-center w-100 h-100 mb-5"
+            action="{% url 'safe_pag_empresa' %}"
+            style="padding-left: 6rem;padding-right: 6rem;">
           <button type='submit' name='empresa' value="conlog"
-                  class='d-flex flex-column justify-content-center align-items-center w-100 h-100 btn btn-rounded btn-space btn_conlog'
+                  class='d-flex flex-column justify-content-center align-items-center w-100 h-100 btn btn-rounded btn-space btn_conlog p-4'
+                  style="border: 0px;box-shadow: 0 0 0.8rem 0.3rem rgba(245, 255, 250, 0.5);"
                   title='Acessar como usuario CONLOG'>
               <img width="150" height="35" src="{% static 'img/logo_conlog_laranja.png'%}" alt="Logo Conlog"/>
 
@@ -27,11 +28,12 @@
       </form>
 
       <form id="frm_selecione_empresa_deep" name="frm_selecione_empresa_deep"  method="GET"
-            style="border-left: 2px solid #525252;padding-right: 1rem;"
             class="d-flex flex-column justify-content-center align-items-center w-100 h-100"
-            action="{% url 'safe_pag_empresa' %}">
+            action="{% url 'safe_pag_empresa' %}"
+            style="padding-left: 6rem;padding-right: 6rem;">
           <button type='submit' name='empresa' value="deep"
                   class='d-flex flex-column justify-content-center align-items-center w-100 btn btn-rounded btn-space btn_conlog'
+                  style="border: 0px;box-shadow: 0 0 0.8rem 0.3rem rgba(245, 255, 250, 0.5);"
                   title='Acessar como usuario DEEP'>
               <img src="{% static 'img/logo-deep.png'%}" alt="Logo Deep"
                    width="150" height="75"/>

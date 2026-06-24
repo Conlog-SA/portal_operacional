@@ -41,12 +41,12 @@ class Form_Gerar_Check_Predial(View):
             for filial in lista_filiais:
                 str_options_select_unidade += f'<option value="{str(filial["cod_filial__cod_filial"])}">{str(filial["cod_filial__desc_filial"])}</option>'
 
+        elif colaborador.perfil_usu == 'U':
+            str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
+
         cor_empresa = '#f46424 !important'
         if colaborador.cod_empresa == 17:
             cor_empresa = '#3b8eed !important'
-
-        elif colaborador.perfil_usu == 'U':
-            str_options_select_unidade += f'<option value="{filial_colaborador.cod_filial}">{filial_colaborador.desc_filial}</option>'
 
         context = {
             'cor_empresa': cor_empresa,

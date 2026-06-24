@@ -1,3 +1,15 @@
+$(document).on('change','#unidade_colaborador_moto',function(){
+
+    $('#nome_avaliado_moto option').remove();
+
+    $('#nome_avaliado_moto').prop('disabled',true);
+    $('#nome_avaliado_moto').selectpicker('refresh');
+    $('#situacao_avaliado_moto').prop('disabled',false);
+    $('#situacao_avaliado_moto').val('');
+    $('#situacao_avaliado_moto').selectpicker('refresh');
+
+});
+
 $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
     let let_unidade_avaliado_moto = $('#unidade_colaborador_moto').val();
     let let_situacao_avaliado_moto = $('#situacao_avaliado_moto').val();
@@ -8,7 +20,7 @@ $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
         let_nome_avaliado_moto = $('#nome_avaliado_moto').val();
     }
     else if (let_situacao_avaliado_moto == '2' || let_situacao_avaliado_moto == '3' || let_situacao_avaliado_moto == '4') {
-        let_nome_avaliado_moto = $('#nome_avaliado_terceiro').val();
+        let_nome_avaliado_moto = $('#nome_avaliado_terceiro_moto').val();
     }
 
     msg_erro = '';
@@ -93,13 +105,18 @@ $(document).on('change','#situacao_avaliado_moto',function(){
                         });
                     } else {
                         $('#nome_avaliado_moto').prop('disabled',false);
-                        $('#div_avaliado_moto').removeClass('hidden-div');
+                        $('#div_avaliado').removeClass('hidden-div');
                         $('#nome_avaliado_moto').selectpicker('refresh');
-                        $('#div_avaliado_terceiro_moto').addClass('hidden-div');
+                        $('#div_avaliado_terceiro').addClass('hidden-div');
                         $('#nome_avaliado_terceiro_moto').val('');
                     };
                 }
             });
+        } else if ($(this).val() == '2' || $(this).val() == '3' || $(this).val() == '4') {
+            $('#div_avaliado_terceiro').removeClass('hidden-div');
+            $('#div_avaliado').addClass('hidden-div');
+            $('#nome_avaliado_moto').val('');
+            $('#nome_avaliado_moto').selectpicker('refresh');
         }
     }
     else {

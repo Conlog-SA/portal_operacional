@@ -133,19 +133,33 @@ $(document).on('change','.file-check-post' , async function(event){
 });
 
 $(document).on('click','.btn-voltar-menu-safety' , function(){
-
+    $(this).prop("disabled", true);
+    let let_cod_check_aplicado = $(this).val();
     if ($('.background-check-preenchido').length == 0) {
         $.ajax({
             type: 'POST',
             url: '/safety_login_colaboradores_app/',
             data: {
-                        'flag_voltar'      :   1,
-                     },
+                'flag_voltar'      :   1,
+                'cod_check_aplicado': let_cod_check_aplicado
+             },
             success: function (dados) {
+
                 $('#main_container_safety').html(dados);
                 $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
                 $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
                 $('#main_container_safety').css('width', '85%');
+                $(this).prop("disabled", false);
+            },
+            error: function(request, status, error){
+                $(this).prop("disabled", false);
+                $.gritter.add({
+                    title: 'Erro!',
+                    text: error,
+                    image: '/static/icons/triangle-exclamation-solid.svg',
+                    sticky: false,
+                    time: '',
+                });
             }
         });
     }
@@ -162,6 +176,7 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                     flag_invalido = 1;
                 }
             }
+            $(this).prop("disabled", false);
         });
 
         if (flag_invalido == 0) {
@@ -169,14 +184,15 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                 type: 'POST',
                 url: '/safety_login_colaboradores_app/',
                 data: {
-                            'flag_voltar'      :   1,
-                         },
+                    'flag_voltar'      :   1,
+                    'cod_check_aplicado': let_cod_check_aplicado
+                 },
                 success: function (dados) {
                     $('#main_container_safety').html(dados);
                     $('#main_container_safety').removeClass('d-flex align-items-center justify-content-center text-white text-center conteudoPrincipal');
                     $('#main_container_safety').addClass('safety-container-screen text-white justify-content-center align-items-center d-flex homeApp_loginContainer');
                     $('#main_container_safety').css('width', '85%');
-
+                    $(this).prop("disabled", false);
                     flag_visitante = $('#button_flag_visitante').val();
                     if (flag_visitante != "True") {
                         $.gritter.add({
@@ -188,10 +204,21 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                         });
                     }
 
+                },
+                error: function(request, status, error){
+                    $(this).prop("disabled", false);
+                    $.gritter.add({
+                        title: 'Erro!',
+                        text: error,
+                        image: '/static/icons/triangle-exclamation-solid.svg',
+                        sticky: false,
+                        time: '',
+                    });
                 }
             });
         }
         else if (flag_invalido == 1) {
+            $(this).prop("disabled", false);
             $.gritter.add({
                 title: 'Erro!',
                 text: 'Existem perguntas obrigatórias não respondidas!',
@@ -199,7 +226,7 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                 sticky: false,
                 time: '',
             });
-        }
+            }
     }
 });
 

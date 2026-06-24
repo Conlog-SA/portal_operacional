@@ -89,10 +89,11 @@ $(document).on('click','button', function(){
         $("#modal_lanca_despesa").show();
     } else if (let_nome_btn == "fecha_modal_carga_desc") {
         $("#modal_lanca_despesa").hide();
+        povoa_tab_mapas_despesa_2art();
     } else if (let_nome_btn == "fecha_modal_cad_cliente") {
         $("#modal_cad_cliente").hide();
     } else if (let_nome_btn == "btn_cad_clientes") {
-        let let_cod_filial = $("#cb_filial_pesq_mapas").val();s
+        let let_cod_filial = $("#cb_filial_pesq_mapas").val();
         if (!let_cod_filial || let_cod_filial.trim() === '') {
             $.gritter.add({
                 title: 'Atenção!',

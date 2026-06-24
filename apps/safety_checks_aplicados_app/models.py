@@ -12,7 +12,7 @@ class Check_Aplicado(models.Model):
     cod_colaborador_avaliado = models.ForeignKey(Colaborador, models.DO_NOTHING, db_column='cod_colaborador_avaliado', blank=True,
                                          null=True, related_name='avaliado')
     comentarios = models.CharField(max_length=300, blank=False, null=False)
-    data_registro = models.DateTimeField(blank=True, null=True)
+    data_registro = models.DateTimeField(blank=True, null=True, auto_now_add=True)
     cod_layout_check = models.ForeignKey(Layout_Check, models.DO_NOTHING, db_column='cod_layout_check', blank=True,
                                          null=True)
     cod_filial = models.ForeignKey(Filial, models.DO_NOTHING, db_column='cod_filial', blank=False, null=False)

@@ -242,6 +242,7 @@ class Frm_Executa_Consulta_View(View):
             consulta = obj_script.script
             valores = [item['value'] for item in dados]
 
+
             conexao_string = obj_conexao.string_conexao
             with  pyodbc.connect(conexao_string) as connection:
                 with connection.cursor() as cursor:

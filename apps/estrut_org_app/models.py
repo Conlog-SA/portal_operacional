@@ -44,6 +44,7 @@ class Filial(models.Model):
     senha_freightech = models.CharField(max_length=50, null=False)
     aviso_lanc_despesa_email = models.CharField(max_length=100, null=False)
     nome_un_freightech = models.CharField(max_length=100, null=False)
+    emails_envio_checks_safety = models.CharField(max_length=300, blank=True, null=True, default=list, help_text='Lista de email envio de check list Safety')
 
     class Meta:
         managed = True
