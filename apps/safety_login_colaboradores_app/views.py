@@ -133,12 +133,13 @@ class Login_Colaborador(View):
                         if obj_item_aplicado.cod_item_check.campo_obs_img == 1:
                             obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(cod_check_aplicado=obj_check_aplicado, cod_item_check=obj_item_aplicado.cod_item_check).first()
                             if obj_obs_img != None:
-                                list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
-                                caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
-                                campo_obs_img += f'''
-                                    <b>Observação:</b>{obj_obs_img.comentario}<br/>
-                                    <img src="{caminho_imagem_server}" width="500" heigth="600">
-                                '''
+                                if obj_obs_img.caminho_imagem != None:
+                                    list_caminho_imagem = obj_obs_img.caminho_imagem.split('\\')
+                                    caminho_imagem_server = 'https://operacional.conlogsa.com.br/' + '/'.join(list_caminho_imagem[4:])
+                                    campo_obs_img += f'''
+                                        <b>Observação:</b>{obj_obs_img.comentario}<br/>
+                                        <img src="{caminho_imagem_server}" width="500" heigth="600">
+                                    '''
                     else:
                         desc_resp = '<span style="color: #FFDF20;">Não respondido</span>'
                         qtd_itens_sem_resp += 1
@@ -559,7 +560,10 @@ class Login_Colaborador(View):
                         obj_obs_img = Item_Fotos_Texto_Check_Aplicado.objects.filter(
                             cod_check_aplicado=obj_check_aplicado,
                             cod_item_check=item_lay).first()
-                        desc_resp = obj_obs_img.comentario
+                        if obj_obs_img != None:
+                            desc_resp = obj_obs_img.comentario
+                        else:
+                            desc_resp = '<span style="color: #FFDF20;">Não respondido</span>'
                     else:
                         desc_resp = '<span style="color: #FFDF20;">Não respondido</span>'
                         qtd_itens_sem_resp += 1
@@ -635,7 +639,7 @@ class Login_Colaborador(View):
             lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
             corpo_email = f'''
-                <p>Exception: {e}. {traceback.print_exc()}</p>
+                <p>Exception: {e}. {str(traceback.print_exc())}</p>
             '''
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
 

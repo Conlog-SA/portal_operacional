@@ -604,7 +604,7 @@ class Conexao_Senior_BD():
                     COALESCE(frei.usu_descar, '')
                                         AS	desc_cargo_freightech,
                     alt_sal.valsal		AS	sal_base_colab
-             FROM	vetorh.dbo.R034FUN (NOLOCK)            
+             FROM	R034FUN (NOLOCK)            
         LEFT JOIN	USU_TDIAEMP (NOLOCK)
                ON	(USU_TDIAEMP.USU_NUMEMP = R034FUN.NUMEMP)
         LEFT JOIN	R038HFI (NOLOCK)
@@ -628,7 +628,7 @@ class Conexao_Senior_BD():
         LEFT JOIN	R024CAR (NOLOCK)
                ON	(R024CAR.ESTCAR = R038HCA.ESTCAR
               AND	R024CAR.CODCAR = R038HCA.CODCAR)
-        LEFT JOIN	usu_tdesfre frei 
+        LEFT JOIN	usu_tdesfre (NOLOCK) frei 
                ON	frei.usu_codcar = R024CAR.usu_desfre
         LEFT JOIN	R038HLO (NOLOCK)
                ON	(R038HLO.NUMEMP = R034FUN.NUMEMP 
@@ -640,8 +640,7 @@ class Conexao_Senior_BD():
         LEFT JOIN	R038HES (NOLOCK)
                ON	(R038HES.NUMEMP = R034FUN.NUMEMP 
               AND	R038HES.TIPCOL = R034FUN.TIPCOL 
-              AND	R038HES.NUMCAD = R034FUN.NUMCAD)
-              
+              AND	R038HES.NUMCAD = R034FUN.NUMCAD)              
         LEFT JOIN	R038HPO (NOLOCK) 
                ON	(R038HPO.NUMEMP = R034FUN.NUMEMP 
               AND	R038HPO.TIPCOL = R034FUN.TIPCOL 
@@ -649,37 +648,33 @@ class Conexao_Senior_BD():
         LEFT JOIN	R017POS (NOLOCK)
                ON	(R017POS.ESTPOS = R038HPO.ESTPOS 
               AND	R017POS.POSTRA = R038HPO.POSTRA)    
-        LEFT JOIN	R010SIT SIT_ATUAL (NOLOCK)
-               ON	SIT_ATUAL.CODSIT = R034FUN.SITAFA    
-               
+        LEFT JOIN	R010SIT (NOLOCK) SIT_ATUAL 
+               ON	(SIT_ATUAL.CODSIT = R034FUN.SITAFA)               
         LEFT JOIN	r066apu (NOLOCK) 
                ON	(r066apu.NUMEMP = R034FUN.NUMEMP 
               AND	r066apu.TIPCOL = R034FUN.TIPCOL 
-              AND	r066apu.NUMCAD = R034FUN.NUMCAD) 
-              AND	(r066apu.DATAPU = USU_TDIAEMP.USU_DIADAT)
-        LEFT JOIN	R004HOR HORA_APU (NOLOCK)
+              AND	r066apu.NUMCAD = R034FUN.NUMCAD
+              AND	r066apu.DATAPU = USU_TDIAEMP.USU_DIADAT)
+        LEFT JOIN	R004HOR (NOLOCK) HORA_APU 
                ON	(HORA_APU.CODHOR = r066apu.HORDAT)
         LEFT JOIN	R066SIT (NOLOCK)  apu_sit 
                ON	(apu_sit.NUMEMP = r066apu.NUMEMP 
               AND	apu_sit.TIPCOL = r066apu.TIPCOL 
-              AND	apu_sit.NUMCAD = r066apu.NUMCAD) 
-              AND	(apu_sit.DATAPU = USU_TDIAEMP.USU_DIADAT)
-        LEFT JOIN	R010SIT SIT_APU (NOLOCK)
-               ON	SIT_APU.CODSIT = apu_sit.CODSIT  
-               
+              AND	apu_sit.NUMCAD = r066apu.NUMCAD
+              AND	apu_sit.DATAPU = USU_TDIAEMP.USU_DIADAT)
+        LEFT JOIN	R010SIT (NOLOCK) SIT_APU 
+               ON	(SIT_APU.CODSIT = apu_sit.CODSIT)
         LEFT JOIN	R038HSA (NOLOCK) alt_sal 
                ON	(alt_sal.NUMEMP = R034FUN.NUMEMP 
               AND	alt_sal.TIPCOL = R034FUN.TIPCOL
-              AND	alt_sal.NUMCAD = R034FUN.NUMCAD)
-        
-              
+              AND	alt_sal.NUMCAD = R034FUN.NUMCAD)             
             WHERE	USU_TDIAEMP.USU_DIADAT = '{data_ref}' 
               AND	R034FUN.NUMEMP = 1      
               AND	R034FUN.DATADM <= '{data_ref}' 
               AND	((R034FUN.SITAFA <> 7) OR ((R034FUN.SITAFA in (7,22)) AND (R034FUN.DATAFA >= '{data_ref}' )))
               AND	R034FUN.TIPCOL = 1
               AND	R030FIL.CODFIL = {cod_filial}
-              /* AND	SIT_APU.CODSIT NOT IN (7,22) */ 
+           /* AND	SIT_APU.CODSIT NOT IN (7,22) */ 
               AND 	R017POS.POSTRA <> '99_9999'
               AND	R038HFI.DATALT = (SELECT MAX(DATALT) 
                                         FROM R038HFI TABELA001 (NOLOCK) 

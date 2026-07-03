@@ -369,12 +369,13 @@ class Gera_Dash_Evolucao_Precos_View(View):
         lista_handle_filial_form = request.GET['handle_filial']
         data_ini_form = request.GET['data_ini']
         data_fim_form = request.GET['data_fim']
+        handle_empresa = request.GET['handle_empresa']
         lista_handle_familia_form = request.GET['handle_familia']
         lista_handle_atendentes_frm = request.GET['lista_handle_atendentes']
         #df_evolucao_preco = None
 
         lista_evolucao_precos_tab = (Gera_Evolucao_Precos_View()
-                                     .gera_tabela_analitica_evolucao(lista_handle_atendentes_frm,
+                                     .gera_tabela_analitica_evolucao(handle_empresa, lista_handle_atendentes_frm,
                                                                      lista_handle_filial_form, data_ini_form,
                                                                      data_fim_form, lista_handle_familia_form,
                                                                      '0', '0'))
