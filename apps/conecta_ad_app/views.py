@@ -9,7 +9,7 @@ import json
 class Conexao_AD:
     ip_server = '172.16.40.2'
     user_adm = 'administrador'
-    senha_adm = 'RaLsPc@965214!@#'
+    senha_adm = 'TuBnQf@485214!@#'
     #Senha anterior : lLhBtApClEJ@911!@# / JeDmKb@365214!@#
 
     def __init__(self):

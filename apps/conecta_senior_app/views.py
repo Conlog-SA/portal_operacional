@@ -14,14 +14,14 @@ class Conexao_Senior_BD():
         if empresa == 12:
             self.__conn = pyodbc.connect(
                 'Driver={SQL Server};'
-                'Server=itjm-srv-018;'
-                'Database=vetorh;'
+                'Server=172.16.160.28;'
+                'Database=vetorh_conlog;'
                 'UID=servico.portais;'
                 'PWD=qm@WHpAWwb')
         elif empresa == 17:
             self.__conn = pyodbc.connect(
                 'Driver={SQL Server};'
-                'Server=itjm-srv-018;'
+                'Server=172.16.160.28;'
                 'Database=vetorh_deep;'
                 'UID=servico.portais;'
                 'PWD=qm@WHpAWwb')
