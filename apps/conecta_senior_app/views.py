@@ -229,12 +229,11 @@ class Conexao_Senior_BD():
                                 col.numcad AS MATRICULA,
                                 col.nomfun AS NOME,
                                 col.sitafa AS SITUACAO,
-                                col.numcpf AS CPF,
                                 col.codccu AS COD_PROJ,
                                 fil.codfil AS COD_FIL,
                                 fil.nomfil AS NOM_FIL,
                                 proj.nomccu AS NOM_PROJ
-                            FROM vetorh.dbo.r036dep dep
+                            FROM r036dep dep
                             LEFT JOIN R034FUN col (NOLOCK)
                             ON (col.numcad = dep.numcad AND col.tipcol = dep.tipcol)
                             LEFT JOIN R030FIL fil (NOLOCK) 
