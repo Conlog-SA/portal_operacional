@@ -2211,11 +2211,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
 
                 #val_composicao = (val_composicao_ano + val_taxas) - val_pago
-                if val_pago > 0 and val_pago >= (val_principal + val_taxas):
+                if int(val_pago) > 0 and int(val_pago) >= int(val_principal + val_taxas):
                     val_composicao = 0
                 else:
-                    val_composicao = (val_composicao_ano + val_taxas)- val_pago
-                    #print(f"Valor pago: {val_pago}. Valor composicao ano: {val_composicao_ano}")
+                    #val_composicao = (val_composicao_ano + val_taxas)- val_pago
+                    val_composicao = val_composicao_ano - val_pago
+                    #print(f"Valor pago: {val_pago}. Valor composicao ano: {val_composicao}")
 
 
                 val_balancete = ConexaoBancoBenner() \
