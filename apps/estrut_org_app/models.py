@@ -45,6 +45,7 @@ class Filial(models.Model):
     aviso_lanc_despesa_email = models.CharField(max_length=100, null=False)
     nome_un_freightech = models.CharField(max_length=100, null=False)
     emails_envio_checks_safety = models.CharField(max_length=300, blank=True, null=True, default=list, help_text='Lista de email envio de check list Safety')
+    cel_envio_notificacao_safety = models.CharField(max_length=300, blank=True, null=True, default=list, help_text='Lista de numeros de contato para envio de notificações de Whatsapp Safety')
 
     class Meta:
         managed = True

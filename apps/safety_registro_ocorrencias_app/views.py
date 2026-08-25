@@ -88,7 +88,7 @@ class Frm_Gerar_Check_Registro_Ocorrencia(View):
         hr_reg_ocorencia_frm = request.POST['hr_reg_ocorencia']
         classificacao_ocorrencia_frm = request.POST['classificacao_ocorrencia']
         risco_real_frm = request.POST['risco_real']
-        causa_frm = request.POST['causa']
+        cod_causa_frm = request.POST['causa']
         dt_ocorrencia_str = dt_reg_ocorencia_frm + ' ' + hr_reg_ocorencia_frm
         dt_ocorrencia_date = datetime.strptime(dt_ocorrencia_str, "%Y-%m-%d %H:%M")
 
@@ -119,7 +119,7 @@ class Frm_Gerar_Check_Registro_Ocorrencia(View):
             area_detalhada=area_detalhada_frm,
             cod_atividade=Itens_Componentes.objects.get(pk=cod_atividade_frm),
             cod_natrueza=Itens_Componentes.objects.get(pk=cod_natureza_frm),
-            causa=causa_frm,
+            cod_causa=Itens_Componentes.objects.get(pk=cod_causa_frm),
             cod_check_aplicado=obj_check_aplicado
         )
         obj_check_reg_ocor.save()
