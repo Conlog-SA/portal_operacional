@@ -92,6 +92,7 @@ $(document).on('click', 'button', function(){
         });
         if(let_tem_elemento_vazio == 'N') {
             let let_loader_dash_evolucao_preco = document.getElementById("loader_dash_evolucao_preco");
+            var var_handle_empresa = $("#cb_empresas_dash_evolucao_precos").val();
             var var_handle_filial = $("#cb_filial_dash_evolucao_precos").val().toString();
             let let_lista_handle_atendentes = $("#cb_atendente_dash_evolucao_precos").val().toString();
             var var_data_ini = $("#txt_data_ini_dash_evolucao_precos").val();
@@ -107,6 +108,7 @@ $(document).on('click', 'button', function(){
             $.ajax({
                 type: 'GET',
                 data: {
+                    'handle_empresa'     :   var_handle_empresa,
                     'handle_filial'     :   var_handle_filial,
                     'lista_handle_atendentes' : let_lista_handle_atendentes,
                     'handle_familia'    :   var_handle_familia,

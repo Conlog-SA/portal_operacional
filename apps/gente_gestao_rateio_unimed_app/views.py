@@ -686,7 +686,7 @@ class Calcula_Rateio(View):
                 custo_titulares_empresa_por_projeto_teste = [reg for reg in despesas_titulares_test_obj if reg.desc_projeto_senior == projeto['desc_projeto_senior']]
                 custo_titulares_empresa_por_projeto_teste_excecao = [reg for reg in despesas_titulares_test_obj if
                                                              reg.desc_projeto_senior == projeto['desc_projeto_senior']]
-                print(despesa_titulares_empresa_do_projeto)
+                #print(despesa_titulares_empresa_do_projeto)
 
                 if despesa_titulares_empresa_do_projeto != []:
                     custo_total_titulares_do_projeto_porcentagem_plano = float(despesa_titulares_empresa_do_projeto[0]['valor_total'])

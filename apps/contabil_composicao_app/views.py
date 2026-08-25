@@ -2149,12 +2149,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,
                             data_vencimento__range=[data_competencia_mais_um,
                                                     ultimo_dia_data_competencia_mais_12_meses_date])
-                print(f'Período da composição: de {data_competencia_mais_um} até {ultimo_dia_data_competencia_mais_12_meses_date}')
+                #print(f'Período da composição: de {data_competencia_mais_um} até {ultimo_dia_data_competencia_mais_12_meses_date}')
                 sum_principal = 0
                 sum_taxas = 0
                 sum_val_pago = 0
                 for parc in parcelas:
-                    print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
+                    #print(f'Parcela {parc.ordem_parcela}, data venc {parc.data_vencimento}, val. principal {parc.val_principal}, val.taxa {parc.val_taxas}, val pago {parc.val_pago}')
                     sum_principal += parc.val_principal
                     if parc.val_taxas != None:
                         sum_taxas += parc.val_taxas
@@ -2174,9 +2174,9 @@ class Gera_Conciliacao_Comp_Benner_View(View):
                     .filter(cod_contrato=contrato,  # val_pago=0
                             data_vencimento__lt=data_competencia_mais_um) \
                     .extra(where=["data_liquidacao is null or data_liquidacao > '" + str(data_competencia_mais_um) + "' "])
-                print('Atrasadas, menos que : ', data_competencia_mais_um)
+                '''print('Atrasadas, menos que : ', data_competencia_mais_um)
                 for parc_atr in val_parc_atrasadas:
-                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')
+                    print(f'Parcela {parc_atr.ordem_parcela}, data venc {parc_atr.data_vencimento}, val. principal {parc_atr.val_principal}, val pago {parc_atr.val_pago}')'''
 
 
 
@@ -2211,10 +2211,12 @@ class Gera_Conciliacao_Comp_Benner_View(View):
 
 
                 #val_composicao = (val_composicao_ano + val_taxas) - val_pago
-                if val_pago > 0 and val_pago >= (val_principal + val_taxas):
+                if int(val_pago) > 0 and int(val_pago) >= int(val_principal + val_taxas):
                     val_composicao = 0
                 else:
+                    #val_composicao = (val_composicao_ano + val_taxas)- val_pago
                     val_composicao = val_composicao_ano - val_pago
+                    #print(f"Valor pago: {val_pago}. Valor composicao ano: {val_composicao}")
 
 
                 val_balancete = ConexaoBancoBenner() \
@@ -3012,7 +3014,7 @@ class Form_Imp_Arq_Contas_M1_View(View):
 
                 val_depreciacao_acum = 0.00
                 if row['Depreciação Acumulada'] != None and row['Depreciação Acumulada'] != '':
-                    print(f"Valor : {row['Depreciação Acumulada']}")
+                   # print(f"Valor : {row['Depreciação Acumulada']}")
                     val_depreciacao_acum = decimal.Decimal(row['Depreciação Acumulada'])
                     val_depreciacao_acum = val_depreciacao_acum.quantize(decimal.Decimal(1).scaleb(-decimal_places),
                                                                          context=context)

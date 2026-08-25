@@ -5,5 +5,6 @@ venv
 proj_portal_operacional/__pycache__/
 media/
 .env
+.env_producao
 requirements.txt
 requirements_libs_oficial_29.txt
