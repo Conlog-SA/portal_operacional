@@ -572,15 +572,18 @@ class Login_Colaborador(View):
             elif obj_check_aplicado.cod_layout_check.cod_check in [7, 8, 9, 10]:
                 meio_transporte = ''
                 info_placa = ''
+                info_placa_whats = ''
                 obj_check_blitz = None
                 if obj_check_aplicado.cod_layout_check.cod_check == 7:
                     meio_transporte = 'Carro'
                     obj_check_blitz = Blitz_Trajeto_Carro.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
                     info_placa = f'<b> Placa: </b> {obj_check_blitz.placa} <br/>'
+                    info_placa_whats = f'*Placa:* {obj_check_blitz.placa}\n'
                 elif obj_check_aplicado.cod_layout_check.cod_check == 8:
                     meio_transporte = 'Moto'
                     obj_check_blitz = Blitz_Trajeto_Moto.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
                     info_placa = f'<b> Placa: </b> {obj_check_blitz.placa} <br/>'
+                    info_placa_whats = f'*Placa:* {obj_check_blitz.placa}\n'
                 elif obj_check_aplicado.cod_layout_check.cod_check == 9:
                     meio_transporte = 'Bicicleta'
                     obj_check_blitz = Blitz_Trajeto_Bicicleta.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
@@ -700,25 +703,21 @@ class Login_Colaborador(View):
                         <a href="https://bi.conlogsa.com.br/">BI da companhia</a>, ou acesse o <a href="https://operacional.conlogsa.com.br/">Portal Operacional</a> </span>
                     </div>
                 '''
-                assunto_email += f'Safety - Blitz Trajeto {meio_transporte}. Check #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Aplicado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
-<<<<<<< HEAD
-            #lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
-            Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
+                assunto_email += (f'Safety - Blitz Trajeto {meio_transporte}. Check #{obj_check_aplicado.cod_check_aplicado}. '
+                                  f'Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Aplicado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).')
 
-=======
                 msg_whats += (
                     f'*CHECK Blitz Trajeto {meio_transporte} - #{obj_check_aplicado.cod_check_aplicado}*\n'
                     f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
                     f'*Aplicado por:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
                     f'*Aplicado a:* {nome_avaliado}({desc_situacao_envolvido}\n'
-                    f'*Placa:* {obj_check_blitz.placa}\n'
+                    f'{info_placa_whats}'
                     f'*Qtd. Itens:* {qtd_itens_check}\n'
                     f'*✅Itens OK:* {qtd_itens_ok}\n'
                     f'*🚫Itens NOK:* {qtd_itens_nok}\n'
                     f'*⁉️Itens sem resposta:* {qtd_itens_sem_resp}\n'
                     f'*⚠️Não responda esta mensagem.*'
                 )
->>>>>>> fdd1678d63b77655d2c281d00b390297ca7d6f87
         except Exception as e:
             lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
