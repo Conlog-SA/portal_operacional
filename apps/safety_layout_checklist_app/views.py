@@ -1,3 +1,4 @@
+import os
 from datetime import datetime
 
 from django.http import JsonResponse, HttpResponse
@@ -12,11 +13,17 @@ from apps.safety_blitz_trajeto_moto_app.models import Blitz_Trajeto_Moto
 from apps.safety_blitz_trajeto_outros_meios_app.models import Blitz_Trajeto_Outros_Meios
 from apps.safety_checks_aplicados_app.models import Check_Aplicado, Item_Check_Aplicados, \
     Item_Fotos_Texto_Check_Aplicado, Plano_Acao
+from apps.safety_gab_empilhadeira_app.models import Check_Empilhadeira
+from apps.safety_gab_op_emp_app.models import Gabarito_Operacional_Emp
 from apps.safety_gso_app.models import Gabarito_GSO
 from apps.safety_layout_checklist_app.models import Layout_Check, Libera_Filial_Check, Item_Check, Itens_Componentes
 from apps.safety_login_colaboradores_app.models import Colaborador
+from apps.safety_pci_app.models import Check_Pci
+from apps.safety_predial_app.models import Check_Predial
+from apps.safety_registro_ocorrencias_app.models import Registro_Ocorrencia
 from apps.safety_relatos_app.models import Relato
 from apps.usuario_app.models import Usuario
+from dotenv import load_dotenv
 
 
 # Create your views here.
@@ -431,6 +438,8 @@ class Check_Aplicado_Editar(View):
         check_aplicado = Check_Aplicado.objects.filter(cod_check_aplicado=id_check_aplicado).first()
         layout_check = Layout_Check.objects.filter(cod_check=check_aplicado.cod_layout_check.cod_check).first()
         itens_layout_check = Item_Check.objects.filter(cod_check=layout_check)
+        load_dotenv()
+        caminho_server = str(os.getenv('DIR_LOCAL'))
         #filial = Filial.objects.filter(cod_filial=check_aplicado.cod_filial).first()
         filial = check_aplicado.cod_filial
         if check_aplicado.cod_colaborador_avaliado is not None:
@@ -440,7 +449,55 @@ class Check_Aplicado_Editar(View):
         html_check_editar = ''
         str_categoria_condicao_insegura = ''
 
-        if check_aplicado.cod_layout_check.tipo_check == 2:
+        if check_aplicado.cod_layout_check.tipo_check == 1:
+            check_gso_emp = Gabarito_Operacional_Emp.objects.filter(cod_check_aplicado=check_aplicado).first()
+            desc_tipo_colaborador = ''
+            if check_gso_emp.tipo_operador == 1:
+                desc_tipo_colaborador = 'Colaborador'
+            else:
+                desc_tipo_colaborador = 'Terceiro'
+
+            nome_colab_aplicante = check_aplicado.cod_colaborador_aplicante.nome_colaborador
+            nome_colab_operador = check_aplicado.cod_colaborador_avaliado.nome_colaborador
+            placa_emp = check_gso_emp.cod_empilhadeira.placa
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                        <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                    <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                        <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                        <div class="form-group">
+                                           <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
+                                            <select class="selectpicker form-control responsive-font" id="unidade" name="unidade" value="{check_aplicado.cod_filial}" disabled>
+                                                <option value="{check_aplicado.cod_filial}">{filial.desc_filial}</option>
+                                            </select>
+                                        </div>
+                                         <div class="form-group">
+                                           <label class="responsive-font" for="nome_aplicante_gso_emp" style="color: #000000;font-weight: 400;">Nome aplicante:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_aplicante_gso_emp" name="nome_aplicante_gso_emp" value="{nome_colab_aplicante}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="tipo_operador_gso_emp" style="color: #000000;font-weight: 400;">Tipo de Operador:</label>
+                                           <input type="text" class="form-control responsive-font" id="tipo_operador_gso_emp" name="tipo_operador_gso_emp" value="{desc_tipo_colaborador}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_op_gso_emp" style="color: #000000;font-weight: 400;">Nome do operador:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_op_gso_emp" name="nome_op_gso_emp" value="{nome_colab_operador}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                          <label for="empilhadeira" style="color: #000000;font-weight: 400;">Empilhadeira:</label>
+                                          <input type="text" class="form-control responsive-font" id="empilhadeira" name="empilhadeira" value="{placa_emp}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>'''
+
+        elif check_aplicado.cod_layout_check.tipo_check == 2:
             relato_aplicado = Relato.objects.filter(cod_check_aplicado=check_aplicado).first()
             processo = Itens_Componentes.objects.filter(tipo_check=2, campo_check=1, cod_componente=relato_aplicado.processo_relato).first()
             atividade = Itens_Componentes.objects.filter(cod_componente=relato_aplicado.atividade_relato).first()
@@ -570,7 +627,7 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        if check_aplicado.cod_layout_check.tipo_check == 4:
+        elif check_aplicado.cod_layout_check.tipo_check == 4:
             blitz_carro_aplicado = Blitz_Trajeto_Carro.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             if blitz_carro_aplicado.situacao_colaborador == 1:
@@ -620,7 +677,7 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        if check_aplicado.cod_layout_check.tipo_check == 5:
+        elif check_aplicado.cod_layout_check.tipo_check == 5:
             blitz_moto_aplicado = Blitz_Trajeto_Moto.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             if blitz_moto_aplicado.situacao_colaborador == 1:
@@ -670,7 +727,7 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        if check_aplicado.cod_layout_check.tipo_check == 6:
+        elif check_aplicado.cod_layout_check.tipo_check == 6:
             blitz_bicicleta_aplicado = Blitz_Trajeto_Bicicleta.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             if blitz_bicicleta_aplicado.situacao_colaborador == 1:
@@ -716,7 +773,7 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        if check_aplicado.cod_layout_check.tipo_check == 7:
+        elif check_aplicado.cod_layout_check.tipo_check == 7:
             blitz_outros_meios_aplicado = Blitz_Trajeto_Outros_Meios.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             if blitz_outros_meios_aplicado.situacao_colaborador == 1:
@@ -768,7 +825,7 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        if check_aplicado.cod_layout_check.tipo_check == 8:
+        elif check_aplicado.cod_layout_check.tipo_check == 8:
             gab_gso_aplicado = Gabarito_GSO.objects.filter(cod_check_aplicado=check_aplicado).first()
 
             html_check_editar = f'''<div class="col-md-12 w-100 h-100">
@@ -799,25 +856,306 @@ class Check_Aplicado_Editar(View):
                                         </form>
                                     </div>'''
 
-        html_check_editar += '<div class="background-check-preenchido" style="width:100%;display:flex;justify-content:center">'
+        elif check_aplicado.cod_layout_check.tipo_check == 9:
+            check_empilhadeira = Check_Empilhadeira.objects.filter(cod_check_aplicado=check_aplicado).first()
+            filial_nome = check_aplicado.cod_filial.desc_filial
+            nome_colab_aplicante = check_aplicado.cod_colaborador_aplicante.nome_colaborador
+            placa_emp = check_empilhadeira.cod_empilhadeira.placa
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                            <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                    <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                            <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                    <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                    <div class="form-group">
+                                                       <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
+                                                        <input type="text" class="form-control responsive-font" id="unidade" name="unidade" value="{filial_nome}" disabled>
+                                                    </div>
+                                                     <div class="form-group">
+                                                       <label class="responsive-font" for="nome_aplicante_gso_emp" style="color: #000000;font-weight: 400;">Nome aplicante:</label>
+                                                       <input type="text" class="form-control responsive-font" id="nome_aplicante_gso_emp" name="nome_aplicante_gso_emp" value="{nome_colab_aplicante}" disabled>
+                                                    </div>                                                    
+                                                    <div class="form-group">
+                                                      <label for="empilhadeira" style="color: #000000;font-weight: 400;">Empilhadeira:</label>
+                                                      <input type="text" class="form-control responsive-font" id="empilhadeira" name="empilhadeira" value="{placa_emp}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>'''
+
+        elif check_aplicado.cod_layout_check.tipo_check == 10:
+            check_infra_area = Check_Predial.objects.filter(cod_check_aplicado=check_aplicado).first()
+            filial_nome = check_aplicado.cod_filial.desc_filial
+            nome_colab_aplicante = check_aplicado.cod_colaborador_aplicante.nome_colaborador
+            nome_area = ''
+            if check_infra_area.cod_area == 1:
+                nome_area = 'Administrativo'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(190, 220))
+            elif check_infra_area.cod_area == 2:
+                nome_area = 'Área de vivência e circulação'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(221, 236))
+            elif check_infra_area.cod_area == 3:
+                nome_area = 'Pátio e Estacionamento'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(237, 244))
+            elif check_infra_area.cod_area == 4:
+                nome_area = 'Manutenção / Lavação / PitStop'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(245, 266))
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                                        <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                            <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                                <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                                        <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                            <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                                <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                                <div class="form-group">
+                                                                   <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
+                                                                    <input type="text" class="form-control responsive-font" id="unidade" name="unidade" value="{filial_nome}" disabled>
+                                                                </div>
+                                                                 <div class="form-group">
+                                                                   <label class="responsive-font" for="nome_aplicante_gso_emp" style="color: #000000;font-weight: 400;">Nome aplicante:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="nome_aplicante_gso_emp" name="nome_aplicante_gso_emp" value="{nome_colab_aplicante}" disabled>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                   <label class="responsive-font" for="nome_area_gso_emp" style="color: #000000;font-weight: 400;">Área:</label>
+                                                                   <input type="text" class="form-control responsive-font" id="nome_area_gso_emp" name="nome_area_gso_emp" value="{nome_area}" disabled>
+                                                                </div>                                                    
+                                                            </div>
+                                                        </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>'''
+
+        elif check_aplicado.cod_layout_check.tipo_check == 11:
+            check_psi = Check_Pci.objects.filter(cod_check_aplicado=check_aplicado).first()
+            filial_nome = check_aplicado.cod_filial.desc_filial
+            nome_colab_aplicante = check_aplicado.cod_colaborador_aplicante.nome_colaborador
+            local_inspecionado = check_psi.local
+            item_inspecionado = ''
+            if check_psi.item == 1:
+                item_inspecionado = 'Bomba contra incendio'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(268, 277)).order_by('ordem_item')
+            elif check_psi.item == 2:
+                item_inspecionado = 'Central de alarme'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(278, 283)).order_by('ordem_item')
+            elif check_psi.item == 3:
+                item_inspecionado = 'Conjunto de caixa de hidratante'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(284, 294)).order_by('ordem_item')
+            elif check_psi.item == 4:
+                item_inspecionado = 'Sprinklers e Detector de fumaça'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(295, 298)).order_by('ordem_item')
+            elif check_psi.item == 5:
+                item_inspecionado = 'Extintor'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(299, 312)).order_by('ordem_item')
+            elif check_psi.item == 6:
+                item_inspecionado = 'Lâmpada de emergência'
+                itens_layout_check = itens_layout_check.filter(cod_item_check = 313).order_by('ordem_item')
+            elif check_psi.item == 7:
+                item_inspecionado = 'Placa de saídas de emergência'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(314, 315)).order_by('ordem_item')
+            elif check_psi.item == 8:
+                item_inspecionado = 'Placa de ponto de encontro'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(316, 317)).order_by('ordem_item')
+            elif check_psi.item == 9:
+                item_inspecionado = 'Porta corta fogo'
+                itens_layout_check = itens_layout_check.filter(cod_item_check__range=(318, 320)).order_by('ordem_item')
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                            <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                                <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                                    <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                            <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                                <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                                    <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                                    <div class="form-group">
+                                                       <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
+                                                        <input type="text" class="form-control responsive-font" id="unidade" name="unidade" value="{filial_nome}" disabled>
+                                                    </div>
+                                                     <div class="form-group">
+                                                       <label class="responsive-font" for="local_inspecionado_gso_emp" style="color: #000000;font-weight: 400;">Local Inspecionado:</label>
+                                                       <input type="text" class="form-control responsive-font" id="local_inspecionado_gso_emp" name="local_inspecionado_gso_emp" value="{local_inspecionado}" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                       <label class="responsive-font" for="nome_colab_aplicante_gso_emp" style="color: #000000;font-weight: 400;">Nome do Aplicador:</label>
+                                                       <input type="text" class="form-control responsive-font" id="nome_colab_aplicante_gso_emp" name="nome_colab_aplicante_gso_emp" value="{nome_colab_aplicante}" disabled>
+                                                    </div>
+                                                    <div class="form-group">
+                                                       <label class="responsive-font" for="item_inspecionado_gso_emp" style="color: #000000;font-weight: 400;">Item Inspecionado:</label>
+                                                       <input type="text" class="form-control responsive-font" id="item_inspecionado_gso_emp" name="item_inspecionado_gso_emp" value="{item_inspecionado}" disabled>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>'''
+
+        elif check_aplicado.cod_layout_check.tipo_check == 12:
+            check_reg_ocorrencia = Registro_Ocorrencia.objects.filter(cod_check_aplicado=check_aplicado).first()
+            filial_nome = check_aplicado.cod_filial.desc_filial
+            nome_colab_aplicante = check_aplicado.cod_colaborador_aplicante.nome_colaborador
+            nome_negocio = ''
+            if check_reg_ocorrencia.cod_negocio == 1:
+                nome_negocio = 'Passageiros'
+            elif check_reg_ocorrencia.cod_negocio == 2:
+                nome_negocio = 'Celulose'
+            elif check_reg_ocorrencia.cod_negocio == 3:
+                nome_negocio = 'Reportuária'
+            elif check_reg_ocorrencia.cod_negocio == 4:
+                nome_negocio = 'Armazém'
+
+            nome_tipo = ''
+            if check_reg_ocorrencia.cod_tipo == 1:
+                nome_tipo = 'Próprio'
+            elif check_reg_ocorrencia.cod_tipo == 2:
+                nome_tipo = 'Terceiro'
+
+            nome_turno = check_reg_ocorrencia.turno
+
+            nome_emp_envolvida = check_reg_ocorrencia.nome_empresa_envolvida
+
+            nome_nexo = ''
+            if check_reg_ocorrencia.cod_nexo == 1:
+                nome_nexo = 'Típico'
+            elif check_reg_ocorrencia.cod_nexo == 2:
+                nome_nexo = 'Trajeto'
+
+            nome_local_ocorrencia = check_reg_ocorrencia.cod_local_ocorrencia.desc_componente
+
+            nome_area_detalhada = check_reg_ocorrencia.area_detalhada
+
+            nome_atividade = check_reg_ocorrencia.cod_atividade.desc_componente
+
+            nome_natureza = check_reg_ocorrencia.cod_natrueza.desc_componente
+
+            data_ocorrencia = datetime.strftime(check_reg_ocorrencia.data_ocorrencia,'%d-%m-%Y %H:%M')
+
+            nome_classificacao = ''
+            if check_reg_ocorrencia.cod_classificacao == 1:
+                nome_classificacao = 'FATAL'
+            elif check_reg_ocorrencia.cod_classificacao == 2:
+                nome_classificacao = 'LTI(Lesão com afastamento)'
+            elif check_reg_ocorrencia.cod_classificacao == 3:
+                nome_classificacao = 'MDI/MTI/Atestado do dia'
+            elif check_reg_ocorrencia.cod_classificacao == 4:
+                nome_classificacao = 'SAA'
+            elif check_reg_ocorrencia.cod_classificacao == 5:
+                nome_classificacao = 'TRAJETO'
+            elif check_reg_ocorrencia.cod_classificacao == 6:
+                nome_classificacao = 'QA/IN'
+
+            nome_risco_real = ''
+            if check_reg_ocorrencia.cod_risco_real == 1:
+                nome_risco_real = 'LEVE'
+            elif check_reg_ocorrencia.cod_risco_real == 2:
+                nome_risco_real = 'MÉDIO'
+            elif check_reg_ocorrencia.cod_risco_real == 3:
+                nome_risco_real = 'GRAVE'
+            elif check_reg_ocorrencia.cod_risco_real == 4:
+                nome_risco_real = 'PSIF/HPI'
+
+            nome_causa = check_reg_ocorrencia.cod_causa.desc_componente
+
+            html_check_editar = f'''<div class="col-md-12 w-100 h-100">
+                <form class="h-100" id="form_preenche_check" name="form_preenche_check" style="padding-left:1rem">
+                    <div class="tab-content h-100" style="border-radius:0 0 10px 10px; font-size:15px; color: rgba(0,0,0,0.9)">
+                        <div class="tab-pane active h-100" id="div_tab_new_check" role="tabpanel" aria-labelledby="a_tab_new_check">
+                                <div class="row h-100" style="text-align:left;flex-direction:column;justify-content:space-between;">
+                                    <div style="padding:15px;padding-right:30px;padding-left:30px">
+                                        <input type="text" id="identifica_tipo_check" name="identifica_tipo_check" value={check_aplicado.cod_layout_check.tipo_check} style="display:none">
+                                        <div class="form-group">
+                                           <label for="unidade" style="color: #000000;font-weight: 400;"> Unidade: </label>
+                                            <input type="text" class="form-control responsive-font" id="unidade" name="unidade" value="{filial_nome}" disabled>
+                                        </div>
+                                         <div class="form-group">
+                                           <label class="responsive-font" for="nome_aplicante_gso_emp" style="color: #000000;font-weight: 400;">Nome aplicante:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_aplicante_gso_emp" name="nome_aplicante_gso_emp" value="{nome_colab_aplicante}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_negocio_gso_emp" style="color: #000000;font-weight: 400;">Negócio:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_negocio_gso_emp" name="nome_negocio_gso_emp" value="{nome_negocio}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_tipo_gso_emp" style="color: #000000;font-weight: 400;">Tipo:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_tipo_gso_emp" name="nome_tipo_gso_emp" value="{nome_tipo}" disabled>
+                                        </div>  
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_turno_gso_emp" style="color: #000000;font-weight: 400;">Turno:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_turno_gso_emp" name="nome_turno_gso_emp" value="{nome_turno}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_emp_envolvida_gso_emp" style="color: #000000;font-weight: 400;">Nome da Empresa Envolvida:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_emp_envolvida_gso_emp" name="nome_emp_envolvida_gso_emp" value="{nome_emp_envolvida}" disabled>
+                                        </div>  
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_nexo_gso_emp" style="color: #000000;font-weight: 400;">Nexo:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_nexo_gso_emp" name="nome_nexo_gso_emp" value="{nome_nexo}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_local_ocorrencia_gso_emp" style="color: #000000;font-weight: 400;">Local da Ocorrencia:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_local_ocorrencia_gso_emp" name="nome_local_ocorrencia_gso_emp" value="{nome_local_ocorrencia}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_atividade_gso_emp" style="color: #000000;font-weight: 400;">Área detalhada:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_area_detalhada_gso_emp" name="nome_area_detalhada_gso_emp" value="{nome_area_detalhada}" disabled>
+                                        </div>  
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_atividade_gso_emp" style="color: #000000;font-weight: 400;">Atividade:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_area_detalhada_gso_emp" name="nome_atividade_gso_emp" value="{nome_atividade}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_natureza_gso_emp" style="color: #000000;font-weight: 400;">Natureza:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_natureza_gso_emp" name="nome_natureza_gso_emp" value="{nome_natureza}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="data_ocorrencia_gso_emp" style="color: #000000;font-weight: 400;">Data e Hora da Ocorrência:</label>
+                                           <input type="text" class="form-control responsive-font" id="data_ocorrencia_gso_emp" name="data_ocorrencia_gso_emp" value="{data_ocorrencia}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_classificacao_gso_emp" style="color: #000000;font-weight: 400;">Classificação da Ocorrência:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_classificacao_gso_emp" name="nome_classificacao_gso_emp" value="{nome_classificacao}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_risco_real_gso_emp" style="color: #000000;font-weight: 400;">Risco real:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_risco_real_gso_emp" name="nome_risco_real_gso_emp" value="{nome_risco_real}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                           <label class="responsive-font" for="nome_causa_gso_emp" style="color: #000000;font-weight: 400;">Risco real:</label>
+                                           <input type="text" class="form-control responsive-font" id="nome_causa_gso_emp" name="nome_causa_gso_emp" value="{nome_causa}" disabled>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </form>
+            </div>'''
+
+        html_check_editar += '<div class="background-check-preenchido" style="width:100%;display:column;justify-content:center">'
 
         for item in itens_layout_check:
             str_nome_botoes = str(item.cod_item_check) + '@' + str(id_check_aplicado)
             if item.tipo_item == 2:
                 html_check_editar += f'<b class="responsive-font" style="width:100%;padding-left:2rem;margin-bottom:0.5rem;margin-top:2rem;font-size:18px;background-color:rgb(242,101,34);">{item.desc_check}</b>'
-            if item.tipo_item == 1:
-                if item.tipo_resposta == 1 or item.tipo_resposta == 3 or item.tipo_resposta == 4 or item.tipo_resposta == 5 or item.tipo_resposta == 6:
+            elif item.tipo_item == 1:
+                #if item.tipo_resposta == 1 or item.tipo_resposta == 3 or item.tipo_resposta == 4 or item.tipo_resposta == 5 or item.tipo_resposta == 6:
+                if item.tipo_resposta in (1,3,4,5,6):
                     desc_resposta_botao = ''
                     if item.tipo_resposta == 1 or item.tipo_resposta == '1':
                         desc_resposta_botao = 'OK/NOK'.split('/')
-                    if item.tipo_resposta == 3 or item.tipo_resposta == '3':
+                    elif item.tipo_resposta == 3 or item.tipo_resposta == '3':
                         desc_resposta_botao = 'SIM/NÃO'.split('/')
-                    if item.tipo_resposta == 4 or item.tipo_resposta == '4':
+                    elif item.tipo_resposta == 4 or item.tipo_resposta == '4':
                         desc_resposta_botao = 'PRÓPRIO/COMPANHIA'.split('/')
-                    if item.tipo_resposta == 5 or item.tipo_resposta == '5':
+                    elif item.tipo_resposta == 5 or item.tipo_resposta == '5':
                         desc_resposta_botao = 'OK/NA/NOK'.split('/')
                         str_botao_na = ''
-                    if item.tipo_resposta == 6 or item.tipo_resposta == '6':
+                    elif item.tipo_resposta == 6 or item.tipo_resposta == '6':
                         desc_resposta_botao = 'OTIMO/BOM/REGULAR/DANIFICADO'.split('/')
                         str_botao_bom = ''
                         str_botao_regular = ''
@@ -903,36 +1241,34 @@ class Check_Aplicado_Editar(View):
                                                         <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
                                                     </div>
                                                 </div>'''
-                elif item.tipo_resposta == 2:
-                    respostas_texto_fotos_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
-                        cod_check_aplicado=check_aplicado, cod_item_check=item).first()
+            #elif item.tipo_resposta in (2, 5):
+            respostas_texto_fotos_check_aplicado = Item_Fotos_Texto_Check_Aplicado.objects.filter(
+                cod_check_aplicado=check_aplicado, cod_item_check=item).first()
 
-                    if respostas_texto_fotos_check_aplicado is not None:
-                        if respostas_texto_fotos_check_aplicado.comentario is not None:
-                            str_comentario = respostas_texto_fotos_check_aplicado.comentario
-                        else:
-                            str_comentario = ''
-                    else:
-                        str_comentario = ''
+            if respostas_texto_fotos_check_aplicado is not None:
+                if respostas_texto_fotos_check_aplicado.comentario is not None:
+                    str_comentario = respostas_texto_fotos_check_aplicado.comentario
+                    html_check_editar += f'''
+                        <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px;color:black">
+                            <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                Observação: {str_comentario}
+                            </div>
+                        </div>
+                    '''
 
-                    if item.campo_obs_img == 0:
-                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
-                                                <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">{item.desc_check}</p>
-                                                <input type="hidden" class="identifier" value="{item.ordem_item}">
-                                                <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
-                                                <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
-                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
-                                                </div>
-                                            </div>'''
-                    elif item.campo_obs_img == 1:
-                        html_check_editar += f'''<div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
-                                                <p class="responsive-font item-text" style="display:flex;justify-content:center;padding:4px;text-align:center;color:black">{item.desc_check}</p>
-                                                <input type="hidden" class="identifier" value="{item.ordem_item}">
-                                                <input type="hidden" class="obrigatorio" name="obrigatorio" value="{item.obrigatorio}">
-                                                <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
-                                                    <textarea name="{str_nome_botoes}" class="responsive-font responsive-w-100 textarea-check-post input-item relatos" style="width:90%;height:8rem;margin-right:1.2rem" disabled>{str_comentario}</textarea>
-                                                </div>
-                                            </div>'''
+                if respostas_texto_fotos_check_aplicado.caminho_imagem is not None:
+                    caminho_foto = caminho_server + '\\'.join(
+                        str(respostas_texto_fotos_check_aplicado.caminho_imagem).split('\\')[4:])
+                    obj_imagem = f"<img src='{caminho_foto}' width='500'>"
+                    html_check_editar += f'''
+                            <div style="width:100%;border-style:dashed;border-color:black;margin-bottom:0.3rem;border-radius:10px 10px 10px 10px;border-width:1.5px">
+                                <div class="responsive-div" style="display:flex;justify-content:center;margin:1rem 0.5rem 1rem 0.5rem">
+                                    {obj_imagem}
+                                </div>
+                            </div>
+                        '''
+
+            '''Codigo aki'''
             html_check_editar += '</div>'
 
         cod_usuario_sessao = request.session['cod_usuario_logado']

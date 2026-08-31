@@ -8,6 +8,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
+from apps.envia_whats_app.views import Envia_Notificacao_Whats
 from apps.envio_email_app.views import Envio_Email
 from apps.estrut_org_app.models import Filial
 from apps.safety_blitz_trajeto_bicicleta_app.models import Blitz_Trajeto_Bicicleta
@@ -105,9 +106,11 @@ class Login_Colaborador(View):
     def envia_email_check_aplicado(self, cod_check_aplicado_frm):
         obj_check_aplicado = Check_Aplicado.objects.get(pk=int(cod_check_aplicado_frm))
         lista_email_cco = ast.literal_eval(obj_check_aplicado.cod_filial.emails_envio_checks_safety)
+        lista_contatos_whats = ast.literal_eval(obj_check_aplicado.cod_filial.cel_envio_notificacao_safety)
         lista_obj_itens_lay = Item_Check.objects.filter(cod_check=obj_check_aplicado.cod_layout_check.cod_check)
         corpo_email = ''
         assunto_email = ''
+        msg_whats = ''
         try:
             #GSO Empilhadeira
             if obj_check_aplicado.cod_layout_check.cod_check == 3:
@@ -152,7 +155,7 @@ class Login_Colaborador(View):
                     '''
 
                 corpo_email = f'''
-                    <h3>CHECK EMPILHADEIRA #{obj_check_aplicado.cod_check_aplicado}</h3>
+                    <h3>CHECK GSO EMPILHADEIRA #{obj_check_aplicado.cod_check_aplicado}</h3>
                     <div style="font-size: 15px;">
                         <b>Unidade: </b>{obj_check_aplicado.cod_filial.desc_filial}<br>
                         <b>Colaborador: </b>{obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}<br>
@@ -194,6 +197,19 @@ class Login_Colaborador(View):
                     </div>
                 '''
                 assunto_email += f'Safety - Check empilhadeira #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Empilhadeira:  {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa}).'
+                print('montando mensagem envio whatsapp')
+                msg_whats += (
+                f'*CHECK GSO EMPILHADEIRA #{obj_check_aplicado.cod_check_aplicado}*\n'
+                f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
+                f'*Colaborador:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
+                f'*Tipo operador:* {desc_tipo_operador}\n'
+                f'*Empilhadeira:*  {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa})\n'
+                f'*Qtd. Itens:* {qtd_itens_check}\n'
+                f'*✅Itens OK:* {qtd_itens_ok}\n'
+                f'*🚫Itens NOK:* {qtd_itens_nok}\n'
+                f'*⁉️Itens sem resposta:* {qtd_itens_sem_resp}\n'
+                f'*⚠️Não responda esta mensagem.*'
+                )
 
             #GSO onibus
             elif obj_check_aplicado.cod_layout_check.cod_check in (11, 12):
@@ -304,6 +320,18 @@ class Login_Colaborador(View):
                     </div>
                 '''
                 assunto_email += f'Safety - Check GSO Ônibus #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Placa ônibus:  {obj_check_onibus.placa_onibus}.'
+                msg_whats += (
+                    f'*CHECK GSO ONIBUS #{obj_check_aplicado.cod_check_aplicado}*\n'
+                    f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
+                    f'*Colaborador:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
+                    f'*Placa do Ônibus:* {obj_check_onibus.placa_onibus}\n'
+                    f'*Qtd. Itens:* {qtd_itens_check}\n'
+                    f'*✅Itens OK:* {qtd_itens_ok}\n'
+                    f'*🚫Itens NOK:* {qtd_itens_nok}\n'
+                    f'*⛔Itens NA:* {qtd_itens_na}\n'
+                    f'*⁉️Itens sem resposta:* {qtd_itens_sem_resp}\n'
+                    f'*⚠️Não responda esta mensagem.*'
+                )
 
             #Check Empilhadeira
             elif obj_check_aplicado.cod_layout_check.cod_check == 13:
@@ -405,12 +433,25 @@ class Login_Colaborador(View):
                     </div>
                 '''
                 assunto_email += f'Safety - Check Empilhadeira #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. Placa:  {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa}).'
+                msg_whats += (
+                    f'*CHECK Empilhadeiras #{obj_check_aplicado.cod_check_aplicado}*\n'
+                    f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
+                    f'*Colaborador:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
+                    f'*Empilhadeiras:* {obj_check_emp.cod_empilhadeira.placa}({obj_check_emp.cod_empilhadeira.desc_placa})\n'
+                    f'*Qtd. Itens:* {qtd_itens_check}\n'
+                    f'*✅Itens OK:* {qtd_itens_ok}\n'
+                    f'*🚫Itens NOK:* {qtd_itens_nok}\n'
+                    f'*⛔Itens NA:* {qtd_itens_na}\n'
+                    f'*⁉️Itens sem resposta:* {qtd_itens_sem_resp}\n'
+                    f'*⚠️Não responda esta mensagem.*'
+                )
 
             #Relatos
             elif obj_check_aplicado.cod_layout_check.cod_check == 5:
                 obj_check_relato = Relato.objects.filter(cod_check_aplicado=obj_check_aplicado).first()
                 items_check = ''
                 info_tipo_relato = ''
+                info_tipo_relato_para_whats = ''
                 if obj_check_relato.cod_tipo_relato == 1:
                     desc_situacao_envolvido = 'Não informado'
                     if obj_check_relato.situacao_envolvido == 1:
@@ -427,10 +468,23 @@ class Login_Colaborador(View):
                         <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
                         <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                    
                     '''
+
+                    info_tipo_relato_para_whats += (
+                        f'Tipo Relato:  Ato Inseguro - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_ato_inseguro).desc_componente}\n'
+                        f'Quem gerou esta condição?: {desc_situacao_envolvido}\n'
+                        f'Relatado:{obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}\n'
+                    )
+
+
                 elif obj_check_relato.cod_tipo_relato == 2:
                     info_tipo_relato += f'''
                         <b>Tipo Relato: </b> Condição Insegura - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_condicao_insegura).desc_componente}<br/>                   
                     '''
+
+                    info_tipo_relato_para_whats += (
+                        f'Tipo Relato:  Condição Insegura - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_condicao_insegura).desc_componente}'
+                    )
+
                 elif obj_check_relato.cod_tipo_relato == 3:
                     desc_situacao_envolvido = 'Não informado'
                     if obj_check_relato.situacao_envolvido == 1:
@@ -447,6 +501,12 @@ class Login_Colaborador(View):
                         <b>Quem gerou esta condição?: </b> {desc_situacao_envolvido}<br/>
                         <b>Relatado: </b> {obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}<br/>                 
                     '''
+
+                    info_tipo_relato_para_whats += (
+                        f'Tipo Relato:  Ato Inseguro - {Itens_Componentes.objects.get(pk=obj_check_relato.categoria_ato_inseguro).desc_componente}\n'
+                        f'Quem gerou esta condição?: {desc_situacao_envolvido}\n'
+                        f'Relatado:{obj_check_aplicado.cod_colaborador_avaliado.nome_colaborador}\n'
+                    )
 
 
                 for item_lay in lista_obj_itens_lay:
@@ -481,7 +541,6 @@ class Login_Colaborador(View):
                             </p>
                         '''
 
-
                 corpo_email = f'''
                     <h3>CHECK RELATO #{obj_check_aplicado.cod_check_aplicado}</h3>
                     <div style="font-size: 15px;">
@@ -499,6 +558,15 @@ class Login_Colaborador(View):
                     </div>
                 '''
                 assunto_email += f'Safety - Relato #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Relatado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
+                msg_whats += (
+                    f'*CHECK Relatos #{obj_check_aplicado.cod_check_aplicado}*\n'
+                    f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
+                    f'*Colaborador:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
+                    f'*Local:* {obj_check_relato.local_relato}\n'
+                    f'*Tipo do relato:* {info_tipo_relato_para_whats}\n'
+                    f'*Processo:* {Itens_Componentes.objects.get(pk = obj_check_relato.processo_relato).desc_componente}\n'
+                    f'*⚠️Não responda esta mensagem.*'
+                )
 
             # Blitz Trajeto/Carro/Moto/Bicicleta/Outros Meios
             elif obj_check_aplicado.cod_layout_check.cod_check in [7, 8, 9, 10]:
@@ -633,9 +701,24 @@ class Login_Colaborador(View):
                     </div>
                 '''
                 assunto_email += f'Safety - Blitz Trajeto {meio_transporte}. Check #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Aplicado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
+<<<<<<< HEAD
             #lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
 
+=======
+                msg_whats += (
+                    f'*CHECK Blitz Trajeto {meio_transporte} - #{obj_check_aplicado.cod_check_aplicado}*\n'
+                    f'*Unidade:* {obj_check_aplicado.cod_filial.desc_filial}\n'
+                    f'*Aplicado por:* {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}\n'
+                    f'*Aplicado a:* {nome_avaliado}({desc_situacao_envolvido}\n'
+                    f'*Placa:* {obj_check_blitz.placa}\n'
+                    f'*Qtd. Itens:* {qtd_itens_check}\n'
+                    f'*✅Itens OK:* {qtd_itens_ok}\n'
+                    f'*🚫Itens NOK:* {qtd_itens_nok}\n'
+                    f'*⁉️Itens sem resposta:* {qtd_itens_sem_resp}\n'
+                    f'*⚠️Não responda esta mensagem.*'
+                )
+>>>>>>> fdd1678d63b77655d2c281d00b390297ca7d6f87
         except Exception as e:
             lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
@@ -644,7 +727,10 @@ class Login_Colaborador(View):
             '''
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
 
-
+        # lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
+        #lista_contatos_whats = ['5549991894693']
+        Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
+        Envia_Notificacao_Whats().envia_msg(lista_contatos_whats, msg_whats)
 
 
 class Login_Colaborador_Deep(View):

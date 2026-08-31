@@ -31,7 +31,8 @@ class Registro_Ocorrencia(models.Model):
     desc_parte = models.CharField(max_length=200, blank=False, null=False)
     desc_dano = models.CharField(max_length=200, blank=False, null=False)
     ativo_envolvido = models.CharField(max_length=200, blank=False, null=False)
-    causa = models.CharField(max_length=200, blank=False, null=False)
+    cod_causa = models.ForeignKey(Itens_Componentes, models.DO_NOTHING, db_column='cod_causa',
+                                      related_name='cod_causa', blank=True)
     breve_relato = models.CharField(max_length=200, blank=False, null=False)
     'E(Editado), C(Completo)'
     status = models.CharField(max_length=1, default='E')

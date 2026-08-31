@@ -112,6 +112,7 @@ INSTALLED_APPS = [
     'apps.ti_gera_consultas_app',
     'apps.processo_carga_descarga_app',
     'apps.safety_registro_ocorrencias_app',
+    'apps.envia_whats_app'
 ]
 
 MIDDLEWARE = [

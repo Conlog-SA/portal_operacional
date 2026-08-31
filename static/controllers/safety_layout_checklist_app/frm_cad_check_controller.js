@@ -741,7 +741,10 @@ $(document).on('click','.editar-check' , function(){
         success: function(response) {
             $('#modalEditarCheckAplicadoBody').html(response);
             let tipo_check = $('#identifica_tipo_check').val();
-            if (tipo_check == 2) {
+            if (tipo_check == 1) {
+                $('#modalEditarCheckAplicado').css("display", "block");
+                $('#unidade').selectpicker('refresh');
+            } else if (tipo_check == 2) {
                 $('#unidade').selectpicker('refresh');
                 $('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#tipo_relato').selectpicker('refresh');
@@ -752,29 +755,25 @@ $(document).on('click','.editar-check' , function(){
                 $('#processo_relato').selectpicker('refresh');
                 $('#atividade_relato').selectpicker('refresh');
                 $('#modalEditarCheckAplicado').css("display", "block");
-            }
-            else if (tipo_check == 4) {
+            } else if (tipo_check == 4) {
                 $('#unidade').selectpicker('refresh');
                 //$('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#situacao_avaliado').selectpicker('refresh');
                 $('#nome_avaliado').selectpicker('refresh');
                 $('#modalEditarCheckAplicado').css("display", "block");
-            }
-            else if (tipo_check == 5) {
+            } else if (tipo_check == 5) {
                 $('#unidade').selectpicker('refresh');
                 //$('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#situacao_avaliado_moto').selectpicker('refresh');
                 $('#nome_avaliado').selectpicker('refresh');
                 $('#modalEditarCheckAplicado').css("display", "block");
-            }
-            else if (tipo_check == 6) {
+            } else if (tipo_check == 6) {
                 $('#unidade').selectpicker('refresh');
                 //$('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#situacao_avaliado_bicicleta').selectpicker('refresh');
                 $('#nome_avaliado').selectpicker('refresh');
                 $('#modalEditarCheckAplicado').css("display", "block");
-            }
-            else if (tipo_check == 7) {
+            } else if (tipo_check == 7) {
                 $('#unidade').selectpicker('refresh');
                 //$('#tipo_relato').val($('#tipo_relato').attr('value'));
                 $('#situacao_avaliado_outros_meios').selectpicker('refresh');
@@ -782,10 +781,18 @@ $(document).on('click','.editar-check' , function(){
                 $('#meio_transporte').selectpicker('refresh');
                 $('#nome_avaliado').selectpicker('refresh');
                 $('#modalEditarCheckAplicado').css("display", "block");
-            }
-            else if (tipo_check == 8) {
+            } else if (tipo_check == 8) {
                 $('#modalEditarCheckAplicado').css("display", "block");
                 $('#unidade').selectpicker('refresh');
+            } else if (tipo_check == 9) {
+                $('#modalEditarCheckAplicado').css("display", "block");
+            } else if (tipo_check == 10) {
+                $('#modalEditarCheckAplicado').css("display", "block");
+                $('#unidade').selectpicker('refresh');
+            } else if (tipo_check == 11) {
+                $('#modalEditarCheckAplicado').css("display", "block");
+            } else if (tipo_check == 12) {
+                $('#modalEditarCheckAplicado').css("display", "block");
             }
         }
     });

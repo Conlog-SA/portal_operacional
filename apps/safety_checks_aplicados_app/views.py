@@ -79,6 +79,9 @@ class Check_Aplicado_View(View):
         elif tipo_check_aplicado == '11':
             #validacao_checks_emp_existentes
             validacao_checks_existentes = Check_Pci.objects.all().values('cod_check_aplicado')
+        elif tipo_check_aplicado == '12':
+            #validacao_checks_emp_existentes
+            validacao_checks_existentes = Registro_Ocorrencia.objects.all().values('cod_check_aplicado')
 
         respostas_botao = Item_Check_Aplicados.objects.all()
         respostas_texto = Item_Fotos_Texto_Check_Aplicado.objects.all()
@@ -111,10 +114,20 @@ class Check_Aplicado_View(View):
             nome_colaborador_avaliador = 'N/A'
             if check.cod_colaborador_avaliado != None:
                 nome_colaborador_avaliador = check.cod_colaborador_avaliado.nome_colaborador
-            lista_checks_aplicados_dict.append({'cod_checks_aplicados': check.cod_check_aplicado, 'nome_colaborador_avaliado': nome_colaborador_avaliador,
-                                     'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador, 'data_registro': (check.data_registro - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M"), 'cod_layout_check': check.cod_layout_check.cod_check,
-                                     'desc_check': check.cod_layout_check.desc_check, 'qtd_ok': str(count_respostas_ok), 'qtd_nok': str(count_respostas_nok), 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
-                                                'qtd_total': str(total_itens_layout), 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:#f46424; cursor: pointer;"></i>', 'editar': f'<i class="fa-solid fa-helmet-safety pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:#f46424; cursor: pointer;"></i>'})
+            lista_checks_aplicados_dict.append(
+                {'cod_checks_aplicados': check.cod_check_aplicado,
+                 'nome_colaborador_avaliado': nome_colaborador_avaliador,
+                 'nome_colaborador_aplicante': check.cod_colaborador_aplicante.nome_colaborador,
+                 'data_registro': (check.data_registro - timedelta(hours=3)).strftime("%d/%m/%Y %H:%M"),
+                 'cod_layout_check': check.cod_layout_check.cod_check,
+                 'desc_check': check.cod_layout_check.desc_check,
+                 'qtd_ok': str(count_respostas_ok),
+                 'qtd_nok': str(count_respostas_nok),
+                 'qtd_nao_respondidos': str(count_respostas_nao_respondidos),
+                 'qtd_total': str(total_itens_layout),
+                 'pdf': '<i class="fa-solid fa-file-pdf pdf-clickable" style="font-size:20px;color:#f46424; cursor: pointer;"></i>',
+                 'editar': f'<i class="fa-solid fa-helmet-safety pdf-clickable editar-check" name="{check.cod_check_aplicado}" style="font-size:20px;color:#f46424; cursor: pointer;"></i>'
+                 })
 
         return JsonResponse(lista_checks_aplicados_dict, safe=False)
 
@@ -258,6 +271,10 @@ class Item_Check_Aplicado(View):
                 path_app = 'safety_relatos_app'
             elif tipo_check == 9:
                 path_app = 'safety_gab_empilhadeira_app'
+            elif tipo_check == 10:
+                path_app = 'safety_predial_app'
+            elif tipo_check == 11:
+                path_app = 'safety_pci_app'
             elif tipo_check == 12:
                 path_app = 'safety_registro_ocorrencias_app'
 
