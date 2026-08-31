@@ -635,6 +635,7 @@ class Login_Colaborador(View):
                 assunto_email += f'Safety - Blitz Trajeto {meio_transporte}. Check #{obj_check_aplicado.cod_check_aplicado}. Filial: {obj_check_aplicado.cod_filial.desc_filial}. (Aplicado por:  {obj_check_aplicado.cod_colaborador_aplicante.nome_colaborador}).'
             #lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             Envio_Email().envia_email_layout_generico_safety_deep(lista_email_cco, assunto_email, corpo_email)
+
         except Exception as e:
             lista_email_cco = ['danilo.costa@conlogsa.com.br', 'juliana.deus@conlogsa.com.br']
             assunto_email = f'Erro Safety check #{obj_check_aplicado.cod_check_aplicado}'
