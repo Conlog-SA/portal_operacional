@@ -16,6 +16,9 @@ $(document).on('change','#unidade',function(){
 });
 
 $(document).on('click','.create-check-relatos' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let let_unidade_relato = $('#unidade').val();
     let let_tipo_relato = $('#tipo_relato').val();
     let let_atividade_relato = $('#atividade_relato').val();
@@ -115,6 +118,9 @@ $(document).on('click','.create-check-relatos' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     } else {
@@ -125,6 +131,7 @@ $(document).on('click','.create-check-relatos' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });
 

@@ -8,7 +8,7 @@ from apps.envio_email_app.views import Envio_Email
 class Envia_Notificacao_Whats():
     def __init__(self):
         # ── CONFIGURAÇÕES DA EVOLUTION API ───────────────────────────────────────────
-        self.EVOLUTION_URL = "https://903681ee6ec47f11851222e3544e1a2c.loophole.site"
+        self.EVOLUTION_URL = "https://exorcism-displease-satisfied.ngrok-free.dev"
         self.EVOLUTION_API_KEY = "ChaveDjango456"
         self.EVOLUTION_INSTANCE = "formularios"
 

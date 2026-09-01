@@ -11,6 +11,9 @@ $(document).on('change','#unidade_colaborador_outros_meios',function(){
 });
 
 $(document).on('click','.create-check-blitz-trajeto-outros_meios' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let let_unidade_avaliado_outros_meios = $('#unidade_colaborador_outros_meios').val();
     let let_situacao_avaliado_outros_meios = $('#situacao_avaliado_outros_meios').val();
     let let_meio_transporte_outros_meios = $('#meio_transporte').val();
@@ -59,6 +62,9 @@ $(document).on('click','.create-check-blitz-trajeto-outros_meios' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -70,6 +76,7 @@ $(document).on('click','.create-check-blitz-trajeto-outros_meios' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });
 

@@ -29,6 +29,8 @@ $.ajaxSetup({
 
 
 $(document).on('click','.create-check-registro-ocorrencias' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
 
     const componentes = document.querySelectorAll('.campo-obgo-reg-ocor');
     tem_campos_obrigatorios_branco = 0;
@@ -76,6 +78,9 @@ $(document).on('click','.create-check-registro-ocorrencias' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -87,6 +92,6 @@ $(document).on('click','.create-check-registro-ocorrencias' , function(){
             sticky: false,
             time: '',
         });
-
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });

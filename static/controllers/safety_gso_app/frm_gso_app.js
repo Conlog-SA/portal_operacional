@@ -3,6 +3,9 @@ $(document).on('click','.create-check-gso' , function(){
     let let_cod_motorista_avaliado_gso = $('#nome_avaliado_gso').val();
     let let_placa_onibus_gso = $('#placa_onibus_gso').val();
 
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     msg_erro = '';
     if (let_unidade_avaliado_gso == '') {
         msg_erro += 'Selecione uma filial!<br>';
@@ -34,6 +37,9 @@ $(document).on('click','.create-check-gso' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }

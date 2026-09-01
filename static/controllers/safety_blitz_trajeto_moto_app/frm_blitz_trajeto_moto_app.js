@@ -11,6 +11,9 @@ $(document).on('change','#unidade_colaborador_moto',function(){
 });
 
 $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let let_unidade_avaliado_moto = $('#unidade_colaborador_moto').val();
     let let_situacao_avaliado_moto = $('#situacao_avaliado_moto').val();
     let let_placa_moto = $('#placa_moto').val();
@@ -58,6 +61,9 @@ $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -69,6 +75,7 @@ $(document).on('click','.create-check-blitz-trajeto-moto' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });
 

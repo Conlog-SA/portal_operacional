@@ -1,4 +1,7 @@
 $(document).on('click','.create-check-blitz-trajeto-carro' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let let_unidade_avaliado = $('#unidade_colaborador').val();
     let let_situacao_avaliado = $('#situacao_avaliado').val();
     let let_placa_carro = $('#placa_carro').val();
@@ -46,6 +49,9 @@ $(document).on('click','.create-check-blitz-trajeto-carro' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -57,6 +63,7 @@ $(document).on('click','.create-check-blitz-trajeto-carro' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });
 

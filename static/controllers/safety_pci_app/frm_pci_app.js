@@ -1,4 +1,7 @@
 $(document).on('click','.create-check-pci' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let unidade = $('#unidade_pci').val();
     let local = $('#local_pci').val();
     let cod_item = $('#item_pci').val();
@@ -31,6 +34,9 @@ $(document).on('click','.create-check-pci' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -42,6 +48,6 @@ $(document).on('click','.create-check-pci' , function(){
             sticky: false,
             time: '',
         });
-
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });

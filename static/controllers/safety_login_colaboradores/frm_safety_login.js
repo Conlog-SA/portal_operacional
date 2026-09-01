@@ -25,6 +25,8 @@ $(document).on('click','.btn-login-safety' , function(){
 
     if (msg_erro_form == '') {
         let let_data_nasc_date = let_data_nasc_split[2] + '-' + let_data_nasc_split[1] + '-' + let_data_nasc_split[0];
+        let let_loader_frm_safe_login = document.getElementById("loader_frm_safe_login");
+        let_loader_frm_safe_login.style.display = "flex";
         $.ajax({
             type: 'POST',
             url: '/safety_login_colaboradores_app/',
@@ -51,6 +53,9 @@ $(document).on('click','.btn-login-safety' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_safe_login.style.display = "none";
             }
         });
     }

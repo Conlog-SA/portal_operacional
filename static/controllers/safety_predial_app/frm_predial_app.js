@@ -1,4 +1,7 @@
 $(document).on('click','.create-check-predial' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let unidade = $('#unidade').val();
     let cod_area = $('#area_check').val();
 
@@ -29,6 +32,9 @@ $(document).on('click','.create-check-predial' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -40,6 +46,6 @@ $(document).on('click','.create-check-predial' , function(){
             sticky: false,
             time: '',
         });
-
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });

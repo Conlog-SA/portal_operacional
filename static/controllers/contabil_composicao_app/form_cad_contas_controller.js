@@ -3567,7 +3567,7 @@ function gera_conciliacao_comp_benner_detalhado(){
         cod_modelo_selecionado = 3;
     }
 
-    let let_loader_gera_comp_det = document.getElementById("loader_gera_comp_det");
+    let let_loader_gera_comp_det = document.getElementById("loader_frm_preenche_check");
     let_loader_gera_comp_det.style.display = "flex";
     $.ajax({
             type: 'GET',

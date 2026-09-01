@@ -11,6 +11,9 @@ $(document).on('change','#unidade_colaborador_bicicleta',function(){
 });
 
 $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     let let_unidade_avaliado_bicicleta = $('#unidade_colaborador_bicicleta').val();
     let let_situacao_avaliado_bicicleta = $('#situacao_avaliado_bicicleta').val();
     let let_nome_relatado = "";
@@ -53,6 +56,9 @@ $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -64,6 +70,7 @@ $(document).on('click','.create-check-blitz-trajeto-bicicleta' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
     }
 });
 

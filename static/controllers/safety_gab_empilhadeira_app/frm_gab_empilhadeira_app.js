@@ -43,6 +43,9 @@ $(document).on('click','.create-check-equipamento-empilhadeira' , function(){
     let let_unidade_check_equipamentos_emp = $('#unidade_check_emp').val();
     let let_cod_equipamentos_empilhadeira = $('#placa_empilhadeira_emp').val();
 
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     msg_erro = '';
 
     if (let_unidade_check_equipamentos_emp == '') {
@@ -72,6 +75,9 @@ $(document).on('click','.create-check-equipamento-empilhadeira' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -83,6 +89,7 @@ $(document).on('click','.create-check-equipamento-empilhadeira' , function(){
             sticky: false,
             time: '',
         });
+        let_loader_frm_preenche_check.style.display = "none";
 
     }
 });

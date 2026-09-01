@@ -133,6 +133,13 @@ $(document).on('change','.file-check-post' , async function(event){
 });
 
 $(document).on('click','.btn-voltar-menu-safety' , function(){
+    $('html, body').animate({
+        scrollTop: 0
+    }, 500);
+
+    let let_loader_frm_preenche_check = document.getElementById("loader_frm_preenche_check");
+    let_loader_frm_preenche_check.style.display = "flex";
+
     $(this).prop("disabled", true);
     let let_cod_check_aplicado = $(this).val();
     if ($('.background-check-preenchido').length == 0) {
@@ -160,6 +167,9 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                     sticky: false,
                     time: '',
                 });
+            },
+            complete: function(){
+                let_loader_frm_preenche_check.style.display = "none";
             }
         });
     }
@@ -214,6 +224,9 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                         sticky: false,
                         time: '',
                     });
+                },
+                 complete: function(){
+                    let_loader_frm_preenche_check.style.display = "none";
                 }
             });
         }
@@ -226,7 +239,9 @@ $(document).on('click','.btn-voltar-menu-safety' , function(){
                 sticky: false,
                 time: '',
             });
-            }
+            let_loader_frm_preenche_check.style.display = "none";
+
+        }
     }
 });
 
